@@ -80,6 +80,8 @@
             width: 100%;
             max-width: 600px;
             margin: 0 auto;
+            min-height: 300px; /* Ensure space for results */
+            overflow-y: auto; /* Handle long content */
         }
         .calculator select, .calculator input, .calculator button {
             width: 100%;
@@ -102,9 +104,14 @@
         }
         .result {
             margin-top: 20px;
+            padding: 15px;
             font-weight: bold;
             text-align: center;
             font-size: 16px;
+            min-height: 50px; /* Ensure visibility */
+            background: #ffffff;
+            border: 1px solid #90EE90;
+            border-radius: 4px;
         }
         .month-inputs {
             display: grid;
@@ -131,6 +138,8 @@
             background: white;
             padding: 15px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            z-index: 1000;
+            display: none;
         }
         #chatbot-messages {
             height: 320px;
@@ -144,6 +153,7 @@
             margin-top: 10px;
             border: 1px solid #90EE90;
             border-radius: 4px;
+            font-size: 14px;
         }
         #chatbot-container button {
             width: 100%;
@@ -158,6 +168,68 @@
         #chatbot-container button:hover {
             background: #228B22;
             color: white;
+        }
+        .chat-header {
+            background: linear-gradient(135deg, #7dd3c0 0%, #1e7b85 100%);
+            color: white;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .chat-header-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .chat-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .chat-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        .header-text h3 {
+            font-size: 14px;
+            margin: 0;
+        }
+        .header-text p {
+            font-size: 11px;
+            opacity: 0.9;
+            margin: 0;
+        }
+        .message {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .message.user {
+            flex-direction: row-reverse;
+        }
+        .message-bubble {
+            max-width: 80%;
+            padding: 10px;
+            border-radius: 12px;
+            font-size: 13px;
+        }
+        .message.user .message-bubble {
+            background: #3b82f6;
+            color: white;
+        }
+        .message.assistant .message-bubble {
+            background: #f1f5f9;
+            color: #374151;
+            border: 1px solid #e5e7eb;
+        }
+        .error-message {
+            color: red;
+            text-align: center;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -377,12 +449,40 @@
     </footer>
 
     <!-- Chatbot Container -->
-    <div id="chatbot-container" style="display: none;"></div>
+    <div id="chatbot-container">
+        <div class="chat-header">
+            <div class="chat-header-info">
+                <div class="chat-avatar">
+                    <img src="./assets/soyosoyo-logo.png" alt="SOYOSOYO SACCO" onerror="this.style.display='none'">
+                </div>
+                <div class="header-text">
+                    <h3>Chat with SOYOSOYO SACCO</h3>
+                    <p>Assistant Online</p>
+                </div>
+            </div>
+            <button class="minimize-button" onclick="toggleChatbot()">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 0 010-1.414z"/>
+                </svg>
+            </button>
+        </div>
+        <div id="chatbot-messages"></div>
+        <div class="chat-input">
+            <div class="chat-input-container">
+                <textarea id="chatbot-input" class="chat-input-field" placeholder="Ask about loans, savings, membership..." rows="1"></textarea>
+                <button class="send-button" onclick="sendMessage()">
+                    <svg width="14" height="14" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M28 16L4 28V20L20 16L4 12V4L28 16Z" fill="white"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- Scripts -->
     <script src="./scripts/main.js"></script>
     <script src="./scripts/calculator.js"></script>
-    <script src="./scripts/chatbot.js"></script>
     <script src="./scripts/dividendscalculator.js"></script>
+    <script src="./scripts/chatbot.js"></script>
 </body>
 </html>
