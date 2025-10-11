@@ -8,9 +8,19 @@
     <link rel="stylesheet" href="./style.css">
     <style>
         /* Light Green Theme for Navbar Only */
-        .navbar { background-color: #90EE90 !important; color: #006400; }
-        .nav-links a { color: #006400; }
-        .nav-links a:hover { color: #228B22; }
+        .navbar { 
+            background-color: #90EE90 !important; 
+            color: #006400; 
+            padding: 10px 0;
+        }
+        .nav-links a { 
+            color: #006400; 
+            text-decoration: none; 
+            padding: 10px; 
+        }
+        .nav-links a:hover { 
+            color: #228B22; 
+        }
         
         /* Hero: Full Image, No Transparency */
         .hero { 
@@ -22,23 +32,91 @@
             display: flex; 
             align-items: center; 
             justify-content: center; 
-            padding: 20px; /* Prevent edge overlap */
+            padding: 20px;
         }
-        /* Remove the overlay to eliminate transparency */
-        .hero::before { content: none; }
+        .hero::before { 
+            content: none; 
+        }
         
+        /* Container for proper width */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
         /* Section flow */
-        section { margin: 40px 0; padding: 20px; }
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-        .product-card { border: 1px solid #90EE90; padding: 15px; border-radius: 8px; background: white; }
-        .product-card img { width: 100%; height: 200px; object-fit: cover; border-radius: 4px; }
-        .tool-section { background: #f9f9f9; padding: 30px; border-radius: 8px; margin: 20px 0; }
+        section { 
+            margin: 40px 0; 
+            padding: 20px; 
+        }
+        .products-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 20px; 
+        }
+        .product-card { 
+            border: 1px solid #90EE90; 
+            padding: 15px; 
+            border-radius: 8px; 
+            background: white; 
+        }
+        .product-card img { 
+            width: 100%; 
+            height: 200px; 
+            object-fit: cover; 
+            border-radius: 4px; 
+        }
+        .tool-section { 
+            background: #f9f9f9; 
+            padding: 30px; 
+            border-radius: 8px; 
+            margin: 20px 0; 
+            max-width: 800px; /* Ensure tools aren't squeezed */
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .calculator-wrapper, .calculator {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .calculator select, .calculator input, .calculator button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #90EE90;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .calculator button {
+            background: #90EE90;
+            color: #006400;
+            cursor: pointer;
+        }
+        .calculator button:hover {
+            background: #228B22;
+            color: white;
+        }
+        .result {
+            margin-top: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .month-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+        }
+        .month-inputs input {
+            width: 100%;
+        }
     </style>
 </head>
 <body>
     <header class="site-header">
         <div class="container navbar">
-            <a href="index.html"><img class="brand-logo" src="./assets/141dd3faa98da9737b591161deac509a.jpg" alt="Soyosoyo Sacco Logo"></a>
+            <a href="index.html"><img class="brand-logo" src="./assets/141dd3faa98da9737b591161deac509a.jpg" alt="Soyosoyo Sacco Logo" style="max-width: 100px;"></a>
             <button id="menu-toggle" aria-label="Toggle Menu">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -56,9 +134,7 @@
                 </ul>
             </nav>
         </div>
-        <div class="hero">
-            <!-- Text removed -->
-        </div>
+        <div class="hero"></div>
     </header>
 
     <main class="container">
@@ -116,35 +192,32 @@
         <section class="section">
             <h1 style="text-align: center; font-family: Lato, Arial; font-weight: 700;">OUR PRODUCTS</h1>
             <div class="products-grid">
-                <!-- Education Loan Card -->
                 <div class="product-card">
                     <img src="./assets/ba04cd4377b3746fc0750dcf2ff3d935.jpg" alt="Education Loan">
                     <h2 style="text-align: center;">Education Loan</h2>
                     <p>Dreaming of a brighter future through education? An <strong>education loan</strong> can turn that dream into reality! Don’t let financial hurdles block your academic aspirations. This specialized loan is designed to cover tuition, accommodation, books, and living expenses, making education accessible to everyone.</p>
                     <a href="Products.html" class="products-button" style="display: block; text-align: center; background: #90EE90; color: #006400; padding: 10px; text-decoration: none; border-radius: 4px; margin-top: 10px;">View Product</a>
                 </div>
-                <!-- Add more product cards as needed -->
             </div>
         </section>
 
-        <!-- Tools Integration -->
         <!-- Loan Calculator -->
         <section class="tool-section" id="loan-calculator">
             <h2 style="text-align: center;">Loan Calculator</h2>
-            <!-- Embed from previous calculator.html -->
             <div class="calculator-wrapper">
-                <!-- Full calculator HTML structure here (from previous response) -->
                 <div class="calculator">
-                    <!-- Loan type select, inputs, button, result, tables, chart -->
                     <select id="loanType" onchange="updateFields()">
                         <option value="">Select Loan Type</option>
                         <option value="emergency">Emergency Loan</option>
-                        <!-- ... other options -->
+                        <option value="education">Education Loan</option>
+                        <option value="agriculture">Agriculture Loan</option>
+                        <option value="development">Development Loan</option>
                     </select>
-                    <!-- ... rest of calculator form -->
-                </div>
-                <div class="fines-section" id="finesSection" style="display: none;">
-                    <!-- Fines form -->
+                    <input type="number" id="loanAmount" placeholder="Enter loan amount" step="1000">
+                    <input type="number" id="loanTerm" placeholder="Enter loan term (months)" step="1">
+                    <input type="number" id="interestRate" placeholder="Enter interest rate (%)" step="0.01">
+                    <button onclick="calculateLoan()">Calculate Loan</button>
+                    <div class="result" id="loanResult"></div>
                 </div>
             </div>
         </section>
@@ -152,24 +225,34 @@
         <!-- Dividends Calculator -->
         <section class="tool-section" id="dividends-calculator">
             <h2 style="text-align: center;">Dividends Calculator</h2>
-            <!-- Embed from previous dividends.html -->
             <div class="calculator">
-                <!-- Rate input, month inputs, button, result -->
                 <label for="rate">Dividend Rate (%):</label>
                 <input type="number" id="rate" placeholder="Enter annual dividend rate" step="0.01">
                 <div class="month-inputs">
-                    <!-- Jan to Dec inputs -->
+                    <input type="number" id="jan" placeholder="Jan Shares">
+                    <input type="number" id="feb" placeholder="Feb Shares">
+                    <input type="number" id="mar" placeholder="Mar Shares">
+                    <input type="number" id="apr" placeholder="Apr Shares">
+                    <input type="number" id="may" placeholder="May Shares">
+                    <input type="number" id="jun" placeholder="Jun Shares">
+                    <input type="number" id="jul" placeholder="Jul Shares">
+                    <input type="number" id="aug" placeholder="Aug Shares">
+                    <input type="number" id="sep" placeholder="Sep Shares">
+                    <input type="number" id="oct" placeholder="Oct Shares">
+                    <input type="number" id="nov" placeholder="Nov Shares">
+                    <input type="number" id="dec" placeholder="Dec Shares">
                 </div>
                 <button onclick="calculateDividend()">Calculate Dividend</button>
-                <div class="result" id="result"></div>
+                <div class="result" id="dividendResult"></div>
             </div>
         </section>
 
-        <!-- Chatbot Embed (Initial container; full UI loads on toggle) -->
+        <!-- Chatbot Embed -->
         <section class="tool-section" id="chatbot">
             <h2 style="text-align: center;">Chat with Us</h2>
             <div id="bot-container">
-                <p>Click the floating chat button below to start a conversation!</p>
+                <p>Click the button below to start a conversation!</p>
+                <button onclick="toggleChatbot()">Open Chatbot</button>
             </div>
         </section>
     </main>
@@ -178,13 +261,78 @@
         <p>&copy; 2025 SOYOSOYO SACCO. All rights reserved. | <a href="mailto:info@soyosoyosacco.com">info@soyosoyosacco.com</a></p>
     </footer>
 
-    <!-- Tool Container for Floating Chatbot -->
-    <div id="chatbot-container" style="display: none;"></div>
+    <!-- Floating Chatbot Container -->
+    <div id="chatbot-container" style="display: none; position: fixed; bottom: 20px; right: 20px; width: 300px; height: 400px; border: 1px solid #90EE90; border-radius: 8px; background: white; padding: 10px;">
+        <div id="chatbot-messages"></div>
+        <input type="text" id="chatbot-input" placeholder="Type your message..." style="width: 100%; padding: 10px; margin-top: 10px;">
+        <button onclick="sendMessage()">Send</button>
+    </div>
 
-    <!-- Scripts -->
-    <script src="./scripts/main.js"></script>
-    <script src="./scripts/calculator.js"></script>
-    <script src="./scripts/chatbot.js"></script>
-    <script src="./scripts/dividendscalculator.js"></script>
+    <!-- Inline JavaScript for Calculators -->
+    <script>
+        function updateFields() {
+            const loanType = document.getElementById('loanType').value;
+            const interestRate = document.getElementById('interestRate');
+            // Example: Adjust interest rate based on loan type
+            if (loanType === 'emergency') interestRate.value = 12;
+            else if (loanType === 'education') interestRate.value = 10;
+            else if (loanType === 'agriculture') interestRate.value = 8;
+            else if (loanType === 'development') interestRate.value = 9;
+            else interestRate.value = '';
+        }
+
+        function calculateLoan() {
+            const amount = parseFloat(document.getElementById('loanAmount').value);
+            const term = parseInt(document.getElementById('loanTerm').value);
+            const rate = parseFloat(document.getElementById('interestRate').value) / 100 / 12;
+            const resultDiv = document.getElementById('loanResult');
+
+            if (!amount || !term || !rate) {
+                resultDiv.innerHTML = 'Please fill in all fields.';
+                return;
+            }
+
+            // Simple interest calculation for monthly payment (approximate)
+            const monthlyPayment = (amount * rate * Math.pow(1 + rate, term)) / (Math.pow(1 + rate, term) - 1);
+            resultDiv.innerHTML = `Monthly Payment: KES ${monthlyPayment.toFixed(2)}`;
+        }
+
+        function calculateDividend() {
+            const rate = parseFloat(document.getElementById('rate').value) / 100;
+            const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+            let totalShares = 0;
+
+            months.forEach(month => {
+                const shares = parseFloat(document.getElementById(month).value) || 0;
+                totalShares += shares;
+            });
+
+            const resultDiv = document.getElementById('dividendResult');
+            if (!rate || totalShares === 0) {
+                resultDiv.innerHTML = 'Please enter a dividend rate and at least one month’s shares.';
+                return;
+            }
+
+            const dividend = totalShares * rate;
+            resultDiv.innerHTML = `Total Dividend: KES ${dividend.toFixed(2)}`;
+        }
+
+        function toggleChatbot() {
+            const chatbotContainer = document.getElementById('chatbot-container');
+            chatbotContainer.style.display = chatbotContainer.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatbot-input');
+            const messages = document.getElementById('chatbot-messages');
+            const message = input.value.trim();
+            if (message) {
+                messages.innerHTML += `<p><strong>You:</strong> ${message}</p>`;
+                messages.innerHTML += `<p><strong>Bot:</strong> This is a placeholder response. Please integrate a chatbot service.</p>`;
+                input.value = '';
+                messages.scrollTop = messages.scrollHeight;
+            }
+        }
+    </script>
 </body>
 </html>
