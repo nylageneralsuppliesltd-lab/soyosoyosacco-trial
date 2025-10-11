@@ -6,12 +6,12 @@ class SoyosoyoChatWidget {
         this.hasStarted = false;
         this.apiBaseUrl = 'https://soyosoyosacco123.onrender.com';
 
-        // DOM elements with error checking
-        this.chatbotContainer = document.getElementById('chatbot-container');
-        this.messageInput = document.getElementById('chatbot-input');
-        this.chatMessages = document.getElementById('chatbot-messages');
-        this.sendButton = document.querySelector('.send-button');
-        this.minimizeButton = document.querySelector('.minimize-button');
+        // DOM elements with flexible selectors (match HTML structure)
+        this.chatbotContainer = document.getElementById('chatbot-container') || document.querySelector('.chat-container');
+        this.messageInput = document.getElementById('messageInput') || document.querySelector('.chat-input-field');
+        this.chatMessages = document.getElementById('chatMessages') || document.querySelector('.chat-messages');
+        this.sendButton = document.getElementById('sendButton') || document.querySelector('.send-button');
+        this.minimizeButton = document.getElementById('minimizeButton') || document.querySelector('.minimize-button');
 
         if (!this.chatbotContainer || !this.messageInput || !this.chatMessages || !this.sendButton || !this.minimizeButton) {
             console.error('Chatbot initialization failed: Missing DOM elements', {
@@ -45,13 +45,15 @@ class SoyosoyoChatWidget {
         });
 
         // Send message on button click
-        this.sendButton.addEventListener('click', () => {
+        this.sendButton.addEventListener('click', (e) => {
+            e.preventDefault();
             console.log('Send button clicked');
             this.sendMessage();
         });
 
         // Toggle chatbot on minimize button
-        this.minimizeButton.addEventListener('click', () => {
+        this.minimizeButton.addEventListener('click', (e) => {
+            e.preventDefault();
             console.log('Minimize button clicked');
             this.toggleChatbot();
         });
@@ -73,15 +75,26 @@ class SoyosoyoChatWidget {
     }
 
     initializeChatbot() {
-        // Ensure chatbot container is properly styled
-        this.chatbotContainer.style.display = 'none'; // Start hidden
+        // Ensure chatbot container is properly styled for floating/mini mode
         this.chatbotContainer.style.position = 'fixed';
         this.chatbotContainer.style.bottom = '20px';
         this.chatbotContainer.style.right = '20px';
         this.chatbotContainer.style.width = 'min(90vw, 320px)';
         this.chatbotContainer.style.height = 'min(80vh, 400px)';
         this.chatbotContainer.style.zIndex = '1000';
+        this.chatbotContainer.style.background = 'white';
+        this.chatbotContainer.style.borderRadius = '12px';
+        this.chatbotContainer.style.boxShadow = '0 4px 20px rgba(0,0,0,0.15)';
+        this.chatbotContainer.style.display = 'none'; // Start hidden
+        this.chatbotContainer.style.flexDirection = 'column';
+        this.chatbotContainer.style.overflow = 'hidden';
+
+        this.chatMessages.style.overflowY = 'auto';
+        this.chatMessages.style.padding = '10px';
+        this.chatMessages.style.borderBottom = '1px solid #90EE90';
+        this.chatMessages.style.minHeight = '200px';
         this.chatMessages.style.display = 'block';
+
         this.messageInput.style.display = 'block';
         this.sendButton.style.display = 'flex';
         this.minimizeButton.style.color = 'white'; // Ensure X is white
@@ -221,129 +234,4 @@ class SoyosoyoChatWidget {
         let html = this.escapeHtml(text);
 
         // Handle tables
-        const tableRegex = /\|(.+?)\|\n\|[\s\-\|:]+\|\n((?:\|.+?\|\n?)*)/g;
-        html = html.replace(tableRegex, (match, header, body) => {
-            const headerCells = header.split('|').map(cell => cell.trim()).filter(cell => cell);
-            const bodyRows = body.trim().split('\n').map(row =>
-                row.split('|').map(cell => cell.trim()).filter(cell => cell)
-            );
-
-            let table = '<table>';
-            table += '<tr>' + headerCells.map(cell => `<th>${cell}</th>`).join('') + '</tr>';
-            bodyRows.forEach(row => {
-                if (row.length > 0) {
-                    table += '<tr>' + row.map(cell => `<td>${cell}</td>`).join('') + '</tr>';
-                }
-            });
-            table += '</table>';
-
-            return table;
-        });
-
-        // Handle bullet points
-        const lines = html.split('\n');
-        let inList = false;
-        let result = [];
-
-        for (let i = 0; i < lines.length; i++) {
-            const line = lines[i];
-            if (line.match(/^- (.+)$/)) {
-                if (!inList) {
-                    result.push('<ul>');
-                    inList = true;
-                }
-                result.push(`<li>${line.replace(/^- /, '')}</li>`);
-            } else {
-                if (inList) {
-                    result.push('</ul>');
-                    inList = false;
-                }
-                result.push(line);
-            }
-        }
-        if (inList) {
-            result.push('</ul>');
-        }
-
-        html = result.join('\n');
-
-        // Enhanced markdown rendering
-        html = html
-            .replace(/^### (.+)$/gm, '<h3 style="color: #1e7b85; font-size: 16px; font-weight: bold; margin: 8px 0 4px 0;">$1</h3>')
-            .replace(/^## (.+)$/gm, '<h2 style="color: #1e7b85; font-size: 18px; font-weight: bold; margin: 10px 0 6px 0;">$1</h2>')
-            .replace(/^# (.+)$/gm, '<h1 style="color: #1e7b85; font-size: 20px; font-weight: bold; margin: 12px 0 8px 0;">$1</h1>')
-            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-            .replace(/\*(.*?)\*/g, '<em>$1</em>')
-            .replace(/`([^`]+)`/g, '<code>$1</code>')
-            .replace(/\n/g, '<br>');
-
-        return html.replace(/<br><ul>/g, '<ul>').replace(/</ul><br>/g, '</ul>');
-    }
-
-    showTypingIndicator() {
-        const typingDiv = document.createElement('div');
-        typingDiv.id = 'typingIndicator';
-        typingDiv.className = 'message assistant';
-        typingDiv.innerHTML = `
-            <div class="message-bubble">
-                <div style="display: flex; gap: 3px;">
-                    <div style="width: 6px; height: 6px; background: #22c55e; border-radius: 50%; animation: bounce 1.4s ease-in-out infinite both;"></div>
-                    <div style="width: 6px; height: 6px; background: #22c55e; border-radius: 50%; animation: bounce 1.4s ease-in-out infinite both; animation-delay: 0.1s;"></div>
-                    <div style="width: 6px; height: 6px; background: #22c55e; border-radius: 50%; animation: bounce 1.4s ease-in-out infinite both; animation-delay: 0.2s;"></div>
-                </div>
-            </div>
-            <style>
-                @keyframes bounce {
-                    0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
-                    40% { transform: scale(1); opacity: 1; }
-                }
-            </style>`;
-        this.chatMessages.appendChild(typingDiv);
-        this.scrollToBottom();
-    }
-
-    hideTypingIndicator() {
-        const typingIndicator = document.getElementById('typingIndicator');
-        if (typingIndicator) typingIndicator.remove();
-    }
-
-    scrollToBottom() {
-        this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
-    }
-}
-
-// Initialize when DOM is fully loaded
-document.addEventListener('DOMContentLoaded', () => {
-    try {
-        console.log('Initializing SoyosoyoChatWidget');
-        window.chatWidget = new SoyosoyoChatWidget();
-    } catch (error) {
-        console.error('Failed to initialize SoyosoyoChatWidget:', error);
-        const botContainer = document.getElementById('bot-container');
-        if (botContainer) {
-            botContainer.innerHTML += '<div class="error-message">Chatbot failed to load. Please refresh the page or contact support.</div>';
-        }
-    }
-});
-
-function toggleChatbot() {
-    if (window.chatWidget) {
-        console.log('Calling toggleChatbot on widget');
-        window.chatWidget.toggleChatbot();
-    } else {
-        console.error('Chatbot widget not initialized. Please check the console for errors.');
-        const botContainer = document.getElementById('bot-container');
-        if (botContainer) {
-            botContainer.innerHTML += '<div class="error-message">Chatbot not available. Please refresh the page.</div>';
-        }
-    }
-}
-
-function sendMessage() {
-    if (window.chatWidget) {
-        console.log('Calling sendMessage on widget');
-        window.chatWidget.sendMessage();
-    } else {
-        console.error('Chatbot widget not initialized. Cannot send message.');
-    }
-}
+        const tableRegex = /\|(.+?)\|\n\|[\s\-\|:]+\|\n((?:\|.+?\|\n?
