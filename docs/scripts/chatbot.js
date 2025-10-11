@@ -129,6 +129,71 @@
                     color: #666;
                     font-style: italic;
                 }
+                .soyosoyo-bubble h1, .soyosoyo-bubble h2, .soyosoyo-bubble h3 {
+                    margin: 8px 0 4px 0;
+                    font-weight: 600;
+                }
+                .soyosoyo-bubble h1 { font-size: 18px; }
+                .soyosoyo-bubble h2 { font-size: 16px; }
+                .soyosoyo-bubble h3 { font-size: 14px; }
+                .soyosoyo-bubble p {
+                    margin: 4px 0;
+                }
+                .soyosoyo-bubble ul, .soyosoyo-bubble ol {
+                    margin: 8px 0;
+                    padding-left: 20px;
+                }
+                .soyosoyo-bubble li {
+                    margin: 4px 0;
+                }
+                .soyosoyo-bubble strong {
+                    font-weight: 600;
+                }
+                .soyosoyo-bubble em {
+                    font-style: italic;
+                }
+                .soyosoyo-bubble code {
+                    background: #f3f4f6;
+                    padding: 2px 6px;
+                    border-radius: 3px;
+                    font-family: 'Courier New', monospace;
+                    font-size: 13px;
+                }
+                .soyosoyo-bubble pre {
+                    background: #f3f4f6;
+                    padding: 8px;
+                    border-radius: 4px;
+                    overflow-x: auto;
+                    margin: 8px 0;
+                }
+                .soyosoyo-bubble pre code {
+                    background: none;
+                    padding: 0;
+                }
+                .soyosoyo-bubble a {
+                    color: #3b82f6;
+                    text-decoration: underline;
+                }
+                .soyosoyo-bubble blockquote {
+                    border-left: 3px solid #d1d5db;
+                    padding-left: 12px;
+                    margin: 8px 0;
+                    color: #6b7280;
+                }
+                .soyosoyo-bubble table {
+                    border-collapse: collapse;
+                    width: 100%;
+                    margin: 8px 0;
+                }
+                .soyosoyo-bubble th, .soyosoyo-bubble td {
+                    border: 1px solid #d1d5db;
+                    padding: 6px 8px;
+                    text-align: left;
+                }
+                .soyosoyo-bubble th {
+                    background: #f3f4f6;
+                    font-weight: 600;
+                }
                 .soyosoyo-input-area {
                     padding: 16px;
                     background: white;
@@ -242,6 +307,64 @@
             console.log('✅ SOYOSOYO SACCO Floating Chat Ready');
         }
 
+        parseMarkdown(text) {
+            // Simple markdown parser for common patterns
+            let html = text;
+            
+            // Escape HTML to prevent XSS
+            html = html.replace(/&/g, '&amp;')
+                       .replace(/</g, '&lt;')
+                       .replace(/>/g, '&gt;');
+            
+            // Code blocks (```)
+            html = html.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
+            
+            // Inline code (`)
+            html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+            
+            // Bold (**text** or __text__)
+            html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            html = html.replace(/__(.+?)__/g, '<strong>$1</strong>');
+            
+            // Italic (*text* or _text_)
+            html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+            html = html.replace(/_(.+?)_/g, '<em>$1</em>');
+            
+            // Links [text](url)
+            html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+            
+            // Headers
+            html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+            html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+            html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+            
+            // Lists - unordered
+            html = html.replace(/^\* (.+)$/gm, '<li>$1</li>');
+            html = html.replace(/^- (.+)$/gm, '<li>$1</li>');
+            
+            // Lists - ordered
+            html = html.replace(/^\d+\. (.+)$/gm, '<li>$1</li>');
+            
+            // Wrap consecutive <li> in <ul> or <ol>
+            html = html.replace(/(<li>.*<\/li>\n?)+/g, function(match) {
+                return '<ul>' + match + '</ul>';
+            });
+            
+            // Blockquotes
+            html = html.replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>');
+            
+            // Line breaks - convert double newlines to paragraphs
+            const paragraphs = html.split(/\n\n+/);
+            html = paragraphs.map(p => {
+                if (p.match(/^<(h[123]|ul|ol|pre|blockquote|table)/)) {
+                    return p;
+                }
+                return '<p>' + p.replace(/\n/g, '<br>') + '</p>';
+            }).join('');
+            
+            return html;
+        }
+
         toggle() {
             this.isOpen = !this.isOpen;
             
@@ -274,7 +397,13 @@
             
             const bubble = document.createElement('div');
             bubble.className = 'soyosoyo-bubble';
-            bubble.textContent = text;
+            
+            // Parse markdown for bot messages, plain text for user/typing
+            if (role === 'bot' && !isTyping) {
+                bubble.innerHTML = this.parseMarkdown(text);
+            } else {
+                bubble.textContent = text;
+            }
             
             msgDiv.appendChild(bubble);
             this.messages.appendChild(msgDiv);
