@@ -23,6 +23,7 @@ a {
 img {
   max-width: 100%;
   height: auto;
+  display: block; /* Remove img gaps */
 }
 
 .container {
@@ -76,18 +77,19 @@ img {
 /* === HERO SECTION === */
 .hero {
   width: 100vw; /* Full viewport width */
-  height: 70vh;
+  height: 60vh; /* Shorter for desktop to reduce vertical stretch */
   background-image: url('./assets/header-image.jpg'); /* Adjust path if needed */
-  background-size: cover; /* Stretch to fill, crop edges */
+  background-size: cover; /* Fill container, crop edges */
   background-repeat: no-repeat;
-  background-position: center top;
+  background-position: center center; /* Center image precisely */
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   color: white;
   overflow: hidden;
-  margin: 0; /* Remove any gaps */
+  margin: 0;
+  z-index: 1; /* Below navbar */
 }
 
 .hero::after {
@@ -102,6 +104,7 @@ img {
   z-index: 2;
   text-align: center;
   padding: 1rem;
+  max-width: 90%; /* Prevent text overflow */
 }
 
 .hero h1 {
@@ -166,23 +169,24 @@ footer a {
   width: 100% !important;
   margin: 0 !important;
   padding: 0 !important;
+  overflow: visible !important;
 }
 
 /* === RESPONSIVE DESIGN === */
 @media (max-width: 768px) {
   .nav-links {
     display: none;
-    position: fixed; /* Full-screen overlay */
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(255, 255, 255, 0.95); /* Semi-transparent white */
+    background: rgba(255, 255, 255, 0.95);
     flex-direction: column;
-    justify-content: center; /* Center vertically */
-    align-items: center; /* Center horizontally */
+    justify-content: center;
+    align-items: center;
     padding: 2rem;
-    border-radius: 0; /* No radius for full-screen */
+    border-radius: 0;
     box-shadow: none;
     z-index: 1000;
   }
@@ -201,13 +205,15 @@ footer a {
 
   #menu-toggle {
     display: block;
-    z-index: 1001; /* Above menu */
+    z-index: 1001;
   }
 
   .hero {
-    height: auto;
-    min-height: 50vh; /* Ensure visibility */
+    height: auto; /* Dynamic height */
+    aspect-ratio: 1 / 1; /* Squarish for mobile */
+    min-height: 40vh; /* Minimum to show content */
     background-size: cover; /* Consistent stretch */
+    background-position: center center; /* Avoid excessive cropping */
   }
 
   .hero-inner {
