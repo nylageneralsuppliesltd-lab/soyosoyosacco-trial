@@ -1,3 +1,4 @@
+// scripts/calculator.js
 let loanData = null;
 let chartLoaded = false;
 let finesData = null;
@@ -54,10 +55,15 @@ try {
 
 function updateFields() {
     try {
-        const loanType = document.getElementById('loanType').value;
+        const loanType = document.getElementById('loanType')?.value;
         const config = loanConfigurations[loanType];
         const rateInput = document.getElementById('rate');
         const tenureInput = document.getElementById('tenure');
+
+        if (!rateInput || !tenureInput) {
+            console.error('Loan Calculator elements missing:', { rateInput: !!rateInput, tenureInput: !!tenureInput });
+            return;
+        }
 
         if (config) {
             rateInput.value = config.rateLabel;
@@ -78,28 +84,55 @@ function updateFields() {
         calculateLoan(); // Trigger initial calculation
     } catch (error) {
         console.error('Error in updateFields:', error);
-        document.getElementById('result').innerHTML = '<span class="error-message">An error occurred. Please try again.</span>';
+        const resultDiv = document.getElementById('result');
+        if (resultDiv) {
+            resultDiv.innerHTML = '<span class="error-message">An error occurred. Please try again.</span>';
+        }
     }
 }
 
 function resetUI() {
     try {
-        document.getElementById('result').innerHTML = '';
-        document.getElementById('finesResult').innerHTML = '';
-        document.getElementById('amortizationButton').style.display = 'none';
-        document.getElementById('amortizationTable').style.display = 'none';
-        document.getElementById('finesPromptButton').style.display = 'none';
-        document.getElementById('finesSection').style.display = 'none';
-        document.getElementById('chartButton').style.display = 'none';
-        document.getElementById('loanChart').style.display = 'none';
-        document.getElementById('finesAmortizationButton').style.display = 'none';
-        document.getElementById('finesAmortizationTable').style.display = 'none';
-        document.getElementById('principalSlider').value = '1000';
-        document.getElementById('lateMonth').value = '';
-        document.getElementById('monthsLate').value = '';
-        document.getElementById('paymentGroup').style.display = 'none';
-        document.getElementById('paymentMonth').value = '';
-        document.getElementById('paymentAmount').value = '';
+        const elements = {
+            result: document.getElementById('result'),
+            finesResult: document.getElementById('finesResult'),
+            amortizationButton: document.getElementById('amortizationButton'),
+            amortizationTable: document.getElementById('amortizationTable'),
+            finesPromptButton: document.getElementById('finesPromptButton'),
+            finesSection: document.getElementById('finesSection'),
+            chartButton: document.getElementById('chartButton'),
+            loanChart: document.getElementById('loanChart'),
+            finesAmortizationButton: document.getElementById('finesAmortizationButton'),
+            finesAmortizationTable: document.getElementById('finesAmortizationTable'),
+            principalSlider: document.getElementById('principalSlider'),
+            lateMonth: document.getElementById('lateMonth'),
+            monthsLate: document.getElementById('monthsLate'),
+            paymentGroup: document.getElementById('paymentGroup'),
+            paymentMonth: document.getElementById('paymentMonth'),
+            paymentAmount: document.getElementById('paymentAmount')
+        };
+
+        if (!elements.result || !elements.finesResult) {
+            console.error('ResetUI failed: Missing critical elements', elements);
+            return;
+        }
+
+        elements.result.innerHTML = '';
+        elements.finesResult.innerHTML = '';
+        elements.amortizationButton.style.display = 'none';
+        elements.amortizationTable.style.display = 'none';
+        elements.finesPromptButton.style.display = 'none';
+        elements.finesSection.style.display = 'none';
+        elements.chartButton.style.display = 'none';
+        elements.loanChart.style.display = 'none';
+        elements.finesAmortizationButton.style.display = 'none';
+        elements.finesAmortizationTable.style.display = 'none';
+        elements.principalSlider.value = '1000';
+        elements.lateMonth.value = '';
+        elements.monthsLate.value = '';
+        elements.paymentGroup.style.display = 'none';
+        elements.paymentMonth.value = '';
+        elements.paymentAmount.value = '';
         updateSliderValue('principal');
         loanData = null;
         finesData = null;
@@ -112,21 +145,31 @@ function resetUI() {
 function updateSliderValue(sliderId) {
     const slider = document.getElementById(`${sliderId}Slider`);
     const valueDisplay = document.getElementById(`${sliderId}Value`);
-    valueDisplay.textContent = `KES ${parseFloat(slider.value).toFixed(0)}`;
+    if (slider && valueDisplay) {
+        valueDisplay.textContent = `KES ${parseFloat(slider.value).toFixed(0)}`;
+    } else {
+        console.error('Slider elements missing:', { slider: !!slider, valueDisplay: !!valueDisplay });
+    }
 }
 
 function calculateLoan() {
     try {
-        const loanType = document.getElementById('loanType').value;
-        const principal = parseFloat(document.getElementById('principalSlider').value);
+        const loanType = document.getElementById('loanType')?.value;
+        const principal = parseFloat(document.getElementById('principalSlider')?.value);
         const config = loanConfigurations[loanType];
+        const resultDiv = document.getElementById('result');
+
+        if (!resultDiv) {
+            console.error('Loan Calculator result div missing');
+            return;
+        }
 
         if (!loanType) {
-            document.getElementById('result').innerHTML = '<span class="error-message">Please select a loan type.</span>';
+            resultDiv.innerHTML = '<span class="error-message">Please select a loan type.</span>';
             return;
         }
         if (isNaN(principal) || principal <= 0) {
-            document.getElementById('result').innerHTML = '<span class="error-message">Please select a valid positive loan amount.</span>';
+            resultDiv.innerHTML = '<span class="error-message">Please select a valid positive loan amount.</span>';
             return;
         }
 
@@ -187,7 +230,7 @@ function calculateLoan() {
             allowFines: config.allowFines
         };
 
-        document.getElementById('result').innerHTML =
+        resultDiv.innerHTML =
             `Monthly Payment: KES ${monthlyPayment.toFixed(2)} (from month ${gracePeriod + 1})<br>` +
             `Total Interest: KES ${totalInterest.toFixed(2)}<br>` +
             `Total Repayment: KES ${totalRepayment.toFixed(2)}`;
@@ -205,7 +248,7 @@ function calculateLoan() {
         } else {
             document.getElementById('chartButton').style.display = 'none';
             document.getElementById('loanChart').style.display = 'none';
-            document.getElementById('result').innerHTML += '<br><span class="error-message">Chart unavailable due to network issues.</span>';
+            resultDiv.innerHTML += '<br><span class="error-message">Chart unavailable due to network issues.</span>';
         }
 
         // Recalculate fines if fines section is visible and applicable
@@ -214,14 +257,23 @@ function calculateLoan() {
         }
     } catch (error) {
         console.error('Error in calculateLoan:', error);
-        document.getElementById('result').innerHTML = '<span class="error-message">An error occurred while calculating. Please try again.</span>';
+        const resultDiv = document.getElementById('result');
+        if (resultDiv) {
+            resultDiv.innerHTML = '<span class="error-message">An error occurred while calculating. Please try again.</span>';
+        }
     }
 }
 
 function showFinesSection() {
     try {
+        const finesResultDiv = document.getElementById('finesResult');
+        if (!finesResultDiv) {
+            console.error('Fines result div missing');
+            return;
+        }
+
         if (!loanData || !loanData.allowFines) {
-            document.getElementById('finesResult').innerHTML = '<span class="error-message">Fines are not applicable for this loan type.</span>';
+            finesResultDiv.innerHTML = '<span class="error-message">Fines are not applicable for this loan type.</span>';
             return;
         }
         document.getElementById('finesSection').style.display = 'block';
@@ -231,57 +283,75 @@ function showFinesSection() {
         document.getElementById('paymentGroup').style.display = 'block';
         document.getElementById('paymentMonth').value = '';
         document.getElementById('paymentAmount').value = '';
-        document.getElementById('finesResult').innerHTML = '';
+        finesResultDiv.innerHTML = '';
         document.getElementById('finesAmortizationButton').style.display = 'none';
         document.getElementById('finesAmortizationTable').style.display = 'none';
     } catch (error) {
         console.error('Error in showFinesSection:', error);
-        document.getElementById('finesResult').innerHTML = '<span class="error-message">An error occurred. Please try again.</span>';
+        const finesResultDiv = document.getElementById('finesResult');
+        if (finesResultDiv) {
+            finesResultDiv.innerHTML = '<span class="error-message">An error occurred. Please try again.</span>';
+        }
     }
 }
 
 function addPayment() {
     try {
-        const paymentMonth = parseInt(document.getElementById('paymentMonth').value);
-        const paymentAmount = parseFloat(document.getElementById('paymentAmount').value);
+        const paymentMonth = parseInt(document.getElementById('paymentMonth')?.value);
+        const paymentAmount = parseFloat(document.getElementById('paymentAmount')?.value);
+        const finesResultDiv = document.getElementById('finesResult');
+
+        if (!finesResultDiv) {
+            console.error('Fines result div missing');
+            return;
+        }
 
         if (isNaN(paymentMonth) || isNaN(paymentAmount) || paymentMonth <= 0 || paymentAmount < 0) {
-            document.getElementById('finesResult').innerHTML = '<span class="error-message">Please enter valid positive values for month and non-negative payment amount.</span>';
+            finesResultDiv.innerHTML = '<span class="error-message">Please enter valid positive values for month and non-negative payment amount.</span>';
             return;
         }
         if (paymentMonth > loanData.tenureMonths + loanData.gracePeriod) {
-            document.getElementById('finesResult').innerHTML = `<span class="error-message">Payment month (${paymentMonth}) cannot be after the loan tenure (${loanData.tenureMonths + loanData.gracePeriod} months).</span>`;
+            finesResultDiv.innerHTML = `<span class="error-message">Payment month (${paymentMonth}) cannot be after the loan tenure (${loanData.tenureMonths + loanData.gracePeriod} months).</span>`;
             return;
         }
 
         paymentData[paymentMonth] = paymentAmount;
-        document.getElementById('finesResult').innerHTML = `Payment of KES ${paymentAmount.toFixed(2)} added for month ${paymentMonth}. Recalculate fines to apply.`;
+        finesResultDiv.innerHTML = `Payment of KES ${paymentAmount.toFixed(2)} added for month ${paymentMonth}. Recalculate fines to apply.`;
     } catch (error) {
         console.error('Error in addPayment:', error);
-        document.getElementById('finesResult').innerHTML = '<span class="error-message">An error occurred while adding payment. Please try again.</span>';
+        const finesResultDiv = document.getElementById('finesResult');
+        if (finesResultDiv) {
+            finesResultDiv.innerHTML = '<span class="error-message">An error occurred while adding payment. Please try again.</span>';
+        }
     }
 }
 
 function calculateFines() {
     try {
+        const finesResultDiv = document.getElementById('finesResult');
+        if (!finesResultDiv) {
+            console.error('Fines result div missing');
+            return;
+        }
+
         if (!loanData) {
-            document.getElementById('finesResult').innerHTML = '<span class="error-message">Please calculate the loan first.</span>';
+            finesResultDiv.innerHTML = '<span class="error-message">Please calculate the loan first.</span>';
             return;
         }
         if (!loanData.allowFines) {
-            document.getElementById('finesResult').innerHTML = '<span class="error-message">Fines are not applicable for this loan type.</span>';
+            finesResultDiv.innerHTML = '<span class="error-message">Fines are not applicable for this loan type.</span>';
             return;
         }
 
-        const lateMonth = parseInt(document.getElementById('lateMonth').value);
-        const monthsLate = parseInt(document.getElementById('monthsLate').value);
+        const lateMonth = parseInt(document.getElementById('lateMonth')?.value);
+        const monthsLate = parseInt(document.getElementById('monthsLate')?.value);
 
         if (isNaN(lateMonth) || isNaN(monthsLate) || lateMonth <= 0) {
-            document.getElementById('finesResult').innerHTML = '<span class="error-message">Please enter valid positive values for month.</span>';
+            finesResultDiv.innerHTML = '<span class="error-message">Please enter valid positive values for month.</span>';
             return;
         }
         if (lateMonth > loanData.tenureMonths + loanData.gracePeriod) {
-            document.getElementById('finesResult').innerHTML = `<span class="error-message">Month of first missed payment (${lateMonth}) cannot be after the loan tenure (${loanData.tenureMonths + loanData.gracePeriod} months).</span>`;
+            finesResultDiv.innerHTML = `<span class="error-message">Month of first missed payment (${lateMonth}) cannot be after the loan tenure (${loanData.tenureMonths + loanData.gracePeriod} months).</span>`;
             return;
         }
 
@@ -395,7 +465,7 @@ function calculateFines() {
             totalRepayment: totalRepayment
         };
 
-        document.getElementById('finesResult').innerHTML =
+        finesResultDiv.innerHTML =
             `Total Installment Fines: KES ${totalInstallmentFinesPaid.toFixed(2)}<br>` +
             `Total Outstanding Fines: KES ${totalOutstandingFinesPaid.toFixed(2)}<br>` +
             `Total Repayment (with fines): KES ${totalRepayment.toFixed(2)}<br>` +
@@ -405,7 +475,10 @@ function calculateFines() {
         document.getElementById('finesAmortizationTable').style.display = 'none';
     } catch (error) {
         console.error('Error in calculateFines:', error);
-        document.getElementById('finesResult').innerHTML = '<span class="error-message">An error occurred while calculating fines. Please try again.</span>';
+        const finesResultDiv = document.getElementById('finesResult');
+        if (finesResultDiv) {
+            finesResultDiv.innerHTML = '<span class="error-message">An error occurred while calculating fines. Please try again.</span>';
+        }
     }
 }
 
@@ -414,6 +487,11 @@ function toggleAmortizationTable() {
         const tableDiv = document.getElementById('amortizationTable');
         const button = document.getElementById('amortizationButton');
         const tbody = document.getElementById('amortizationBody');
+
+        if (!tableDiv || !button || !tbody) {
+            console.error('Amortization table elements missing:', { tableDiv: !!tableDiv, button: !!button, tbody: !!tbody });
+            return;
+        }
 
         if (tableDiv.style.display === 'none') {
             tbody.innerHTML = '';
@@ -437,7 +515,10 @@ function toggleAmortizationTable() {
         }
     } catch (error) {
         console.error('Error in toggleAmortizationTable:', error);
-        document.getElementById('result').innerHTML = '<span class="error-message">An error occurred while displaying the table.</span>';
+        const resultDiv = document.getElementById('result');
+        if (resultDiv) {
+            resultDiv.innerHTML = '<span class="error-message">An error occurred while displaying the table.</span>';
+        }
     }
 }
 
@@ -446,6 +527,11 @@ function toggleFinesAmortizationTable() {
         const tableDiv = document.getElementById('finesAmortizationTable');
         const button = document.getElementById('finesAmortizationButton');
         const tbody = document.getElementById('finesAmortizationBody');
+
+        if (!tableDiv || !button || !tbody) {
+            console.error('Fines amortization table elements missing:', { tableDiv: !!tableDiv, button: !!button, tbody: !!tbody });
+            return;
+        }
 
         if (tableDiv.style.display === 'none') {
             tbody.innerHTML = '';
@@ -472,7 +558,10 @@ function toggleFinesAmortizationTable() {
         }
     } catch (error) {
         console.error('Error in toggleFinesAmortizationTable:', error);
-        document.getElementById('finesResult').innerHTML = '<span class="error-message">An error occurred while displaying the fines table.</span>';
+        const finesResultDiv = document.getElementById('finesResult');
+        if (finesResultDiv) {
+            finesResultDiv.innerHTML = '<span class="error-message">An error occurred while displaying the fines table.</span>';
+        }
     }
 }
 
@@ -508,7 +597,10 @@ function drawChart() {
         chart.draw(data, options);
     } catch (error) {
         console.error('Error in drawChart:', error);
-        document.getElementById('result').innerHTML += '<br><span class="error-message">Chart rendering failed.</span>';
+        const resultDiv = document.getElementById('result');
+        if (resultDiv) {
+            resultDiv.innerHTML += '<br><span class="error-message">Chart rendering failed.</span>';
+        }
     }
 }
 
@@ -516,6 +608,11 @@ function toggleChart() {
     try {
         const chartDiv = document.getElementById('loanChart');
         const button = document.getElementById('chartButton');
+
+        if (!chartDiv || !button) {
+            console.error('Chart elements missing:', { chartDiv: !!chartDiv, button: !!button });
+            return;
+        }
 
         if (chartDiv.style.display === 'none') {
             chartDiv.style.display = 'block';
@@ -527,14 +624,23 @@ function toggleChart() {
         }
     } catch (error) {
         console.error('Error in toggleChart:', error);
-        document.getElementById('result').innerHTML = '<span class="error-message">An error occurred while displaying the chart.</span>';
+        const resultDiv = document.getElementById('result');
+        if (resultDiv) {
+            resultDiv.innerHTML = '<span class="error-message">An error occurred while displaying the chart.</span>';
+        }
     }
 }
 
 // Real-time slider update for principal
-document.getElementById('principalSlider').addEventListener('input', () => {
+document.getElementById('principalSlider')?.addEventListener('input', () => {
     updateSliderValue('principal');
     calculateLoan();
 });
 
-document.addEventListener('DOMContentLoaded', updateFields);
+document.addEventListener('DOMContentLoaded', () => {
+    try {
+        updateFields();
+    } catch (error) {
+        console.error('Error initializing Loan Calculator:', error);
+    }
+});
