@@ -508,28 +508,156 @@
 <script src="./scripts/main.js"></script>
 <script src="./scripts/calculator.js"></script>
 <script src="./scripts/dividendscalculator.js"></script>
-<script src="./scripts/chatbot.js"></script>
 <script>
-    // Initialize chatbot when page loads
-    let chatWidget;
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('Initializing SOYOSOYO chatbot...');
-        chatWidget = new SoyosoyoChatWidget();
-        
-        // Connect "Open Chatbot" button
-        const openChatButton = document.getElementById('openChatButton');
-        if (openChatButton) {
-            openChatButton.addEventListener('click', function() {
-                if (chatWidget && chatWidget.toggle) {  // ✅ CORRECT METHOD
-                    chatWidget.toggle();
-                } else {
-                    console.error('Chatbot not initialized properly');
-                }
-            });
+// SOYOSOYO SACCO Chatbot - Inline Working Version
+(function() {
+    'use strict';
+    
+    class SoyosoyoChat {
+        constructor() {
+            this.widget = document.getElementById('chatbot-container');
+            this.messages = document.getElementById('chatMessages');
+            this.input = document.getElementById('messageInput');
+            this.sendBtn = document.getElementById('sendButton');
+            this.closeBtn = document.getElementById('minimizeButton');
+            this.openBtn = document.getElementById('openChatButton');
+            
+            this.conversationId = null;
+            this.isLoading = false;
+            this.started = false;
+            this.apiUrl = 'https://soyosoyosacco123.onrender.com/api/chat';
+            
+            if (!this.widget || !this.messages || !this.input || !this.sendBtn || !this.closeBtn || !this.openBtn) {
+                console.error('Chatbot: Missing elements');
+                return;
+            }
+            
+            this.init();
         }
         
-        console.log('Chatbot initialization complete');
+        init() {
+            // Open button
+            this.openBtn.onclick = () => this.open();
+            
+            // Close button
+            this.closeBtn.onclick = () => this.close();
+            
+            // Send button
+            this.sendBtn.onclick = () => this.send();
+            
+            // Enter key
+            this.input.onkeypress = (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    this.send();
+                }
+            };
+            
+            // Auto-resize textarea
+            this.input.oninput = () => {
+                this.input.style.height = 'auto';
+                this.input.style.height = Math.min(this.input.scrollHeight, 80) + 'px';
+            };
+            
+            console.log('✅ SOYOSOYO chatbot ready');
+        }
+        
+        open() {
+            this.widget.style.display = 'flex';
+            
+            if (!this.started) {
+                this.started = true;
+                this.addMsg(
+                    "Hello! I'm the SOYOSOYO SACCO Assistant. I can help you with information about our services, loans, savings products, and membership requirements. How can I assist you today? 🏦",
+                    'assistant'
+                );
+            }
+            
+            this.input.focus();
+        }
+        
+        close() {
+            this.widget.style.display = 'none';
+        }
+        
+        async send() {
+            const text = this.input.value.trim();
+            if (!text || this.isLoading) return;
+            
+            this.input.value = '';
+            this.input.style.height = 'auto';
+            this.isLoading = true;
+            
+            this.addMsg(text, 'user');
+            const typingId = this.addMsg('Typing...', 'assistant', true);
+            
+            try {
+                const response = await fetch(this.apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: text,
+                        conversationId: this.conversationId,
+                        includeContext: true
+                    })
+                });
+                
+                document.getElementById(typingId)?.remove();
+                
+                if (!response.ok) {
+                    throw new Error('Server error: ' + response.status);
+                }
+                
+                const data = await response.json();
+                
+                if (data.response) {
+                    this.addMsg(data.response, 'assistant');
+                    this.conversationId = data.conversationId;
+                } else {
+                    throw new Error('Invalid response');
+                }
+                
+            } catch (error) {
+                console.error('Chat error:', error);
+                document.getElementById(typingId)?.remove();
+                this.addMsg("Sorry, I'm having trouble connecting. Please try again. 🔄", 'assistant');
+            } finally {
+                this.isLoading = false;
+                this.input.focus();
+            }
+        }
+        
+        addMsg(text, role, isTyping = false) {
+            const id = 'msg-' + Date.now();
+            const msgDiv = document.createElement('div');
+            msgDiv.id = id;
+            msgDiv.className = 'message ' + role;
+            
+            const bubble = document.createElement('div');
+            bubble.className = 'message-bubble';
+            bubble.textContent = text;
+            
+            if (isTyping) {
+                bubble.style.fontStyle = 'italic';
+                bubble.style.color = '#999';
+            }
+            
+            msgDiv.appendChild(bubble);
+            this.messages.appendChild(msgDiv);
+            this.messages.scrollTop = this.messages.scrollHeight;
+            
+            return id;
+        }
+    }
+    
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('🚀 Initializing SOYOSOYO SACCO chatbot...');
+        window.soyosoyoChat = new SoyosoyoChat();
     });
+})();
 </script>
+</body>
+</html>
 </body>
 </html>
