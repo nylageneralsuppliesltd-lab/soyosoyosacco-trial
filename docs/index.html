@@ -463,10 +463,10 @@
         <!-- Chatbot Embed -->
         <section class="tool-section" id="chatbot">
             <h2 style="text-align: center;">Chat with Us</h2>
-            <div id="bot-container">
-                <p>Click the button below to start a conversation!</p>
-                <button onclick="toggleChatbot()">Open Chatbot</button>
-            </div>
+          <div id="bot-container">
+    <p>Click the button below to start a conversation!</p>
+    <button id="openChatButton" style="background: #90EE90; color: #006400; padding: 12px 24px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;">Open Chatbot</button>
+</div>
         </section>
     </main>
 
@@ -504,10 +504,32 @@
         </div>
     </div>
 </div>
-    <!-- Scripts -->
-    <script src="./scripts/main.js"></script>
-    <script src="./scripts/calculator.js"></script>
-    <script src="./scripts/dividendscalculator.js"></script>
-    <script src="./scripts/chatbot.js"></script>
+<!-- Scripts -->
+<script src="./scripts/main.js"></script>
+<script src="./scripts/calculator.js"></script>
+<script src="./scripts/dividendscalculator.js"></script>
+<script src="./scripts/chatbot.js"></script>
+<script>
+    // Initialize chatbot when page loads
+    let chatWidget;
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Initializing SOYOSOYO chatbot...');
+        chatWidget = new SoyosoyoChatWidget();
+        
+        // Connect "Open Chatbot" button
+        const openChatButton = document.getElementById('openChatButton');
+        if (openChatButton) {
+            openChatButton.addEventListener('click', function() {
+                if (chatWidget && chatWidget.toggleChatbot) {
+                    chatWidget.toggleChatbot();
+                } else {
+                    console.error('Chatbot not initialized properly');
+                }
+            });
+        }
+        
+        console.log('Chatbot initialization complete');
+    });
+</script>
 </body>
 </html>
