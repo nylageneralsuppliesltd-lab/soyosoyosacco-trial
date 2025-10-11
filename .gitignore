@@ -1,8 +1,8 @@
 # Ignore everything
-/*
+*
 
-# But keep this folder
-!SoyosoyosAccoWebsite/
+# But keep the docs folder for GitHub Pages
+!docs/
 
 # Keep this file so Git can track the .gitignore itself
 !.gitignore
