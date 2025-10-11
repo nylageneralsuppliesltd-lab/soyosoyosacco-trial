@@ -474,37 +474,36 @@
         <p>&copy; 2025 SOYOSOYO SACCO. All rights reserved. | <a href="mailto:info@soyosoyosacco.com">info@soyosoyosacco.com</a></p>
     </footer>
 
-    <!-- Chatbot Container -->
-    <div id="chatbot-container">
-        <div class="chat-header">
-            <div class="chat-header-info">
-                <div class="chat-avatar">
-                    <img src="./assets/soyosoyo-logo.png" alt="SOYOSOYO SACCO" onerror="this.style.display='none'">
-                </div>
-                <div class="header-text">
-                    <h3>Chat with SOYOSOYO SACCO</h3>
-                    <p>Assistant Online</p>
-                </div>
+   <!-- Chatbot Container -->
+<div id="chatbot-container">
+    <div class="chat-header">
+        <div class="chat-header-info">
+            <div class="chat-avatar">
+                <img src="./assets/soyosoyo-logo.png" alt="SOYOSOYO SACCO" onerror="this.style.display='none'">
             </div>
-            <button class="minimize-button" onclick="toggleChatbot()">
-                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                    <path d="M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 0 010-1.414z"/>
+            <div class="header-text">
+                <h3>Chat with SOYOSOYO SACCO</h3>
+                <p>Assistant Online</p>
+            </div>
+        </div>
+        <button id="minimizeButton" class="minimize-button">
+            <svg width="16" height="16" fill="white" viewBox="0 0 16 16">
+                <path d="M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z"/>
+            </svg>
+        </button>
+    </div>
+    <div id="chatMessages" class="chat-messages"></div>
+    <div class="chat-input">
+        <div class="chat-input-container">
+            <textarea id="messageInput" class="chat-input-field" placeholder="Ask about loans, savings, membership..." rows="1"></textarea>
+            <button id="sendButton" class="send-button">
+                <svg width="14" height="14" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M28 16L4 28V20L20 16L4 12V4L28 16Z" fill="white"/>
                 </svg>
             </button>
         </div>
-        <div id="chatbot-messages"></div>
-        <div class="chat-input">
-            <div class="chat-input-container">
-                <textarea id="chatbot-input" class="chat-input-field" placeholder="Ask about loans, savings, membership..." rows="1"></textarea>
-                <button class="send-button" onclick="sendMessage()">
-                    <svg width="14" height="14" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M28 16L4 28V20L20 16L4 12V4L28 16Z" fill="white"/>
-                    </svg>
-                </button>
-            </div>
-        </div>
     </div>
-
+</div>
     <!-- Scripts -->
     <script src="./scripts/main.js"></script>
     <script src="./scripts/calculator.js"></script>
