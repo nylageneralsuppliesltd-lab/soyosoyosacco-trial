@@ -8,8 +8,8 @@ class SoyosoyoChatWidget {
 
         // DOM elements with flexible selectors (match HTML structure)
         this.chatbotContainer = document.getElementById('chatbot-container') || document.querySelector('.chat-container');
-        this.messageInput = document.getElementById('messageInput') || document.querySelector('.chat-input-field');
-        this.chatMessages = document.getElementById('chatMessages') || document.querySelector('.chat-messages');
+        this.messageInput = document.getElementById('messageInput') || document.getElementById('chatbot-input') || document.querySelector('.chat-input-field');
+this.chatMessages = document.getElementById('chatMessages') || document.getElementById('chatbot-messages') || document.querySelector('.chat-messages');
         this.sendButton = document.getElementById('sendButton') || document.querySelector('.send-button');
         this.minimizeButton = document.getElementById('minimizeButton') || document.querySelector('.minimize-button');
 
