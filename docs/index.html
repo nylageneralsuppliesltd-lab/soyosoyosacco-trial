@@ -7,12 +7,12 @@
     <link rel="icon" href="./assets/141dd3faa98da9737b591161deac509a.jpg">
     <link rel="stylesheet" href="./style.css">
     <style>
-        /* Light Green Theme for Navbar Only (Not Overriding Hero) */
-        .navbar { background-color: #90EE90 !important; color: #006400; } /* Dark green text */
-        .nav-links a { color: #006400; } /* Links dark green */
-        .nav-links a:hover { color: #228B22; } /* Hover forest green */
+        /* Light Green Theme for Navbar Only */
+        .navbar { background-color: #90EE90 !important; color: #006400; }
+        .nav-links a { color: #006400; }
+        .nav-links a:hover { color: #228B22; }
         
-        /* Hero: Full Image, No Green Override */
+        /* Hero: Full Image, No Transparency */
         .hero { 
             background-image: url('./assets/header-image.jpg') !important; 
             background-size: cover; 
@@ -22,16 +22,13 @@
             display: flex; 
             align-items: center; 
             justify-content: center; 
-            color: white; 
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.7); 
             padding: 20px; /* Prevent edge overlap */
-            background-color: transparent !important; /* Ensure no green */
         }
-        .hero::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); } /* Subtle overlay for text */
-        .hero > * { position: relative; z-index: 1; text-align: center; }
+        /* Remove the overlay to eliminate transparency */
+        .hero::before { content: none; }
         
         /* Section flow */
-        section { margin: 40px 0; padding: 20px; } /* Flow with spacing */
+        section { margin: 40px 0; padding: 20px; }
         .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
         .product-card { border: 1px solid #90EE90; padding: 15px; border-radius: 8px; background: white; }
         .product-card img { width: 100%; height: 200px; object-fit: cover; border-radius: 4px; }
@@ -60,10 +57,7 @@
             </nav>
         </div>
         <div class="hero">
-            <div>
-                <h1>Welcome to SOYOSOYO SACCO</h1>
-                <p>Your trusted savings and credit cooperative.</p>
-            </div>
+            <!-- Text removed -->
         </div>
     </header>
 
