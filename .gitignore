@@ -1,5 +1,8 @@
-C:\Users\User\OneDrive\Documents\GitHub\soyosoyosacco-trial>git status
-On branch main
-Your branch is up to date with 'origin/main'.
+# Ignore everything
+/*
 
-nothing to commit, working tree clean
+# But keep this folder
+!SoyosoyosAccoWebsite/
+
+# Keep this file so Git can track the .gitignore itself
+!.gitignore
