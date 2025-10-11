@@ -35,7 +35,7 @@
             padding: 20px;
         }
         .hero::before { 
-            content: none; /* Remove overlay */
+            content: none;
         }
         
         /* Container for proper width */
@@ -80,9 +80,9 @@
             width: 100%;
             max-width: 600px;
             margin: 0 auto;
-            min-height: 350px; /* Increased for multi-line results */
-            overflow-y: auto; /* Handle long content */
-            padding-bottom: 20px; /* Prevent result from sticking to bottom */
+            min-height: 350px;
+            overflow-y: auto;
+            padding-bottom: 20px;
         }
         .calculator select, .calculator input, .calculator button {
             width: 100%;
@@ -107,19 +107,19 @@
             margin-top: 20px;
             padding: 20px;
             font-size: 16px;
-            min-height: 100px; /* Accommodate multi-line output */
+            min-height: 100px;
             background: #ffffff;
             border: 1px solid #90EE90;
             border-radius: 4px;
-            text-align: left; /* Better for multi-line text */
+            text-align: left;
             line-height: 1.6;
-            color: #333; /* Ensure readability */
+            color: #333;
         }
         .month-inputs {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
             gap: 10px;
-            margin-bottom: 20px; /* Space between inputs and button */
+            margin-bottom: 20px;
         }
         .month-inputs input {
             width: 100%;
@@ -134,34 +134,37 @@
             position: fixed;
             bottom: 20px;
             right: 20px;
-            width: 320px;
-            height: 400px;
+            width: min(90vw, 320px);
+            height: min(80vh, 400px);
             border: 1px solid #90EE90;
             border-radius: 8px;
             background: white;
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
             z-index: 1000;
             display: none;
-            flex-direction: column; /* Ensure vertical layout */
-            overflow: hidden; /* Prevent content overflow */
+            flex-direction: column;
+            overflow: hidden;
         }
         #chatbot-messages {
-            flex: 1; /* Take available space */
+            flex: 1;
             overflow-y: auto;
             padding: 10px;
             border-bottom: 1px solid #90EE90;
-            min-height: 200px; /* Ensure visibility */
+            min-height: 200px;
+            display: block;
         }
         #chatbot-input {
             width: 100%;
             padding: 10px;
-            margin-top: 10px;
-            border: 1px solid #90EE90;
-            border-radius: 4px;
+            margin: 0;
+            border: none;
+            border-top: 1px solid #90EE90;
+            border-radius: 0 0 8px 8px;
             font-size: 14px;
             resize: none;
             min-height: 36px;
             max-height: 80px;
+            display: block;
         }
         .chat-input-container {
             display: flex;
@@ -218,9 +221,12 @@
         .minimize-button {
             background: none;
             border: none;
-            color: white;
+            color: white; /* Ensure X is white */
             cursor: pointer;
             padding: 4px;
+        }
+        .minimize-button svg {
+            fill: white; /* Explicitly set SVG fill */
         }
         .message {
             display: flex;
