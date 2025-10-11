@@ -58,7 +58,7 @@ class SoyosoyoChatWidget {
       return;
     }
     const isHidden = this.chatbotContainer.style.display === 'none' || !this.chatbotContainer.style.display;
-    this.chatbotContainer.style.display = isHidden ? 'block' : 'none';
+    this.chatbotContainer.style.display = isHidden ? 'flex' : 'none'; // Use flex for proper layout
     if (isHidden && !this.hasStarted) {
       this.startChat();
     }
