@@ -1,65 +1,50 @@
-class PhoneOptimizedChatWidget {
+// scripts/chatbot.js
+class SoyosoyoChatWidget {
     constructor() {
         this.conversationId = null;
         this.isLoading = false;
         this.hasStarted = false;
-        
-        // API configuration - Update with your actual deployed URL
         this.apiBaseUrl = 'https://soyosoyosacco123.onrender.com';
         
-        this.messageInput = document.getElementById('messageInput');
-        this.sendButton = document.getElementById('sendButton');
-        this.chatMessages = document.getElementById('chatMessages');
-        this.standbyOverlay = document.getElementById('standbyOverlay');
-        this.minimizeButton = document.getElementById('minimizeButton');
+        this.chatbotContainer = document.getElementById('chatbot-container');
+        this.messageInput = document.getElementById('chatbot-input');
+        this.chatMessages = document.getElementById('chatbot-messages');
         
         this.setupEventListeners();
     }
     
     setupEventListeners() {
-        this.sendButton.addEventListener('click', () => this.sendMessage());
-        this.messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                this.sendMessage();
-            }
-        });
-        
-        this.minimizeButton.addEventListener('click', () => {
-            if (window.parent !== window) {
-                // If embedded, hide the widget
-                document.body.style.display = 'none';
-            } else {
-                // If standalone, just minimize to bottom
-                document.body.style.transform = 'translateY(100vh)';
-            }
-        });
-        
         // Auto-resize textarea
         this.messageInput.addEventListener('input', () => {
             this.messageInput.style.height = 'auto';
             this.messageInput.style.height = Math.min(this.messageInput.scrollHeight, 80) + 'px';
         });
 
-        // Focus input when user starts typing
+        // Send message on Enter key
+        this.messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                this.sendMessage();
+            }
+        });
+
+        // Start chat on first focus
         this.messageInput.addEventListener('focus', () => {
             if (!this.hasStarted) {
                 this.startChat();
             }
         });
+    }
 
-        // Make standby overlay clickable to start chat
-        this.standbyOverlay.addEventListener('click', () => {
+    toggleChatbot() {
+        this.chatbotContainer.style.display = this.chatbotContainer.style.display === 'none' ? 'block' : 'none';
+        if (this.chatbotContainer.style.display === 'block' && !this.hasStarted) {
             this.startChat();
-            this.messageInput.focus();
-        });
+        }
     }
 
     startChat() {
         this.hasStarted = true;
-        this.standbyOverlay.classList.add('hidden');
-        
-        // Add welcome message
         this.addMessage("Hello! I'm the SOYOSOYO SACCO Assistant. I can help you with information about our services, loans, savings products, and membership requirements. How can I assist you today? 🏦", 'assistant');
     }
     
@@ -67,14 +52,9 @@ class PhoneOptimizedChatWidget {
         const message = this.messageInput.value.trim();
         if (!message || this.isLoading) return;
         
-        if (!this.hasStarted) {
-            this.startChat();
-        }
-        
         this.messageInput.value = '';
         this.messageInput.style.height = 'auto';
         this.isLoading = true;
-        this.sendButton.disabled = true;
         
         this.addMessage(message, 'user');
         this.showTypingIndicator();
@@ -88,7 +68,7 @@ class PhoneOptimizedChatWidget {
                     conversationId: this.conversationId,
                     includeContext: true 
                 }),
-                signal: AbortSignal.timeout(60000) // Increased timeout for longer responses
+                signal: AbortSignal.timeout(60000)
             });
             
             if (!response.ok) {
@@ -110,7 +90,6 @@ class PhoneOptimizedChatWidget {
             this.addMessage("I'm having trouble connecting to the server right now. Please check your connection and try again. 🔄", 'assistant');
         } finally {
             this.isLoading = false;
-            this.sendButton.disabled = false;
             this.messageInput.focus();
         }
     }
@@ -119,21 +98,15 @@ class PhoneOptimizedChatWidget {
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${role}`;
         
-        const avatarDiv = document.createElement('div');
-        avatarDiv.className = 'message-avatar';
-        avatarDiv.innerHTML = role === 'assistant' ? 'S' : 'U';
-        
         const bubbleDiv = document.createElement('div');
         bubbleDiv.className = 'message-bubble';
         
-        // Enhanced markdown rendering
         if (role === 'assistant') {
             bubbleDiv.innerHTML = this.renderMarkdown(content);
         } else {
             bubbleDiv.textContent = content;
         }
         
-        messageDiv.appendChild(avatarDiv);
         messageDiv.appendChild(bubbleDiv);
         this.chatMessages.appendChild(messageDiv);
         this.scrollToBottom();
@@ -149,10 +122,9 @@ class PhoneOptimizedChatWidget {
     }
     
     renderMarkdown(text) {
-        // First escape the HTML to prevent XSS
         let html = this.escapeHtml(text);
         
-        // Handle tables BEFORE converting newlines to <br>
+        // Handle tables
         const tableRegex = /\|(.+?)\|\n\|[\s\-\|:]+\|\n((?:\|.+?\|\n?)*)/g;
         html = html.replace(tableRegex, (match, header, body) => {
             const headerCells = header.split('|').map(cell => cell.trim()).filter(cell => cell);
@@ -172,7 +144,7 @@ class PhoneOptimizedChatWidget {
             return table;
         });
         
-        // Handle bullet points - improved to handle multiple lists
+        // Handle bullet points
         const lines = html.split('\n');
         let inList = false;
         let result = [];
@@ -199,19 +171,14 @@ class PhoneOptimizedChatWidget {
         
         html = result.join('\n');
         
-        // Enhanced markdown rendering with proper formatting
+        // Enhanced markdown rendering
         html = html
-            // Convert headers - ### Header, ## Header, # Header
             .replace(/^### (.+)$/gm, '<h3 style="color: #1e7b85; font-size: 16px; font-weight: bold; margin: 8px 0 4px 0;">$1</h3>')
             .replace(/^## (.+)$/gm, '<h2 style="color: #1e7b85; font-size: 18px; font-weight: bold; margin: 10px 0 6px 0;">$1</h2>')
             .replace(/^# (.+)$/gm, '<h1 style="color: #1e7b85; font-size: 20px; font-weight: bold; margin: 12px 0 8px 0;">$1</h1>')
-            // Convert **bold** to <strong>
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-            // Convert *italic* to <em>
             .replace(/\*(.*?)\*/g, '<em>$1</em>')
-            // Convert `code` to <code>
             .replace(/`([^`]+)`/g, '<code>$1</code>')
-            // Convert line breaks
             .replace(/\n/g, '<br>');
         
         return html.replace(/<br><ul>/g, '<ul>').replace(/<\/ul><br>/g, '</ul>');
@@ -222,15 +189,19 @@ class PhoneOptimizedChatWidget {
         typingDiv.id = 'typingIndicator';
         typingDiv.className = 'message assistant';
         typingDiv.innerHTML = `
-            <div class="message-avatar">S</div>
             <div class="message-bubble">
-                <div class="typing-indicator">
-                    <div class="typing-dot"></div>
-                    <div class="typing-dot"></div>
-                    <div class="typing-dot"></div>
+                <div style="display: flex; gap: 3px;">
+                    <div style="width: 6px; height: 6px; background: #22c55e; border-radius: 50%; animation: bounce 1.4s ease-in-out infinite both;"></div>
+                    <div style="width: 6px; height: 6px; background: #22c55e; border-radius: 50%; animation: bounce 1.4s ease-in-out infinite both; animation-delay: 0.1s;"></div>
+                    <div style="width: 6px; height: 6px; background: #22c55e; border-radius: 50%; animation: bounce 1.4s ease-in-out infinite both; animation-delay: 0.2s;"></div>
                 </div>
             </div>
-        `;
+            <style>
+                @keyframes bounce {
+                    0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+                    40% { transform: scale(1); opacity: 1; }
+                }
+            </style>`;
         this.chatMessages.appendChild(typingDiv);
         this.scrollToBottom();
     }
@@ -247,5 +218,13 @@ class PhoneOptimizedChatWidget {
 
 // Initialize when page loads
 document.addEventListener('DOMContentLoaded', () => {
-    new PhoneOptimizedChatWidget();
+    window.chatWidget = new SoyosoyoChatWidget();
 });
+
+function toggleChatbot() {
+    window.chatWidget.toggleChatbot();
+}
+
+function sendMessage() {
+    window.chatWidget.sendMessage();
+}
