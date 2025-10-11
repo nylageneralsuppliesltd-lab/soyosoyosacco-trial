@@ -1,5 +1,6 @@
 // scripts/main.js - Soyosoyo Sacco Site Initialization
-// Amended for mobile menu toggle, header compatibility, and bloat removal
+// Amended for mobile menu toggle, header compatibility, bloat removal, and tool integration (chatbot, loan calculator, dividends calculator)
+// Tools dynamically loaded based on page for efficiency and compatibility across all HTML pages (Home.html, Products.html, Jobs.html, etc.)
 // Date: October 11, 2025
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -85,6 +86,66 @@ document.addEventListener('DOMContentLoaded', function() {
   // Bloat Cleanup: Ignore Google Sites JS (Comment out or remove if present)
   // Example: Remove or ignore [jscontroller] elements
   // document.querySelectorAll('[jscontroller]').forEach(el => el.removeAttribute('jscontroller'));
+
+  // Tool Integration: Dynamically load page-specific tool scripts for compatibility across all HTML pages
+  // Detect current page and load only relevant tool (prevents bloat on non-tool pages like Home.html, Products.html, etc.)
+  // Assumes tool pages: Chat.html (chatbot), LoanCalculator.html (calculator), DividendsCalculator.html (dividends)
+  const currentPage = window.location.pathname.split('/').pop().toLowerCase() || 'index.html';
+  
+  function loadToolScript(src) {
+    if (document.querySelector(`script[src="${src}"]`)) {
+      console.log(`Tool script ${src} already loaded`);
+      return; // Avoid duplicate loads
+    }
+    const script = document.createElement('script');
+    script.src = src;
+    script.onload = () => console.log(`Tool loaded: ${src}`);
+    script.onerror = () => console.error(`Failed to load tool: ${src}`);
+    document.head.appendChild(script);
+  }
+
+  if (currentPage.includes('chat')) {
+    loadToolScript('scripts/chatbot.js');
+    console.log('Chatbot tool initialized for chat page');
+  } else if (currentPage.includes('loan') || currentPage.includes('calculator')) {
+    loadToolScript('scripts/calculator.js');
+    console.log('Loan Calculator tool initialized for calculator page');
+  } else if (currentPage.includes('dividends')) {
+    loadToolScript('scripts/dividendscalculator.js');
+    console.log('Dividends Calculator tool initialized for dividends page');
+  }
+
+  // Optional: Site-wide Chatbot Toggle (Floating button to open embedded chat on any page)
+  // Uncomment and add <div id="chatbot-container"></div> to body in HTML if desired
+  /*
+  const chatbotToggle = document.createElement('button');
+  chatbotToggle.id = 'chatbot-toggle';
+  chatbotToggle.innerHTML = '💬 Chat';
+  chatbotToggle.style.position = 'fixed';
+  chatbotToggle.style.bottom = '20px';
+  chatbotToggle.style.right = '20px';
+  chatbotToggle.style.zIndex = '1000';
+  chatbotToggle.style.background = '#7dd3c0';
+  chatbotToggle.style.color = 'white';
+  chatbotToggle.style.border = 'none';
+  chatbotToggle.style.borderRadius = '50%';
+  chatbotToggle.style.width = '60px';
+  chatbotToggle.style.height = '60px';
+  chatbotToggle.style.cursor = 'pointer';
+  document.body.appendChild(chatbotToggle);
+  
+  chatbotToggle.addEventListener('click', () => {
+    const container = document.getElementById('chatbot-container');
+    if (!container) {
+      const newContainer = document.createElement('div');
+      newContainer.id = 'chatbot-container';
+      newContainer.innerHTML = `<!-- Chatbot HTML structure here -->`;
+      document.body.appendChild(newContainer);
+      loadToolScript('scripts/chatbot.js');
+    }
+    // Toggle visibility logic
+  });
+  */
 
   console.log('Soyosoyo Sacco Site - Initialization complete');
 });
