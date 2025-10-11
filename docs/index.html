@@ -80,8 +80,9 @@
             width: 100%;
             max-width: 600px;
             margin: 0 auto;
-            min-height: 300px; /* Ensure space for results */
+            min-height: 350px; /* Increased for multi-line results */
             overflow-y: auto; /* Handle long content */
+            padding-bottom: 20px; /* Prevent result from sticking to bottom */
         }
         .calculator select, .calculator input, .calculator button {
             width: 100%;
@@ -104,19 +105,21 @@
         }
         .result {
             margin-top: 20px;
-            padding: 15px;
-            font-weight: bold;
-            text-align: center;
+            padding: 20px;
             font-size: 16px;
-            min-height: 50px; /* Ensure visibility */
+            min-height: 100px; /* Accommodate multi-line output */
             background: #ffffff;
             border: 1px solid #90EE90;
             border-radius: 4px;
+            text-align: left; /* Better for multi-line text */
+            line-height: 1.6;
+            color: #333; /* Ensure readability */
         }
         .month-inputs {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
             gap: 10px;
+            margin-bottom: 20px; /* Space between inputs and button */
         }
         .month-inputs input {
             width: 100%;
@@ -136,16 +139,18 @@
             border: 1px solid #90EE90;
             border-radius: 8px;
             background: white;
-            padding: 15px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
             z-index: 1000;
             display: none;
+            flex-direction: column; /* Ensure vertical layout */
+            overflow: hidden; /* Prevent content overflow */
         }
         #chatbot-messages {
-            height: 320px;
+            flex: 1; /* Take available space */
             overflow-y: auto;
             padding: 10px;
             border-bottom: 1px solid #90EE90;
+            min-height: 200px; /* Ensure visibility */
         }
         #chatbot-input {
             width: 100%;
@@ -154,20 +159,27 @@
             border: 1px solid #90EE90;
             border-radius: 4px;
             font-size: 14px;
+            resize: none;
+            min-height: 36px;
+            max-height: 80px;
         }
-        #chatbot-container button {
-            width: 100%;
+        .chat-input-container {
+            display: flex;
+            gap: 8px;
             padding: 10px;
-            margin-top: 5px;
-            background: #90EE90;
-            color: #006400;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
+            background: white;
+            border-top: 1px solid #90EE90;
         }
-        #chatbot-container button:hover {
-            background: #228B22;
-            color: white;
+        .send-button {
+            background: linear-gradient(135deg, #7dd3c0 0%, #1e7b85 100%);
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
         }
         .chat-header {
             background: linear-gradient(135deg, #7dd3c0 0%, #1e7b85 100%);
@@ -203,6 +215,13 @@
             opacity: 0.9;
             margin: 0;
         }
+        .minimize-button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 4px;
+        }
         .message {
             display: flex;
             gap: 8px;
@@ -216,6 +235,7 @@
             padding: 10px;
             border-radius: 12px;
             font-size: 13px;
+            line-height: 1.4;
         }
         .message.user .message-bubble {
             background: #3b82f6;
