@@ -21,6 +21,7 @@ class SoyosoyoChatWidget {
                 sendButton: !!this.sendButton,
                 minimizeButton: !!this.minimizeButton
             });
+            this.showErrorState();
             return;
         }
 
@@ -35,7 +36,7 @@ class SoyosoyoChatWidget {
             this.messageInput.style.height = Math.min(this.messageInput.scrollHeight, 80) + 'px';
         });
 
-        // Send message on Enter key (prevent form submission conflicts)
+        // Send message on Enter key
         this.messageInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -44,19 +45,26 @@ class SoyosoyoChatWidget {
         });
 
         // Send message on button click
-        this.sendButton.addEventListener('click', () => this.sendMessage());
+        this.sendButton.addEventListener('click', () => {
+            console.log('Send button clicked');
+            this.sendMessage();
+        });
 
         // Toggle chatbot on minimize button
-        this.minimizeButton.addEventListener('click', () => this.toggleChatbot());
+        this.minimizeButton.addEventListener('click', () => {
+            console.log('Minimize button clicked');
+            this.toggleChatbot();
+        });
 
         // Start chat on first focus
         this.messageInput.addEventListener('focus', () => {
             if (!this.hasStarted) {
+                console.log('Starting chat on input focus');
                 this.startChat();
             }
         });
 
-        // Ensure chatbot persists across page navigation (if needed)
+        // Ensure visibility on page navigation
         window.addEventListener('popstate', () => {
             if (this.chatbotContainer.style.display === 'flex') {
                 this.ensureChatbotVisible();
@@ -70,31 +78,51 @@ class SoyosoyoChatWidget {
         this.chatbotContainer.style.position = 'fixed';
         this.chatbotContainer.style.bottom = '20px';
         this.chatbotContainer.style.right = '20px';
-        this.chatbotContainer.style.width = 'min(90vw, 320px)'; // Responsive width
-        this.chatbotContainer.style.height = 'min(80vh, 400px)'; // Responsive height
-        this.chatbotContainer.style.display = 'none'; // Ensure initial state
+        this.chatbotContainer.style.width = 'min(90vw, 320px)';
+        this.chatbotContainer.style.height = 'min(80vh, 400px)';
+        this.chatbotContainer.style.zIndex = '1000';
+        this.chatMessages.style.display = 'block';
+        this.messageInput.style.display = 'block';
+        this.sendButton.style.display = 'flex';
+        this.minimizeButton.style.color = 'white'; // Ensure X is white
+        console.log('Chatbot initialized with styles');
+    }
+
+    showErrorState() {
+        const botContainer = document.getElementById('bot-container');
+        if (botContainer) {
+            botContainer.innerHTML += '<div class="error-message">Chatbot failed to load. Please refresh the page or contact support.</div>';
+        }
     }
 
     toggleChatbot() {
         if (!this.chatbotContainer) {
             console.error('Cannot toggle chatbot: Container not found');
+            this.showErrorState();
             return;
         }
         const isHidden = this.chatbotContainer.style.display === 'none' || !this.chatbotContainer.style.display;
+        console.log('Toggling chatbot, current state: hidden=', isHidden);
         this.chatbotContainer.style.display = isHidden ? 'flex' : 'none';
         if (isHidden && !this.hasStarted) {
+            console.log('Starting chat on toggle');
             this.startChat();
         }
-        this.ensureChatbotVisible();
+        if (isHidden) {
+            this.ensureChatbotVisible();
+        }
     }
 
     ensureChatbotVisible() {
-        // Force layout refresh to prevent display issues
+        // Force layout refresh
         this.chatbotContainer.style.display = 'none';
-        // Trigger reflow
         void this.chatbotContainer.offsetWidth;
         this.chatbotContainer.style.display = 'flex';
+        this.chatMessages.style.display = 'block';
+        this.messageInput.style.display = 'block';
+        this.sendButton.style.display = 'flex';
         this.scrollToBottom();
+        console.log('Chatbot visibility ensured');
     }
 
     startChat() {
@@ -103,11 +131,15 @@ class SoyosoyoChatWidget {
             "Hello! I'm the SOYOSOYO SACCO Assistant. I can help you with information about our services, loans, savings products, and membership requirements. How can I assist you today? 🏦",
             'assistant'
         );
+        console.log('Chat started with welcome message');
     }
 
     async sendMessage() {
         const message = this.messageInput.value.trim();
-        if (!message || this.isLoading) return;
+        if (!message || this.isLoading) {
+            console.log('Send message blocked: empty message or loading');
+            return;
+        }
 
         this.messageInput.value = '';
         this.messageInput.style.height = 'auto';
@@ -117,6 +149,7 @@ class SoyosoyoChatWidget {
         this.showTypingIndicator();
 
         try {
+            console.log('Sending message to API:', message);
             const response = await fetch(`${this.apiBaseUrl}/api/chat`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -125,7 +158,7 @@ class SoyosoyoChatWidget {
                     conversationId: this.conversationId,
                     includeContext: true,
                 }),
-                signal: AbortSignal.timeout(10000), // Reduced timeout for responsiveness
+                signal: AbortSignal.timeout(10000),
             });
 
             if (!response.ok) {
@@ -138,6 +171,7 @@ class SoyosoyoChatWidget {
             if (data.response) {
                 this.addMessage(data.response, 'assistant');
                 this.conversationId = data.conversationId;
+                console.log('API response received, conversationId:', this.conversationId);
             } else {
                 throw new Error('Invalid response format from server');
             }
@@ -152,6 +186,7 @@ class SoyosoyoChatWidget {
         } finally {
             this.isLoading = false;
             this.messageInput.focus();
+            console.log('Message sending complete, isLoading:', this.isLoading);
         }
     }
 
@@ -280,18 +315,20 @@ class SoyosoyoChatWidget {
 // Initialize when DOM is fully loaded
 document.addEventListener('DOMContentLoaded', () => {
     try {
+        console.log('Initializing SoyosoyoChatWidget');
         window.chatWidget = new SoyosoyoChatWidget();
     } catch (error) {
         console.error('Failed to initialize SoyosoyoChatWidget:', error);
         const botContainer = document.getElementById('bot-container');
         if (botContainer) {
-            botContainer.innerHTML += '<div class="error-message">Failed to load chatbot. Please refresh the page.</div>';
+            botContainer.innerHTML += '<div class="error-message">Chatbot failed to load. Please refresh the page or contact support.</div>';
         }
     }
 });
 
 function toggleChatbot() {
     if (window.chatWidget) {
+        console.log('Calling toggleChatbot on widget');
         window.chatWidget.toggleChatbot();
     } else {
         console.error('Chatbot widget not initialized. Please check the console for errors.');
@@ -304,6 +341,7 @@ function toggleChatbot() {
 
 function sendMessage() {
     if (window.chatWidget) {
+        console.log('Calling sendMessage on widget');
         window.chatWidget.sendMessage();
     } else {
         console.error('Chatbot widget not initialized. Cannot send message.');
