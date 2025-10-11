@@ -74,14 +74,23 @@ img {
   cursor: pointer;
 }
 
-/* === HERO SECTION === */
+/* === HEADER & HERO SECTION === */
+.site-header {
+  width: 100vw; /* Full width */
+  margin: 0;
+  padding: 0;
+  background: #fff; /* Fallback */
+  position: relative;
+  z-index: 1;
+}
+
 .hero {
   width: 100vw; /* Full viewport width */
-  height: 60vh; /* Shorter for desktop to reduce vertical stretch */
+  height: 60vh; /* Shorter to avoid vertical stretch */
   background-image: url('./assets/header-image.jpg'); /* Adjust path if needed */
   background-size: cover; /* Fill container, crop edges */
   background-repeat: no-repeat;
-  background-position: center center; /* Center image precisely */
+  background-position: center center; /* Center for both axes */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -89,7 +98,7 @@ img {
   color: white;
   overflow: hidden;
   margin: 0;
-  z-index: 1; /* Below navbar */
+  z-index: 2;
 }
 
 .hero::after {
@@ -101,7 +110,7 @@ img {
 
 .hero-inner {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   text-align: center;
   padding: 1rem;
   max-width: 90%; /* Prevent text overflow */
@@ -160,7 +169,7 @@ footer a {
 }
 
 /* === FIX INVISIBLE GOOGLE DOC CLASSES === */
-.C9DxTc, .zfr3Q, .tyJCtd, .hJDwNd, .Ap4VC, .yaqOZd, .JNdkSc, .Ft7HRd, .Depvyb, .baZpAe, .mGzaTb {
+.C9DxTc, .zfr3Q, .tyJCtd, .hJDwNd, .Ap4VC, .yaqOZd, .JNdkSc, .Ft7HRd, .Depvyb, .baZpAe, .mGzaTb, .bKy5e, .rrJNTc, .VfPpkd-dgl2Hf-ppHlrf-sM5MNb {
   all: unset !important;
   display: block !important;
   height: auto !important;
@@ -210,10 +219,10 @@ footer a {
 
   .hero {
     height: auto; /* Dynamic height */
-    aspect-ratio: 1 / 1; /* Squarish for mobile */
-    min-height: 40vh; /* Minimum to show content */
-    background-size: cover; /* Consistent stretch */
-    background-position: center center; /* Avoid excessive cropping */
+    aspect-ratio: 4/3; /* Adjust based on image; 4/3 for squarish */
+    min-height: 40vh; /* Ensure content visibility */
+    background-size: cover; /* Fill without gaps */
+    background-position: center 20%; /* Shift up to preserve top content */
   }
 
   .hero-inner {
