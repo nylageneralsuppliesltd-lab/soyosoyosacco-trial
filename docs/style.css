@@ -5,11 +5,14 @@
   padding: 0;
 }
 
-body {
+html, body {
   font-family: "Segoe UI", Arial, sans-serif;
   color: #222;
   line-height: 1.6;
   background: #fff;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
 a {
@@ -72,9 +75,10 @@ img {
 
 /* === HERO SECTION === */
 .hero {
-  width: 100%;
+  width: 100vw; /* Full viewport width */
   height: 70vh;
-  background-size: contain; /* ensures full image shows */
+  background-image: url('./assets/header-image.jpg'); /* Adjust path if needed */
+  background-size: cover; /* Stretch to fill, crop edges */
   background-repeat: no-repeat;
   background-position: center top;
   display: flex;
@@ -83,6 +87,7 @@ img {
   position: relative;
   color: white;
   overflow: hidden;
+  margin: 0; /* Remove any gaps */
 }
 
 .hero::after {
@@ -153,38 +158,56 @@ footer a {
 
 /* === FIX INVISIBLE GOOGLE DOC CLASSES === */
 .C9DxTc, .zfr3Q, .tyJCtd, .hJDwNd, .Ap4VC, .yaqOZd, .JNdkSc, .Ft7HRd, .Depvyb, .baZpAe, .mGzaTb {
-  all: unset;
+  all: unset !important;
   display: block !important;
   height: auto !important;
   visibility: visible !important;
   position: relative !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 /* === RESPONSIVE DESIGN === */
 @media (max-width: 768px) {
   .nav-links {
     display: none;
-    position: absolute;
-    right: 10px;
-    top: 70px;
-    background: #fff;
+    position: fixed; /* Full-screen overlay */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.95); /* Semi-transparent white */
     flex-direction: column;
-    padding: 1rem;
-    border-radius: 8px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    justify-content: center; /* Center vertically */
+    align-items: center; /* Center horizontally */
+    padding: 2rem;
+    border-radius: 0; /* No radius for full-screen */
+    box-shadow: none;
+    z-index: 1000;
   }
 
   .nav-links.show {
     display: flex;
   }
 
+  .nav-links a {
+    font-size: 1.2rem;
+    padding: 1rem;
+    width: 100%;
+    text-align: center;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
   #menu-toggle {
     display: block;
+    z-index: 1001; /* Above menu */
   }
 
   .hero {
     height: auto;
-    background-size: cover; /* better for mobile screens */
+    min-height: 50vh; /* Ensure visibility */
+    background-size: cover; /* Consistent stretch */
   }
 
   .hero-inner {
