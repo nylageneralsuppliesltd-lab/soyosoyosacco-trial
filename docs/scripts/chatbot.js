@@ -10,17 +10,22 @@ class SoyosoyoChatWidget {
         this.chatbotContainer = document.getElementById('chatbot-container');
         this.messageInput = document.getElementById('chatbot-input');
         this.chatMessages = document.getElementById('chatbot-messages');
+        this.sendButton = document.querySelector('.send-button');
+        this.minimizeButton = document.querySelector('.minimize-button');
 
-        if (!this.chatbotContainer || !this.messageInput || !this.chatMessages) {
+        if (!this.chatbotContainer || !this.messageInput || !this.chatMessages || !this.sendButton || !this.minimizeButton) {
             console.error('Chatbot initialization failed: Missing DOM elements', {
                 chatbotContainer: !!this.chatbotContainer,
                 messageInput: !!this.messageInput,
                 chatMessages: !!this.chatMessages,
+                sendButton: !!this.sendButton,
+                minimizeButton: !!this.minimizeButton
             });
             return;
         }
 
         this.setupEventListeners();
+        this.initializeChatbot();
     }
 
     setupEventListeners() {
@@ -30,13 +35,19 @@ class SoyosoyoChatWidget {
             this.messageInput.style.height = Math.min(this.messageInput.scrollHeight, 80) + 'px';
         });
 
-        // Send message on Enter key
+        // Send message on Enter key (prevent form submission conflicts)
         this.messageInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 this.sendMessage();
             }
         });
+
+        // Send message on button click
+        this.sendButton.addEventListener('click', () => this.sendMessage());
+
+        // Toggle chatbot on minimize button
+        this.minimizeButton.addEventListener('click', () => this.toggleChatbot());
 
         // Start chat on first focus
         this.messageInput.addEventListener('focus', () => {
@@ -45,11 +56,23 @@ class SoyosoyoChatWidget {
             }
         });
 
-        // Ensure minimize button works
-        const minimizeButton = this.chatbotContainer.querySelector('.minimize-button');
-        if (minimizeButton) {
-            minimizeButton.addEventListener('click', () => this.toggleChatbot());
-        }
+        // Ensure chatbot persists across page navigation (if needed)
+        window.addEventListener('popstate', () => {
+            if (this.chatbotContainer.style.display === 'flex') {
+                this.ensureChatbotVisible();
+            }
+        });
+    }
+
+    initializeChatbot() {
+        // Ensure chatbot container is properly styled
+        this.chatbotContainer.style.display = 'none'; // Start hidden
+        this.chatbotContainer.style.position = 'fixed';
+        this.chatbotContainer.style.bottom = '20px';
+        this.chatbotContainer.style.right = '20px';
+        this.chatbotContainer.style.width = 'min(90vw, 320px)'; // Responsive width
+        this.chatbotContainer.style.height = 'min(80vh, 400px)'; // Responsive height
+        this.chatbotContainer.style.display = 'none'; // Ensure initial state
     }
 
     toggleChatbot() {
@@ -58,10 +81,20 @@ class SoyosoyoChatWidget {
             return;
         }
         const isHidden = this.chatbotContainer.style.display === 'none' || !this.chatbotContainer.style.display;
-        this.chatbotContainer.style.display = isHidden ? 'flex' : 'none'; // Use flex for proper layout
+        this.chatbotContainer.style.display = isHidden ? 'flex' : 'none';
         if (isHidden && !this.hasStarted) {
             this.startChat();
         }
+        this.ensureChatbotVisible();
+    }
+
+    ensureChatbotVisible() {
+        // Force layout refresh to prevent display issues
+        this.chatbotContainer.style.display = 'none';
+        // Trigger reflow
+        void this.chatbotContainer.offsetWidth;
+        this.chatbotContainer.style.display = 'flex';
+        this.scrollToBottom();
     }
 
     startChat() {
@@ -92,7 +125,7 @@ class SoyosoyoChatWidget {
                     conversationId: this.conversationId,
                     includeContext: true,
                 }),
-                signal: AbortSignal.timeout(60000),
+                signal: AbortSignal.timeout(10000), // Reduced timeout for responsiveness
             });
 
             if (!response.ok) {
@@ -111,10 +144,11 @@ class SoyosoyoChatWidget {
         } catch (error) {
             console.error('Chat error:', error);
             this.hideTypingIndicator();
-            this.addMessage(
-                "I'm having trouble connecting to the server right now. Please check your connection and try again. 🔄",
-                'assistant'
-            );
+            let errorMessage = "I'm having trouble connecting to the server right now. Please check your connection and try again. 🔄";
+            if (error.name === 'TimeoutError') {
+                errorMessage = "The server took too long to respond. Please try again later. ⏳";
+            }
+            this.addMessage(errorMessage, 'assistant');
         } finally {
             this.isLoading = false;
             this.messageInput.focus();
@@ -208,7 +242,7 @@ class SoyosoyoChatWidget {
             .replace(/`([^`]+)`/g, '<code>$1</code>')
             .replace(/\n/g, '<br>');
 
-        return html.replace(/<br><ul>/g, '<ul>').replace(/<\/ul><br>/g, '</ul>');
+        return html.replace(/<br><ul>/g, '<ul>').replace(/</ul><br>/g, '</ul>');
     }
 
     showTypingIndicator() {
@@ -249,6 +283,10 @@ document.addEventListener('DOMContentLoaded', () => {
         window.chatWidget = new SoyosoyoChatWidget();
     } catch (error) {
         console.error('Failed to initialize SoyosoyoChatWidget:', error);
+        const botContainer = document.getElementById('bot-container');
+        if (botContainer) {
+            botContainer.innerHTML += '<div class="error-message">Failed to load chatbot. Please refresh the page.</div>';
+        }
     }
 });
 
@@ -257,6 +295,10 @@ function toggleChatbot() {
         window.chatWidget.toggleChatbot();
     } else {
         console.error('Chatbot widget not initialized. Please check the console for errors.');
+        const botContainer = document.getElementById('bot-container');
+        if (botContainer) {
+            botContainer.innerHTML += '<div class="error-message">Chatbot not available. Please refresh the page.</div>';
+        }
     }
 }
 
