@@ -520,8 +520,8 @@
         const openChatButton = document.getElementById('openChatButton');
         if (openChatButton) {
             openChatButton.addEventListener('click', function() {
-                if (chatWidget && chatWidget.toggleChatbot) {
-                    chatWidget.toggleChatbot();
+                if (chatWidget && chatWidget.toggle) {  // ✅ CORRECT METHOD
+                    chatWidget.toggle();
                 } else {
                     console.error('Chatbot not initialized properly');
                 }
