@@ -1,147 +1,342 @@
-// SOYOSOYO SACCO Chatbot - Complete Working Version
-class SoyosoyoChatWidget {
-    constructor() {
-        this.conversationId = null;
-        this.isLoading = false;
-        this.hasStarted = false;
-        this.apiUrl = 'https://soyosoyosacco123.onrender.com/api/chat';
+// SOYOSOYO SACCO Floating Chatbot Widget
+(function() {
+    'use strict';
 
-        // Get DOM elements
-        this.container = document.getElementById('chatbot-container');
-        this.messages = document.getElementById('chatMessages');
-        this.input = document.getElementById('messageInput');
-        this.sendBtn = document.getElementById('sendButton');
-        this.closeBtn = document.getElementById('minimizeButton');
-
-        // Check if all elements exist
-        if (!this.container || !this.messages || !this.input || !this.sendBtn || !this.closeBtn) {
-            console.error('Chatbot failed: Missing elements');
-            return;
-        }
-
-        this.init();
-    }
-
-    init() {
-        // Hide chatbot initially
-        this.container.style.display = 'none';
-        
-        // Send button click
-        this.sendBtn.onclick = () => this.send();
-        
-        // Close button click
-        this.closeBtn.onclick = () => this.toggle();
-        
-        // Enter key to send
-        this.input.onkeypress = (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                this.send();
-            }
-        };
-        
-        // Auto-resize textarea
-        this.input.oninput = () => {
-            this.input.style.height = 'auto';
-            this.input.style.height = Math.min(this.input.scrollHeight, 80) + 'px';
-        };
-        
-        console.log('✅ Chatbot initialized successfully');
-    }
-
-    toggle() {
-        const isHidden = this.container.style.display === 'none';
-        this.container.style.display = isHidden ? 'flex' : 'none';
-        
-        if (isHidden && !this.hasStarted) {
-            this.welcome();
-        }
-        
-        if (isHidden) {
-            this.input.focus();
-        }
-    }
-
-    welcome() {
-        this.hasStarted = true;
-        this.addMsg(
-            "Hello! I'm the SOYOSOYO SACCO Assistant. I can help you with loans, savings, and membership. How can I assist you? 🏦",
-            'assistant'
-        );
-    }
-
-    async send() {
-        const text = this.input.value.trim();
-        if (!text || this.isLoading) return;
-
-        this.input.value = '';
-        this.input.style.height = 'auto';
-        this.isLoading = true;
-
-        this.addMsg(text, 'user');
-        this.typing(true);
-
-        try {
-            const res = await fetch(this.apiUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    message: text,
-                    conversationId: this.conversationId,
-                    includeContext: true
-                })
-            });
-
-            if (!res.ok) throw new Error('Server error');
-
-            const data = await res.json();
-            this.typing(false);
-
-            if (data.response) {
-                this.addMsg(data.response, 'assistant');
-                this.conversationId = data.conversationId;
-            }
-        } catch (err) {
-            console.error('Chat error:', err);
-            this.typing(false);
-            this.addMsg("Sorry, I'm having trouble connecting. Please try again. 🔄", 'assistant');
-        } finally {
+    class SoyosoyoChatWidget {
+        constructor() {
+            this.conversationId = null;
             this.isLoading = false;
-            this.input.focus();
+            this.hasStarted = false;
+            this.isOpen = false;
+            this.apiUrl = 'https://soyosoyosacco123.onrender.com/api/chat';
+            
+            this.createWidget();
+            this.init();
+        }
+
+        createWidget() {
+            // Add styles
+            const style = document.createElement('style');
+            style.textContent = `
+                #soyosoyo-float-btn {
+                    position: fixed;
+                    bottom: 20px;
+                    right: 20px;
+                    width: 60px;
+                    height: 60px;
+                    border-radius: 50%;
+                    background: linear-gradient(135deg, #7dd3c0 0%, #1e7b85 100%);
+                    border: none;
+                    color: white;
+                    font-size: 28px;
+                    cursor: pointer;
+                    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+                    z-index: 9998;
+                    transition: all 0.3s ease;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+                #soyosoyo-float-btn:hover {
+                    transform: scale(1.1);
+                    box-shadow: 0 6px 25px rgba(0,0,0,0.4);
+                }
+                #soyosoyo-chat-widget {
+                    position: fixed;
+                    bottom: 90px;
+                    right: 20px;
+                    width: 360px;
+                    height: 550px;
+                    background: white;
+                    border-radius: 16px;
+                    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+                    display: none;
+                    flex-direction: column;
+                    overflow: hidden;
+                    z-index: 9999;
+                    animation: slideUp 0.3s ease;
+                }
+                #soyosoyo-chat-widget.open {
+                    display: flex;
+                }
+                @keyframes slideUp {
+                    from { opacity: 0; transform: translateY(20px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                .soyosoyo-header {
+                    background: linear-gradient(135deg, #7dd3c0 0%, #1e7b85 100%);
+                    color: white;
+                    padding: 18px;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+                .soyosoyo-title {
+                    font-size: 16px;
+                    font-weight: 600;
+                }
+                .soyosoyo-close {
+                    background: transparent;
+                    border: none;
+                    color: white;
+                    font-size: 28px;
+                    cursor: pointer;
+                    width: 32px;
+                    height: 32px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border-radius: 4px;
+                }
+                .soyosoyo-close:hover {
+                    background: rgba(255,255,255,0.2);
+                }
+                .soyosoyo-messages {
+                    flex: 1;
+                    overflow-y: auto;
+                    padding: 20px;
+                    background: #f9f9f9;
+                }
+                .soyosoyo-msg {
+                    margin-bottom: 16px;
+                    display: flex;
+                    gap: 10px;
+                }
+                .soyosoyo-msg.user {
+                    flex-direction: row-reverse;
+                }
+                .soyosoyo-bubble {
+                    max-width: 75%;
+                    padding: 12px 16px;
+                    border-radius: 16px;
+                    font-size: 14px;
+                    line-height: 1.5;
+                    word-wrap: break-word;
+                }
+                .soyosoyo-msg.user .soyosoyo-bubble {
+                    background: #3b82f6;
+                    color: white;
+                    border-bottom-right-radius: 4px;
+                }
+                .soyosoyo-msg.bot .soyosoyo-bubble {
+                    background: white;
+                    color: #333;
+                    border: 1px solid #e5e7eb;
+                    border-bottom-left-radius: 4px;
+                }
+                .soyosoyo-msg.typing .soyosoyo-bubble {
+                    background: #e5e7eb;
+                    color: #666;
+                    font-style: italic;
+                }
+                .soyosoyo-input-area {
+                    padding: 16px;
+                    background: white;
+                    border-top: 1px solid #e5e7eb;
+                    display: flex;
+                    gap: 10px;
+                }
+                .soyosoyo-input {
+                    flex: 1;
+                    padding: 12px;
+                    border: 1px solid #d1d5db;
+                    border-radius: 24px;
+                    font-size: 14px;
+                    outline: none;
+                    resize: none;
+                    font-family: Arial, sans-serif;
+                    max-height: 80px;
+                }
+                .soyosoyo-input:focus {
+                    border-color: #7dd3c0;
+                }
+                .soyosoyo-send {
+                    background: linear-gradient(135deg, #7dd3c0 0%, #1e7b85 100%);
+                    border: none;
+                    color: white;
+                    width: 44px;
+                    height: 44px;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 18px;
+                }
+                .soyosoyo-send:hover {
+                    opacity: 0.9;
+                }
+                .soyosoyo-send:disabled {
+                    opacity: 0.5;
+                    cursor: not-allowed;
+                }
+                @media (max-width: 768px) {
+                    #soyosoyo-chat-widget {
+                        width: calc(100vw - 20px);
+                        height: calc(100vh - 100px);
+                        bottom: 10px;
+                        right: 10px;
+                        left: 10px;
+                    }
+                    #soyosoyo-float-btn {
+                        bottom: 15px;
+                        right: 15px;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+
+            // Create floating button
+            this.floatBtn = document.createElement('button');
+            this.floatBtn.id = 'soyosoyo-float-btn';
+            this.floatBtn.innerHTML = '💬';
+            document.body.appendChild(this.floatBtn);
+
+            // Create chat widget
+            this.widget = document.createElement('div');
+            this.widget.id = 'soyosoyo-chat-widget';
+            this.widget.innerHTML = `
+                <div class="soyosoyo-header">
+                    <div class="soyosoyo-title">💬 SOYOSOYO SACCO</div>
+                    <button class="soyosoyo-close">×</button>
+                </div>
+                <div class="soyosoyo-messages"></div>
+                <div class="soyosoyo-input-area">
+                    <textarea class="soyosoyo-input" placeholder="Type your message..." rows="1"></textarea>
+                    <button class="soyosoyo-send">➤</button>
+                </div>
+            `;
+            document.body.appendChild(this.widget);
+
+            // Get elements
+            this.messages = this.widget.querySelector('.soyosoyo-messages');
+            this.input = this.widget.querySelector('.soyosoyo-input');
+            this.sendBtn = this.widget.querySelector('.soyosoyo-send');
+            this.closeBtn = this.widget.querySelector('.soyosoyo-close');
+        }
+
+        init() {
+            // Float button click
+            this.floatBtn.onclick = () => this.toggle();
+            
+            // Close button click
+            this.closeBtn.onclick = () => this.toggle();
+            
+            // Send button click
+            this.sendBtn.onclick = () => this.send();
+            
+            // Enter key to send
+            this.input.onkeypress = (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    this.send();
+                }
+            };
+            
+            // Auto-resize textarea
+            this.input.oninput = () => {
+                this.input.style.height = 'auto';
+                this.input.style.height = Math.min(this.input.scrollHeight, 80) + 'px';
+            };
+            
+            console.log('✅ SOYOSOYO SACCO Floating Chat Ready');
+        }
+
+        toggle() {
+            this.isOpen = !this.isOpen;
+            
+            if (this.isOpen) {
+                this.widget.classList.add('open');
+                this.floatBtn.innerHTML = '✕';
+                this.floatBtn.style.background = '#dc2626';
+                
+                if (!this.hasStarted) {
+                    this.hasStarted = true;
+                    this.addMessage(
+                        "Hello! I'm the SOYOSOYO SACCO Assistant. I can help you with information about our services, loans, savings products, and membership requirements. How can I assist you today? 🏦",
+                        'bot'
+                    );
+                }
+                
+                this.input.focus();
+            } else {
+                this.widget.classList.remove('open');
+                this.floatBtn.innerHTML = '💬';
+                this.floatBtn.style.background = 'linear-gradient(135deg, #7dd3c0 0%, #1e7b85 100%)';
+            }
+        }
+
+        addMessage(text, role, isTyping = false) {
+            const id = 'msg-' + Date.now();
+            const msgDiv = document.createElement('div');
+            msgDiv.id = id;
+            msgDiv.className = 'soyosoyo-msg ' + role + (isTyping ? ' typing' : '');
+            
+            const bubble = document.createElement('div');
+            bubble.className = 'soyosoyo-bubble';
+            bubble.textContent = text;
+            
+            msgDiv.appendChild(bubble);
+            this.messages.appendChild(msgDiv);
+            this.messages.scrollTop = this.messages.scrollHeight;
+            
+            return id;
+        }
+
+        async send() {
+            const text = this.input.value.trim();
+            if (!text || this.isLoading) return;
+
+            this.input.value = '';
+            this.input.style.height = 'auto';
+            this.isLoading = true;
+            this.sendBtn.disabled = true;
+
+            this.addMessage(text, 'user');
+            const typingId = this.addMessage('Typing...', 'bot', true);
+
+            try {
+                const response = await fetch(this.apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: text,
+                        conversationId: this.conversationId,
+                        includeContext: true
+                    })
+                });
+
+                document.getElementById(typingId)?.remove();
+
+                if (!response.ok) {
+                    throw new Error('Server error');
+                }
+
+                const data = await response.json();
+
+                if (data.response) {
+                    this.addMessage(data.response, 'bot');
+                    this.conversationId = data.conversationId;
+                }
+
+            } catch (error) {
+                console.error('Chat error:', error);
+                document.getElementById(typingId)?.remove();
+                this.addMessage("Sorry, I'm having trouble connecting. Please try again. 🔄", 'bot');
+            } finally {
+                this.isLoading = false;
+                this.sendBtn.disabled = false;
+                this.input.focus();
+            }
         }
     }
 
-    addMsg(text, role) {
-        const msg = document.createElement('div');
-        msg.className = `message ${role}`;
-        
-        const bubble = document.createElement('div');
-        bubble.className = 'message-bubble';
-        bubble.textContent = text;
-        
-        msg.appendChild(bubble);
-        this.messages.appendChild(msg);
-        this.scroll();
+    // Auto-initialize when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            window.soyosoyoChat = new SoyosoyoChatWidget();
+        });
+    } else {
+        window.soyosoyoChat = new SoyosoyoChatWidget();
     }
-
-    typing(show) {
-        const existing = document.getElementById('typing');
-        if (existing) existing.remove();
-
-        if (show) {
-            const typing = document.createElement('div');
-            typing.id = 'typing';
-            typing.className = 'message assistant';
-            typing.innerHTML = '<div class="message-bubble">Typing...</div>';
-            this.messages.appendChild(typing);
-            this.scroll();
-        }
-    }
-
-    scroll() {
-        this.messages.scrollTop = this.messages.scrollHeight;
-    }
-}
-
-// Make it global
-window.SoyosoyoChatWidget = SoyosoyoChatWidget;
+})();
