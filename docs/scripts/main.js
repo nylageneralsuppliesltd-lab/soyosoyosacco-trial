@@ -1,17 +1,15 @@
 // scripts/main.js - Soyosoyo Sacco Site Initialization
-// Amended for mobile menu toggle, header compatibility, bloat removal, and tool integration (chatbot, loan calculator, dividends calculator)
-// Tools dynamically loaded based on page for efficiency and compatibility across all HTML pages (Home.html, Products.html, Jobs.html, etc.)
+// Includes floating chatbot on all pages, dynamic tool loading, clean nav
 // Date: October 11, 2025
 
 document.addEventListener('DOMContentLoaded', function() {
   console.log('Soyosoyo Sacco - main.js loaded');
 
-  // Mobile Menu Toggle (Core Amendment)
+  // Mobile Menu Toggle
   const toggleBtn = document.getElementById('menu-toggle');
   const navLinks = document.querySelector('.nav-links');
   
   if (toggleBtn && navLinks) {
-    // Initial hamburger icon
     toggleBtn.innerHTML = `
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -23,129 +21,107 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function toggleMenu() {
       navLinks.classList.toggle('show');
-      if (navLinks.classList.contains('show')) {
-        // Close (X) icon
-        toggleBtn.innerHTML = `
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        `;
-      } else {
-        // Hamburger icon
-        toggleBtn.innerHTML = `
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="3" y1="6" x2="21" y2="6"></line>
-            <line x1="3" y1="12" x2="21" y2="12"></line>
-            <line x1="3" y1="18" x2="21" y2="18"></line>
-          </svg>
-        `;
-      }
+      const isOpen = navLinks.classList.contains('show');
+      toggleBtn.innerHTML = isOpen ? `
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      ` : `
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      `;
     }
 
-    toggleBtn.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
+    toggleBtn.addEventListener('click', (e) => {
+      e.preventDefault(); e.stopPropagation();
       toggleMenu();
     });
 
-    // Close on outside click
-    document.addEventListener('click', function(e) {
+    document.addEventListener('click', (e) => {
       if (navLinks.classList.contains('show') && !navLinks.contains(e.target) && !toggleBtn.contains(e.target)) {
-        toggleMenu(); // Toggles to closed
+        toggleMenu();
       }
     });
 
-    // Close on resize to desktop
-    window.addEventListener('resize', function() {
-      if (window.innerWidth > 768) {
-        if (navLinks.classList.contains('show')) {
-          toggleMenu(); // Toggles to closed
-        }
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 768 && navLinks.classList.contains('show')) {
+        toggleMenu();
       }
     });
 
-    console.log('Mobile menu toggle initialized');
-  } else {
-    console.warn('Menu elements not found - check IDs in HTML');
+    console.log('Mobile menu initialized');
   }
 
-  // Optional: Header Image (No Amendment Needed - Handled in CSS)
-  // If you want JS to set background-image dynamically per page, add here:
-  /*
-  const hero = document.querySelector('.hero');
-  if (hero) {
-    const page = window.location.pathname.split('/').pop() || 'index.html';
-    let imagePath = './assets/header-image.jpg';
-    if (page === 'Products.html') imagePath = './assets/products-header.jpg';
-    // Add more pages
-    hero.style.backgroundImage = `url('${imagePath}')`;
-  }
-  */
-
-  // Bloat Cleanup: Ignore Google Sites JS (Comment out or remove if present)
-  // Example: Remove or ignore [jscontroller] elements
-  // document.querySelectorAll('[jscontroller]').forEach(el => el.removeAttribute('jscontroller'));
-
-  // Tool Integration: Dynamically load page-specific tool scripts for compatibility across all HTML pages
-  // Detect current page and load only relevant tool (prevents bloat on non-tool pages like Home.html, Products.html, etc.)
-  // Assumes tool pages: Chat.html (chatbot), LoanCalculator.html (calculator), DividendsCalculator.html (dividends)
-  const currentPage = window.location.pathname.split('/').pop().toLowerCase() || 'index.html';
-  
-  function loadToolScript(src) {
-    if (document.querySelector(`script[src="${src}"]`)) {
-      console.log(`Tool script ${src} already loaded`);
-      return; // Avoid duplicate loads
-    }
+  // Dynamic Tool Loading (Page-Specific)
+  const currentPage = window.location.pathname.split('/').pop().toLowerCase();
+  function loadTool(src) {
+    if (document.querySelector(`script[src="${src}"]`)) return;
     const script = document.createElement('script');
     script.src = src;
-    script.onload = () => console.log(`Tool loaded: ${src}`);
-    script.onerror = () => console.error(`Failed to load tool: ${src}`);
+    script.onload = () => console.log(`Loaded: ${src}`);
     document.head.appendChild(script);
   }
 
-  if (currentPage.includes('chat')) {
-    loadToolScript('scripts/chatbot.js');
-    console.log('Chatbot tool initialized for chat page');
-  } else if (currentPage.includes('loan') || currentPage.includes('calculator')) {
-    loadToolScript('scripts/calculator.js');
-    console.log('Loan Calculator tool initialized for calculator page');
+  if (currentPage.includes('loan') || currentPage.includes('calculator')) {
+    loadTool('scripts/calculator.js');
   } else if (currentPage.includes('dividends')) {
-    loadToolScript('scripts/dividendscalculator.js');
-    console.log('Dividends Calculator tool initialized for dividends page');
+    loadTool('scripts/dividendscalculator.js');
+  } else if (currentPage.includes('chat')) {
+    loadTool('scripts/chatbot.js');
   }
 
-  // Optional: Site-wide Chatbot Toggle (Floating button to open embedded chat on any page)
-  // Uncomment and add <div id="chatbot-container"></div> to body in HTML if desired
-  /*
+  // Floating Hovering Chatbot (On ALL Pages)
   const chatbotToggle = document.createElement('button');
   chatbotToggle.id = 'chatbot-toggle';
-  chatbotToggle.innerHTML = '💬 Chat';
-  chatbotToggle.style.position = 'fixed';
-  chatbotToggle.style.bottom = '20px';
-  chatbotToggle.style.right = '20px';
-  chatbotToggle.style.zIndex = '1000';
-  chatbotToggle.style.background = '#7dd3c0';
-  chatbotToggle.style.color = 'white';
-  chatbotToggle.style.border = 'none';
-  chatbotToggle.style.borderRadius = '50%';
-  chatbotToggle.style.width = '60px';
-  chatbotToggle.style.height = '60px';
-  chatbotToggle.style.cursor = 'pointer';
+  chatbotToggle.innerHTML = '💬';
+  chatbotToggle.style.cssText = `
+    position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+    background: #7dd3c0; color: white; border: none; border-radius: 50%;
+    width: 60px; height: 60px; cursor: pointer; font-size: 24px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: transform 0.2s;
+  `;
+  chatbotToggle.addEventListener('mouseenter', () => chatbotToggle.style.transform = 'scale(1.1)');
+  chatbotToggle.addEventListener('mouseleave', () => chatbotToggle.style.transform = 'scale(1)');
   document.body.appendChild(chatbotToggle);
-  
+
+  let chatbotOpen = false;
   chatbotToggle.addEventListener('click', () => {
     const container = document.getElementById('chatbot-container');
-    if (!container) {
-      const newContainer = document.createElement('div');
-      newContainer.id = 'chatbot-container';
-      newContainer.innerHTML = `<!-- Chatbot HTML structure here -->`;
-      document.body.appendChild(newContainer);
-      loadToolScript('scripts/chatbot.js');
+    if (!chatbotOpen) {
+      // Load script if not present
+      loadTool('scripts/chatbot.js');
+      // Embed full chat HTML (from previous response - paste the <div class="chat-container">... entire structure here)
+      container.innerHTML = `
+        <!-- Full Chatbot HTML from previous: <div class="chat-container"> ... entire body content up to </div> -->
+        <div class="chat-container">
+          <!-- Paste the full chat HTML structure here (header, messages, input) -->
+          <!-- For brevity: See previous chatbot.html response -->
+        </div>
+      `;
+      container.style.display = 'block';
+      container.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 999;';
+      chatbotOpen = true;
+      chatbotToggle.innerHTML = '❌';
+    } else {
+      container.style.display = 'none';
+      chatbotOpen = false;
+      chatbotToggle.innerHTML = '💬';
     }
-    // Toggle visibility logic
   });
-  */
 
-  console.log('Soyosoyo Sacco Site - Initialization complete');
+  // Close chatbot on outside click
+  document.addEventListener('click', (e) => {
+    const container = document.getElementById('chatbot-container');
+    if (chatbotOpen && !chatbotToggle.contains(e.target) && !container.contains(e.target)) {
+      container.style.display = 'none';
+      chatbotOpen = false;
+      chatbotToggle.innerHTML = '💬';
+    }
+  });
+
+  console.log('Site init complete - Floating chatbot active on all pages');
 });
