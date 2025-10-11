@@ -1,881 +1,195 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Home - SOYOSOYO SACCO</title>
-<link rel="icon" href="./assets/141dd3faa98da9737b591161deac509a.jpg"/><link rel="stylesheet" href="./style.css"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - SOYOSOYO SACCO</title>
+    <link rel="icon" href="./assets/141dd3faa98da9737b591161deac509a.jpg">
+    <link rel="stylesheet" href="./style.css">
+    <style>
+        /* Light Green Theme for Header/Nav */
+        .site-header { background-color: #90EE90; } /* Light green */
+        .navbar { background-color: #90EE90; color: #006400; } /* Dark green text for contrast */
+        .nav-links a { color: #006400; } /* Links in dark green */
+        .nav-links a:hover { color: #228B22; } /* Forest green on hover */
+        
+        /* Ensure no overlap: Hero padding, section margins */
+        .hero { 
+            background-image: url('./assets/1acfbe6e878a54bc7a6000f7848d6dc7.jpg'); 
+            background-size: cover; 
+            background-position: center; 
+            height: 50vh; 
+            position: relative; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: white; 
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7); /* Shadow for readability */
+            padding: 20px; /* Prevent edge overlap */
+        }
+        .hero::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); } /* Overlay for text */
+        .hero > * { position: relative; z-index: 1; text-align: center; }
+        
+        section { margin: 40px 0; padding: 20px; } /* Flow with spacing */
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .product-card { border: 1px solid #90EE90; padding: 15px; border-radius: 8px; background: white; }
+        .product-card img { width: 100%; height: 200px; object-fit: cover; border-radius: 4px; }
+        .tool-section { background: #f9f9f9; padding: 30px; border-radius: 8px; margin: 20px 0; }
+    </style>
 </head>
 <body>
- <header class="site-header">
-    <div class="container navbar">
-      <a href="index.html"><img class="brand-logo" src="./assets/141dd3faa98da9737b591161deac509a.jpg" alt="Soyosoyo Sacco Logo"></a>
-      <button id="menu-toggle" aria-label="menu">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="3" y1="6" x2="21" y2="6"></line>
-          <line x1="3" y1="12" x2="21" y2="12"></line>
-          <line x1="3" y1="18" x2="21" y2="18"></line>
-        </svg>
-      </button>
-      <nav>
-        <ul class="nav-links">
-          <li><a href="index.html">Home</a></li>
-          <li><a href="Products.html">Products</a></li>
-          <li><a href="Online Forms.html">Online Forms</a></li>
-          <li><a href="Jobs.html">Jobs</a></li>
-          <li><a href="Join Us.html">Join Us</a></li>
-        </ul>
-      </nav>
-    </div>
-    <div class="hero"></div> <!-- Image via CSS, no text -->
-  </header>
-<main class="container">
-  <section class="section preserved"><div jscontroller="pc62j" jsmodel="iTeaXe" jsaction="rcuQ6b:WYd;GvneHb:og1FDd;vbaUQc:uAM5ec;">
-      <div jscontroller="X4BaPc" jsaction="rcuQ6b:WYd;o6xM5b:Pg9eo;HuL2Hd:mHeCvf;VMhF5:FFYy5e;sk3Qmb:HI1Mdd;JIbuQc:rSzFEd(z2EeY),aSaF6e(ilzYPe);">
-        <div jsname="tiN4bf">
-          <link rel="stylesheet" href="style.css">
-          <div class="bKy5e">
-            <div class="rrJNTc" tabindex="-1">
-              <div class="VfPpkd-dgl2Hf-ppHlrf-sM5MNb" data-is-touch-wrapper="true">
-                <button class="VfPpkd-LgbsSe VfPpkd-LgbsSe-OWXEXe-dgl2Hf LjDxcd XhPA0b LQeN7 WsSUlf jz7fPb" jscontroller="soHxf" jsaction="click:cOuCgd; mousedown:UX7yZ; mouseup:lbsD7e; mouseenter:tfO1Yc; mouseleave:JywGue; touchstart:p6p2H; touchmove:FwuNnf; touchend:yfqBxc; touchcancel:JMtRjd; focus:AHmuwe; blur:O22p3e; contextmenu:mg9Pef;mlnRJb:fLiPzd;" data-idom-class="LjDxcd XhPA0b LQeN7 WsSUlf jz7fPb" jsname="z2EeY" tabindex="0">
-                  <div class="VfPpkd-Jh9lGc">
-                  </div>
-                  <div class="VfPpkd-J1Ukfc-LhBDec">
-                  </div>
-                  <div class="VfPpkd-RLmnJb">
-                  </div>
-                  <span jsname="V67aGc" class="VfPpkd-vQzf8d">
-                    Skip to main content
-                  </span>
-                </button>
-              </div>
-              <div class="VfPpkd-dgl2Hf-ppHlrf-sM5MNb" data-is-touch-wrapper="true">
-                <button class="VfPpkd-LgbsSe VfPpkd-LgbsSe-OWXEXe-dgl2Hf LjDxcd XhPA0b LQeN7 WsSUlf br90J" jscontroller="soHxf" jsaction="click:cOuCgd; mousedown:UX7yZ; mouseup:lbsD7e; mouseenter:tfO1Yc; mouseleave:JywGue; touchstart:p6p2H; touchmove:FwuNnf; touchend:yfqBxc; touchcancel:JMtRjd; focus:AHmuwe; blur:O22p3e; contextmenu:mg9Pef;mlnRJb:fLiPzd;" data-idom-class="LjDxcd XhPA0b LQeN7 WsSUlf br90J" jsname="ilzYPe" tabindex="0">
-                  <div class="VfPpkd-Jh9lGc">
-                  </div>
-                  <div class="VfPpkd-J1Ukfc-LhBDec">
-                  </div>
-                  <div class="VfPpkd-RLmnJb">
-                  </div>
-                  <span jsname="V67aGc" class="VfPpkd-vQzf8d">
-                    Skip to navigation
-                  </span>
-                </button>
-              </div>
+    <header class="site-header">
+        <div class="container navbar">
+            <a href="index.html"><img class="brand-logo" src="./assets/141dd3faa98da9737b591161deac509a.jpg" alt="Soyosoyo Sacco Logo"></a>
+            <button id="menu-toggle" aria-label="Toggle Menu">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="Products.html">Products</a></li>
+                    <li><a href="Online Forms.html">Online Forms</a></li>
+                    <li><a href="Jobs.html">Jobs</a></li>
+                    <li><a href="Join Us.html">Join Us</a></li>
+                </ul>
+            </nav>
+        </div>
+        <div class="hero">
+            <div>
+                <h1>Welcome to SOYOSOYO SACCO</h1>
+                <p>Your trusted partner in financial empowerment.</p>
             </div>
-          </div>
-          <div class="M63kCb N63NQ">
-          </div>
-          <div class="QZ3zWd">
-            <div class="fktJzd AKpWA DdtOdf WZv7J fOU46b yMcSQd Ly6Unf G9Qloe XeSM4 XxIgdb" jsname="UzWXSb" data-uses-custom-theme="false" data-legacy-theme-name="QualityBasics" data-legacy-theme-font-kit="Light" data-legacy-theme-color-kit="Custom" jscontroller="Md9ENb" jsaction="gsiSmd:Ffcznf;yj5fUd:cpPetb;HNXL3:q0Vyke;e2SXKd:IPDu5e;BdXpgd:nhk7K;rcuQ6b:WYd;">
-              <header id="atIdViewHeader">
-                <div style="position:fixed; width: 100%; z-index: 100;">
-                  <div id="docs-banner-container">
-                    <div id="docs-banners">
-                      <div id="HB1eCd-mzNpsf-r8s4j-ORHb">
-                      </div>
-                      <div id="HB1eCd-TZk80d-r8s4j-ORHb" aria-live="assertive" aria-atomic="true">
-                      </div>
-                    </div>
-                    <div class="HB1eCd-Vkfede-NBtyUd-PvRhvb-LwH6nd">
-                    </div>
-                  </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Evolution Section -->
+        <section class="section">
+            <h1 style="text-align: center; font-family: Lato, Arial; font-weight: 700;">The Evolution of Soyosoyo SACCO: From Medicare to Modern Empowerment</h1>
+            <p style="text-align: justify; line-height: 1.6; margin: 20px 0;">
+                Soyosoyo SACCO boasts a rich history, beginning its journey on <strong>July 15, 1998</strong>, as <strong>SOYOSOYO MEDICARE CO-OPERATIVE SAVINGS & CREDIT SOCIETY</strong>. Its initial, heartwarming mission was to pool funds and provide affordable credit, primarily to help members cover their families' medical bills.
+            </p>
+            <p style="text-align: justify; line-height: 1.6; margin: 20px 0;">
+                As the fund grew significantly, the SACCO's vision expanded beyond healthcare. It began to support members in financing their children's education, demonstrating its adaptability and commitment to community needs.
+            </p>
+            <p style="text-align: justify; line-height: 1.6; margin: 20px 0;">
+                However, with its membership spreading across various parts of the Kenyan Coast, the complexity of managing the SACCO, combined with the introduction of the National Hospital Insurance Fund (NHIF) which began covering medical bills, led the SACCO into a period of silence.
+            </p>
+            <p style="text-align: justify; line-height: 1.6; margin: 20px 0;">
+                But the story didn’t end there. In 2022, the dedicated founding members reignited their passion, showing a keen interest in reviving the SACCO. Their goal was clear: to refresh its objectives to align with current community needs.
+            </p>
+            <p style="text-align: justify; line-height: 1.6; margin: 20px 0;">
+                This revival culminated in a new beginning for Soyosoyo SACCO. Officially rebranded and given a new look on April 10, 2024, it emerged with renewed vigor. Its expanded mission now focuses on providing affordable financing to cover a broader range of essential objectives, including medical bills, education, agriculture, and development.
+            </p>
+            <p style="text-align: justify; line-height: 1.6; margin: 20px 0;">
+                Soyosoyo SACCO stands today as a testament to its enduring commitment to its members, evolving to meet the diverse financial needs of its community.
+            </p>
+        </section>
+
+        <!-- Mission & Vision -->
+        <section class="section" style="text-align: center;">
+            <img src="./assets/0065564ad0f92baf9be886b031073979.jpg" alt="Mission Image" style="width: 100%; max-width: 600px; margin: 0 auto 20px; display: block; border-radius: 8px;">
+            <h2>Our Mission</h2>
+            <p style="max-width: 800px; margin: 0 auto; line-height: 1.6;">
+                To continually empower members by providing accessible, affordable, and innovative credit for healthcare, education, agriculture, and development, driving enduring prosperity in our cooperative community.
+            </p>
+            <img src="./assets/d8c3d49708ed9831ff753b3548c717aa.jpg" alt="Vision Image" style="width: 100%; max-width: 600px; margin: 40px auto 20px; display: block; border-radius: 8px;">
+            <h2>Our Vision</h2>
+            <p style="max-width: 800px; margin: 0 auto; line-height: 1.6;">
+                To be the leading catalyst for financial transformation and sustainable prosperity across Kenya, empowering every member to achieve their aspirations in health, education, and development.
+            </p>
+        </section>
+
+        <!-- Core Values -->
+        <section class="section">
+            <img src="./assets/8119c4ebd64ccbe641d0563d23444c34.jpg" alt="Values Image" style="width: 100%; margin-bottom: 20px; border-radius: 8px;">
+            <h2 style="text-align: center;">Our Core Values</h2>
+            <ul style="list-style-type: square; max-width: 800px; margin: 20px auto; padding-left: 40px; line-height: 1.6;">
+                <li><strong>Empowerment</strong></li>
+                <li><strong>Integrity</strong></li>
+                <li><strong>Community</strong></li>
+                <li><strong>Accessibility</strong></li>
+                <li><strong>Growth</strong></li>
+            </ul>
+        </section>
+
+        <!-- Products Section -->
+        <section class="section">
+            <h1 style="text-align: center; font-family: Lato, Arial; font-weight: 700;">OUR PRODUCTS</h1>
+            <div class="products-grid">
+                <!-- Education Loan Card -->
+                <div class="product-card">
+                    <img src="./assets/ba04cd4377b3746fc0750dcf2ff3d935.jpg" alt="Education Loan">
+                    <h2 style="text-align: center;">Education Loan</h2>
+                    <p>Dreaming of a brighter future through education? An <strong>education loan</strong> can turn that dream into reality! Don’t let financial hurdles block your academic aspirations. This specialized loan is designed to cover tuition, accommodation, books, and living expenses, making education accessible to everyone.</p>
+                    <a href="Products.html" class="products-button" style="display: block; text-align: center; background: #90EE90; color: #006400; padding: 10px; text-decoration: none; border-radius: 4px; margin-top: 10px;">View Product</a>
                 </div>
-                <div jscontroller="eFZtfd" jsaction="MxH79b:Xgd9s; click:Ptdedd;">
-                  <div jsname="NKtjmd" style="background-color: rgb(69, 196, 196);" class="vB4mjb phf0q QOTFId" role="region" aria-labelledby="i1" tabbable tabindex="0">
-                    <p style="color: rgb(0, 0, 0);" id="i1" class="Y4CpGd jCzMm">
-                    </p>
-                    <div class="vKRmoe">
-                      <div role="presentation" class="uArJ5e UQuaGc AeAAkf WWpVfd Y4CpGd" jscontroller="VXdfxd" jsaction="click:cOuCgd; mousedown:UX7yZ; mouseup:lbsD7e; mouseenter:tfO1Yc; mouseleave:JywGue;focus:AHmuwe; blur:O22p3e; contextmenu:mg9Pef;" jsshadow title="Member Portal" style="color: rgb(0, 0, 0); border-color: rgb(0, 0, 0);">
-                        <a class="IrxBzb TpQm9d" href="https://www.google.com/url?q=https%3A%2F%2Fapp.chamasoft.com%2F%2Flogin&sa=D&sntz=1&usg=AOvVaw3NJicNaTRIBlDrWFigmEbZ" target="_blank">
-                          <div class="Fvio9d MbhUzd" jsname="ksKsZd">
-                          </div>
-                          <div class="e19J0b CeoRYc">
-                          </div>
-                          <span jsslot class="l4V7wb Fxmcue">
-                            <span class="NPEfkd RveJvd snByac">
-                              Member Portal
-                            </span>
-                          </span>
-                        </a>
-                      </div>
-                    </div>
-                  </div>
+                <!-- Add more product cards as needed -->
+            </div>
+        </section>
+
+        <!-- Tools Integration -->
+        <!-- Loan Calculator -->
+        <section class="tool-section" id="loan-calculator">
+            <h2 style="text-align: center;">Loan Calculator</h2>
+            <!-- Embed from previous calculator.html -->
+            <div class="calculator-wrapper">
+                <!-- Full calculator HTML structure here (from previous response) -->
+                <div class="calculator">
+                    <!-- Loan type select, inputs, button, result, tables, chart -->
+                    <select id="loanType" onchange="updateFields()">
+                        <option value="">Select Loan Type</option>
+                        <option value="emergency">Emergency Loan</option>
+                        <!-- ... other options -->
+                    </select>
+                    <!-- ... rest of calculator form -->
                 </div>
-                <div class="BbxBP HP6J1d K5Zlne" jsname="WA9qLc" jscontroller="RQOkef" jsaction="rcuQ6b:JdcaS;MxH79b:JdcaS;VbOlFf:ywL4Jf;FaOgy:ywL4Jf; keydown:Hq2uPe; wheel:Ut4Ahc;" data-top-navigation="true" data-is-preview="false">
-                  <div class="DXsoRd YTv4We oNsfjf" role="button" tabindex="0" jsaction="click:LUvzV" jsname="z4Tpl" id="s9iPrd" aria-haspopup="true" aria-controls="yuynLe" aria-expanded="false">
-                    <svg class="wFCWne" viewbox="0 0 24 24" stroke="currentColor" jsname="B1n9ub" focusable="false">
-                      <g transform="translate(12,12)">
-                        <path class="hlJH0" d="M-9 -5 L9 -5" fill="none" stroke-width="2">
-                        </path>
-                        <path class="HBu6N" d="M-9 0 L9 0" fill="none" stroke-width="2">
-                        </path>
-                        <path class="cLAGQe" d="M-9 5 L9 5" fill="none" stroke-width="2">
-                        </path>
-                      </g>
-                    </svg>
-                  </div>
-                  <nav class="JzO0Vc" jsname="ihoMLd" role="navigation" tabindex="-1" id="yuynLe" jsaction="transitionend:UD2r5">
-                    <a class="XMyrgf" href="Home.html">
-                      <img src="assets/assets/6102e4707fca128dc24415face92f060.jpg" class="r9CsCb" role="img" aria-label="Soyosoyo Sacco">
-                    </a>
-                    <a class="Zjiec oNsfjf" href="Home.html">
-                      <span>
-                        SOYOSOYO SACCO
-                      </span>
-                    </a>
-                    <ul class="jYxBte Fpy8Db" tabindex="-1">
-                      <li jsname="ibnC6b" data-nav-level="1">
-                        <div class="PsKE7e r8s4j-R6PoUb IKA38e baH5ib oNsfjf lhZOrc" aria-current="true">
-                          <div class="I35ICb" jsaction="keydown:mPuKz(QwLHlb); click:vHQTA(QwLHlb);">
-                            <a class="aJHbb dk90Ob hDrhEe HlqNPb" jsname="QwLHlb" role="link" tabindex="0" data-navtype="1" aria-selected="true" href="Home.html" data-url="Home.html" data-type="1" data-level="1" data-page="106NP_ak1QkSqEr94mTFVX9OeatuKrE4q">
-                              Home
-                            </a>
-                          </div>
-                        </div>
-                      </li>
-                      <li jsname="ibnC6b" data-nav-level="1">
-                        <div class="PsKE7e r8s4j-R6PoUb IKA38e baH5ib oNsfjf">
-                          <div class="I35ICb" jsaction="keydown:mPuKz(QwLHlb); click:vHQTA(QwLHlb);">
-                            <a class="aJHbb dk90Ob hDrhEe HlqNPb" jsname="QwLHlb" role="link" tabindex="-1" data-navtype="1" href="Join%20Us.html" data-url="Join%20Us.html" data-type="1" data-level="1" data-page="1veqelJCVaqSFx9fiafrfLgVXKBSMU9J-">
-                              Join Us
-                            </a>
-                          </div>
-                        </div>
-                      </li>
-                      <li jsname="ibnC6b" data-nav-level="1">
-                        <div class="PsKE7e r8s4j-R6PoUb IKA38e baH5ib oNsfjf">
-                          <div class="I35ICb" jsaction="keydown:mPuKz(QwLHlb); click:vHQTA(QwLHlb);">
-                            <a class="aJHbb dk90Ob hDrhEe HlqNPb" jsname="QwLHlb" role="link" tabindex="-1" data-navtype="1" href="Products.html" data-url="Products.html" data-type="1" data-level="1" data-page="1bkxAfwD9MgKG_f4gffWWnWLo7InubMIK">
-                              Products
-                            </a>
-                          </div>
-                        </div>
-                      </li>
-                      <li jsname="ibnC6b" data-nav-level="1">
-                        <div class="PsKE7e r8s4j-R6PoUb IKA38e baH5ib oNsfjf">
-                          <div class="I35ICb" jsaction="keydown:mPuKz(QwLHlb); click:vHQTA(QwLHlb);">
-                            <a class="aJHbb dk90Ob hDrhEe HlqNPb" jsname="QwLHlb" role="link" tabindex="-1" data-navtype="1" href="Online%20Forms.html" data-url="Online%20Forms.html" data-type="1" data-level="1" data-page="1lPS0er_kQfJ3IdcgHgSK8YJsP4rgUvR-">
-                              Online Forms
-                            </a>
-                          </div>
-                        </div>
-                      </li>
-                      <li jsname="ibnC6b" data-nav-level="1">
-                        <div class="PsKE7e r8s4j-R6PoUb IKA38e baH5ib oNsfjf">
-                          <div class="I35ICb" jsaction="keydown:mPuKz(QwLHlb); click:vHQTA(QwLHlb);">
-                            <a class="aJHbb dk90Ob hDrhEe HlqNPb" jsname="QwLHlb" role="link" tabindex="-1" data-navtype="1" href="Jobs.html" data-url="Jobs.html" data-type="1" data-level="1" data-page="1CBVUV0x0UHNam43Hf3fUtBgz6Y5-MsAI">
-                              Jobs
-                            </a>
-                          </div>
-                        </div>
-                      </li>
-                    </ul>
-                  </nav>
-                  <div class="VLoccc K5Zlne U8eYrb" jsname="rtFGi">
-                    <div class="Pvc6xe">
-                      <div jsname="I8J07e" class="TlfmSc YSH9J">
-                        <a class="GAuSPc" jsname="jIujaf" href="Home.html">
-                          <img src="assets/assets/6102e4707fca128dc24415face92f060.jpg" class="lzy1Td" role="img" aria-label="Soyosoyo Sacco" jsname="SwcDWb">
-                          <span class="QTKDff p46B7e">
-                            SOYOSOYO SACCO
-                          </span>
-                        </a>
-                      </div>
-                      <nav class="plFg0c" jscontroller="HXO1uc" jsaction="rcuQ6b:rcuQ6b;MxH79b:CfS0pe;" id="WDxLfe" data-is-preview="false" style="visibility: hidden;" role="navigation" tabindex="-1">
-                        <ul jsname="waIgnc" class="K1Ci7d oXBWEc jYxBte">
-                          <li jsname="ibnC6b" data-nav-level="1" class="VsJjtf">
-                            <div class="PsKE7e qV4dIc Qrrb5 YSH9J M9vuGd" aria-current="true">
-                              <div class="I35ICb" jsaction="click:vHQTA(QwLHlb); keydown:mPuKz(QwLHlb);">
-                                <a class="aJHbb dk90Ob jgXgSe HlqNPb" jscontroller="yUHiM" jsaction="rcuQ6b:WYd;" jsname="QwLHlb" role="link" tabindex="0" data-navtype="1" aria-selected="true" href="Home.html" data-url="Home.html" data-type="1" data-level="1" data-page="106NP_ak1QkSqEr94mTFVX9OeatuKrE4q">
-                                  Home
-                                </a>
-                              </div>
-                            </div>
-                            <div class="rgLkl">
-                            </div>
-                          </li>
-                          <li jsname="ibnC6b" data-nav-level="1" class="VsJjtf">
-                            <div class="PsKE7e qV4dIc Qrrb5 YSH9J">
-                              <div class="I35ICb" jsaction="click:vHQTA(QwLHlb); keydown:mPuKz(QwLHlb);">
-                                <a class="aJHbb dk90Ob jgXgSe HlqNPb" jscontroller="yUHiM" jsaction="rcuQ6b:WYd;" jsname="QwLHlb" role="link" tabindex="-1" data-navtype="1" href="Join%20Us.html" data-url="Join%20Us.html" data-type="1" data-level="1" data-page="1veqelJCVaqSFx9fiafrfLgVXKBSMU9J-">
-                                  Join Us
-                                </a>
-                              </div>
-                            </div>
-                            <div class="rgLkl">
-                            </div>
-                          </li>
-                          <li jsname="ibnC6b" data-nav-level="1" class="VsJjtf">
-                            <div class="PsKE7e qV4dIc Qrrb5 YSH9J">
-                              <div class="I35ICb" jsaction="click:vHQTA(QwLHlb); keydown:mPuKz(QwLHlb);">
-                                <a class="aJHbb dk90Ob jgXgSe HlqNPb" jscontroller="yUHiM" jsaction="rcuQ6b:WYd;" jsname="QwLHlb" role="link" tabindex="-1" data-navtype="1" href="Products.html" data-url="Products.html" data-type="1" data-level="1" data-page="1bkxAfwD9MgKG_f4gffWWnWLo7InubMIK">
-                                  Products
-                                </a>
-                              </div>
-                            </div>
-                            <div class="rgLkl">
-                            </div>
-                          </li>
-                          <li jsname="ibnC6b" data-nav-level="1" class="VsJjtf">
-                            <div class="PsKE7e qV4dIc Qrrb5 YSH9J">
-                              <div class="I35ICb" jsaction="click:vHQTA(QwLHlb); keydown:mPuKz(QwLHlb);">
-                                <a class="aJHbb dk90Ob jgXgSe HlqNPb" jscontroller="yUHiM" jsaction="rcuQ6b:WYd;" jsname="QwLHlb" role="link" tabindex="-1" data-navtype="1" href="Online%20Forms.html" data-url="Online%20Forms.html" data-type="1" data-level="1" data-page="1lPS0er_kQfJ3IdcgHgSK8YJsP4rgUvR-">
-                                  Online Forms
-                                </a>
-                              </div>
-                            </div>
-                            <div class="rgLkl">
-                            </div>
-                          </li>
-                          <li jsname="ibnC6b" data-nav-level="1" class="VsJjtf">
-                            <div class="PsKE7e qV4dIc Qrrb5 YSH9J">
-                              <div class="I35ICb" jsaction="click:vHQTA(QwLHlb); keydown:mPuKz(QwLHlb);">
-                                <a class="aJHbb dk90Ob jgXgSe HlqNPb" jscontroller="yUHiM" jsaction="rcuQ6b:WYd;" jsname="QwLHlb" role="link" tabindex="-1" data-navtype="1" href="Jobs.html" data-url="Jobs.html" data-type="1" data-level="1" data-page="1CBVUV0x0UHNam43Hf3fUtBgz6Y5-MsAI">
-                                  Jobs
-                                </a>
-                              </div>
-                            </div>
-                            <div class="rgLkl">
-                            </div>
-                          </li>
-                          <li jsname="ibnC6b" data-nav-level="1" class="VsJjtf ZmrVpf oXBWEc" more-menu-item jsaction="mouseenter:Vx8Jlb; mouseleave:ysDRUd">
-                            <div class="PsKE7e qV4dIc Qrrb5 YSH9J">
-                              <div class="I35ICb" jsaction="click:vHQTA(QwLHlb); keydown:mPuKz(QwLHlb);">
-                                <a class="aJHbb dk90Ob jgXgSe HlqNPb" jscontroller="yUHiM" jsaction="rcuQ6b:WYd;" jsname="QwLHlb" role="link" tabindex="-1" data-navtype="1" aria-expanded="false" aria-haspopup="true" data-level="1" data-page="">
-                                  More
-                                </a>
-                                <div class="mBHtvb u5fiyc" role="presentation" title="Expand/Collapse" jsaction="click:oESVTe" jsname="ix0Hvc">
-                                  <svg class="dvmRw" viewbox="0 0 24 24" stroke="currentColor" jsname="HIH2V" focusable="false">
-                                    <g transform="translate(9.7,12) rotate(45)">
-                                      <path class="K4B8Y" d="M-4.2 0 L4.2 0" stroke-width="2">
-                                      </path>
-                                    </g>
-                                    <g transform="translate(14.3,12) rotate(-45)">
-                                      <path class="MrYMx" d="M-4.2 0 L4.2 0" stroke-width="2">
-                                      </path>
-                                    </g>
-                                  </svg>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="oGuwee eWDljc RPRy1e Mkt3Tc" style="display:none;" jsname="QXE97" jsaction="transitionend:SJBdh" role="group">
-                              <ul class="VcS63b">
-                                <li jsname="ibnC6b" data-nav-level="2" class="ijMPi ZmrVpf" in-more-item>
-                                  <div class="PsKE7e IKA38e oNsfjf lhZOrc" aria-current="true">
-                                    <div class="I35ICb" jsaction="click:vHQTA(QwLHlb); keydown:mPuKz(QwLHlb);">
-                                      <a class="aJHbb hDrhEe HlqNPb" jscontroller="yUHiM" jsaction="rcuQ6b:WYd;" jsname="QwLHlb" role="link" tabindex="-1" data-navtype="1" aria-selected="true" href="Home.html" data-url="Home.html" data-type="1" data-in-more-submenu="true" data-level="2" data-page="106NP_ak1QkSqEr94mTFVX9OeatuKrE4q">
-                                        Home
-                                      </a>
-                                    </div>
-                                  </div>
-                                </li>
-                                <li jsname="ibnC6b" data-nav-level="2" class="ijMPi ZmrVpf" in-more-item>
-                                  <div class="PsKE7e IKA38e oNsfjf">
-                                    <div class="I35ICb" jsaction="click:vHQTA(QwLHlb); keydown:mPuKz(QwLHlb);">
-                                      <a class="aJHbb hDrhEe HlqNPb" jscontroller="yUHiM" jsaction="rcuQ6b:WYd;" jsname="QwLHlb" role="link" tabindex="-1" data-navtype="1" href="Join%20Us.html" data-url="Join%20Us.html" data-type="1" data-in-more-submenu="true" data-level="2" data-page="1veqelJCVaqSFx9fiafrfLgVXKBSMU9J-">
-                                        Join Us
-                                      </a>
-                                    </div>
-                                  </div>
-                                </li>
-                                <li jsname="ibnC6b" data-nav-level="2" class="ijMPi ZmrVpf" in-more-item>
-                                  <div class="PsKE7e IKA38e oNsfjf">
-                                    <div class="I35ICb" jsaction="click:vHQTA(QwLHlb); keydown:mPuKz(QwLHlb);">
-                                      <a class="aJHbb hDrhEe HlqNPb" jscontroller="yUHiM" jsaction="rcuQ6b:WYd;" jsname="QwLHlb" role="link" tabindex="-1" data-navtype="1" href="Products.html" data-url="Products.html" data-type="1" data-in-more-submenu="true" data-level="2" data-page="1bkxAfwD9MgKG_f4gffWWnWLo7InubMIK">
-                                        Products
-                                      </a>
-                                    </div>
-                                  </div>
-                                </li>
-                                <li jsname="ibnC6b" data-nav-level="2" class="ijMPi ZmrVpf" in-more-item>
-                                  <div class="PsKE7e IKA38e oNsfjf">
-                                    <div class="I35ICb" jsaction="click:vHQTA(QwLHlb); keydown:mPuKz(QwLHlb);">
-                                      <a class="aJHbb hDrhEe HlqNPb" jscontroller="yUHiM" jsaction="rcuQ6b:WYd;" jsname="QwLHlb" role="link" tabindex="-1" data-navtype="1" href="Online%20Forms.html" data-url="Online%20Forms.html" data-type="1" data-in-more-submenu="true" data-level="2" data-page="1lPS0er_kQfJ3IdcgHgSK8YJsP4rgUvR-">
-                                        Online Forms
-                                      </a>
-                                    </div>
-                                  </div>
-                                </li>
-                                <li jsname="ibnC6b" data-nav-level="2" class="ijMPi ZmrVpf" in-more-item>
-                                  <div class="PsKE7e IKA38e oNsfjf">
-                                    <div class="I35ICb" jsaction="click:vHQTA(QwLHlb); keydown:mPuKz(QwLHlb);">
-                                      <a class="aJHbb hDrhEe HlqNPb" jscontroller="yUHiM" jsaction="rcuQ6b:WYd;" jsname="QwLHlb" role="link" tabindex="-1" data-navtype="1" href="Jobs.html" data-url="Jobs.html" data-type="1" data-in-more-submenu="true" data-level="2" data-page="1CBVUV0x0UHNam43Hf3fUtBgz6Y5-MsAI">
-                                        Jobs
-                                      </a>
-                                    </div>
-                                  </div>
-                                </li>
-                              </ul>
-                            </div>
-                          </li>
-                        </ul>
-                      </nav>
-                    </div>
-                    <div jsname="mADGA" class="zDUgLc">
-                    </div>
-                  </div>
-                  <div class="TxnWlb" jsname="BDdyze" jsaction="click:LUvzV">
-                  </div>
+                <div class="fines-section" id="finesSection" style="display: none;">
+                    <!-- Fines form -->
                 </div>
-              </header>
-              <div jsname="ZBtY8b" tabindex="-1" class="UtePc RCETm" dir="ltr">
-                <section id="h.INITIAL_GRID.wtxmql6dhz1e" class="yaqOZd LB7kq cJgDec nyKByd O13XJf" style="">
-                  <div class="Nu95r">
-                    <div class="IFuOkc" style="background-position: center center; background-image: url(./assets/1acfbe6e878a54bc7a6000f7848d6dc7.jpg); background-size: cover;" jsname="LQX2Vd">
-                    </div>
-                  </div>
-                  <div class="mYVXT">
-                    <div class="LS81yb VICjCf j5pSsc db35Fc" tabindex="-1">
-                      <div class="hJDwNd-AhqUyc-uQSCkd Ft7HRd-AhqUyc-uQSCkd JNdkSc SQVYQc L6cTce-purZT L6cTce-pSzOP">
-                        <div class="JNdkSc-SmKAyb LkDMRd">
-                          <div class="" jscontroller="sGwD4d" jsaction="zXBUYb:zTPCnb;zQF9Uc:Qxe3nd;" jsname="F57UId">
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-                <section id="h.4bcfd0756734d475_107" class="yaqOZd WxWicb">
-                  <div class="IFuOkc">
-                  </div>
-                  <div class="mYVXT">
-                    <div class="LS81yb VICjCf j5pSsc db35Fc" tabindex="-1">
-                      <div class="hJDwNd-AhqUyc-uQSCkd Ft7HRd-AhqUyc-uQSCkd purZT-AhqUyc-II5mzb ZcASvf-AhqUyc-II5mzb pSzOP-AhqUyc-qWD73c Ktthjf-AhqUyc-qWD73c JNdkSc SQVYQc">
-                        <div class="JNdkSc-SmKAyb LkDMRd">
-                          <div class="" jscontroller="sGwD4d" jsaction="zXBUYb:zTPCnb;zQF9Uc:Qxe3nd;" jsname="F57UId">
-                            <div class="oKdM2c ZZyype Kzv0Me">
-                              <div id="h.4bcfd0756734d475_110" class="hJDwNd-AhqUyc-uQSCkd Ft7HRd-AhqUyc-uQSCkd jXK9ad D2fZ2 zu5uec OjCsFc dmUFtb wHaque g5GTcb">
-                                <div class="jXK9ad-SmKAyb">
-                                  <div class="tyJCtd baZpAe">
-                                    <div class="iwQgFb" role="presentation">
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-                <section id="h.5523dc207cf70a9a_0" class="yaqOZd">
-                  <div class="IFuOkc">
-                  </div>
-                  <div class="mYVXT">
-                    <div class="LS81yb VICjCf j5pSsc db35Fc" tabindex="-1">
-                      <div class="hJDwNd-AhqUyc-uQSCkd Ft7HRd-AhqUyc-uQSCkd purZT-AhqUyc-II5mzb ZcASvf-AhqUyc-II5mzb pSzOP-AhqUyc-qWD73c Ktthjf-AhqUyc-qWD73c JNdkSc SQVYQc">
-                        <div class="JNdkSc-SmKAyb LkDMRd">
-                          <div class="" jscontroller="sGwD4d" jsaction="zXBUYb:zTPCnb;zQF9Uc:Qxe3nd;" jsname="F57UId">
-                            <div class="oKdM2c ZZyype Kzv0Me">
-                              <div id="h.5523dc207cf70a9a_3" class="hJDwNd-AhqUyc-uQSCkd Ft7HRd-AhqUyc-uQSCkd jXK9ad D2fZ2 zu5uec OjCsFc dmUFtb wHaque g5GTcb">
-                                <div class="jXK9ad-SmKAyb">
-                                  <div class="tyJCtd mGzaTb Depvyb baZpAe" role="main" tabindex="0">
-                                    <div id="h.jhie3noflqoa" class="Ap4VC yMxPgf  aP9Z7e">
-                                    </div>
-                                    <h1 id="h.jhie3noflqoa_l" dir="ltr" class="zfr3Q duRjpb CDt4Ke " style="background-color: transparent; border-bottom: none; border-left: none; border-right: none; border-top: none; line-height: 1.38; margin-bottom: 4.0pt; margin-top: 18.0pt; padding-bottom: 0.0pt; padding-left: 0.0pt; padding-right: 0.0pt; padding-top: 0.0pt; text-align: center;">
-                                      <span class="C9DxTc " style="font-family: Lato, Arial; font-variant: normal; font-weight: 700;">
-                                        The Evolution of Soyosoyo SACCO: From Medicare to Modern Empowerment
-                                      </span>
-                                    </h1>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-                <section id="h.72fed12f6d9a7b41_3" class="yaqOZd qeLZfd">
-                  <div class="IFuOkc">
-                  </div>
-                  <div class="mYVXT">
-                    <div class="LS81yb VICjCf j5pSsc db35Fc" tabindex="-1">
-                      <div class="hJDwNd-AhqUyc-uQSCkd Ft7HRd-AhqUyc-uQSCkd purZT-AhqUyc-II5mzb ZcASvf-AhqUyc-II5mzb pSzOP-AhqUyc-qWD73c Ktthjf-AhqUyc-qWD73c JNdkSc SQVYQc">
-                        <div class="JNdkSc-SmKAyb LkDMRd">
-                          <div class="" jscontroller="sGwD4d" jsaction="zXBUYb:zTPCnb;zQF9Uc:Qxe3nd;" jsname="F57UId">
-                            <div class="oKdM2c ZZyype Kzv0Me">
-                              <div id="h.72fed12f6d9a7b41_0" class="hJDwNd-AhqUyc-uQSCkd Ft7HRd-AhqUyc-uQSCkd jXK9ad D2fZ2 zu5uec OjCsFc dmUFtb wHaque g5GTcb">
-                                <div class="jXK9ad-SmKAyb">
-                                  <div class="tyJCtd mGzaTb Depvyb baZpAe">
-                                    <p dir="ltr" class="zfr3Q CDt4Ke " style="background-color: transparent; border-bottom: none; border-left: none; border-right: none; border-top: none; line-height: 1.38; margin-bottom: 12.0pt; margin-top: 12.0pt; padding-bottom: 0.0pt; padding-left: 0.0pt; padding-right: 0.0pt; padding-top: 0.0pt; text-align: justify;">
-                                      <span class="C9DxTc " style="color: #000000; font-family: Arial; font-variant: normal; font-weight: 700;">
-                                        Soyosoyo SACCO
-                                      </span>
-                                      <span class="C9DxTc " style="color: #000000; font-family: Arial; font-variant: normal; font-weight: 400;">
-                                        boasts a rich history, beginning its journey on
-                                      </span>
-                                      <span class="C9DxTc " style="color: #000000; font-family: Arial; font-variant: normal; font-weight: 700;">
-                                        July 15, 1998
-                                      </span>
-                                      <span class="C9DxTc " style="color: #000000; font-family: Arial; font-variant: normal; font-weight: 400;">
-                                        , as
-                                      </span>
-                                      <span class="C9DxTc " style="color: #000000; font-family: Arial; font-variant: normal; font-weight: 700;">
-                                        SOYOSOYO MEDICARE CO-OPERATIVE SAVINGS
-                                        &amp;
-                                        CREDIT SOCIETY
-                                      </span>
-                                      <span class="C9DxTc " style="color: #000000; font-family: Arial; font-variant: normal; font-weight: 400;">
-                                        . Its initial, heartwarming mission wa
-                                      </span>
-                                      <span class="C9DxTc " style="color: #000000; font-family: Arial; font-variant: normal; font-weight: 400;">
-                                        s to pool funds an
-                                      </span>
-                                      <span class="C9DxTc " style="color: #000000; font-family: Arial; font-variant: normal; font-weight: 400;">
-                                        d provide affordable credit, primarily to help members cover their families
-                                        &#39;
-                                        medical bills.
-                                      </span>
-                                    </p>
-                                    <p dir="ltr" class="zfr3Q CDt4Ke " style="background-color: transparent; border-bottom: none; border-left: none; border-right: none; border-top: none; line-height: 1.38; margin-bottom: 12.0pt; margin-top: 12.0pt; padding-bottom: 0.0pt; padding-left: 0.0pt; padding-right: 0.0pt; padding-top: 0.0pt; text-align: justify;">
-                                      <span class="C9DxTc " style="color: #000000; font-family: Arial; font-variant: normal; font-weight: 400;">
-                                        As the fund grew significantly, the SACCO
-                                        &#39;
-                                        s vision expanded beyond healthcare. It began to support members in financing their
-                                      </span>
-                                      <span class="C9DxTc " style="color: #000000; font-family: Arial; font-variant: normal; font-weight: 400;">
-                                        children
-                                        &#39;
-                                        s education,
-                                      </span>
-                                      <span class="C9DxTc " style="color: #000000; font-family: Arial; font-variant: normal; font-weight: 400;">
-                                        demonstrating its adaptability and commitment to community needs.
-                                      </span>
-                                    </p>
-                                    <p dir="ltr" class="zfr3Q CDt4Ke " style="background-color: transparent; border-bottom: none; border-left: none; border-right: none; border-top: none; line-height: 1.38; margin-bottom: 12.0pt; margin-top: 12.0pt; padding-bottom: 0.0pt; padding-left: 0.0pt; padding-right: 0.0pt; padding-top: 0.0pt; text-align: justify;">
-                                      <span class="C9DxTc " style="color: #000000; font-family: Arial; font-variant: normal; font-weight: 400;">
-                                        However, with its membership spreading across various parts of the Kenyan Coast, the complexity of managing the SACCO, combined with the introduction of the National Hospital Insurance Fund (NHIF) which began covering medical bills, led the SACCO into a period of silence.
-                                      </span>
-                                    </p>
-                                    <p dir="ltr" class="zfr3Q CDt4Ke " style="background-color: transparent; border-bottom: none; border-left: none; border-right: none; border-top: none; line-height: 1.38; margin-bottom: 12.0pt; margin-top: 12.0pt; padding-bottom: 0.0pt; padding-left: 0.0pt; padding-right: 0.0pt; padding-top: 0.0pt; text-align: justify;">
-                                      <span class="C9DxTc " style="color: #000000; font-family: Arial; font-variant: normal; font-weight: 400;">
-                                        B
-                                      </span>
-                                      <span class="C9DxTc " style="color: #000000; font-family: Arial; font-variant: normal; font-weight: 400;">
-                                        ut the story didn
-                                        &#39;
-                                        t end there. In 2022, the dedicated founding members reignited their passion, showing a keen interest in reviving the SACCO. Their goal was clear: to refresh its objectives to align with current community needs.
-                                      </span>
-                                    </p>
-                                    <p dir="ltr" class="zfr3Q CDt4Ke " style="background-color: transparent; border-bottom: none; border-left: none; border-right: none; border-top: none; line-height: 1.38; margin-bottom: 12.0pt; margin-top: 12.0pt; padding-bottom: 0.0pt; padding-left: 0.0pt; padding-right: 0.0pt; padding-top: 0.0pt; text-align: justify;">
-                                      <span class="C9DxTc " style="color: #000000; font-family: Arial; font-variant: normal; font-weight: 400;">
-                                        This revival culminated in a new beginning for Soyosoyo SACCO. Officially rebranded and given a new look on April 10, 2024, it emerged with renewed vigor. Its expanded mission now focuses on providing affordable financing to cover a broader range of essential objectives, including medical bills, education, agriculture, and development.
-                                      </span>
-                                    </p>
-                                    <p dir="ltr" class="zfr3Q CDt4Ke " style="background-color: transparent; border-bottom: none; border-left: none; border-right: none; border-top: none; line-height: 1.38; margin-bottom: 12.0pt; margin-top: 12.0pt; padding-bottom: 0.0pt; padding-left: 0.0pt; padding-right: 0.0pt; padding-top: 0.0pt; text-align: justify;">
-                                      <span class="C9DxTc " style="color: #000000; font-family: Arial; font-variant: normal; font-weight: 400;">
-                                        Soyosoyo SACCO stands today as a testament to its enduring commitment to its members, evolving to meet the diverse financial needs of its members.
-                                      </span>
-                                    </p>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-                <section id="h.72fed12f6d9a7b41_24" class="yaqOZd WxWicb qeLZfd">
-                  <div class="IFuOkc">
-                  </div>
-                  <div class="mYVXT">
-                    <div class="LS81yb VICjCf j5pSsc db35Fc" tabindex="-1">
-                      <div class="hJDwNd-AhqUyc-uQSCkd Ft7HRd-AhqUyc-uQSCkd purZT-AhqUyc-II5mzb ZcASvf-AhqUyc-II5mzb pSzOP-AhqUyc-qWD73c Ktthjf-AhqUyc-qWD73c JNdkSc SQVYQc">
-                        <div class="JNdkSc-SmKAyb LkDMRd">
-                          <div class="" jscontroller="sGwD4d" jsaction="zXBUYb:zTPCnb;zQF9Uc:Qxe3nd;" jsname="F57UId">
-                            <div class="oKdM2c ZZyype Kzv0Me">
-                              <div id="h.72fed12f6d9a7b41_27" class="hJDwNd-AhqUyc-uQSCkd Ft7HRd-AhqUyc-uQSCkd jXK9ad D2fZ2 zu5uec OjCsFc dmUFtb wHaque g5GTcb">
-                                <div class="jXK9ad-SmKAyb">
-                                  <div class="tyJCtd baZpAe">
-                                    <div class="iwQgFb" role="presentation">
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-                <section id="h.72fed12f6d9a7b41_28" class="yaqOZd lQAHbd">
-                  <div class="IFuOkc">
-                  </div>
-                  <div class="mYVXT">
-                    <div class="LS81yb VICjCf j5pSsc db35Fc" tabindex="-1">
-                      <div class="hJDwNd-AhqUyc-c5RTEf Ft7HRd-AhqUyc-c5RTEf purZT-AhqUyc-c5RTEf ZcASvf-AhqUyc-c5RTEf pSzOP-AhqUyc-c5RTEf Ktthjf-AhqUyc-c5RTEf JNdkSc SQVYQc">
-                        <div class="JNdkSc-SmKAyb LkDMRd">
-                          <div class="" jscontroller="sGwD4d" jsaction="zXBUYb:zTPCnb;zQF9Uc:Qxe3nd;" jsname="F57UId">
-                            <div class="oKdM2c ZZyype Kzv0Me">
-                              <div id="h.72fed12f6d9a7b41_45" class="hJDwNd-AhqUyc-c5RTEf Ft7HRd-AhqUyc-c5RTEf purZT-AhqUyc-c5RTEf ZcASvf-AhqUyc-c5RTEf pSzOP-AhqUyc-c5RTEf Ktthjf-AhqUyc-c5RTEf jXK9ad D2fZ2 zu5uec OjCsFc dmUFtb wHaque g5GTcb">
-                                <div class="jXK9ad-SmKAyb">
-                                  <div class="tyJCtd baZpAe">
-                                    <div class="t3iYD">
-                                      <img src="./assets/0065564ad0f92baf9be886b031073979.jpg" class="CENy8b" role="img" style="width: 113.3501242768%; margin: 0% 0 0% -6.6750621384%">
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="hJDwNd-AhqUyc-c5RTEf Ft7HRd-AhqUyc-c5RTEf purZT-AhqUyc-c5RTEf ZcASvf-AhqUyc-c5RTEf pSzOP-AhqUyc-c5RTEf Ktthjf-AhqUyc-c5RTEf JNdkSc SQVYQc yYI8W HQwdzb">
-                        <div class="JNdkSc-SmKAyb LkDMRd">
-                          <div class="" jscontroller="sGwD4d" jsaction="zXBUYb:zTPCnb;zQF9Uc:Qxe3nd;" jsname="F57UId">
-                            <div class="oKdM2c ZZyype Kzv0Me">
-                              <div id="h.72fed12f6d9a7b41_51" class="hJDwNd-AhqUyc-c5RTEf Ft7HRd-AhqUyc-c5RTEf jXK9ad D2fZ2 zu5uec OjCsFc dmUFtb">
-                                <div class="jXK9ad-SmKAyb">
-                                  <div class="tyJCtd KUB40b baZpAe">
-                                    <div style="height: 53px;">
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="oKdM2c ZZyype">
-                              <div id="h.72fed12f6d9a7b41_36" class="hJDwNd-AhqUyc-c5RTEf Ft7HRd-AhqUyc-c5RTEf purZT-AhqUyc-c5RTEf ZcASvf-AhqUyc-c5RTEf pSzOP-AhqUyc-c5RTEf Ktthjf-AhqUyc-c5RTEf jXK9ad D2fZ2 zu5uec wHaque g5GTcb">
-                                <div class="jXK9ad-SmKAyb">
-                                  <div class="tyJCtd mGzaTb Depvyb baZpAe">
-                                    <p dir="ltr" class="zfr3Q CDt4Ke " style="text-align: center;">
-                                      <span class="C9DxTc " style="color: #000000; font-family: Arial; font-weight: 400;">
-                                        To be the leading catalyst for financial transformation and sustainable prosperity across Kenyan, empowering every member to achieve their aspirations in health, education, and development
-                                      </span>
-                                    </p>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="hJDwNd-AhqUyc-c5RTEf Ft7HRd-AhqUyc-c5RTEf purZT-AhqUyc-c5RTEf ZcASvf-AhqUyc-c5RTEf pSzOP-AhqUyc-c5RTEf Ktthjf-AhqUyc-c5RTEf JNdkSc SQVYQc">
-                        <div class="JNdkSc-SmKAyb LkDMRd">
-                          <div class="" jscontroller="sGwD4d" jsaction="zXBUYb:zTPCnb;zQF9Uc:Qxe3nd;" jsname="F57UId">
-                            <div class="oKdM2c ZZyype Kzv0Me">
-                              <div id="h.72fed12f6d9a7b41_46" class="hJDwNd-AhqUyc-c5RTEf Ft7HRd-AhqUyc-c5RTEf purZT-AhqUyc-c5RTEf ZcASvf-AhqUyc-c5RTEf pSzOP-AhqUyc-c5RTEf Ktthjf-AhqUyc-c5RTEf jXK9ad D2fZ2 zu5uec OjCsFc dmUFtb wHaque g5GTcb">
-                                <div class="jXK9ad-SmKAyb">
-                                  <div class="tyJCtd baZpAe">
-                                    <div class="t3iYD">
-                                      <img src="./assets/d8c3d49708ed9831ff753b3548c717aa.jpg" class="CENy8b" role="img" style="width: 113.3501242768%; margin: 0% 0 0% -6.6750621384%">
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="hJDwNd-AhqUyc-c5RTEf Ft7HRd-AhqUyc-c5RTEf purZT-AhqUyc-c5RTEf ZcASvf-AhqUyc-c5RTEf pSzOP-AhqUyc-c5RTEf Ktthjf-AhqUyc-c5RTEf JNdkSc SQVYQc yYI8W HQwdzb">
-                        <div class="JNdkSc-SmKAyb LkDMRd">
-                          <div class="" jscontroller="sGwD4d" jsaction="zXBUYb:zTPCnb;zQF9Uc:Qxe3nd;" jsname="F57UId">
-                            <div class="oKdM2c ZZyype Kzv0Me">
-                              <div id="h.72fed12f6d9a7b41_63" class="hJDwNd-AhqUyc-c5RTEf Ft7HRd-AhqUyc-c5RTEf jXK9ad D2fZ2 zu5uec OjCsFc dmUFtb">
-                                <div class="jXK9ad-SmKAyb">
-                                  <div class="tyJCtd KUB40b baZpAe">
-                                    <div style="height: 59px;">
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="oKdM2c ZZyype">
-                              <div id="h.72fed12f6d9a7b41_44" class="hJDwNd-AhqUyc-c5RTEf Ft7HRd-AhqUyc-c5RTEf purZT-AhqUyc-c5RTEf ZcASvf-AhqUyc-c5RTEf pSzOP-AhqUyc-c5RTEf Ktthjf-AhqUyc-c5RTEf jXK9ad D2fZ2 zu5uec wHaque g5GTcb">
-                                <div class="jXK9ad-SmKAyb">
-                                  <div class="tyJCtd mGzaTb Depvyb baZpAe">
-                                    <p dir="ltr" class="zfr3Q CDt4Ke " style="text-align: center;">
-                                      <span class="C9DxTc " style="color: #000000; font-family: Arial; font-weight: 400;">
-                                        To continually empower members by providing accessible, affordable, and innovative credit for healthcare, education, agriculture, and development, driving enduring prosperity in our cooperative community.
-                                      </span>
-                                    </p>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-                <section id="h.72fed12f6d9a7b41_47" class="yaqOZd WxWicb lQAHbd">
-                  <div class="IFuOkc">
-                  </div>
-                  <div class="mYVXT">
-                    <div class="LS81yb VICjCf j5pSsc db35Fc" tabindex="-1">
-                      <div class="hJDwNd-AhqUyc-uQSCkd Ft7HRd-AhqUyc-uQSCkd purZT-AhqUyc-II5mzb ZcASvf-AhqUyc-II5mzb pSzOP-AhqUyc-qWD73c Ktthjf-AhqUyc-qWD73c JNdkSc SQVYQc">
-                        <div class="JNdkSc-SmKAyb LkDMRd">
-                          <div class="" jscontroller="sGwD4d" jsaction="zXBUYb:zTPCnb;zQF9Uc:Qxe3nd;" jsname="F57UId">
-                            <div class="oKdM2c ZZyype Kzv0Me">
-                              <div id="h.72fed12f6d9a7b41_50" class="hJDwNd-AhqUyc-uQSCkd Ft7HRd-AhqUyc-uQSCkd jXK9ad D2fZ2 zu5uec OjCsFc dmUFtb wHaque g5GTcb">
-                                <div class="jXK9ad-SmKAyb">
-                                  <div class="tyJCtd baZpAe">
-                                    <div class="iwQgFb" role="presentation">
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-                <section id="h.72fed12f6d9a7b41_72" class="yaqOZd qeLZfd">
-                  <div class="IFuOkc">
-                  </div>
-                  <div class="mYVXT">
-                    <div class="LS81yb VICjCf j5pSsc db35Fc" tabindex="-1">
-                      <div class="hJDwNd-AhqUyc-wNfPc Ft7HRd-AhqUyc-wNfPc purZT-AhqUyc-II5mzb ZcASvf-AhqUyc-II5mzb pSzOP-AhqUyc-wNfPc Ktthjf-AhqUyc-wNfPc JNdkSc SQVYQc">
-                        <div class="JNdkSc-SmKAyb LkDMRd">
-                          <div class="" jscontroller="sGwD4d" jsaction="zXBUYb:zTPCnb;zQF9Uc:Qxe3nd;" jsname="F57UId">
-                            <div class="oKdM2c ZZyype Kzv0Me">
-                              <div id="h.72fed12f6d9a7b41_81" class="hJDwNd-AhqUyc-wNfPc Ft7HRd-AhqUyc-wNfPc pSzOP-AhqUyc-wNfPc Ktthjf-AhqUyc-wNfPc jXK9ad D2fZ2 zu5uec OjCsFc dmUFtb wHaque g5GTcb">
-                                <div class="jXK9ad-SmKAyb">
-                                  <div class="tyJCtd baZpAe">
-                                    <div class="t3iYD">
-                                      <img src="./assets/8119c4ebd64ccbe641d0563d23444c34.jpg" class="CENy8b" role="img" style="width: 100%; margin: -0.7101119081% 0 -0.7101119081% 0%">
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="hJDwNd-AhqUyc-ibL1re Ft7HRd-AhqUyc-ibL1re JNdkSc SQVYQc L6cTce-purZT L6cTce-pSzOP">
-                        <div class="JNdkSc-SmKAyb LkDMRd">
-                          <div class="" jscontroller="sGwD4d" jsaction="zXBUYb:zTPCnb;zQF9Uc:Qxe3nd;" jsname="F57UId">
-                          </div>
-                        </div>
-                      </div>
-                      <div class="hJDwNd-AhqUyc-II5mzb Ft7HRd-AhqUyc-II5mzb purZT-AhqUyc-II5mzb ZcASvf-AhqUyc-II5mzb pSzOP-AhqUyc-II5mzb Ktthjf-AhqUyc-II5mzb JNdkSc SQVYQc yYI8W HQwdzb">
-                        <div class="JNdkSc-SmKAyb LkDMRd">
-                          <div class="" jscontroller="sGwD4d" jsaction="zXBUYb:zTPCnb;zQF9Uc:Qxe3nd;" jsname="F57UId">
-                            <div class="oKdM2c ZZyype Kzv0Me">
-                              <div id="h.72fed12f6d9a7b41_78" class="hJDwNd-AhqUyc-II5mzb Ft7HRd-AhqUyc-II5mzb pSzOP-AhqUyc-II5mzb Ktthjf-AhqUyc-II5mzb jXK9ad D2fZ2 zu5uec OjCsFc dmUFtb">
-                                <div class="jXK9ad-SmKAyb">
-                                  <div class="tyJCtd mGzaTb Depvyb baZpAe">
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="oKdM2c ZZyype">
-                              <div id="h.72fed12f6d9a7b41_80" class="hJDwNd-AhqUyc-II5mzb Ft7HRd-AhqUyc-II5mzb pSzOP-AhqUyc-II5mzb Ktthjf-AhqUyc-II5mzb jXK9ad D2fZ2 zu5uec wHaque g5GTcb">
-                                <div class="jXK9ad-SmKAyb">
-                                  <div class="tyJCtd mGzaTb Depvyb baZpAe">
-                                    <ul class="n8H08c UVNKR " style="list-style-type: square; margin-left: 0; margin-right: 0; padding: 0;">
-                                      <li dir="ltr" class="zfr3Q TYR86d eD0Rn " style="margin-left: 15.0pt;">
-                                        <p dir="ltr" role="presentation" class="zfr3Q CDt4Ke " style="line-height: 1.38; margin-left: 0.0pt; padding-left: 0.0pt; text-indent: 0.0pt;">
-                                          <span class="C9DxTc " style="color: #000000; font-family: Arial; font-size: 12.0pt; font-weight: 400; vertical-align: baseline;">
-                                            Empowerment
-                                          </span>
-                                        </p>
-                                      </li>
-                                      <li dir="ltr" class="zfr3Q TYR86d eD0Rn " style="margin-left: 15.0pt;">
-                                        <p dir="ltr" role="presentation" class="zfr3Q CDt4Ke " style="background-color: transparent; border-bottom: none; border-left: none; border-right: none; border-top: none; line-height: 1.38; margin-bottom: 0.0pt; margin-left: 0.0pt; margin-top: 0.0pt; padding-bottom: 0.0pt; padding-left: 0.0pt; padding-right: 0.0pt; padding-top: 0.0pt; text-indent: 0.0pt;">
-                                          <span class="C9DxTc " style="color: #000000; font-family: Arial; font-size: 12.0pt; font-weight: 400; vertical-align: baseline;">
-                                            Integrity
-                                          </span>
-                                        </p>
-                                      </li>
-                                      <li dir="ltr" class="zfr3Q TYR86d eD0Rn " style="margin-left: 15.0pt;">
-                                        <p dir="ltr" role="presentation" class="zfr3Q CDt4Ke " style="background-color: transparent; border-bottom: none; border-left: none; border-right: none; border-top: none; line-height: 1.38; margin-bottom: 0.0pt; margin-left: 0.0pt; margin-top: 0.0pt; padding-bottom: 0.0pt; padding-left: 0.0pt; padding-right: 0.0pt; padding-top: 0.0pt; text-indent: 0.0pt;">
-                                          <span class="C9DxTc " style="color: #000000; font-family: Arial; font-size: 12.0pt; font-weight: 400; vertical-align: baseline;">
-                                            Community
-                                          </span>
-                                        </p>
-                                      </li>
-                                      <li dir="ltr" class="zfr3Q TYR86d eD0Rn " style="margin-left: 15.0pt;">
-                                        <p dir="ltr" role="presentation" class="zfr3Q CDt4Ke " style="background-color: transparent; border-bottom: none; border-left: none; border-right: none; border-top: none; line-height: 1.38; margin-bottom: 0.0pt; margin-left: 0.0pt; margin-top: 0.0pt; padding-bottom: 0.0pt; padding-left: 0.0pt; padding-right: 0.0pt; padding-top: 0.0pt; text-indent: 0.0pt;">
-                                          <span class="C9DxTc " style="color: #000000; font-family: Arial; font-size: 12.0pt; font-weight: 400; vertical-align: baseline;">
-                                            Accessibility
-                                          </span>
-                                        </p>
-                                      </li>
-                                      <li dir="ltr" class="zfr3Q TYR86d eD0Rn " style="margin-left: 15.0pt;">
-                                        <p dir="ltr" role="presentation" class="zfr3Q CDt4Ke " style="background-color: transparent; border-bottom: none; border-left: none; border-right: none; border-top: none; line-height: 1.38; margin-bottom: 0.0pt; margin-left: 0.0pt; margin-top: 0.0pt; padding-bottom: 0.0pt; padding-left: 0.0pt; padding-right: 0.0pt; padding-top: 0.0pt; text-indent: 0.0pt;">
-                                          <span class="C9DxTc " style="color: #000000; font-family: Arial; font-size: 12.0pt; font-weight: 400; vertical-align: baseline;">
-                                            Growth
-                                          </span>
-                                        </p>
-                                      </li>
-                                    </ul>
-                                    <br>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="hJDwNd-AhqUyc-R6PoUb Ft7HRd-AhqUyc-R6PoUb JNdkSc SQVYQc L6cTce-purZT L6cTce-pSzOP">
-                        <div class="JNdkSc-SmKAyb LkDMRd">
-                          <div class="" jscontroller="sGwD4d" jsaction="zXBUYb:zTPCnb;zQF9Uc:Qxe3nd;" jsname="F57UId">
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-                <section id="h.72fed12f6d9a7b41_140" class="yaqOZd WxWicb qeLZfd">
-                  <div class="IFuOkc">
-                  </div>
-                  <div class="mYVXT">
-                    <div class="LS81yb VICjCf j5pSsc db35Fc" tabindex="-1">
-                      <div class="hJDwNd-AhqUyc-uQSCkd Ft7HRd-AhqUyc-uQSCkd purZT-AhqUyc-II5mzb ZcASvf-AhqUyc-II5mzb pSzOP-AhqUyc-qWD73c Ktthjf-AhqUyc-qWD73c JNdkSc SQVYQc">
-                        <div class="JNdkSc-SmKAyb LkDMRd">
-                          <div class="" jscontroller="sGwD4d" jsaction="zXBUYb:zTPCnb;zQF9Uc:Qxe3nd;" jsname="F57UId">
-                            <div class="oKdM2c ZZyype Kzv0Me">
-                              <div id="h.72fed12f6d9a7b41_143" class="hJDwNd-AhqUyc-uQSCkd Ft7HRd-AhqUyc-uQSCkd jXK9ad D2fZ2 zu5uec OjCsFc dmUFtb wHaque g5GTcb">
-                                <div class="jXK9ad-SmKAyb">
-                                  <div class="tyJCtd baZpAe">
-                                    <div class="iwQgFb" role="presentation">
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-                <section id="h.1829d69669e30a3f_4" class="yaqOZd">
-                  <div class="IFuOkc">
-                  </div>
-                  <div class="mYVXT">
-                    <div class="LS81yb VICjCf j5pSsc db35Fc" tabindex="-1">
-                      <div class="hJDwNd-AhqUyc-uQSCkd Ft7HRd-AhqUyc-uQSCkd purZT-AhqUyc-II5mzb ZcASvf-AhqUyc-II5mzb pSzOP-AhqUyc-qWD73c Ktthjf-AhqUyc-qWD73c JNdkSc SQVYQc">
-                        <div class="JNdkSc-SmKAyb LkDMRd">
-                          <div class="" jscontroller="sGwD4d" jsaction="zXBUYb:zTPCnb;zQF9Uc:Qxe3nd;" jsname="F57UId">
-                            <div class="oKdM2c ZZyype Kzv0Me">
-                              <div id="h.1829d69669e30a3f_1" class="hJDwNd-AhqUyc-uQSCkd Ft7HRd-AhqUyc-uQSCkd jXK9ad D2fZ2 zu5uec OjCsFc dmUFtb wHaque g5GTcb">
-                                <div class="jXK9ad-SmKAyb">
-                                  <div class="tyJCtd mGzaTb Depvyb baZpAe">
-                                    <div id="h.2id7c2z7kd63" class="Ap4VC yMxPgf  aP9Z7e">
-                                    </div>
-                                    <h1 id="h.2id7c2z7kd63_l" dir="ltr" class="zfr3Q duRjpb CDt4Ke " style="text-align: center;">
-                                      <span class="C9DxTc " style="font-family: Lato, Arial; font-weight: 700;">
-                                        OUR PRODUCTS
-                                      </span>
-                                    </h1>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-                <section id="h.72fed12f6d9a7b41_94" class="yaqOZd WxWicb">
-                  <div class="IFuOkc">
-                  </div>
-                  <div class="mYVXT">
-                    <div class="LS81yb VICjCf j5pSsc db35Fc" tabindex="-1">
-                      <div class="hJDwNd-AhqUyc-uQSCkd Ft7HRd-AhqUyc-uQSCkd purZT-AhqUyc-II5mzb ZcASvf-AhqUyc-II5mzb pSzOP-AhqUyc-qWD73c Ktthjf-AhqUyc-qWD73c JNdkSc SQVYQc">
-                        <div class="JNdkSc-SmKAyb LkDMRd">
-                          <div class="" jscontroller="sGwD4d" jsaction="zXBUYb:zTPCnb;zQF9Uc:Qxe3nd;" jsname="F57UId">
-                            <div class="oKdM2c ZZyype Kzv0Me">
-                              <div id="h.72fed12f6d9a7b41_97" class="hJDwNd-AhqUyc-uQSCkd Ft7HRd-AhqUyc-uQSCkd jXK9ad D2fZ2 zu5uec OjCsFc dmUFtb wHaque g5GTcb">
-                                <div class="jXK9ad-SmKAyb">
-                                  <div class="tyJCtd baZpAe">
-                                    <div class="iwQgFb" role="presentation">
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-                <section id="h.4bcfd0756734d475_27" class="yaqOZd qeLZfd">
-                  <div class="IFuOkc">
-                  </div>
-                  <div class="mYVXT">
-                    <div class="LS81yb VICjCf j5pSsc db35Fc" tabindex="-1">
-                      <div class="hJDwNd-AhqUyc-c5RTEf Ft7HRd-AhqUyc-c5RTEf purZT-AhqUyc-c5RTEf ZcASvf-AhqUyc-c5RTEf pSzOP-AhqUyc-c5RTEf Ktthjf-AhqUyc-c5RTEf JNdkSc SQVYQc yYI8W HQwdzb">
-                        <div class="JNdkSc-SmKAyb LkDMRd">
-                          <div class="" jscontroller="sGwD4d" jsaction="zXBUYb:zTPCnb;zQF9Uc:Qxe3nd;" jsname="F57UId">
-                            <div class="oKdM2c ZZyype Kzv0Me">
-                              <div id="h.4bcfd0756734d475_48" class="hJDwNd-AhqUyc-c5RTEf Ft7HRd-AhqUyc-c5RTEf purZT-AhqUyc-c5RTEf ZcASvf-AhqUyc-c5RTEf pSzOP-AhqUyc-c5RTEf Ktthjf-AhqUyc-c5RTEf jXK9ad D2fZ2 zu5uec OjCsFc dmUFtb">
-                                <div class="jXK9ad-SmKAyb">
-                                  <div class="tyJCtd baZpAe">
-                                    <div class="t3iYD">
-                                      <img src="./assets/ba04cd4377b3746fc0750dcf2ff3d935.jpg" class="CENy8b" role="img" style="width: 100%; margin: -16.6666666667% 0 -16.6666666667% 0%">
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="oKdM2c ZZyype">
-                              <div id="h.4bcfd0756734d475_32" class="hJDwNd-AhqUyc-c5RTEf Ft7HRd-AhqUyc-c5RTEf purZT-AhqUyc-c5RTEf ZcASvf-AhqUyc-c5RTEf pSzOP-AhqUyc-c5RTEf Ktthjf-AhqUyc-c5RTEf jXK9ad D2fZ2 zu5uec">
-                                <div class="jXK9ad-SmKAyb">
-                                  <div class="tyJCtd mGzaTb Depvyb baZpAe">
-                                    <div id="h.u7xpd99j7shv" class="CobnVe yMxPgf  aP9Z7e">
-                                    </div>
-                                    <h2 id="h.u7xpd99j7shv_l" dir="ltr" class="zfr3Q JYVBee CDt4Ke " style="text-align: center;">
-                                      <span class="C9DxTc " style="font-family: Lato, Arial; font-weight: 700;">
-                                        Education Loan
-                                      </span>
-                                    </h2>
-                                    <p dir="ltr" class="zfr3Q CDt4Ke " style="text-align: justify;">
-                                      <span class="C9DxTc " style="color: #000000; font-family: Arial; font-weight: 400;">
-                                        Dreaming of a brighter future through education? An
-                                      </span>
-                                      <span class="C9DxTc " style="color: #000000; font-family: Arial; font-weight: 700;">
-                                        education loan
-                                      </span>
-                                      <span class="C9DxTc " style="color: #000000; font-family: Arial; font-weight: 400;">
-                                        can turn that dream into reality! Don
-                                        &#39;
-                                        t let financial hurdles block your academic aspirations. These specialized loan is designed to cover tuition, accommodation, books, and living expenses, making education accessible to everyone.
-                                      </span>
-                                    </p>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="oKdM2c ZZyype">
-                              <div id="h.4df4fae59839a3ff_44" class="hJDwNd-AhqUyc-c5RTEf Ft7HRd-AhqUyc-c5RTEf purZT-AhqUyc-c5RTEf ZcASvf-AhqUyc-c5RTEf pSzOP-AhqUyc-c5RTEf Ktthjf-AhqUyc-c5RTEf jXK9ad D2fZ2 zu5uec wHaque g5GTcb">
-                                <div class="jXK9ad-SmKAyb">
-                                  <div class="tyJCtd OWlOyc baZpAe">
-                                    <div jscontroller="VYKRW" jsaction="rcuQ6b:rcuQ6b;">
-                                      <div class="WIdY2d M1aSXe">
-                                        <div jsname="WXxXjd" style="padding-top: 32.6633165829%">
-                                        </div>
-                                        <div class="YMEQtf">
-                                          <div jscontroller="nToyvd" data-code="<!DOCTYPE html>
-<html lang=&quot;en&quot;>
-<head>
-    <meta charset=&quot;UTF-8&quot;>
-    <meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;>
-    <title>SoyoSoyo SACCO Products Button</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <a href=&quot;https://www.soyosoyosacco.com/products#h.k3v47n5gkfv&quot; class=&quot;products-button&quot;>
-        <span>View Product</span>
-    </a>
-<script src="scripts/chatbot.js"></script>
-<script src="scripts/calculator.js"></script>
-<script src="scripts/main.js"></script></section>
-  <section class="section" id="loan-calculator"><h2>Loan Calculator</h2><div id="calculator"></div></section>
-  <section class="section" id="chatbot"><h2>Chat with Us</h2><div id="bot-container"></div></section>
-</main>
-<footer><p>© 2025 SOYOSOYO SACCO. All rights reserved. &nbsp; | &nbsp; <a href="mailto:info@soyosoyosacco.com">info@soyosoyosacco.com</a></p></footer>
-<script src="./scripts/main.js"></script><script src="./scripts/calculator.js"></script><script src="./scripts/chatbot.js"></script>
+            </div>
+        </section>
+
+        <!-- Dividends Calculator -->
+        <section class="tool-section" id="dividends-calculator">
+            <h2 style="text-align: center;">Dividends Calculator</h2>
+            <!-- Embed from previous dividends.html -->
+            <div class="calculator">
+                <!-- Rate input, month inputs, button, result -->
+                <label for="rate">Dividend Rate (%):</label>
+                <input type="number" id="rate" placeholder="Enter annual dividend rate" step="0.01">
+                <div class="month-inputs">
+                    <!-- Jan to Dec inputs -->
+                </div>
+                <button onclick="calculateDividend()">Calculate Dividend</button>
+                <div class="result" id="result"></div>
+            </div>
+        </section>
+
+        <!-- Chatbot Embed (Initial container; full UI loads on toggle) -->
+        <section class="tool-section" id="chatbot">
+            <h2 style="text-align: center;">Chat with Us</h2>
+            <div id="bot-container">
+                <p>Click the floating chat button below to start a conversation!</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 SOYOSOYO SACCO. All rights reserved. | <a href="mailto:info@soyosoyosacco.com">info@soyosoyosacco.com</a></p>
+    </footer>
+
+    <!-- Tool Container for Floating Chatbot -->
+    <div id="chatbot-container" style="display: none;"></div>
+
+    <!-- Scripts -->
+    <script src="./scripts/main.js"></script>
+    <script src="./scripts/calculator.js"></script>
+    <script src="./scripts/chatbot.js"></script>
+    <script src="./scripts/dividendscalculator.js"></script>
 </body>
 </html>
