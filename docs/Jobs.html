@@ -1,24 +1,198 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Jobs - SOYOSOYO SACCO</title>
-<link rel="icon" href="./assets/141dd3faa98da9737b591161deac509a.jpg"/><link rel="stylesheet" href="./style.css"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jobs - SOYOSOYO SACCO</title>
+    <link rel="icon" href="./assets/141dd3faa98da9737b591161deac509a.jpg">
+    <link rel="stylesheet" href="./style.css">
+    <style>
+        /* Light Green Theme for Header/Nav */
+        .site-header { background-color: #90EE90; } /* Light green */
+        .navbar { background-color: #90EE90; color: #006400; } /* Dark green text */
+        .nav-links a { color: #006400; } /* Links dark green */
+        .nav-links a:hover { color: #228B22; } /* Hover forest green */
+        
+        /* Hero no overlap */
+        .hero { 
+            background-image: url('./assets/header-image.jpg'); 
+            background-size: cover; 
+            background-position: center; 
+            height: 50vh; 
+            position: relative; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: white; 
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7); 
+            padding: 40px 20px; /* Extra padding to prevent text overlap */
+        }
+        .hero::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 1; } /* Darker overlay for readability */
+        .hero > div { position: relative; z-index: 2; text-align: center; max-width: 800px; }
+        
+        /* Section flow */
+        section { margin: 60px 0; padding: 0 20px; } /* Ample spacing */
+        .jobs-section { max-width: 800px; margin: 0 auto; line-height: 1.6; }
+        .job-listing { background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #90EE90; }
+        .tool-section { background: #f9f9f9; padding: 30px; border-radius: 8px; margin: 40px auto; max-width: 800px; }
+    </style>
 </head>
 <body>
-<header class="site-header" style="background:#fff;">
-  <div class="container navbar">
-    <a href="index.html"><img class="brand-logo" src="./assets/141dd3faa98da9737b591161deac509a.jpg" alt="logo"/></a>
-    <button id="menu-toggle" aria-label="menu">Menu</button>
-    <nav><ul class="nav-links"><li><a href="index.html">Home</a></li><li><a href="Products.html">Products</a></li><li><a href="Online Forms.html">Online Forms</a></li><li><a href="Jobs.html">Jobs</a></li><li><a href="Join Us.html">Join Us</a></li></ul></nav>
-  </div>
-  <div class="hero" style="background-image:url('./assets/header-image.jpg')"><div class="hero-inner container"><h1>SOYOSOYO SACCO</h1><p>To be the leading catalyst for financial transformation and sustainable prosperity across Kenya.</p></div></div>
-</header>
-<main class="container">
-   <section class="section preserved"><p>Open roles will be listed here.</p></section>
-  <section class="section" id="loan-calculator"><h2>Loan Calculator</h2><div id="calculator"></div></section>
-  <section class="section" id="chatbot"><h2>Chat with Us</h2><div id="bot-container"></div></section>
-</main>
-<footer><p>© 2025 SOYOSOYO SACCO. All rights reserved. &nbsp; | &nbsp; <a href="mailto:info@soyosoyosacco.com">info@soyosoyosacco.com</a></p></footer>
-<script src="./scripts/main.js"></script><script src="./scripts/calculator.js"></script><script src="./scripts/chatbot.js"></script>
+    <header class="site-header">
+        <div class="container navbar">
+            <a href="index.html"><img class="brand-logo" src="./assets/141dd3faa98da9737b591161deac509a.jpg" alt="Soyosoyo Sacco Logo"></a>
+            <button id="menu-toggle" aria-label="Toggle Menu">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="Products.html">Products</a></li>
+                    <li><a href="Online Forms.html">Online Forms</a></li>
+                    <li><a href="Jobs.html">Jobs</a></li>
+                    <li><a href="Join Us.html">Join Us</a></li>
+                </ul>
+            </nav>
+        </div>
+        <div class="hero">
+            <div>
+                <h1>Jobs</h1>
+                <p>Explore career opportunities with us.</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Jobs Section -->
+        <section class="section jobs-section">
+            <h2 style="text-align: center;">Open Roles</h2>
+            <div class="job-listing">
+                <h3>Financial Officer</h3>
+                <p><strong>Location:</strong> Kilifi, Kenya<br><strong>Responsibilities:</strong> Manage member accounts, process loans, and ensure compliance with financial regulations.<br><strong>Requirements:</strong> Bachelor's in Finance/Accounting, 2+ years experience in banking/SACCO.<br><strong>Apply:</strong> Send CV to info@soyosoyosacco.com by November 15, 2025.</p>
+            </div>
+            <div class="job-listing">
+                <h3>Customer Service Representative</h3>
+                <p><strong>Location:</strong> Mombasa, Kenya<br><strong>Responsibilities:</strong> Assist members with inquiries, process applications, and promote products.<br><strong>Requirements:</strong> Diploma in Business, excellent communication skills, 1+ year experience.<br><strong>Apply:</strong> Send CV to info@soyosoyosacco.com by November 15, 2025.</p>
+            </div>
+            <!-- Add more listings as needed -->
+            <p style="text-align: center; font-style: italic;">No current openings? Check back soon or email us for future opportunities.</p>
+        </section>
+
+        <!-- Loan Calculator Tool -->
+        <section class="section tool-section" id="loan-calculator">
+            <h2 style="text-align: center;">Loan Calculator</h2>
+            <div class="calculator-wrapper">
+                <div class="calculator">
+                    <h2><span class="soyo-logo">SOYOSOYO</span> SACCO Loan Calculator</h2>
+                    <div class="form-group">
+                        <label for="loanType">Loan Type:</label>
+                        <select id="loanType" onchange="updateFields()">
+                            <option value="">Select Loan Type</option>
+                            <option value="emergency">Emergency Loan</option>
+                            <option value="medicare">Medicare Loan</option>
+                            <option value="education">Education Loan</option>
+                            <option value="development">Development Loan</option>
+                            <option value="apiCulture">Api Culture Loan</option>
+                        </select>
+                    </div>
+                    <div class="form-group interest-rate">
+                        <label for="rate">Annual Interest Rate:</label>
+                        <input type="text" id="rate" readonly placeholder="Select a loan type">
+                    </div>
+                    <div class="form-group tenure">
+                        <label for="tenure">Tenure (Months):</label>
+                        <input type="text" id="tenure" readonly placeholder="Select a loan type">
+                    </div>
+                    <div class="form-group slider-container">
+                        <label for="principalSlider">Loan Amount (KES):</label>
+                        <input type="range" id="principalSlider" min="1000" max="500000" step="1000" value="1000">
+                        <div class="slider-value" id="principalValue">KES 1000</div>
+                    </div>
+                    <button onclick="calculateLoan()">Calculate Loan</button>
+                    <div class="result" id="result"></div>
+                    <button onclick="toggleAmortizationTable()" id="amortizationButton" style="display: none;">View Amortization Table</button>
+                    <div class="amortization-table" id="amortizationTable">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Month</th>
+                                    <th>Payment (KES)</th>
+                                    <th>Principal (KES)</th>
+                                    <th>Interest (KES)</th>
+                                    <th>Balance (KES)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="amortizationBody"></tbody>
+                        </table>
+                    </div>
+                    <button onclick="showFinesSection()" id="finesPromptButton" style="display: none;">Calculate Fines for Missed Payments</button>
+                    <button onclick="toggleChart()" id="chartButton" style="display: none;">View Chart</button>
+                    <div class="loan-chart" id="loanChart"></div>
+                </div>
+                <div class="fines-section" id="finesSection" style="display: none;">
+                    <h3>Calculate Late Repayment Fines</h3>
+                    <div class="form-group">
+                        <label for="lateMonth">Month of First Missed Payment:</label>
+                        <input type="number" id="lateMonth" placeholder="e.g., 1" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="monthsLate">Number of Consecutive Missed Payments:</label>
+                        <input type="number" id="monthsLate" placeholder="e.g., 3" min="0">
+                    </div>
+                    <div class="form-group" id="paymentGroup" style="display: none;">
+                        <label for="paymentMonth">Month to Add Payment:</label>
+                        <input type="number" id="paymentMonth" placeholder="e.g., 4" min="1">
+                        <label for="paymentAmount">Amount Paid (KES):</label>
+                        <input type="number" id="paymentAmount" placeholder="e.g., 500" min="0">
+                        <button onclick="addPayment()">Add Payment</button>
+                    </div>
+                    <button onclick="calculateFines()">Calculate Fines</button>
+                    <div class="result" id="finesResult"></div>
+                    <button onclick="toggleFinesAmortizationTable()" id="finesAmortizationButton" style="display: none;">View Amortization Table with Fines</button>
+                    <div class="fines-amortization-table" id="finesAmortizationTable">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Month</th>
+                                    <th>Payment (KES)</th>
+                                    <th>Principal (KES)</th>
+                                    <th>Interest (KES)</th>
+                                    <th>Installment Fine (KES)</th>
+                                    <th>Outstanding Fine (KES)</th>
+                                    <th>Balance (KES)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="finesAmortizationBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <noscript><div class="error-message">JavaScript is disabled. Please enable JavaScript to use the loan calculator.</div></noscript>
+            </div>
+        </section>
+
+        <!-- Chatbot Section -->
+        <section class="section tool-section" id="chatbot">
+            <h2 style="text-align: center;">Chat with Us</h2>
+            <div id="bot-container" style="text-align: center; padding: 20px;">
+                <p>Click the floating chat button (bottom-right) to start a conversation! Our AI assistant can help with loans, membership, and more.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2025 SOYOSOYO SACCO. All rights reserved. | <a href="mailto:info@soyosoyosacco.com">info@soyosoyosacco.com</a></p>
+    </footer>
+
+    <!-- Chatbot Container -->
+    <div id="chatbot-container" style="display: none;"></div>
+
+    <!-- Scripts -->
+    <script src="./scripts/main.js"></script>
+    <script src="./scripts/calculator.js"></script>
+    <script src="./scripts/chatbot.js"></script>
 </body>
 </html>
