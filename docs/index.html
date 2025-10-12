@@ -7,6 +7,33 @@
     <link rel="icon" href="./assets/141dd3faa98da9737b591161deac509a.jpg">
     <link rel="stylesheet" href="./style.css">
     <style>
+        /* Global Font Consistency */
+        * {
+            font-family: 'Lato', 'Arial', sans-serif;
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #333;
+        }
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+        }
+        h2 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        h3 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        p, li, a, button, input, select, textarea {
+            font-size: 16px;
+        }
+
         /* Light Green Theme for Navbar Only */
         .navbar { 
             background-color: #90EE90 !important; 
@@ -42,61 +69,61 @@
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 15px;
             display: flex;
             flex-wrap: wrap;
-            gap: 20px;
+            gap: 15px;
             justify-content: space-between;
             align-items: stretch;
         }
 
         /* Section flow */
         section { 
-            margin: 20px 0; 
-            padding: 20px; 
+            margin: 15px 0; 
+            padding: 15px; 
             flex: 1 1 100%;
         }
         .products-grid { 
             display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
-            gap: 20px; 
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+            gap: 15px; 
         }
         .product-card { 
             border: 1px solid #90EE90; 
-            padding: 15px; 
+            padding: 10px; 
             border-radius: 8px; 
             background: white; 
         }
         .product-card img { 
             width: 100%; 
-            height: 200px; 
+            height: 150px; 
             object-fit: cover; 
             border-radius: 4px; 
         }
         .tool-section { 
             background: #f9f9f9; 
-            padding: 30px; 
+            padding: 20px; 
             border-radius: 8px; 
-            margin: 20px auto; 
-            max-width: 800px; 
+            margin: 15px 0; 
+            max-width: 500px; 
             width: 100%; 
             box-sizing: border-box;
         }
         .calculator-wrapper, .calculator {
             width: 100%;
-            max-width: 600px;
+            max-width: 450px;
             margin: 0 auto;
-            min-height: 350px;
+            min-height: 300px;
             overflow-y: auto;
-            padding-bottom: 20px;
+            padding-bottom: 15px;
         }
         .calculator select, .calculator input, .calculator button {
             width: 100%;
-            padding: 12px;
-            margin: 10px 0;
+            padding: 10px;
+            margin: 8px 0;
             border: 1px solid #90EE90;
             border-radius: 4px;
-            font-size: 16px;
+            font-size: 14px;
             box-sizing: border-box;
         }
         .calculator button {
@@ -110,29 +137,29 @@
             color: white;
         }
         .result {
-            margin-top: 20px;
-            padding: 20px;
-            font-size: 16px;
-            min-height: 100px;
+            margin-top: 15px;
+            padding: 15px;
+            font-size: 14px;
+            min-height: 80px;
             background: #ffffff;
             border: 1px solid #90EE90;
             border-radius: 4px;
             text-align: left;
-            line-height: 1.6;
+            line-height: 1.5;
             color: #333;
         }
         .month-inputs {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 10px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 8px;
+            margin-bottom: 15px;
         }
         .month-inputs input {
             width: 100%;
         }
         #bot-container {
             width: 100%;
-            max-width: 600px;
+            max-width: 500px;
             margin: 0 auto;
             text-align: center;
         }
@@ -173,7 +200,6 @@
             font-size: 14px;
             outline: none;
             resize: none;
-            font-family: Arial, sans-serif;
         }
         .send-button {
             background: linear-gradient(135deg, #7dd3c0 0%, #1e7b85 100%);
@@ -270,7 +296,7 @@
             max-width: 100%;
             overflow: hidden;
             position: relative;
-            padding: 40px 0;
+            padding: 30px 0;
             background: #d0d0d0;
             box-sizing: border-box;
         }
@@ -282,23 +308,22 @@
         .carousel-item {
             flex: 0 0 auto;
             min-width: 0;
-            width: 300px;
-            margin: 0 40px;
+            width: 250px;
+            margin: 0 30px;
             text-align: center;
             background: white;
-            padding: 20px;
-            border-radius: 10px;
+            padding: 15px;
+            border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             box-sizing: border-box;
         }
         .carousel-button {
             background: #87CEEB;
             color: white;
-            padding: 20px 30px;
+            padding: 15px 25px;
             border-radius: 8px;
             border: none;
-            font-family: Arial, sans-serif;
-            font-size: 24px;
+            font-size: 20px;
             font-weight: bold;
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -314,9 +339,8 @@
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
         .carousel-description {
-            margin-top: 15px;
-            font-family: Arial, sans-serif;
-            font-size: 18px;
+            margin-top: 10px;
+            font-size: 16px;
             font-weight: bold;
             color: #333;
             box-sizing: border-box;
@@ -333,29 +357,30 @@
             background: #ffffff;
             border: 1px solid #90EE90;
             border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 100, 0, 0.1); /* Classy shadow with theme color */
-            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 100, 0, 0.1);
+            padding: 15px;
             flex: 1;
-            min-width: 300px;
-            max-width: 600px;
+            min-width: 250px;
+            max-width: 350px;
             box-sizing: border-box;
             text-align: center;
         }
         .core-values-container {
-            max-width: 800px; /* Slightly wider for core values */
+            max-width: 350px;
         }
         .mission-vision-container img, .core-values-container img {
             width: 100%;
-            max-width: 100%;
-            height: auto;
+            max-height: 150px;
+            object-fit: cover;
             border-radius: 8px;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
         .core-values-container ul {
             list-style-type: square;
-            padding-left: 40px;
-            line-height: 1.6;
+            padding-left: 30px;
+            line-height: 1.5;
             text-align: left;
+            font-size: 14px;
         }
         /* Responsive adjustments */
         @media (max-width: 768px) {
@@ -366,18 +391,21 @@
             .mission-vision-container, .core-values-container {
                 max-width: 100%;
             }
+            .tool-section {
+                max-width: 100%;
+            }
         }
         @media (min-width: 769px) {
-            .mission-vision-container {
-                flex: 1 1 calc(50% - 20px); /* Two columns for Mission and Vision */
+            .mission-vision-container, .core-values-container {
+                flex: 1 1 calc(33.33% - 15px); /* Three columns for Mission, Vision, Core Values */
             }
-            .core-values-container {
-                flex: 1 1 100%; /* Full width for Core Values */
+            .tool-section {
+                flex: 1 1 calc(50% - 15px); /* Two columns for Calculators */
             }
         }
         @media (max-width: 600px) {
-            .carousel-item { width: 180px; margin: 0 20px; padding: 12px; }
-            .carousel-button { padding: 12px 18px; font-size: 16px; }
+            .carousel-item { width: 180px; margin: 0 20px; padding: 10px; }
+            .carousel-button { padding: 10px 15px; font-size: 16px; }
             .carousel-description { font-size: 14px; }
             .carousel-container { padding: 20px 0; }
         }
@@ -415,49 +443,44 @@
     <main class="container">
         <!-- Evolution Section -->
         <section class="section">
-            <h1 style="text-align: center; font-family: Lato, Arial; font-weight: 700;">The Evolution of Soyosoyo SACCO: From Medicare to Modern Empowerment</h1>
-            <p style="text-align: justify; line-height: 1.6; margin: 20px 0;">
+            <h1 style="text-align: center;">The Evolution of Soyosoyo SACCO: From Medicare to Modern Empowerment</h1>
+            <p style="text-align: justify; margin: 15px 0;">
                 Soyosoyo SACCO boasts a rich history, beginning its journey on <strong>July 15, 1998</strong>, as <strong>SOYOSOYO MEDICARE CO-OPERATIVE SAVINGS & CREDIT SOCIETY</strong>. Its initial, heartwarming mission was to pool funds and provide affordable credit, primarily to help members cover their families' medical bills.
             </p>
-            <p style="text-align: justify; line-height: 1.6; margin: 20px 0;">
+            <p style="text-align: justify; margin: 15px 0;">
                 As the fund grew significantly, the SACCO's vision expanded beyond healthcare. It began to support members in financing their children's education, demonstrating its adaptability and commitment to community needs.
             </p>
-            <p style="text-align: justify; line-height: 1.6; margin: 20px 0;">
+            <p style="text-align: justify; margin: 15px 0;">
                 However, with its membership spreading across various parts of the Kenyan Coast, the complexity of managing the SACCO, combined with the introduction of the National Hospital Insurance Fund (NHIF) which began covering medical bills, led the SACCO into a period of silence.
             </p>
-            <p style="text-align: justify; line-height: 1.6; margin: 20px 0;">
+            <p style="text-align: justify; margin: 15px 0;">
                 But the story didn’t end there. In 2022, the dedicated founding members reignited their passion, showing a keen interest in reviving the SACCO. Their goal was clear: to refresh its objectives to align with current community needs.
             </p>
-            <p style="text-align: justify; line-height: 1.6; margin: 20px 0;">
+            <p style="text-align: justify; margin: 15px 0;">
                 This revival culminated in a new beginning for Soyosoyo SACCO. Officially rebranded and given a new look on April 10, 2024, it emerged with renewed vigor. Its expanded mission now focuses on providing affordable financing to cover a broader range of essential objectives, including medical bills, education, agriculture, and development.
             </p>
-            <p style="text-align: justify; line-height: 1.6; margin: 20px 0;">
+            <p style="text-align: justify; margin: 15px 0;">
                 Soyosoyo SACCO stands today as a testament to its enduring commitment to its members, evolving to meet the diverse financial needs of its community.
             </p>
         </section>
 
-        <!-- Mission and Vision Section -->
+        <!-- Mission, Vision, Core Values Section -->
         <div class="mission-vision-container">
             <img src="./assets/0065564ad0f92baf9be886b031073979.jpg" alt="Mission Image">
             <h2>Our Mission</h2>
-            <p style="line-height: 1.6;">
-                To continually empower members by providing accessible, affordable, and innovative credit for healthcare, education, agriculture, and development, driving enduring prosperity in our cooperative community.
-            </p>
+            <p>To continually empower members by providing accessible, affordable, and innovative credit for healthcare, education, agriculture, and development, driving enduring prosperity in our cooperative community.</p>
         </div>
 
         <div class="mission-vision-container">
             <img src="./assets/d8c3d49708ed9831ff753b3548c717aa.jpg" alt="Vision Image">
             <h2>Our Vision</h2>
-            <p style="line-height: 1.6;">
-                To be the leading catalyst for financial transformation and sustainable prosperity across Kenya, empowering every member to achieve their aspirations in health, education, and development.
-            </p>
+            <p>To be the leading catalyst for financial transformation and sustainable prosperity across Kenya, empowering every member to achieve their aspirations in health, education, and development.</p>
         </div>
 
-        <!-- Core Values Section -->
         <div class="core-values-container">
             <img src="./assets/8119c4ebd64ccbe641d0563d23444c34.jpg" alt="Values Image">
             <h2>Our Core Values</h2>
-            <ul style="list-style-type: square; padding-left: 40px; line-height: 1.6;">
+            <ul>
                 <li><strong>Empowerment</strong></li>
                 <li><strong>Integrity</strong></li>
                 <li><strong>Community</strong></li>
@@ -468,7 +491,7 @@
 
         <!-- Products Section -->
         <section class="section">
-            <h1 style="text-align: center; font-family: Lato, Arial; font-weight: 700;">OUR PRODUCTS</h1>
+            <h1 style="text-align: center;">OUR PRODUCTS</h1>
             <div class="products-grid">
                 <div class="product-card">
                     <img src="./assets/ba04cd4377b3746fc0750dcf2ff3d935.jpg" alt="Education Loan">
@@ -604,7 +627,7 @@
             <h2 style="text-align: center;">Chat with Us</h2>
             <div id="bot-container">
                 <p>Click the button below to start a conversation!</p>
-                <button id="openChatButton" style="background: #90EE90; color: #006400; padding: 12px 24px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;">Open Chatbot</button>
+                <button id="openChatButton" style="background: #90EE90; color: #006400; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">Open Chatbot</button>
             </div>
         </section>
     </main>
