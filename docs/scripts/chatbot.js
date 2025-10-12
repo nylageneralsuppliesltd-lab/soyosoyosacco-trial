@@ -25,29 +25,63 @@
                     width: 60px;
                     height: 60px;
                     border-radius: 50%;
-                    background: linear-gradient(135deg, #7dd3c0 0%, #1e7b85 100%);
+                    background: linear-gradient(135deg, #90EE90 0%, #228B22 100%);
                     border: none;
-                    color: white;
-                    font-size: 28px;
+                    box-shadow: 0 4px 12px rgba(0, 100, 0, 0.2);
                     cursor: pointer;
-                    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
                     z-index: 9998;
-                    transition: all 0.3s ease;
+                    transition: transform 0.3s ease, box-shadow 0.3s ease;
+                    overflow: hidden;
                     display: flex;
                     align-items: center;
                     justify-content: center;
                 }
                 #soyosoyo-float-btn:hover {
                     transform: scale(1.1);
-                    box-shadow: 0 6px 25px rgba(0,0,0,0.4);
+                    box-shadow: 0 6px 16px rgba(0, 100, 0, 0.3);
+                }
+                #soyosoyo-float-btn img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    border-radius: 50%;
+                }
+                .soyosoyo-notification-badge {
+                    position: absolute;
+                    top: 5px;
+                    right: 5px;
+                    background: #ff4444;
+                    color: white;
+                    border-radius: 50%;
+                    width: 20px;
+                    height: 20px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 12px;
+                    font-weight: bold;
+                    box-shadow: 0 2px 4px rgba(255, 68, 68, 0.3);
+                }
+                #soyosoyo-float-btn.close {
+                    background: #ff4444;
+                }
+                #soyosoyo-float-btn.close img {
+                    display: none;
+                }
+                #soyosoyo-float-btn.close::after {
+                    content: '✕';
+                    color: white;
+                    font-size: 24px;
+                    font-weight: bold;
                 }
                 #soyosoyo-chat-widget {
                     position: fixed;
                     bottom: 90px;
                     right: 20px;
-                    width: 360px;
-                    height: 550px;
+                    width: min(90vw, 360px);
+                    height: min(80vh, 550px);
                     background: white;
+                    border: 1px solid #90EE90;
                     border-radius: 16px;
                     box-shadow: 0 8px 30px rgba(0,0,0,0.2);
                     display: none;
@@ -64,22 +98,39 @@
                     to { opacity: 1; transform: translateY(0); }
                 }
                 .soyosoyo-header {
-                    background: linear-gradient(135deg, #7dd3c0 0%, #1e7b85 100%);
+                    background: linear-gradient(135deg, #90EE90 0%, #228B22 100%);
                     color: white;
-                    padding: 18px;
+                    padding: 12px 15px;
                     display: flex;
-                    justify-content: space-between;
                     align-items: center;
+                    justify-content: space-between;
+                    position: relative;
+                }
+                .soyosoyo-logo {
+                    position: absolute;
+                    left: 12px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    width: 30px;
+                    height: 30px;
+                    border-radius: 50%;
+                }
+                .soyosoyo-logo img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    border-radius: 50%;
                 }
                 .soyosoyo-title {
                     font-size: 16px;
                     font-weight: 600;
+                    margin-left: 40px; /* Space for logo */
                 }
                 .soyosoyo-close {
                     background: transparent;
                     border: none;
                     color: white;
-                    font-size: 28px;
+                    font-size: 24px;
                     cursor: pointer;
                     width: 32px;
                     height: 32px;
@@ -96,6 +147,7 @@
                     overflow-y: auto;
                     padding: 20px;
                     background: #f9f9f9;
+                    border-bottom: 1px solid #90EE90;
                 }
                 .soyosoyo-msg {
                     margin-bottom: 16px;
@@ -114,14 +166,14 @@
                     word-wrap: break-word;
                 }
                 .soyosoyo-msg.user .soyosoyo-bubble {
-                    background: #3b82f6;
+                    background: #006400;
                     color: white;
                     border-bottom-right-radius: 4px;
                 }
                 .soyosoyo-msg.bot .soyosoyo-bubble {
                     background: white;
                     color: #333;
-                    border: 1px solid #e5e7eb;
+                    border: 1px solid #90EE90;
                     border-bottom-left-radius: 4px;
                 }
                 .soyosoyo-msg.typing .soyosoyo-bubble {
@@ -171,11 +223,14 @@
                     padding: 0;
                 }
                 .soyosoyo-bubble a {
-                    color: #3b82f6;
+                    color: #006400;
                     text-decoration: underline;
                 }
+                .soyosoyo-bubble a:hover {
+                    color: #228B22;
+                }
                 .soyosoyo-bubble blockquote {
-                    border-left: 3px solid #d1d5db;
+                    border-left: 3px solid #90EE90;
                     padding-left: 12px;
                     margin: 8px 0;
                     color: #6b7280;
@@ -186,37 +241,37 @@
                     margin: 8px 0;
                 }
                 .soyosoyo-bubble th, .soyosoyo-bubble td {
-                    border: 1px solid #d1d5db;
+                    border: 1px solid #90EE90;
                     padding: 6px 8px;
                     text-align: left;
                 }
                 .soyosoyo-bubble th {
-                    background: #f3f4f6;
+                    background: #f9f9f9;
                     font-weight: 600;
                 }
                 .soyosoyo-input-area {
                     padding: 16px;
                     background: white;
-                    border-top: 1px solid #e5e7eb;
+                    border-top: 1px solid #90EE90;
                     display: flex;
                     gap: 10px;
                 }
                 .soyosoyo-input {
                     flex: 1;
                     padding: 12px;
-                    border: 1px solid #d1d5db;
+                    border: 1px solid #90EE90;
                     border-radius: 24px;
                     font-size: 14px;
                     outline: none;
                     resize: none;
-                    font-family: Arial, sans-serif;
+                    font-family: 'Lato', Arial, sans-serif;
                     max-height: 80px;
                 }
                 .soyosoyo-input:focus {
-                    border-color: #7dd3c0;
+                    border-color: #228B22;
                 }
                 .soyosoyo-send {
-                    background: linear-gradient(135deg, #7dd3c0 0%, #1e7b85 100%);
+                    background: linear-gradient(135deg, #90EE90 0%, #228B22 100%);
                     border: none;
                     color: white;
                     width: 44px;
@@ -229,7 +284,7 @@
                     font-size: 18px;
                 }
                 .soyosoyo-send:hover {
-                    opacity: 0.9;
+                    background: linear-gradient(135deg, #228B22 0%, #006400 100%);
                 }
                 .soyosoyo-send:disabled {
                     opacity: 0.5;
@@ -239,13 +294,18 @@
                     #soyosoyo-chat-widget {
                         width: calc(100vw - 20px);
                         height: calc(100vh - 100px);
-                        bottom: 10px;
+                        bottom: 80px;
                         right: 10px;
                         left: 10px;
                     }
                     #soyosoyo-float-btn {
+                        width: 70px;
+                        height: 70px;
                         bottom: 15px;
                         right: 15px;
+                    }
+                    #soyosoyo-float-btn img {
+                        object-position: center;
                     }
                 }
             `;
@@ -254,7 +314,10 @@
             // Create floating button
             this.floatBtn = document.createElement('button');
             this.floatBtn.id = 'soyosoyo-float-btn';
-            this.floatBtn.innerHTML = '💬';
+            this.floatBtn.innerHTML = `
+                <img src="https://img.freepik.com/free-vector/customer-service-operator-headset_1284-3374.jpg" alt="Chat Support Avatar" onerror="this.src='./assets/141dd3faa98da9737b591161deac509a.jpg';">
+                <div class="soyosoyo-notification-badge">2</div>
+            `;
             document.body.appendChild(this.floatBtn);
 
             // Create chat widget
@@ -262,12 +325,15 @@
             this.widget.id = 'soyosoyo-chat-widget';
             this.widget.innerHTML = `
                 <div class="soyosoyo-header">
-                    <div class="soyosoyo-title">💬 SOYOSOYO SACCO</div>
+                    <div class="soyosoyo-logo">
+                        <img src="./assets/141dd3faa98da9737b591161deac509a.jpg" alt="Soyosoyo Sacco Logo">
+                    </div>
+                    <div class="soyosoyo-title">SOYOSOYO SACCO Assistant</div>
                     <button class="soyosoyo-close">×</button>
                 </div>
                 <div class="soyosoyo-messages"></div>
                 <div class="soyosoyo-input-area">
-                    <textarea class="soyosoyo-input" placeholder="Type your message..." rows="1"></textarea>
+                    <textarea class="soyosoyo-input" placeholder="Ask about loans, savings, membership..." rows="1"></textarea>
                     <button class="soyosoyo-send">➤</button>
                 </div>
             `;
@@ -370,8 +436,7 @@
             
             if (this.isOpen) {
                 this.widget.classList.add('open');
-                this.floatBtn.innerHTML = '✕';
-                this.floatBtn.style.background = '#dc2626';
+                this.floatBtn.classList.add('close');
                 
                 if (!this.hasStarted) {
                     this.hasStarted = true;
@@ -384,8 +449,7 @@
                 this.input.focus();
             } else {
                 this.widget.classList.remove('open');
-                this.floatBtn.innerHTML = '💬';
-                this.floatBtn.style.background = 'linear-gradient(135deg, #7dd3c0 0%, #1e7b85 100%)';
+                this.floatBtn.classList.remove('close');
             }
         }
 
