@@ -268,6 +268,86 @@
             text-align: center;
             margin-top: 10px;
         }
+        /* Carousel Styles */
+        .carousel-wrapper {
+            width: 100%;
+            overflow-x: hidden;
+            box-sizing: border-box;
+        }
+        .carousel-container {
+            width: 100%;
+            max-width: 100%;
+            overflow: hidden;
+            position: relative;
+            padding: 40px 0;
+            background: #d0d0d0;
+            box-sizing: border-box;
+        }
+        .carousel {
+            display: flex;
+            flex-wrap: nowrap;
+            animation: slide var(--carousel-duration, 21s) linear infinite;
+        }
+        .carousel-item {
+            flex: 0 0 auto;
+            min-width: 0;
+            width: 300px;
+            margin: 0 40px;
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+        }
+        .carousel-button {
+            background: #87CEEB;
+            color: white;
+            padding: 20px 30px;
+            border-radius: 8px;
+            border: none;
+            font-family: Arial, sans-serif;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+            display: block;
+            width: 100%;
+            text-align: center;
+            text-decoration: none;
+            box-sizing: border-box;
+        }
+        .carousel-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        .carousel-description {
+            margin-top: 15px;
+            font-family: Arial, sans-serif;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            box-sizing: border-box;
+        }
+        .carousel:hover {
+            animation-play-state: paused;
+        }
+        @keyframes slide {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(var(--carousel-translate, -2380px)); }
+        }
+        @media (max-width: 600px) {
+            .carousel-item { width: 180px; margin: 0 20px; padding: 12px; }
+            .carousel-button { padding: 12px 18px; font-size: 16px; }
+            .carousel-description { font-size: 14px; }
+            .carousel-container { padding: 20px 0; }
+        }
+        @media (max-width: 360px) {
+            .carousel-item { width: 140px; margin: 0 10px; padding: 8px; }
+            .carousel-button { padding: 8px 12px; font-size: 14px; }
+            .carousel-description { font-size: 12px; }
+        }
     </style>
 </head>
 <body>
@@ -357,6 +437,13 @@
                 </div>
             </div>
         </section>
+
+        <!-- Stats Carousel -->
+        <div class="carousel-wrapper">
+            <div class="carousel-container">
+                <div class="carousel"></div>
+            </div>
+        </div>
 
         <!-- Loan Calculator -->
         <section class="tool-section" id="loan-calculator">
@@ -520,6 +607,7 @@
 <script src="./scripts/calculator.js"></script>
 <script src="./scripts/dividendscalculator.js"></script>
     <script src="./scripts/chatbot.js"></script>
+<script src="./scripts/carousel.js"></script>
 <script>
 // SOYOSOYO SACCO Chatbot - Inline Working Version
 (function() {
@@ -671,4 +759,3 @@
 </script>
 </body>
 </html>
-
