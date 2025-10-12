@@ -157,15 +157,22 @@ main {
 
 /* === FOOTER === */
 footer {
-  background: #004aad;
-  color: #fff;
+  background: #90EE90; /* Light green logo color */
+  color: #006400; /* Dark green text for contrast */
   padding: 1.8rem 0;
   margin-top: 2rem;
   text-align: center;
+  border-top: 1px solid #228B22; /* Forest green border for polish */
+  font-size: 14px;
+  font-weight: 600;
 }
-
 footer a {
-  color: #ffde59;
+  color: #006400; /* Dark green links */
+  text-decoration: none;
+  transition: color 0.3s;
+}
+footer a:hover {
+  color: #228B22; /* Forest green on hover */
 }
 
 /* === FIX INVISIBLE GOOGLE DOC CLASSES === */
