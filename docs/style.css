@@ -6,39 +6,45 @@
 }
 
 html, body {
-  font-family: "Segoe UI", Arial, sans-serif;
+  font-family: 'Lato', Arial, sans-serif; /* Updated to Lato for consistency with index.html */
   color: #222;
   line-height: 1.6;
   background: #fff;
   margin: 0;
   padding: 0;
-  overflow-x: hidden; /* Prevent horizontal scroll */
+  overflow-x: hidden;
 }
 
 a {
-  color: #0068a8;
+  color: #006400; /* Changed to dark green for theme consistency */
   text-decoration: none;
 }
 
 img {
   max-width: 100%;
   height: auto;
-  display: block; /* Remove img gaps */
-}
-
-.container {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 1rem;
+  display: block;
 }
 
 /* === NAVIGATION BAR === */
+.site-header {
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  background: #90EE90; /* Light green to match logo and theme */
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
 .navbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 0;
-  background: #fff;
+  padding: 16px 20px; /* Adjusted for consistency with index.html */
+  background: #90EE90; /* Light green to match logo and theme */
+  max-width: 1200px;
+  margin: 0 auto;
   position: relative;
   z-index: 10;
 }
@@ -56,41 +62,32 @@ img {
 
 .nav-links a {
   font-weight: 600;
-  color: #004aad;
+  color: #006400; /* Dark green for contrast */
   transition: color 0.3s ease;
 }
 
 .nav-links a:hover {
-  color: #008cff;
+  color: #228B22; /* Forest green on hover */
 }
 
 #menu-toggle {
   display: none;
   background: none;
-  border: 1px solid #0068a8;
-  color: #0068a8;
+  border: 1px solid #006400; /* Updated to dark green */
+  color: #006400;
   padding: 0.25rem 0.6rem;
   border-radius: 6px;
   cursor: pointer;
 }
 
 /* === HEADER & HERO SECTION === */
-.site-header {
-  width: 100vw; /* Full width */
-  margin: 0;
-  padding: 0;
-  background: #fff; /* Fallback */
-  position: relative;
-  z-index: 1;
-}
-
 .hero {
-  width: 100vw; /* Full viewport width */
-  height: 60vh; /* Shorter to avoid vertical stretch */
-  background-image: url('./assets/header-image.jpg'); /* Adjust path if needed */
-  background-size: cover; /* Fill container, crop edges */
+  width: 100vw;
+  height: 60vh;
+  background-image: url('./assets/header-image.jpg');
+  background-size: cover;
   background-repeat: no-repeat;
-  background-position: center center; /* Center for both axes */
+  background-position: center center;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -113,7 +110,7 @@ img {
   z-index: 3;
   text-align: center;
   padding: 1rem;
-  max-width: 90%; /* Prevent text overflow */
+  max-width: 90%;
 }
 
 .hero h1 {
@@ -141,7 +138,7 @@ main {
 }
 
 .section h2 {
-  color: #004aad;
+  color: #006400; /* Updated to dark green */
   margin-bottom: 0.5rem;
 }
 
@@ -162,15 +159,17 @@ footer {
   padding: 1.8rem 0;
   margin-top: 2rem;
   text-align: center;
-  border-top: 1px solid #228B22; /* Forest green border for polish */
+  border-top: 1px solid #228B22; /* Forest green border */
   font-size: 14px;
   font-weight: 600;
 }
+
 footer a {
   color: #006400; /* Dark green links */
   text-decoration: none;
   transition: color 0.3s;
 }
+
 footer a:hover {
   color: #228B22; /* Forest green on hover */
 }
@@ -197,7 +196,7 @@ footer a:hover {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(255, 255, 255, 0.95);
+    background: #90EE90; /* Updated to light green for mobile menu */
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -216,7 +215,12 @@ footer a:hover {
     padding: 1rem;
     width: 100%;
     text-align: center;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid #228B22; /* Forest green border */
+    color: #006400;
+  }
+
+  .nav-links a:hover {
+    color: #228B22;
   }
 
   #menu-toggle {
@@ -225,11 +229,11 @@ footer a:hover {
   }
 
   .hero {
-    height: auto; /* Dynamic height */
-    aspect-ratio: 4/3; /* Adjust based on image; 4/3 for squarish */
-    min-height: 40vh; /* Ensure content visibility */
-    background-size: cover; /* Fill without gaps */
-    background-position: center 20%; /* Shift up to preserve top content */
+    height: auto;
+    aspect-ratio: 4/3;
+    min-height: 40vh;
+    background-size: cover;
+    background-position: center 20%;
   }
 
   .hero-inner {
