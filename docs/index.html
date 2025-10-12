@@ -16,7 +16,7 @@
             padding: 0;
         }
         body {
-            background: #ffffff; /* White background for sharp contrast */
+            background: #ffffff;
             font-size: 16px;
             line-height: 1.6;
             color: #333;
@@ -39,24 +39,7 @@
             font-size: 16px;
         }
 
-        /* Header and Navbar */
-        .site-header {
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            background: #90EE90;
-        }
-        .navbar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .brand-logo {
-            max-width: 80px;
-        }
+        /* Member Portal Button */
         .member-portal {
             background: #006400;
             color: white;
@@ -69,67 +52,6 @@
         .member-portal:hover {
             background: #228B22;
             transform: translateY(-2px);
-        }
-        #menu-toggle {
-            background: none;
-            border: none;
-            cursor: pointer;
-            display: none;
-        }
-        .nav-links {
-            display: flex;
-            gap: 15px;
-        }
-        .nav-links a {
-            color: #006400;
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.3s;
-        }
-        .nav-links a:hover {
-            color: #228B22;
-        }
-
-        /* Dropdown Menu for Mobile */
-        .nav-menu {
-            display: none;
-            position: absolute;
-            top: 100%;
-            right: 20px;
-            background: #f9f9f9;
-            border: 1px solid #90EE90;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 100, 0, 0.1);
-            padding: 15px;
-            width: 200px;
-            animation: slideDown 0.3s ease;
-        }
-        .nav-menu.active {
-            display: block;
-        }
-        .nav-menu ul {
-            list-style: none;
-            padding: 0;
-        }
-        .nav-menu li {
-            margin: 10px 0;
-        }
-        .nav-menu a {
-            color: #006400;
-            font-size: 16px;
-            text-decoration: none;
-            display: block;
-            padding: 8px;
-            border-radius: 4px;
-            transition: background 0.3s;
-        }
-        .nav-menu a:hover {
-            background: #90EE90;
-            color: #ffffff;
-        }
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         /* Hero Section */
@@ -162,7 +84,7 @@
 
         /* Generic Container Styling */
         .section, .mission-vision-container, .core-values-container, .tool-section {
-            background: #f9f9f9; /* Light grey for all containers */
+            background: #f9f9f9;
             border: 1px solid #90EE90;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0, 100, 0, 0.1);
@@ -510,9 +432,6 @@
             .tool-section {
                 flex: 1 1 calc(50% - 15px);
             }
-            .nav-menu {
-                display: none;
-            }
         }
         @media (max-width: 600px) {
             .carousel-item { width: 180px; margin: 0 20px; padding: 10px; }
@@ -546,19 +465,11 @@
                 <a href="Jobs.html">Jobs</a>
                 <a href="Join Us.html">Join Us</a>
             </nav>
-            <nav class="nav-menu" id="nav-menu">
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="Products.html">Products</a></li>
-                    <li><a href="Online Forms.html">Online Forms</a></li>
-                    <li><a href="Jobs.html">Jobs</a></li>
-                    <li><a href="Join Us.html">Join Us</a></li>
-                </ul>
-            </nav>
         </div>
         <div class="hero"></div>
     </header>
 
+    <!-- Main content remains unchanged -->
     <main class="container">
         <!-- Evolution Section -->
         <section class="section">
@@ -916,13 +827,13 @@
                 
                 // Mobile Menu Toggle
                 const menuToggle = document.getElementById('menu-toggle');
-                const navMenu = document.getElementById('nav-menu');
+                const navLinks = document.querySelector('.nav-links');
                 menuToggle.addEventListener('click', () => {
-                    navMenu.classList.toggle('active');
+                    navLinks.classList.toggle('show');
                 });
-                navMenu.querySelectorAll('a').forEach(link => {
+                navLinks.querySelectorAll('a').forEach(link => {
                     link.addEventListener('click', () => {
-                        navMenu.classList.remove('active');
+                        navLinks.classList.remove('show');
                     });
                 });
             });
