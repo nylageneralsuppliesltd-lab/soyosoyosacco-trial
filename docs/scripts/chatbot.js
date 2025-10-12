@@ -315,7 +315,7 @@
             this.floatBtn = document.createElement('button');
             this.floatBtn.id = 'soyosoyo-float-btn';
             this.floatBtn.innerHTML = `
-                <img src="https://img.freepik.com/free-vector/customer-service-operator-headset_1284-3374.jpg" alt="Chat Support Avatar" onerror="this.src='./assets/141dd3faa98da9737b591161deac509a.jpg';">
+                <img src="docs/assets/chat-avatar.jpg" alt="Chat Support Avatar" onerror="this.src='./assets/141dd3faa98da9737b591161deac509a.jpg';">
                 <div class="soyosoyo-notification-badge">2</div>
             `;
             document.body.appendChild(this.floatBtn);
