@@ -9,13 +9,13 @@
     <style>
         /* Light Green Theme for Header/Nav */
         .site-header { background-color: #90EE90; } /* Light green */
-        .navbar { background-color: #90EE90; color: #006400; } /* Dark green text */
-        .nav-links a { color: #006400; } /* Links dark green */
+        .navbar { background-color: #90EE90 !important; color: #006400; padding: 10px 0; } /* Dark green text */
+        .nav-links a { color: #006400; text-decoration: none; padding: 10px; } /* Links dark green */
         .nav-links a:hover { color: #228B22; } /* Hover forest green */
         
         /* Hero no overlap */
         .hero { 
-            background-image: url('./assets/header-image.jpg'); 
+            background-image: url('./assets/header-image.jpg') !important; 
             background-size: cover; 
             background-position: center; 
             height: 50vh; 
@@ -23,17 +23,86 @@
             display: flex; 
             align-items: center; 
             justify-content: center; 
+            padding: 20px;
             color: white; 
             text-shadow: 2px 2px 4px rgba(0,0,0,0.7); 
-            padding: 40px 20px; /* Extra padding to prevent text overlap */
         }
-               .hero > div { position: relative; z-index: 2; text-align: center; max-width: 800px; }
+        .hero::before { 
+            content: none;
+        }
+        .hero > div { position: relative; z-index: 2; text-align: center; max-width: 800px; }
         
+        /* Container for proper width */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
         /* Section flow */
-        section { margin: 60px 0; padding: 0 20px; } /* Ample spacing */
+        section { 
+            margin: 40px 0; 
+            padding: 20px; 
+        }
         .jobs-section { max-width: 800px; margin: 0 auto; line-height: 1.6; }
         .job-listing { background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #90EE90; }
-        .tool-section { background: #f9f9f9; padding: 30px; border-radius: 8px; margin: 40px auto; max-width: 800px; }
+        .tool-section { 
+            background: #f9f9f9; 
+            padding: 30px; 
+            border-radius: 8px; 
+            margin: 20px auto; 
+            max-width: 800px; 
+            width: 100%; 
+            box-sizing: border-box;
+        }
+        .calculator-wrapper, .calculator {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            min-height: 350px;
+            overflow-y: auto;
+            padding-bottom: 20px;
+        }
+        .calculator select, .calculator input, .calculator button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #90EE90;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        .calculator button {
+            background: #90EE90;
+            color: #006400;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .calculator button:hover {
+            background: #228B22;
+            color: white;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            font-size: 16px;
+            min-height: 100px;
+            background: #ffffff;
+            border: 1px solid #90EE90;
+            border-radius: 4px;
+            text-align: left;
+            line-height: 1.6;
+            color: #333;
+        }
+        .month-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .month-inputs input {
+            width: 100%;
+        }
     </style>
 </head>
 <body>
@@ -63,40 +132,62 @@
     </header>
 
     <main class="container">
-        <!-- Jobs Section -->
-        <section class="section jobs-section">
-            <h2 style="text-align: center;">Open Roles</h2>
+        <section class="jobs-section">
+            <h1 style="text-align: center;">Current Job Openings</h1>
             <div class="job-listing">
-                <h3>Financial Officer</h3>
-                <p><strong>Location:</strong> Kilifi, Kenya<br><strong>Responsibilities:</strong> Manage member accounts, process loans, and ensure compliance with financial regulations.<br><strong>Requirements:</strong> Bachelor's in Finance/Accounting, 2+ years experience in banking/SACCO.<br><strong>Apply:</strong> Send CV to info@soyosoyosacco.com by November 15, 2025.</p>
+                <h3>Finance Manager</h3>
+                <p><strong>Position:</strong> Finance Manager</p>
+                <p><strong>Location:</strong> Mombasa, Kenya</p>
+                <p><strong>Responsibilities:</strong></p>
+                <ul>
+                    <li>Manage financial reporting, budgeting, and forecasting.</li>
+                    <li>Oversee accounts payable and receivable.</li>
+                    <li>Ensure compliance with financial regulations.</li>
+                </ul>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Bachelor's degree in Finance or Accounting.</li>
+                    <li>5+ years of experience in financial management.</li>
+                    <li>CPA(K) certification preferred.</li>
+                </ul>
+                <a href="mailto:hr@soyosoyosacco.com?subject=Finance Manager Application" style="background: #90EE90; color: #006400; padding: 10px 20px; text-decoration: none; border-radius: 4px;">Apply Now</a>
             </div>
             <div class="job-listing">
-                <h3>Customer Service Representative</h3>
-                <p><strong>Location:</strong> Mombasa, Kenya<br><strong>Responsibilities:</strong> Assist members with inquiries, process applications, and promote products.<br><strong>Requirements:</strong> Diploma in Business, excellent communication skills, 1+ year experience.<br><strong>Apply:</strong> Send CV to info@soyosoyosacco.com by November 15, 2025.</p>
+                <h3>Customer Service Officer</h3>
+                <p><strong>Position:</strong> Customer Service Officer</p>
+                <p><strong>Location:</strong> Kilifi, Kenya</p>
+                <p><strong>Responsibilities:</strong></p>
+                <ul>
+                    <li>Handle customer inquiries and complaints.</li>
+                    <li>Process loan and membership applications.</li>
+                    <li>Promote SACCO products and services.</li>
+                </ul>
+                <p><strong>Requirements:</strong></p>
+                <ul>
+                    <li>Diploma in Business Administration or related field.</li>
+                    <li>2+ years in customer service.</li>
+                    <li>Excellent communication skills.</li>
+                </ul>
+                <a href="mailto:hr@soyosoyosacco.com?subject=Customer Service Officer Application" style="background: #90EE90; color: #006400; padding: 10px 20px; text-decoration: none; border-radius: 4px;">Apply Now</a>
             </div>
-            <!-- Add more listings as needed -->
-            <p style="text-align: center; font-style: italic;">No current openings? Check back soon or email us for future opportunities.</p>
+            <!-- Add more job listings as needed -->
         </section>
 
         <!-- Loan Calculator Tool -->
-        <section class="section tool-section" id="loan-calculator">
+        <section class="tool-section" id="loan-calculator">
             <h2 style="text-align: center;">Loan Calculator</h2>
             <div class="calculator-wrapper">
                 <div class="calculator">
-                    <h2><span class="soyo-logo">SOYOSOYO</span> SACCO Loan Calculator</h2>
-                    <div class="form-group">
-                        <label for="loanType">Loan Type:</label>
-                        <select id="loanType" onchange="updateFields()">
-                            <option value="">Select Loan Type</option>
-                            <option value="emergency">Emergency Loan</option>
-                            <option value="medicare">Medicare Loan</option>
-                            <option value="education">Education Loan</option>
-                            <option value="development">Development Loan</option>
-                            <option value="apiCulture">Api Culture Loan</option>
-                        </select>
-                    </div>
+                    <select id="loanType" onchange="updateFields()">
+                        <option value="">Select Loan Type</option>
+                        <option value="emergency">Emergency Loan</option>
+                        <option value="medicare">Medicare Loan</option>
+                        <option value="education">Education Loan</option>
+                        <option value="development">Development Loan</option>
+                        <option value="apiCulture">Api Culture Loan</option>
+                    </select>
                     <div class="form-group interest-rate">
-                        <label for="rate">Annual Interest Rate:</label>
+                        <label for="rate">Annual Interest Rate (%):</label>
                         <input type="text" id="rate" readonly placeholder="Select a loan type">
                     </div>
                     <div class="form-group tenure">
@@ -105,13 +196,13 @@
                     </div>
                     <div class="form-group slider-container">
                         <label for="principalSlider">Loan Amount (KES):</label>
-                        <input type="range" id="principalSlider" min="1000" max="500000" step="1000" value="1000">
+                        <input type="range" id="principalSlider" min="1000" max="1000000" step="1000" value="1000">
                         <div class="slider-value" id="principalValue">KES 1000</div>
                     </div>
                     <button onclick="calculateLoan()">Calculate Loan</button>
                     <div class="result" id="result"></div>
                     <button onclick="toggleAmortizationTable()" id="amortizationButton" style="display: none;">View Amortization Table</button>
-                    <div class="amortization-table" id="amortizationTable">
+                    <div class="amortization-table" id="amortizationTable" style="display: none;">
                         <table>
                             <thead>
                                 <tr>
@@ -127,56 +218,53 @@
                     </div>
                     <button onclick="showFinesSection()" id="finesPromptButton" style="display: none;">Calculate Fines for Missed Payments</button>
                     <button onclick="toggleChart()" id="chartButton" style="display: none;">View Chart</button>
-                    <div class="loan-chart" id="loanChart"></div>
+                    <div class="loan-chart" id="loanChart" style="display: none;"></div>
+                    <div class="fines-section" id="finesSection" style="display: none;">
+                        <h3>Calculate Late Repayment Fines</h3>
+                        <div class="form-group">
+                            <label for="lateMonth">Month of First Missed Payment:</label>
+                            <input type="number" id="lateMonth" placeholder="e.g., 1" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="monthsLate">Number of Consecutive Missed Payments:</label>
+                            <input type="number" id="monthsLate" placeholder="e.g., 3" min="0">
+                        </div>
+                        <div class="form-group" id="paymentGroup" style="display: none;">
+                            <label for="paymentMonth">Month to Add Payment:</label>
+                            <input type="number" id="paymentMonth" placeholder="e.g., 4" min="1">
+                            <label for="paymentAmount">Amount Paid (KES):</label>
+                            <input type="number" id="paymentAmount" placeholder="e.g., 500" min="0">
+                            <button onclick="addPayment()">Add Payment</button>
+                        </div>
+                        <button onclick="calculateFines()">Calculate Fines</button>
+                        <div class="result" id="finesResult"></div>
+                        <button onclick="toggleFinesAmortizationTable()" id="finesAmortizationButton" style="display: none;">View Amortization Table with Fines</button>
+                        <div class="fines-amortization-table" id="finesAmortizationTable" style="display: none;">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Month</th>
+                                        <th>Payment (KES)</th>
+                                        <th>Principal (KES)</th>
+                                        <th>Interest (KES)</th>
+                                        <th>Installment Fine (KES)</th>
+                                        <th>Outstanding Fine (KES)</th>
+                                        <th>Balance (KES)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="finesAmortizationBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <noscript><div class="error-message">JavaScript is disabled. Please enable JavaScript to use the loan calculator.</div></noscript>
                 </div>
-                <div class="fines-section" id="finesSection" style="display: none;">
-                    <h3>Calculate Late Repayment Fines</h3>
-                    <div class="form-group">
-                        <label for="lateMonth">Month of First Missed Payment:</label>
-                        <input type="number" id="lateMonth" placeholder="e.g., 1" min="1">
-                    </div>
-                    <div class="form-group">
-                        <label for="monthsLate">Number of Consecutive Missed Payments:</label>
-                        <input type="number" id="monthsLate" placeholder="e.g., 3" min="0">
-                    </div>
-                    <div class="form-group" id="paymentGroup" style="display: none;">
-                        <label for="paymentMonth">Month to Add Payment:</label>
-                        <input type="number" id="paymentMonth" placeholder="e.g., 4" min="1">
-                        <label for="paymentAmount">Amount Paid (KES):</label>
-                        <input type="number" id="paymentAmount" placeholder="e.g., 500" min="0">
-                        <button onclick="addPayment()">Add Payment</button>
-                    </div>
-                    <button onclick="calculateFines()">Calculate Fines</button>
-                    <div class="result" id="finesResult"></div>
-                    <button onclick="toggleFinesAmortizationTable()" id="finesAmortizationButton" style="display: none;">View Amortization Table with Fines</button>
-                    <div class="fines-amortization-table" id="finesAmortizationTable">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Month</th>
-                                    <th>Payment (KES)</th>
-                                    <th>Principal (KES)</th>
-                                    <th>Interest (KES)</th>
-                                    <th>Installment Fine (KES)</th>
-                                    <th>Outstanding Fine (KES)</th>
-                                    <th>Balance (KES)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="finesAmortizationBody"></tbody>
-                        </table>
-                    </div>
-                </div>
-                <noscript><div class="error-message">JavaScript is disabled. Please enable JavaScript to use the loan calculator.</div></noscript>
             </div>
         </section>
-
-      
+    </main>
 
     <footer>
-        <p>© 2025 SOYOSOYO SACCO. All rights reserved. | <a href="mailto:info@soyosoyosacco.com">info@soyosoyosacco.com</a></p>
+        <p>&copy; 2025 SOYOSOYO SACCO. All rights reserved. | <a href="mailto:info@soyosoyosacco.com">info@soyosoyosacco.com</a></p>
     </footer>
-
-  
 
     <!-- Scripts -->
     <script src="./scripts/main.js"></script>
