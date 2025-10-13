@@ -100,11 +100,13 @@
                 .soyosoyo-header {
                     background: linear-gradient(135deg, #90EE90 0%, #228B22 100%);
                     color: white;
-                    padding: 12px 15px;
+                    padding: 10px 12px;
                     display: flex;
                     align-items: center;
                     justify-content: space-between;
-                    position: relative;
+                    position: sticky;
+                    top: 0;
+                    z-index: 1;
                 }
                 .soyosoyo-logo {
                     position: absolute;
@@ -124,7 +126,9 @@
                 .soyosoyo-title {
                     font-size: 16px;
                     font-weight: 600;
-                    margin-left: 40px; /* Space for logo */
+                    margin-left: 40px;
+                    text-align: center;
+                    flex-grow: 1;
                 }
                 .soyosoyo-close {
                     background: transparent;
@@ -293,10 +297,12 @@
                 @media (max-width: 768px) {
                     #soyosoyo-chat-widget {
                         width: calc(100vw - 20px);
-                        height: calc(100vh - 100px);
-                        bottom: 80px;
+                        height: calc(100vh - 120px);
+                        max-height: 500px;
+                        bottom: 70px;
                         right: 10px;
                         left: 10px;
+                        overflow-y: auto;
                     }
                     #soyosoyo-float-btn {
                         width: 70px;
@@ -306,6 +312,32 @@
                     }
                     #soyosoyo-float-btn img {
                         object-position: center;
+                    }
+                    .soyosoyo-header {
+                        padding: 8px 10px;
+                    }
+                    .soyosoyo-logo {
+                        width: 28px;
+                        height: 28px;
+                        left: 10px;
+                    }
+                    .soyosoyo-title {
+                        font-size: 14px;
+                        margin-left: 36px;
+                    }
+                    .soyosoyo-close {
+                        font-size: 20px;
+                        width: 28px;
+                        height: 28px;
+                    }
+                }
+                @media (max-width: 360px) {
+                    #soyosoyo-chat-widget {
+                        height: calc(100vh - 140px);
+                        max-height: 400px;
+                    }
+                    .soyosoyo-title {
+                        font-size: 13px;
                     }
                 }
             `;
@@ -326,7 +358,7 @@
             this.widget.innerHTML = `
                 <div class="soyosoyo-header">
                     <div class="soyosoyo-logo">
-                        <img src="./assets/chat-avatar.jpg" alt="Soyosoyo Sacco Logo">
+                        <img src="./assets/141dd3faa98da9737b591161deac509a.jpg" alt="Soyosoyo Sacco Logo">
                     </div>
                     <div class="soyosoyo-title">SOYOSOYO SACCO Assistant</div>
                     <button class="soyosoyo-close">×</button>
