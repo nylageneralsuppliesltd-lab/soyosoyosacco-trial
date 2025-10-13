@@ -5,133 +5,217 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Products - SOYOSOYO SACCO</title>
     <link rel="icon" href="./assets/141dd3faa98da9737b591161deac509a.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./style.css">
     <style>
-        /* Light Green Theme for Header/Nav */
-        .site-header { background-color: #90EE90; }
-        .navbar { 
-            background-color: #90EE90; 
-            color: #006400; 
+        /* Global Styles */
+        * {
+            font-family: 'Lato', 'Arial', sans-serif;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background: #ffffff;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #333;
+        }
+        h1 {
+            font-size: 28px;
+            font-weight: 900;
+            margin-bottom: 15px;
+        }
+        h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        h3 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        p, li, a, button, input, select, textarea {
+            font-size: 16px;
+        }
+
+        /* Member Portal Button */
+        .member-portal {
+            background: #006400;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: background 0.3s, transform 0.2s;
+        }
+        .member-portal:hover {
+            background: #228B22;
+            transform: translateY(-2px);
+        }
+
+        /* Header and Navbar */
+        .site-header {
+            background-color: #90EE90;
+        }
+        .navbar {
+            background-color: #90EE90;
+            color: #006400;
             padding: 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
         }
-        .nav-links a { 
-            color: #006400; 
-            text-decoration: none; 
+        .nav-links {
+            display: flex;
+            gap: 15px;
+        }
+        .nav-links a {
+            color: #006400;
+            text-decoration: none;
             padding: 10px;
+            font-weight: 600;
         }
-        .nav-links a:hover { 
-            color: #228B22; 
+        .nav-links a:hover {
+            color: #228B22;
         }
-        
-        /* Hero: Full Image, No Transparency */
-        .hero { 
-            background-image: url('./assets/header-image.jpg') !important; 
-            background-size: cover; 
-            background-position: center; 
-            height: 50vh; 
-            position: relative; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            padding: 40px 20px;
+        #menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
         }
-        .hero::before { 
-            content: none; /* Remove overlay for full image visibility */
+        .menu-icon, .close-icon {
+            display: none;
         }
-        
-        /* Container for proper width */
+
+        /* Hero Section */
+        .hero {
+            background-image: url('./assets/header-image.jpg') !important;
+            background-size: cover;
+            background-position: center;
+            height: 40vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 1s ease;
+        }
+        .hero::before {
+            content: none;
+        }
+
+        /* Main Container */
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: space-between;
+            align-items: stretch;
         }
 
-        /* Section flow */
-        section { 
-            margin: 60px 0; 
-            padding: 0 20px; 
+        /* Generic Section Styling */
+        .section, .tool-section {
+            background: #f9f9f9;
+            border: 1px solid #90EE90;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 100, 0, 0.1);
+            padding: 15px;
+            margin: 15px 0;
+            flex: 1 1 100%;
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: fadeIn 0.5s ease;
         }
-        .product-section { 
-            margin-bottom: 40px; 
-        }
-        .product-image { 
-            width: 100%; 
-            max-width: 600px; 
-            height: auto; 
-            display: block; 
-            margin: 20px auto; 
-            border-radius: 8px; 
-        }
-        .product-text { 
-            max-width: 800px; 
-            margin: 20px auto; 
-            line-height: 1.6; 
-            text-align: justify; 
-            font-size: 16px; 
-        }
-        .policy-list { 
-            max-width: 800px; 
-            margin: 20px auto; 
-            padding-left: 20px; 
-            line-height: 1.6; 
-        }
-        .tool-section { 
-            background: #f9f9f9; 
-            padding: 30px; 
-            border-radius: 8px; 
-            margin: 40px auto; 
-            max-width: 800px; 
-            width: 100%; 
-            box-sizing: border-box;
-        }
-        .products-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
-            gap: 30px; 
-            margin: 40px 0; 
-        }
-        .product-card { 
-            border: 1px solid #90EE90; 
-            padding: 20px; 
-            border-radius: 8px; 
-            background: white; 
-            text-align: center; 
-        }
-        .product-card img { 
-            width: 100%; 
-            height: 200px; 
-            object-fit: cover; 
-            border-radius: 4px; 
-            margin-bottom: 15px; 
-        }
-        .join-button { 
-            display: block; 
-            background: #90EE90; 
-            color: #006400; 
-            padding: 12px; 
-            text-decoration: none; 
-            border-radius: 4px; 
-            margin: 20px auto; 
-            max-width: 200px; 
-            font-weight: bold; 
+        .section:hover, .tool-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(0, 100, 0, 0.15);
         }
 
-        /* Calculator-specific styles */
+        /* Loan Policy */
+        .policy-list {
+            padding-left: 30px;
+            list-style-type: square;
+            font-size: 14px;
+            max-width: 800px;
+            margin: 20px auto;
+            line-height: 1.6;
+        }
+
+        /* Products Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        .product-card {
+            background: #f9f9f9;
+            border: 1px solid #90EE90;
+            padding: 10px;
+            border-radius: 8px;
+            transition: transform 0.3s;
+            text-align: center;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+        .product-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        /* Loan Inquiry Form */
+        .tool-section form input,
+        .tool-section form select,
+        .tool-section form textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 12px;
+            border: 1px solid #90EE90;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .tool-section form button {
+            width: 100%;
+            background: #90EE90;
+            color: #006400;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s, color 0.3s;
+        }
+        .tool-section form button:hover {
+            background: #228B22;
+            color: white;
+        }
+
+        /* Calculator Styles */
         .calculator-wrapper, .calculator {
             width: 100%;
-            max-width: 600px;
+            max-width: 450px;
+            min-height: 300px;
+            overflow-y: auto;
+            padding-bottom: 15px;
             margin: 0 auto;
-            min-height: 300px; /* Ensure space for results */
-            overflow-y: auto; /* Handle long content */
         }
         .calculator select, .calculator input, .calculator button {
             width: 100%;
-            padding: 12px;
-            margin: 10px 0;
+            padding: 10px;
+            margin: 8px 0;
             border: 1px solid #90EE90;
             border-radius: 4px;
-            font-size: 16px;
-            box-sizing: border-box;
+            font-size: 14px;
         }
         .calculator input[readonly] {
             background: #e0e0e0;
@@ -147,22 +231,20 @@
             color: white;
         }
         .result {
-            margin-top: 20px;
+            margin-top: 15px;
             padding: 15px;
-            font-weight: bold;
-            text-align: center;
-            font-size: 16px;
-            min-height: 50px; /* Ensure visibility */
+            font-size: 14px;
             background: #ffffff;
             border: 1px solid #90EE90;
             border-radius: 4px;
+            text-align: left;
+            line-height: 1.5;
         }
         .slider-container {
             margin: 20px 0;
         }
         .slider-value {
             text-align: center;
-            margin-top: 5px;
             font-size: 14px;
         }
         .amortization-table, .fines-amortization-table {
@@ -200,134 +282,133 @@
             text-align: center;
             margin-top: 10px;
         }
+        .soyo-logo {
+            color: #006400;
+        }
 
-        /* Chatbot styles */
-        #bot-container {
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
-            text-align: center;
-        }
-        #chatbot-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 320px;
-            height: 400px;
-            border: 1px solid #90EE90;
-            border-radius: 8px;
-            background: white;
-            padding: 15px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            z-index: 1000;
-            display: none;
-        }
-        #chatbot-messages {
-            height: 320px;
-            overflow-y: auto;
-            padding: 10px;
-            border-bottom: 1px solid #90EE90;
-        }
-        #chatbot-input {
-            width: 100%;
-            padding: 10px;
-            margin-top: 10px;
-            border: 1px solid #90EE90;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-        #chatbot-container button {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
+        /* Join Button */
+        .join-button {
+            display: block;
             background: #90EE90;
             color: #006400;
-            border: none;
+            padding: 12px;
+            text-decoration: none;
             border-radius: 4px;
-            cursor: pointer;
+            margin: 20px auto;
+            max-width: 200px;
+            font-weight: 600;
+            text-align: center;
+            transition: background 0.3s, color 0.3s;
         }
-        #chatbot-container button:hover {
+        .join-button:hover {
             background: #228B22;
             color: white;
         }
-        .chat-header {
-            background: linear-gradient(135deg, #7dd3c0 0%, #1e7b85 100%);
-            color: white;
-            padding: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #f9f9f9;
+            border-top: 1px solid #90EE90;
         }
-        .chat-header-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        footer a {
+            color: #006400;
+            text-decoration: none;
         }
-        .chat-avatar {
+        footer a:hover {
+            color: #228B22;
+        }
+        footer img {
             width: 32px;
             height: 32px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
+            margin: 0 10px;
         }
-        .chat-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 50%;
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
-        .header-text h3 {
-            font-size: 14px;
-            margin: 0;
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar {
+                position: relative;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+            #menu-toggle {
+                display: block;
+            }
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: #90EE90;
+                padding: 10px;
+                z-index: 1000;
+            }
+            .nav-links.active {
+                display: flex;
+            }
+            .nav-links a {
+                padding: 10px;
+                width: 100%;
+                text-align: left;
+            }
+            .member-portal {
+                padding: 8px 15px;
+                font-size: 14px;
+            }
+            .container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .tool-section {
+                max-width: 100%;
+                flex: 1 1 100%;
+            }
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            .product-card img {
+                height: 120px;
+            }
         }
-        .header-text p {
-            font-size: 11px;
-            opacity: 0.9;
-            margin: 0;
-        }
-        .message {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-        .message.user {
-            flex-direction: row-reverse;
-        }
-        .message-bubble {
-            max-width: 80%;
-            padding: 10px;
-            border-radius: 12px;
-            font-size: 13px;
-        }
-        .message.user .message-bubble {
-            background: #3b82f6;
-            color: white;
-        }
-        .message.assistant .message-bubble {
-            background: #f1f5f9;
-            color: #374151;
-            border: 1px solid #e5e7eb;
+        @media (min-width: 769px) {
+            .tool-section {
+                flex: 1 1 calc(50% - 15px);
+            }
         }
     </style>
 </head>
 <body>
     <header class="site-header">
-        <div class="container navbar">
+        <div class="navbar">
             <a href="index.html"><img class="brand-logo" src="./assets/141dd3faa98da9737b591161deac509a.jpg" alt="Soyosoyo Sacco Logo" style="max-width: 100px;"></a>
+            <a href="https://chamasoft.com/login" class="member-portal">Member Portal</a>
             <button id="menu-toggle" aria-label="Toggle Menu">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg class="menu-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#006400" stroke-width="2">
                     <line x1="3" y1="6" x2="21" y2="6"></line>
                     <line x1="3" y1="12" x2="21" y2="12"></line>
                     <line x1="3" y1="18" x2="21" y2="18"></line>
                 </svg>
+                <svg class="close-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#006400" stroke-width="2" style="display: none;">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
             </button>
-            <nav>
-                <ul class="nav-links">
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="Products.html">Products</a></li>
-                    <li><a href="Online Forms.html">Online Forms</a></li>
-                    <li><a href="Jobs.html">Jobs</a></li>
-                    <li><a href="Join Us.html">Join Us</a></li>
-                </ul>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="Products.html">Products</a>
+                <a href="Online Forms.html">Online Forms</a>
+                <a href="Jobs.html">Jobs</a>
+                <a href="Join Us.html">Join Us</a>
             </nav>
         </div>
         <div class="hero"></div>
@@ -336,20 +417,20 @@
     <main class="container">
         <!-- Loan Policy -->
         <section class="section">
-            <h1 style="text-align: center; font-family: Lato, Arial; font-weight: 700;">LOAN POLICY</h1>
-            <h2 style="text-align: center; font-family: Lato, Arial; font-weight: 700;">To qualify for a loan...</h2>
+            <h1 style="text-align: center;">LOAN POLICY</h1>
+            <h2 style="text-align: center;">To qualify for a loan...</h2>
             <ul class="policy-list">
-                <li>1. A member must have completed at least six months and contributed not less than Kshs.3,200.</li>
-                <li>2. Loan applicant is entitled to three (3) times his/her deposits but subject to lending limit of Kshs 1 Million currently.</li>
-                <li>3. A member who withdraws from the society and rejoins later will be treated as a new member for the purpose of this policy.</li>
-                <li>4. All loans shall be restricted to members only & shall be approved by the management committee.</li>
-                <li>5. Savings contributions paid in lump sum for the purpose of securing a loan must remain in the Sacco account for at least three (3) months.</li>
-                <li>6. Unless the loan applied for is equal to or less than a member’s shares it must be secured by guarantors.</li>
-                <li>7. To withdraw membership a member will be required to give a written notice of up to 60 days.</li>
-                <li>8. A member will be required to maintain a monthly share contribution of not less than Kshs.200/=.</li>
+                <li>A member must have completed at least six months and contributed not less than Kshs.3,200.</li>
+                <li>Loan applicant is entitled to three (3) times his/her deposits but subject to lending limit of Kshs 1 Million currently.</li>
+                <li>A member who withdraws from the society and rejoins later will be treated as a new member for the purpose of this policy.</li>
+                <li>All loans shall be restricted to members only & shall be approved by the management committee.</li>
+                <li>Savings contributions paid in lump sum for the purpose of securing a loan must remain in the Sacco account for at least three (3) months.</li>
+                <li>Unless the loan applied for is equal to or less than a member’s shares it must be secured by guarantors.</li>
+                <li>To withdraw membership a member will be required to give a written notice of up to 60 days.</li>
+                <li>A member will be required to maintain a monthly share contribution of not less than Kshs.200/=.</li>
             </ul>
-            <h3 style="text-align: center; font-weight: 700;">LOAN SECURITY</h3>
-            <p style="text-align: center; max-width: 800px; margin: 0 auto; line-height: 1.6;">Loan securities may include:-</p>
+            <h3 style="text-align: center;">LOAN SECURITY</h3>
+            <p style="text-align: center; max-width: 800px; margin: 0 auto; line-height: 1.6;">Loan securities may include:</p>
             <ul class="policy-list">
                 <li>Members’ deposits</li>
                 <li>Guarantors’ deposits</li>
@@ -358,38 +439,38 @@
 
         <!-- Products Grid -->
         <section class="section">
-            <h1 style="text-align: center; font-family: Lato, Arial; font-weight: 700;">OUR PRODUCTS</h1>
+            <h1 style="text-align: center;">OUR PRODUCTS</h1>
             <div class="products-grid">
                 <!-- Development Loan -->
                 <div class="product-card">
                     <img src="./assets/c56e235f3288f4f775b9e87e5fea1161.jpg" alt="Development Loan">
-                    <h2>Development Loan: Grow Your Dreams with Flexible Financing</h2>
-                    <p>The development loan is specifically designed to empower your ambitions, whether you're looking to acquire or develop property, launch an exciting business startup, agriculture or boost your existing venture with enhanced working capital.</p>
-                    <p>Access up to KSh 1,000,000 to fuel your project, with the loan amount determined as three times your total savings. Enjoy an incredibly affordable interest rate of just 1% per month on a simple interest, making your repayments lighter and more manageable. You'll have a maximum repayment period of twelve (12) months, and for your peace of mind, the loan must be fully secured by by at least three (3) guarantors. Let us help you cultivate your next success!</p>
+                    <h2>Development Loan</h2>
+                    <p>The development loan is designed to empower your ambitions, whether you're looking to acquire or develop property, launch a business startup, agriculture, or boost your existing venture with enhanced working capital.</p>
+                    <p>Access up to KSh 1,000,000 (three times your savings). Interest rate: 1% per month (simple). Repayment: 12 months. Secured by at least three (3) guarantors.</p>
                 </div>
 
                 <!-- Emergency Loan -->
                 <div class="product-card">
                     <img src="./assets/db9853d73fef26b528aa4367086f8252.jpg" alt="Emergency Loan">
-                    <h2>Emergency Loan: Your Quick Lifeline for Unexpected Moments!</h2>
-                    <p>Life can bring unforeseen challenges, and our Emergency Loan is here to provide rapid financial assistance when you need it most. Designed to help you navigate sudden, unavoidable situations, this product offers immediate support to get you back on your feet.</p>
-                    <p>You can repay this loan within a convenient period of three (3) months, with an interest rate of 3% per month on a simple interest, making your installments manageable. To ensure equitable access for all, members can hold one Emergency Loan at a time. Your application will be supported by your existing savings, and the loan must be secured by at least one (1) guarantor.</p>
+                    <h2>Emergency Loan</h2>
+                    <p>Our Emergency Loan provides rapid financial assistance for unforeseen challenges, offering immediate support to get you back on your feet.</p>
+                    <p>Repay within 3 months at 3% per month (simple). One loan at a time, secured by at least one (1) guarantor.</p>
                 </div>
 
                 <!-- Medicare Loan -->
                 <div class="product-card">
                     <img src="./assets/1bbe203c93786b35fe54438d25752261.jpg" alt="Medicare Loan">
-                    <h2>Medicare Loan: Your Direct Path to Affordable Healthcare!</h2>
-                    <p>The Medicare Loan is designed exclusively to help you cover medical bills, providing essential financial support precisely when you need it. We aim to streamline the process, allowing you to focus fully on your health and recovery.</p>
-                    <p>To apply, simply attach your medical bill to the application form. Benefit from an extended repayment period of up to twelve (12) months, coupled with an incredibly low interest rate of just 0.33% per month (4% per annum) on a simple interest. The maximum loan amount is thoughtfully determined by your ability to comfortably repay, ensuring responsible borrowing. For security, the loan must be fully backed by at least three (3) guarantors. Crucially, payments are made directly to the hospital via funds transfer or banker's cheque, ensuring your medical expenses are settled promptly and efficiently.</p>
+                    <h2>Medicare Loan</h2>
+                    <p>The Medicare Loan covers medical bills with payments made directly to the hospital via funds transfer or banker's cheque.</p>
+                    <p>Repay within 12 months at 0.33% per month (4% per annum, simple). Amount based on repayment ability, secured by three (3) guarantors.</p>
                 </div>
 
                 <!-- Education Loan -->
                 <div class="product-card">
                     <img src="./assets/9f6ef9a029c7d6708c969b43e85c0a8f.jpg" alt="Education Loan">
-                    <h2>Education Loan: Invest in Knowledge, Secure Their Future!</h2>
-                    <p>The Education Loan is precisely crafted to cover school fees ONLY, ensuring your children's academic journey remains uninterrupted. We are committed to empowering the next generation by providing accessible learning opportunities, fostering brighter futures.</p>
-                    <p>To apply, simply attach the official fees structure(s) to your application form. You'll benefit from a comfortable repayment period of up to twelve (12) months, coupled with a highly affordable interest rate of just 0.33% per month (4% per annum) on a simple interest. The maximum loan amount is thoughtfully determined by your ability to comfortably repay, promoting responsible financial planning. For your security, the loan must be fully backed by at least three (3) guarantors. Crucially, payments are made directly to the school via funds transfer or banker's cheque, guaranteeing prompt and efficient settlement of fees.</p>
+                    <h2>Education Loan</h2>
+                    <p>The Education Loan covers school fees, with payments made directly to the school via funds transfer or banker's cheque.</p>
+                    <p>Repay within 12 months at 0.33% per month (4% per annum, simple). Amount based on repayment ability, secured by three (3) guarantors.</p>
                 </div>
             </div>
         </section>
@@ -397,25 +478,25 @@
         <!-- Loan Inquiry Form -->
         <section class="section tool-section">
             <h2 style="text-align: center;">Are you interested in a Soyosoyo SACCO loan?</h2>
-            <form action="https://formsubmit.co/soyosoyomedicare@gmail.com" method="POST" style="max-width: 600px; margin: auto;">
-                <input type="text" name="Full Name" placeholder="Full Name" required style="width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #90EE90; border-radius: 8px;">
-                <input type="email" name="Email" placeholder="Email Address" required style="width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #90EE90; border-radius: 8px;">
-                <input type="tel" name="Phone" placeholder="Phone Number (e.g. +254...)" required style="width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #90EE90; border-radius: 8px;">
-                <select name="Loan Type" required style="width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #90EE90; border-radius: 8px;">
+            <form action="https://formsubmit.co/soyosoyomedicare@gmail.com" method="POST">
+                <input type="text" name="Full Name" placeholder="Full Name" required>
+                <input type="email" name="Email" placeholder="Email Address" required>
+                <input type="tel" name="Phone" placeholder="Phone Number (e.g. +254...)" required>
+                <select name="Loan Type" required>
                     <option value="" disabled selected>Select Loan Type</option>
                     <option value="Development Loan">Development Loan</option>
                     <option value="Emergency Loan">Emergency Loan</option>
                     <option value="Education Loan">Education Loan</option>
                     <option value="Medicare Loan">Medicare Loan</option>
                 </select>
-                <select name="Residential Town" required style="width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #90EE90; border-radius: 8px;">
+                <select name="Residential Town" required>
                     <option value="" disabled selected>Select residential County</option>
                     <option value="Kilifi">Kilifi</option>
                     <option value="Mombasa">Mombasa</option>
                     <option value="Kwale">Kwale</option>
                 </select>
-                <textarea name="Message" placeholder="Your message here..." rows="4" style="width: 100%; padding: 12px; margin-bottom: 16px; border: 1px solid #90EE90; border-radius: 8px;"></textarea>
-                <button type="submit" style="width: 100%; background-color: #90EE90; color: #006400; padding: 14px; font-size: 16px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer;">📩 Submit Loan Inquiry</button>
+                <textarea name="Message" placeholder="Your message here..." rows="4"></textarea>
+                <button type="submit">📩 Submit Loan Inquiry</button>
                 <input type="hidden" name="_subject" value="New Soyosoyo Loan Inquiry">
                 <input type="hidden" name="_captcha" value="false">
             </form>
@@ -513,8 +594,6 @@
             </div>
         </section>
 
-      
-
         <!-- Join Us Button -->
         <section class="section" style="text-align: center;">
             <a href="Join Us.html" class="join-button">Follow easy steps to join us!</a>
@@ -522,15 +601,13 @@
     </main>
 
     <footer>
-        <p>© 2025 SOYOSOYO SACCO. All rights reserved. | <a href="mailto:info@soyosoyosacco.com">info@soyosoyosacco.com</a></p>
+        <p>&copy; 2025 SOYOSOYO SACCO. All rights reserved. | <a href="mailto:info@soyosoyosacco.com">info@soyosoyosacco.com</a></p>
         <div style="text-align: center; margin-top: 10px;">
-            <a href="https://www.facebook.com/people/Soyosoyo-Sacco/61565783836766/" target="_blank"><img src="./assets/facebook-icon.png" alt="Facebook" style="width: 32px; height: 32px; margin: 0 10px;"></a>
-            <a href="https://x.com/SoyosoyoSACCO" target="_blank"><img src="./assets/twitter-icon.png" alt="X" style="width: 32px; height: 32px; margin: 0 10px;"></a>
-            <a href="https://www.instagram.com/soyosoyosacco" target="_blank"><img src="./assets/instagram-icon.png" alt="Instagram" style="width: 32px; height: 32px; margin: 0 10px;"></a>
+            <a href="https://www.facebook.com/people/Soyosoyo-Sacco/61565783836766/" target="_blank"><img src="./assets/facebook-icon.png" alt="Facebook"></a>
+            <a href="https://x.com/SoyosoyoSACCO" target="_blank"><img src="./assets/twitter-icon.png" alt="X"></a>
+            <a href="https://www.instagram.com/soyosoyosacco" target="_blank"><img src="./assets/instagram-icon.png" alt="Instagram"></a>
         </div>
     </footer>
-
-
 
     <!-- Scripts -->
     <script src="./scripts/main.js"></script>
