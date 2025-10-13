@@ -5,70 +5,180 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Online Forms - SOYOSOYO SACCO</title>
     <link rel="icon" href="./assets/141dd3faa98da9737b591161deac509a.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./style.css">
     <style>
-        /* Light Green Theme for Header/Nav */
-        .site-header { background-color: #90EE90; } /* Light green */
-        .navbar { background-color: #90EE90 !important; color: #006400; padding: 10px 0; } /* Dark green text */
-        .nav-links a { color: #006400; text-decoration: none; padding: 10px; } /* Links dark green */
-        .nav-links a:hover { color: #228B22; } /* Hover forest green */
-        
-        /* Hero no overlap */
-        .hero { 
-            background-image: url('./assets/header-image.jpg') !important; 
-            background-size: cover; 
-            background-position: center; 
-            height: 50vh; 
-            position: relative; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            padding: 20px;
-            color: white; 
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.7); 
+        /* Global Styles */
+        * {
+            font-family: 'Lato', 'Arial', sans-serif;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
-        .hero::before { 
+        h1 {
+            font-size: 28px;
+            font-weight: 900;
+            margin-bottom: 15px;
+        }
+        h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        p, li, a, button, input, select, textarea {
+            font-size: 16px;
+        }
+
+        /* Member Portal Button */
+        .member-portal {
+            background: #006400;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: background 0.3s, transform 0.2s;
+        }
+        .member-portal:hover {
+            background: #228B22;
+            transform: translateY(-2px);
+        }
+
+        /* Header and Navbar */
+        .site-header {
+            background-color: #90EE90;
+        }
+        .navbar {
+            background-color: #90EE90;
+            color: #006400;
+            padding: 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        .nav-links {
+            display: flex;
+            gap: 15px;
+        }
+        .nav-links a {
+            color: #006400;
+            text-decoration: none;
+            padding: 10px;
+            font-weight: 600;
+        }
+        .nav-links a:hover {
+            color: #228B22;
+        }
+        #menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        .menu-icon, .close-icon {
+            display: none;
+        }
+
+        /* Hero Section */
+        .hero {
+            background-image: url('./assets/header-image.jpg');
+            background-size: cover;
+            background-position: center;
+            height: 40vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 1s ease;
+        }
+        .hero::before {
             content: none;
         }
-        .hero > div { position: relative; z-index: 2; text-align: center; max-width: 800px; }
-        
-        /* Container for proper width */
+        .hero > div {
+            text-align: center;
+            max-width: 800px;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+        }
+
+        /* Main Container */
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: space-between;
         }
 
-        /* Section flow */
-        section { 
-            margin: 40px 0; 
-            padding: 20px; 
+        /* Generic Section Styling */
+        .section, .tool-section {
+            background: #f9f9f9;
+            border: 1px solid #90EE90;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 100, 0, 0.1);
+            padding: 15px;
+            margin: 15px 0;
+            flex: 1 1 100%;
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: fadeIn 0.5s ease;
         }
-        .tool-section { 
-            background: #f9f9f9; 
-            padding: 30px; 
-            border-radius: 8px; 
-            margin: 20px auto; 
-            max-width: 800px; 
-            width: 100%; 
-            box-sizing: border-box;
+        .section:hover, .tool-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(0, 100, 0, 0.15);
         }
+
+        /* Form Styling */
+        .tool-section form input,
+        .tool-section form select,
+        .tool-section form textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 12px;
+            border: 1px solid #90EE90;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .tool-section form button {
+            width: 100%;
+            background: #90EE90;
+            color: #006400;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s, color 0.3s;
+        }
+        .tool-section form button:hover {
+            background: #228B22;
+            color: white;
+        }
+
+        /* Calculator Styles */
         .calculator-wrapper, .calculator {
             width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
-            min-height: 350px;
+            max-width: 450px;
+            min-height: 300px;
             overflow-y: auto;
-            padding-bottom: 20px;
+            padding-bottom: 15px;
+            margin: 0 auto;
         }
         .calculator select, .calculator input, .calculator button {
             width: 100%;
-            padding: 12px;
-            margin: 10px 0;
+            padding: 10px;
+            margin: 8px 0;
             border: 1px solid #90EE90;
             border-radius: 4px;
-            font-size: 16px;
-            box-sizing: border-box;
+            font-size: 14px;
+        }
+        .calculator input[readonly] {
+            background: #e0e0e0;
         }
         .calculator button {
             background: #90EE90;
@@ -81,17 +191,59 @@
             color: white;
         }
         .result {
-            margin-top: 20px;
-            padding: 20px;
-            font-size: 16px;
-            min-height: 100px;
+            margin-top: 15px;
+            padding: 15px;
+            font-size: 14px;
             background: #ffffff;
             border: 1px solid #90EE90;
             border-radius: 4px;
             text-align: left;
-            line-height: 1.6;
-            color: #333;
+            line-height: 1.5;
         }
+        .slider-container {
+            margin: 20px 0;
+        }
+        .slider-value {
+            text-align: center;
+            font-size: 14px;
+        }
+        .amortization-table, .fines-amortization-table {
+            margin-top: 20px;
+            width: 100%;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #90EE90;
+            padding: 10px;
+            text-align: center;
+            font-size: 14px;
+        }
+        th {
+            background: #90EE90;
+            color: #006400;
+        }
+        .loan-chart {
+            margin-top: 20px;
+            max-width: 100%;
+        }
+        .fines-section {
+            margin-top: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .error-message {
+            color: red;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        /* Dividends Calculator */
         .month-inputs {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -101,7 +253,8 @@
         .month-inputs input {
             width: 100%;
         }
-        /* Google Form Embed Styling */
+
+        /* Google Form Embed */
         .google-form-embed {
             max-width: 800px;
             margin: 0 auto;
@@ -109,31 +262,98 @@
             overflow: hidden;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar {
+                position: relative;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+            #menu-toggle {
+                display: block;
+            }
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: #90EE90;
+                padding: 10px;
+                z-index: 1000;
+            }
+            .nav-links.active {
+                display: flex;
+            }
+            .nav-links a {
+                padding: 10px;
+                width: 100%;
+                text-align: left;
+            }
+            .member-portal {
+                padding: 8px 15px;
+                font-size: 14px;
+            }
+            .container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .tool-section {
+                max-width: 100%;
+                flex: 1 1 100%;
+            }
+            .calculator-wrapper, .calculator {
+                max-width: 100%;
+            }
+            .google-form-embed iframe {
+                height: 600px;
+            }
+        }
+        @media (min-width: 769px) {
+            .tool-section {
+                flex: 1 1 calc(50% - 15px);
+            }
+        }
     </style>
 </head>
 <body>
     <header class="site-header">
-        <div class="container navbar">
-            <a href="index.html"><img class="brand-logo" src="./assets/141dd3faa98da9737b591161deac509a.jpg" alt="Soyosoyo Sacco Logo"></a>
+        <div class="navbar">
+            <a href="index.html"><img class="brand-logo" src="./assets/141dd3faa98da9737b591161deac509a.jpg" alt="Soyosoyo Sacco Logo" style="max-width: 100px;"></a>
+            <a href="https://chamasoft.com/login" class="member-portal">Member Portal</a>
             <button id="menu-toggle" aria-label="Toggle Menu">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg class="menu-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#006400" stroke-width="2">
                     <line x1="3" y1="6" x2="21" y2="6"></line>
                     <line x1="3" y1="12" x2="21" y2="12"></line>
                     <line x1="3" y1="18" x2="21" y2="18"></line>
                 </svg>
+                <svg class="close-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#006400" stroke-width="2" style="display: none;">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
             </button>
-            <nav>
-                <ul class="nav-links">
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="Products.html">Products</a></li>
-                    <li><a href="Online Forms.html">Online Forms</a></li>
-                    <li><a href="Jobs.html">Jobs</a></li>
-                    <li><a href="Join Us.html">Join Us</a></li>
-                </ul>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="Products.html">Products</a>
+                <a href="Online Forms.html">Online Forms</a>
+                <a href="Jobs.html">Jobs</a>
+                <a href="Join Us.html">Join Us</a>
             </nav>
         </div>
         <div class="hero">
-            
+            <div>
+                <h1>Online Forms</h1>
+                <p>Apply for loans or membership with our easy-to-use forms.</p>
+            </div>
         </div>
     </header>
 
@@ -141,25 +361,25 @@
         <!-- Loan Inquiry Form -->
         <section class="section tool-section">
             <h2 style="text-align: center;">Loan Inquiry Form</h2>
-            <form action="https://formsubmit.co/soyosoyomedicare@gmail.com" method="POST" style="max-width: 500px; margin: auto;">
-                <input type="text" name="Full Name" placeholder="Full Name" required style="width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #90EE90; border-radius: 8px;"><br>
-                <input type="email" name="Email" placeholder="Email Address" required style="width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #90EE90; border-radius: 8px;"><br>
-                <input type="tel" name="Phone" placeholder="Phone Number (e.g. +254...)" required style="width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #90EE90; border-radius: 8px;"><br>
-                <select name="Loan Type" required style="width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #90EE90; border-radius: 8px;">
+            <form action="https://formsubmit.co/soyosoyomedicare@gmail.com" method="POST">
+                <input type="text" name="Full Name" placeholder="Full Name" required>
+                <input type="email" name="Email" placeholder="Email Address" required>
+                <input type="tel" name="Phone" placeholder="Phone Number (e.g. +254...)" required>
+                <select name="Loan Type" required>
                     <option value="" disabled selected>Select Loan Type</option>
                     <option value="Development Loan">Development Loan</option>
                     <option value="Emergency Loan">Emergency Loan</option>
                     <option value="Education Loan">Education Loan</option>
                     <option value="Medicare Loan">Medicare Loan</option>
-                </select><br>
-                <select name="Residential Town" required style="width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #90EE90; border-radius: 8px;">
-                    <option value="" disabled selected>Select residential County</option>
+                </select>
+                <select name="Residential County" required>
+                    <option value="" disabled selected>Select Residential County</option>
                     <option value="Kilifi">Kilifi</option>
                     <option value="Mombasa">Mombasa</option>
                     <option value="Kwale">Kwale</option>
-                </select><br>
-                <textarea name="Message" placeholder="Your message here..." rows="4" style="width: 100%; padding: 12px; margin-bottom: 16px; border: 1px solid #90EE90; border-radius: 8px;"></textarea><br>
-                <button type="submit" style="width: 100%; background-color: #90EE90; color: #006400; padding: 14px; font-size: 16px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer;">📩 Submit Loan Inquiry</button>
+                </select>
+                <textarea name="Message" placeholder="Your message here..." rows="4"></textarea>
+                <button type="submit">📩 Submit Loan Inquiry</button>
                 <input type="hidden" name="_subject" value="New Soyosoyo Loan Inquiry">
                 <input type="hidden" name="_captcha" value="false">
             </form>
@@ -186,14 +406,18 @@
             <h2 style="text-align: center;">Loan Calculator</h2>
             <div class="calculator-wrapper">
                 <div class="calculator">
-                    <select id="loanType" onchange="updateFields()">
-                        <option value="">Select Loan Type</option>
-                        <option value="emergency">Emergency Loan</option>
-                        <option value="medicare">Medicare Loan</option>
-                        <option value="education">Education Loan</option>
-                        <option value="development">Development Loan</option>
-                        <option value="apiCulture">Api Culture Loan</option>
-                    </select>
+                    <h2><span class="soyo-logo">SOYOSOYO</span> SACCO Loan Calculator</h2>
+                    <div class="form-group">
+                        <label for="loanType">Loan Type:</label>
+                        <select id="loanType" onchange="updateFields()">
+                            <option value="">Select Loan Type</option>
+                            <option value="emergency">Emergency Loan</option>
+                            <option value="medicare">Medicare Loan</option>
+                            <option value="education">Education Loan</option>
+                            <option value="development">Development Loan</option>
+                            <option value="apiCulture">Api Culture Loan</option>
+                        </select>
+                    </div>
                     <div class="form-group interest-rate">
                         <label for="rate">Annual Interest Rate (%):</label>
                         <input type="text" id="rate" readonly placeholder="Select a loan type">
@@ -273,8 +497,10 @@
         <section class="section tool-section" id="dividends-calculator">
             <h2 style="text-align: center;">Dividends Calculator</h2>
             <div class="calculator">
-                <label for="dividendRate">Dividend Rate (%):</label>
-                <input type="number" id="dividendRate" placeholder="Enter annual dividend rate" step="0.01">
+                <div class="form-group">
+                    <label for="dividendRate">Dividend Rate (%):</label>
+                    <input type="number" id="dividendRate" placeholder="Enter annual dividend rate" step="0.01">
+                </div>
                 <div class="month-inputs">
                     <input type="number" id="jan" placeholder="Jan Shares">
                     <input type="number" id="feb" placeholder="Feb Shares">
@@ -293,15 +519,12 @@
                 <div class="result" id="dividendResult"></div>
             </div>
         </section>
-
-     
     </main>
 
     <footer>
-        <p>© 2025 SOYOSOYO SACCO. All rights reserved. | <a href="mailto:info@soyosoyosacco.com">info@soyosoyosacco.com</a></p>
+        <p>&copy; 2025 SOYOSOYO SACCO. All rights reserved. | <a href="mailto:info@soyosoyosacco.com">info@soyosoyosacco.com</a></p>
     </footer>
 
-   
     <!-- Scripts -->
     <script src="./scripts/main.js"></script>
     <script src="./scripts/calculator.js"></script>
