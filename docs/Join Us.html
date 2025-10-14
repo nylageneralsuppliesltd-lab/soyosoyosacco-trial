@@ -5,16 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Join Us - SOYOSOYO SACCO</title>
     <link rel="icon" href="./assets/141dd3faa98da9737b591161deac509a.jpg">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="./style.css">
     <style>
-        /* Global Styles */
-        * {
-            font-family: 'Lato', 'Arial', sans-serif;
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+        /* Inline Styles for Join Us.html */
+        body {
+            background: #ffffff;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #333;
         }
         h1 {
             font-size: 28px;
@@ -26,16 +26,62 @@
             font-weight: 700;
             margin-bottom: 10px;
         }
-        h3 {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
         p, li, a, button, input, select, textarea {
             font-size: 16px;
         }
-
-        /* Member Portal Button */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        .section {
+            background: #f9f9f9;
+            border: 1px solid #90EE90;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 100, 0, 0.1);
+            padding: 15px;
+            margin: 15px 0;
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: fadeIn 0.5s ease;
+        }
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(0, 100, 0, 0.15);
+        }
+        .membership-list {
+            padding-left: 20px;
+            list-style-type: disc;
+            font-size: 16px;
+            max-width: 800px;
+            margin: 15px auto;
+            line-height: 1.8;
+        }
+        .join-form input,
+        .join-form select,
+        .join-form textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 12px;
+            border: 1px solid #90EE90;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .join-form button {
+            width: 100%;
+            background: #90EE90;
+            color: #006400;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s, color 0.3s;
+        }
+        .join-form button:hover {
+            background: #228B22;
+            color: white;
+        }
         .member-portal {
             background: #006400;
             color: white;
@@ -49,295 +95,150 @@
             background: #228B22;
             transform: translateY(-2px);
         }
-
-        /* Header and Navbar */
-        .site-header {
-            background-color: #90EE90;
-        }
-        .navbar {
-            background-color: #90EE90;
-            color: #006400;
-            padding: 10px 0;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 15px;
-        }
-        .nav-links {
-            display: flex;
-            gap: 15px;
-        }
-        .nav-links a {
-            color: #006400;
-            text-decoration: none;
-            padding: 10px;
-            font-weight: 600;
-        }
-        .nav-links a:hover {
-            color: #228B22;
-        }
-        #menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            cursor: pointer;
-        }
-        .menu-icon, .close-icon {
-            display: none;
-        }
-
-        /* Hero Section */
-        .hero {
-            background-image: url('./assets/header-image.jpg');
-            background-size: cover;
-            background-position: center;
-            height: 40vh;
+        /* Carousel Styles */
+        .carousel-join-wrapper {
+            width: 100%;
+            overflow-x: hidden;
+            box-sizing: border-box;
+            min-height: 200px;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
-            animation: fadeIn 1s ease;
         }
-        .hero::before {
-            content: none;
-        }
-        .hero > div {
-            text-align: center;
-            max-width: 800px;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
-        }
-
-        /* Main Container */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 15px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            justify-content: space-between;
-        }
-
-        /* Generic Section Styling */
-        .section, .tool-section {
-            background: #f9f9f9;
-            border: 1px solid #90EE90;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 100, 0, 0.1);
-            padding: 15px;
-            margin: 15px 0;
-            flex: 1 1 100%;
-            transition: transform 0.3s, box-shadow 0.3s;
-            animation: fadeIn 0.5s ease;
-        }
-        .section:hover, .tool-section:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 16px rgba(0, 100, 0, 0.15);
-        }
-
-        /* Join Instructions Section */
-        .join-instructions {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-        .join-instructions img {
+        .carousel-join-container {
+            width: 100%;
             max-width: 100%;
-            height: auto;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 100, 0, 0.1);
-        }
-        .join-instructions .content {
-            flex: 1;
-        }
-        .join-instructions ul {
-            list-style-type: disc;
-            padding-left: 30px;
-            margin: 10px 0;
-        }
-        .join-instructions strong {
-            color: #006400;
-        }
-
-        /* Form Styling */
-        .tool-section form input,
-        .tool-section form select,
-        .tool-section form textarea {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 12px;
-            border: 1px solid #90EE90;
-            border-radius: 8px;
-            font-size: 16px;
-        }
-        .tool-section form button {
-            width: 100%;
-            background: #90EE90;
-            color: #006400;
-            padding: 14px;
-            font-size: 16px;
-            font-weight: bold;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.3s, color 0.3s;
-        }
-        .tool-section form button:hover {
-            background: #228B22;
-            color: white;
-        }
-
-        /* Calculator Styles */
-        .calculator-wrapper, .calculator {
-            width: 100%;
-            max-width: 450px;
-            min-height: 300px;
-            overflow-y: auto;
-            padding-bottom: 15px;
-            margin: 0 auto;
-        }
-        .calculator select, .calculator input, .calculator button {
-            width: 100%;
-            padding: 10px;
-            margin: 8px 0;
-            border: 1px solid #90EE90;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-        .calculator input[readonly] {
+            overflow: hidden;
+            position: relative;
+            padding: 30px 0;
             background: #e0e0e0;
+            box-sizing: border-box;
         }
-        .calculator button {
+        .carousel-join {
+            display: flex;
+            flex-wrap: nowrap;
+            animation: slide-join 20s linear infinite;
+        }
+        .carousel-join-item {
+            flex: 0 0 auto;
+            min-width: 0;
+            width: 280px;
+            margin: 0 30px;
+            text-align: center;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            box-sizing: border-box;
+        }
+        .carousel-join-button {
             background: #90EE90;
             color: #006400;
-            cursor: pointer;
+            padding: 15px 20px;
+            border-radius: 5px;
+            border: none;
+            font-family: 'Lato', Arial, sans-serif;
+            font-size: 18px;
             font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+            cursor: pointer;
+            display: block;
+            width: 100%;
+            text-align: center;
+            text-decoration: none;
+            box-sizing: border-box;
         }
-        .calculator button:hover {
+        .carousel-join-button:hover {
+            transform: translateY(-2px);
             background: #228B22;
             color: white;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
-        .result {
-            margin-top: 15px;
-            padding: 15px;
-            font-size: 14px;
-            background: #ffffff;
-            border: 1px solid #90EE90;
-            border-radius: 4px;
+        .carousel-join-button .prefix {
+            margin-right: 5px;
+        }
+        .carousel-join-button .counter-value {
+            font-family: 'Lato', Arial, sans-serif;
+            display: inline-block;
+            min-width: 60px;
             text-align: left;
-            line-height: 1.5;
         }
-        .slider-container {
-            margin: 20px 0;
-        }
-        .slider-value {
-            text-align: center;
-            font-size: 14px;
-        }
-        .amortization-table, .fines-amortization-table {
-            margin-top: 20px;
-            width: 100%;
-            overflow-x: auto;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        .carousel-join-description {
             margin-top: 10px;
-        }
-        th, td {
-            border: 1px solid #90EE90;
-            padding: 10px;
-            text-align: center;
+            font-family: 'Lato', Arial, sans-serif;
             font-size: 14px;
+            font-weight: bold;
+            color: #333;
+            line-height: 1.4;
+            box-sizing: border-box;
         }
-        th {
-            background: #90EE90;
-            color: #006400;
+        .carousel-join:hover {
+            animation-play-state: paused;
         }
-        .loan-chart {
-            margin-top: 20px;
-            max-width: 100%;
+        @keyframes slide-join {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(calc(-1 * (280px + 2*30px) * 4)); }
         }
-        .fines-section {
-            margin-top: 20px;
+        @media (max-width: 600px) {
+            .carousel-join-item {
+                width: 200px;
+                margin: 0 10px;
+                padding: 8px;
+            }
+            .carousel-join-button {
+                padding: 8px 10px;
+                font-size: 14px;
+            }
+            .carousel-join-button .counter-value {
+                min-width: 50px;
+            }
+            .carousel-join-description {
+                font-size: 12px;
+                font-weight: bold;
+            }
+            .carousel-join-container {
+                padding: 15px 0;
+            }
+            @keyframes slide-join {
+                0% { transform: translateX(0); }
+                100% { transform: translateX(calc(-1 * (200px + 2*10px) * 4)); }
+            }
         }
-        .form-group {
-            margin-bottom: 15px;
+        @media (max-width: 360px) {
+            .carousel-join-item {
+                width: 160px;
+                margin: 0 5px;
+                padding: 5px;
+            }
+            .carousel-join-button {
+                padding: 6px 8px;
+                font-size: 12px;
+            }
+            .carousel-join-button .counter-value {
+                min-width: 40px;
+            }
+            .carousel-join-description {
+                font-size: 10px;
+                font-weight: bold;
+            }
+            @keyframes slide-join {
+                0% { transform: translateX(0); }
+                100% { transform: translateX(calc(-1 * (160px + 2*5px) * 4)); }
+            }
         }
-        .error-message {
-            color: red;
-            text-align: center;
-            margin-top: 10px;
-        }
-
         /* Animations */
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
         }
-
-        /* Responsive Design */
         @media (max-width: 768px) {
-            .navbar {
-                position: relative;
-                flex-direction: row;
-                justify-content: space-between;
-                align-items: center;
-            }
-            #menu-toggle {
-                display: block;
-            }
-            .nav-links {
-                display: none;
-                flex-direction: column;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                right: 0;
-                background: #90EE90;
-                padding: 10px;
-                z-index: 1000;
-            }
-            .nav-links.active {
-                display: flex;
-            }
-            .nav-links a {
-                padding: 10px;
-                width: 100%;
-                text-align: left;
-            }
-            .member-portal {
-                padding: 8px 15px;
-                font-size: 14px;
-            }
             .container {
                 flex-direction: column;
                 align-items: center;
             }
-            .tool-section, .join-instructions {
+            .section {
                 max-width: 100%;
-                flex: 1 1 100%;
-            }
-            .calculator-wrapper, .calculator {
-                max-width: 100%;
-            }
-            .join-instructions {
-                flex-direction: column;
-                align-items: center;
-            }
-            .join-instructions img {
-                max-width: 100%;
-            }
-        }
-        @media (min-width: 769px) {
-            .tool-section {
-                flex: 1 1 calc(50% - 15px);
-            }
-            .join-instructions img {
-                max-width: 40%;
             }
         }
     </style>
@@ -345,7 +246,7 @@
 <body>
     <header class="site-header">
         <div class="navbar">
-            <a href="index.html"><img class="brand-logo" src="./assets/141dd3faa98da9737b591161deac509a.jpg" alt="Soyosoyo Sacco Logo" style="max-width: 100px;"></a>
+            <a href="index.html"><img class="brand-logo" src="./assets/141dd3faa98da9737b591161deac509a.jpg" alt="Soyosoyo Sacco Logo"></a>
             <a href="https://chamasoft.com/login" class="member-portal">Member Portal</a>
             <button id="menu-toggle" aria-label="Toggle Menu">
                 <svg class="menu-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#006400" stroke-width="2">
@@ -367,170 +268,72 @@
             </nav>
         </div>
         <div class="hero">
-            <div>
-                <h1>Join Us</h1>
-                <p>Become a member of Soyosoyo SACCO and access affordable financial services.</p>
+            <div class="hero-inner">
+                <h1>Join SOYOSOYO SACCO</h1>
+                <p>Become a member and unlock tailored financial solutions.</p>
             </div>
         </div>
     </header>
 
     <main class="container">
-        <!-- Join Instructions Section -->
-        <section class="section join-instructions">
-            <img src="./assets/phone-image.jpg" alt="Soyosoyo SACCO Mobile App">
-            <div class="content">
-                <h2>Seamlessly Join Soyosoyo SACCO Today!</h2>
-                <p>Embark on your financial journey with us in these simple steps:</p>
-                <ul>
-                    <li><strong>Initiate Your Membership:</strong> Begin by making an initial deposit of KSh 200.</li>
-                    <li><strong>Make Your Deposit:</strong> Send your deposit via M-PESA Paybill:<br>
-                        <strong>Business Number:</strong> 546448<br>
-                        <strong>Account Number:</strong> 10027879</li>
-                    <li><strong>Provide Your Details:</strong> Through our verified contact, website enrolment forms, or social media accounts, provide your Full Name, Phone Number, and Email Address for accurate registration.</li>
-                    <li><strong>Activate Your Account:</strong> Your personal Soyosoyo SACCO membership account will be promptly activated.</li>
-                    <li><strong>Access Our App:</strong> You will receive an SMS invitation to download our exclusive mobile app, empowering you to conveniently track your savings and manage your account with ease.</li>
-                </ul>
+        <section class="section">
+            <h1 style="text-align: center;">Join Our Community</h1>
+            <p style="text-align: center;">Join SOYOSOYO SACCO to access exclusive financial products and services designed to empower your financial journey.</p>
+            <h2 style="text-align: center;">Membership Requirements</h2>
+            <ul class="membership-list">
+                <li>Complete the membership application form.</li>
+                <li>Pay a non-refundable registration fee of KSh 200.</li>
+                <li>Contribute a minimum monthly savings of KSh 200.</li>
+                <li>Pay a non-refundable monthly Risk Fund of KSh 50.</li>
+                <li>Purchase share capital of KSh 3,000 (non-refundable but transferable).</li>
+                <li>Provide valid identification and proof of residence in Kilifi, Mombasa, or Kwale.</li>
+            </ul>
+            <!-- Joining Information Carousel -->
+            <div class="carousel-join-wrapper">
+                <div class="carousel-join-container">
+                    <div class="carousel-join"></div>
+                </div>
             </div>
         </section>
 
-        <!-- Membership Application Form -->
-        <section class="section tool-section">
-            <h2 style="text-align: center;">Membership Application Form</h2>
-            <form action="https://formspree.io/f/mdkznvdo" method="POST">
-                <h3 style="text-align: center; color: #006400; margin-bottom: 20px;">
-                    Are you interested in joining Soyosoyo?
-                </h3>
+        <section class="section join-form">
+            <h2 style="text-align: center;">Membership Application</h2>
+            <form action="https://formsubmit.co/soyosoyomedicare@gmail.com" method="POST">
                 <input type="text" name="Full Name" placeholder="Full Name" required>
                 <input type="email" name="Email" placeholder="Email Address" required>
-                <input type="tel" name="Phone" placeholder="Phone Number (e.g. +254...)" required>
-                <select name="Enquiry Type" required>
-                    <option value="" disabled selected>Enquire about the product</option>
-                    <option value="Membership Requirements">Membership Requirements</option>
-                    <option value="Account Opening">Account Opening</option>
-                </select>
-                <select name="County of Residence" required>
-                    <option value="" disabled selected>Select County of Residence</option>
+                <input type="tel" name="Phone" placeholder="Phone Number (e.g., +254...)" required>
+                <select name="Residential County" required>
+                    <option value="" disabled selected>Select Residential County</option>
                     <option value="Kilifi">Kilifi</option>
                     <option value="Mombasa">Mombasa</option>
                     <option value="Kwale">Kwale</option>
                 </select>
-                <textarea name="Message" placeholder="Your message here..." rows="4" required></textarea>
-                <button type="submit">Send Inquiry</button>
-                <input type="hidden" name="_subject" value="New Soyosoyo Membership Inquiry">
+                <textarea name="Message" placeholder="Your message..." rows="4"></textarea>
+                <button type="submit">Submit Application</button>
+                <input type="hidden" name="_subject" value="New Soyosoyo Membership Application">
                 <input type="hidden" name="_captcha" value="false">
             </form>
         </section>
-
-        <!-- Loan Calculator Tool -->
-        <section class="section tool-section" id="loan-calculator">
-            <h2 style="text-align: center;">Loan Calculator</h2>
-            <div class="calculator-wrapper">
-                <div class="calculator">
-                    <h2><span class="soyo-logo">SOYOSOYO</span> SACCO Loan Calculator</h2>
-                    <div class="form-group">
-                        <label for="loanType">Loan Type:</label>
-                        <select id="loanType" onchange="updateFields()">
-                            <option value="">Select Loan Type</option>
-                            <option value="emergency">Emergency Loan</option>
-                            <option value="medicare">Medicare Loan</option>
-                            <option value="education">Education Loan</option>
-                            <option value="development">Development Loan</option>
-                            <option value="apiCulture">Api Culture Loan</option>
-                        </select>
-                    </div>
-                    <div class="form-group interest-rate">
-                        <label for="rate">Annual Interest Rate (%):</label>
-                        <input type="text" id="rate" readonly placeholder="Select a loan type">
-                    </div>
-                    <div class="form-group tenure">
-                        <label for="tenure">Tenure (Months):</label>
-                        <input type="text" id="tenure" readonly placeholder="Select a loan type">
-                    </div>
-                    <div class="form-group slider-container">
-                        <label for="principalSlider">Loan Amount (KES):</label>
-                        <input type="range" id="principalSlider" min="1000" max="1000000" step="1000" value="1000">
-                        <div class="slider-value" id="principalValue">KES 1000</div>
-                    </div>
-                    <button onclick="calculateLoan()">Calculate Loan</button>
-                    <div class="result" id="result"></div>
-                    <button onclick="toggleAmortizationTable()" id="amortizationButton" style="display: none;">View Amortization Table</button>
-                    <div class="amortization-table" id="amortizationTable" style="display: none;">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Month</th>
-                                    <th>Payment (KES)</th>
-                                    <th>Principal (KES)</th>
-                                    <th>Interest (KES)</th>
-                                    <th>Balance (KES)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="amortizationBody"></tbody>
-                        </table>
-                    </div>
-                    <button onclick="showFinesSection()" id="finesPromptButton" style="display: none;">Calculate Fines for Missed Payments</button>
-                    <button onclick="toggleChart()" id="chartButton" style="display: none;">View Chart</button>
-                    <div class="loan-chart" id="loanChart" style="display: none;"></div>
-                    <div class="fines-section" id="finesSection" style="display: none;">
-                        <h3>Calculate Late Repayment Fines</h3>
-                        <div class="form-group">
-                            <label for="lateMonth">Month of First Missed Payment:</label>
-                            <input type="number" id="lateMonth" placeholder="e.g., 1" min="1">
-                        </div>
-                        <div class="form-group">
-                            <label for="monthsLate">Number of Consecutive Missed Payments:</label>
-                            <input type="number" id="monthsLate" placeholder="e.g., 3" min="0">
-                        </div>
-                        <div class="form-group" id="paymentGroup" style="display: none;">
-                            <label for="paymentMonth">Month to Add Payment:</label>
-                            <input type="number" id="paymentMonth" placeholder="e.g., 4" min="1">
-                            <label for="paymentAmount">Amount Paid (KES):</label>
-                            <input type="number" id="paymentAmount" placeholder="e.g., 500" min="0">
-                            <button onclick="addPayment()">Add Payment</button>
-                        </div>
-                        <button onclick="calculateFines()">Calculate Fines</button>
-                        <div class="result" id="finesResult"></div>
-                        <button onclick="toggleFinesAmortizationTable()" id="finesAmortizationButton" style="display: none;">View Amortization Table with Fines</button>
-                        <div class="fines-amortization-table" id="finesAmortizationTable" style="display: none;">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Month</th>
-                                        <th>Payment (KES)</th>
-                                        <th>Principal (KES)</th>
-                                        <th>Interest (KES)</th>
-                                        <th>Installment Fine (KES)</th>
-                                        <th>Outstanding Fine (KES)</th>
-                                        <th>Balance (KES)</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="finesAmortizationBody"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <noscript><div class="error-message">JavaScript is disabled. Please enable JavaScript to use the loan calculator.</div></noscript>
-                </div>
-            </div>
-        </section>
     </main>
 
-   <footer>
-    <p>&copy; 2025 SOYOSOYO SACCO. All rights reserved. | <a href="mailto:info@soyosoyosacco.com">info@soyosoyosacco.com</a></p>
-    <div class="social-icons">
-        <a href="https://www.facebook.com/people/Soyosoyo-Sacco/61565783836766/" target="_blank">
-            <i class="fab fa-facebook-f"></i>
-        </a>
-        <a href="https://x.com/SoyosoyoSACCO" target="_blank">
-            <i class="fab fa-x-twitter"></i>
-        </a>
-        <a href="https://www.instagram.com/soyosoyosacco" target="_blank">
-            <i class="fab fa-instagram"></i>
-        </a>
-    </div>
-</footer>
+    <footer>
+        <p>&copy; 2025 SOYOSOYO SACCO. All rights reserved. | <a href="mailto:info@soyosoyosacco.com">info@soyosoyosacco.com</a></p>
+        <div class="social-icons">
+            <a href="https://www.facebook.com/people/Soyosoyo-Sacco/61565783836766/" target="_blank">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="https://x.com/SoyosoyoSACCO" target="_blank">
+                <i class="fab fa-x-twitter"></i>
+            </a>
+            <a href="https://www.instagram.com/soyosoyosacco" target="_blank">
+                <i class="fab fa-instagram"></i>
+            </a>
+        </div>
+    </footer>
 
     <script src="./scripts/main.js"></script>
     <script src="./scripts/calculator.js"></script>
     <script src="./scripts/chatbot.js"></script>
+    <script src="./scripts/carousel-join.js"></script>
 </body>
 </html>
