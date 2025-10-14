@@ -6,15 +6,10 @@
     <title>Products - SOYOSOYO SACCO</title>
     <link rel="icon" href="./assets/141dd3faa98da9737b591161deac509a.jpg">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="./style.css">
     <style>
-        /* Global Styles */
-        * {
-            font-family: 'Lato', 'Arial', sans-serif;
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        /* Inline Styles for Products.html */
         body {
             background: #ffffff;
             font-size: 16px;
@@ -53,60 +48,6 @@
         .member-portal:hover {
             background: #228B22;
             transform: translateY(-2px);
-        }
-
-        /* Header and Navbar */
-        .site-header {
-            background-color: #90EE90;
-        }
-        .navbar {
-            background-color: #90EE90;
-            color: #006400;
-            padding: 10px 0;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 15px;
-        }
-        .nav-links {
-            display: flex;
-            gap: 15px;
-        }
-        .nav-links a {
-            color: #006400;
-            text-decoration: none;
-            padding: 10px;
-            font-weight: 600;
-        }
-        .nav-links a:hover {
-            color: #228B22;
-        }
-        #menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            cursor: pointer;
-        }
-        .menu-icon, .close-icon {
-            display: none;
-        }
-
-        /* Hero Section */
-        .hero {
-            background-image: url('./assets/header-image.jpg') !important;
-            background-size: cover;
-            background-position: center;
-            height: 40vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            animation: fadeIn 1s ease;
-        }
-        .hero::before {
-            content: none;
         }
 
         /* Main Container */
@@ -313,26 +254,6 @@
             color: white;
         }
 
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 20px;
-            background: #f9f9f9;
-            border-top: 1px solid #90EE90;
-        }
-        footer a {
-            color: #006400;
-            text-decoration: none;
-        }
-        footer a:hover {
-            color: #228B22;
-        }
-        footer img {
-            width: 32px;
-            height: 32px;
-            margin: 0 10px;
-        }
-
         /* Animations */
         @keyframes fadeIn {
             from { opacity: 0; }
@@ -341,38 +262,6 @@
 
         /* Responsive Design */
         @media (max-width: 768px) {
-            .navbar {
-                position: relative;
-                flex-direction: row;
-                justify-content: space-between;
-                align-items: center;
-            }
-            #menu-toggle {
-                display: block;
-            }
-            .nav-links {
-                display: none;
-                flex-direction: column;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                right: 0;
-                background: #90EE90;
-                padding: 10px;
-                z-index: 1000;
-            }
-            .nav-links.active {
-                display: flex;
-            }
-            .nav-links a {
-                padding: 10px;
-                width: 100%;
-                text-align: left;
-            }
-            .member-portal {
-                padding: 8px 15px;
-                font-size: 14px;
-            }
             .container {
                 flex-direction: column;
                 align-items: center;
@@ -398,7 +287,7 @@
 <body>
     <header class="site-header">
         <div class="navbar">
-            <a href="index.html"><img class="brand-logo" src="./assets/141dd3faa98da9737b591161deac509a.jpg" alt="Soyosoyo Sacco Logo" style="max-width: 100px;"></a>
+            <a href="index.html"><img class="brand-logo" src="./assets/141dd3faa98da9737b591161deac509a.jpg" alt="Soyosoyo Sacco Logo"></a>
             <a href="https://chamasoft.com/login" class="member-portal">Member Portal</a>
             <button id="menu-toggle" aria-label="Toggle Menu">
                 <svg class="menu-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#006400" stroke-width="2">
@@ -420,7 +309,7 @@
             </nav>
         </div>
         <div class="hero">
-            <div style="text-align: center; max-width: 800px; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">
+            <div class="hero-inner">
                 <h1>Our Products</h1>
                 <p>Explore tailored financial solutions to meet your needs.</p>
             </div>
@@ -633,10 +522,16 @@
 
     <footer>
         <p>&copy; 2025 SOYOSOYO SACCO. All rights reserved. | <a href="mailto:info@soyosoyosacco.com">info@soyosoyosacco.com</a></p>
-        <div style="text-align: center; margin-top: 10px;">
-            <a href="https://www.facebook.com/people/Soyosoyo-Sacco/61565783836766/" target="_blank"><img src="./assets/facebook-icon.png" alt="Facebook"></a>
-            <a href="https://x.com/SoyosoyoSACCO" target="_blank"><img src="./assets/twitter-icon.png" alt="X"></a>
-            <a href="https://www.instagram.com/soyosoyosacco" target="_blank"><img src="./assets/instagram-icon.png" alt="Instagram"></a>
+        <div class="social-icons">
+            <a href="https://www.facebook.com/people/Soyosoyo-Sacco/61565783836766/" target="_blank">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="https://x.com/SoyosoyoSACCO" target="_blank">
+                <i class="fab fa-x-twitter"></i>
+            </a>
+            <a href="https://www.instagram.com/soyosoyosacco" target="_blank">
+                <i class="fab fa-instagram"></i>
+            </a>
         </div>
     </footer>
 
