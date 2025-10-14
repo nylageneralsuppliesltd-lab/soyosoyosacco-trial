@@ -349,7 +349,7 @@
             this.widget.innerHTML = `
                 <div class="soyosoyo-header">
                     <div class="soyosoyo-logo">
-                        <img src="./assets/141dd3faa98da9737b591161deac509a.jpg" alt="Soyosoyo Sacco Logo">
+                        <img src="./assets/chat-avatar.jpg" alt="Soyosoyo Sacco Logo">
                     </div>
                     <div class="soyosoyo-title">SOYOSOYO SACCO Assistant</div>
                     <button class="soyosoyo-close">×</button>
