@@ -137,6 +137,30 @@
             box-shadow: 0 6px 16px rgba(0, 100, 0, 0.15);
         }
 
+        /* Join Instructions Section */
+        .join-instructions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .join-instructions img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 100, 0, 0.1);
+        }
+        .join-instructions .content {
+            flex: 1;
+        }
+        .join-instructions ul {
+            list-style-type: disc;
+            padding-left: 30px;
+            margin: 10px 0;
+        }
+        .join-instructions strong {
+            color: #006400;
+        }
+
         /* Form Styling */
         .tool-section form input,
         .tool-section form select,
@@ -292,17 +316,27 @@
                 flex-direction: column;
                 align-items: center;
             }
-            .tool-section {
+            .tool-section, .join-instructions {
                 max-width: 100%;
                 flex: 1 1 100%;
             }
             .calculator-wrapper, .calculator {
                 max-width: 100%;
             }
+            .join-instructions {
+                flex-direction: column;
+                align-items: center;
+            }
+            .join-instructions img {
+                max-width: 100%;
+            }
         }
         @media (min-width: 769px) {
             .tool-section {
                 flex: 1 1 calc(50% - 15px);
+            }
+            .join-instructions img {
+                max-width: 40%;
             }
         }
     </style>
@@ -340,6 +374,24 @@
     </header>
 
     <main class="container">
+        <!-- Join Instructions Section -->
+        <section class="section join-instructions">
+            <img src="docs/assets/phone-image.jpg" alt="Soyosoyo SACCO Mobile App">
+            <div class="content">
+                <h2>Seamlessly Join Soyosoyo SACCO Today!</h2>
+                <p>Embark on your financial journey with us in these simple steps:</p>
+                <ul>
+                    <li><strong>Initiate Your Membership:</strong> Begin by making an initial deposit of KSh 200.</li>
+                    <li><strong>Make Your Deposit:</strong> Send your deposit via M-PESA Paybill:<br>
+                        <strong>Business Number:</strong> 546448<br>
+                        <strong>Account Number:</strong> 10027879</li>
+                    <li><strong>Provide Your Details:</strong> Through our verified contact, website enrolment forms, or social media accounts, provide your Full Name, Phone Number, and Email Address for accurate registration.</li>
+                    <li><strong>Activate Your Account:</strong> Your personal Soyosoyo SACCO membership account will be promptly activated.</li>
+                    <li><strong>Access Our App:</strong> You will receive an SMS invitation to download our exclusive mobile app, empowering you to conveniently track your savings and manage your account with ease.</li>
+                </ul>
+            </div>
+        </section>
+
         <!-- Membership Application Form -->
         <section class="section tool-section">
             <h2 style="text-align: center;">Membership Application Form</h2>
@@ -362,7 +414,7 @@
                     <option value="Kwale">Kwale</option>
                 </select>
                 <textarea name="Message" placeholder="Your message here..." rows="4" required></textarea>
-                <button type="submit">📩 Send Inquiry</button>
+                <button type="submit">Send Inquiry</button>
                 <input type="hidden" name="_subject" value="New Soyosoyo Membership Inquiry">
                 <input type="hidden" name="_captcha" value="false">
             </form>
