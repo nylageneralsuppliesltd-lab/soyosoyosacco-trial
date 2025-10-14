@@ -25,6 +25,11 @@
             font-weight: 700;
             margin-bottom: 10px;
         }
+        h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
         p, li, a, button, input, select, textarea {
             font-size: 16px;
         }
@@ -338,19 +343,27 @@
         <!-- Membership Application Form -->
         <section class="section tool-section">
             <h2 style="text-align: center;">Membership Application Form</h2>
-            <form action="https://formsubmit.co/soyosoyomedicare@gmail.com" method="POST">
+            <form action="https://formspree.io/f/mdkznvdo" method="POST">
+                <h3 style="text-align: center; color: #006400; margin-bottom: 20px;">
+                    Are you interested in joining Soyosoyo?
+                </h3>
                 <input type="text" name="Full Name" placeholder="Full Name" required>
                 <input type="email" name="Email" placeholder="Email Address" required>
-                <input type="tel" name="Phone" placeholder="Phone Number" required>
-                <select name="ID Type" required>
-                    <option value="" disabled selected>ID Type</option>
-                    <option value="National ID">National ID</option>
-                    <option value="Passport">Passport</option>
+                <input type="tel" name="Phone" placeholder="Phone Number (e.g. +254...)" required>
+                <select name="Enquiry Type" required>
+                    <option value="" disabled selected>Enquire about the product</option>
+                    <option value="Membership Requirements">Membership Requirements</option>
+                    <option value="Account Opening">Account Opening</option>
                 </select>
-                <input type="text" name="ID Number" placeholder="ID Number" required>
-                <textarea name="Address" placeholder="Residential Address" rows="3" required></textarea>
-                <button type="submit">📩 Submit Membership Application</button>
-                <input type="hidden" name="_subject" value="New Soyosoyo Membership Application">
+                <select name="County of Residence" required>
+                    <option value="" disabled selected>Select County of Residence</option>
+                    <option value="Kilifi">Kilifi</option>
+                    <option value="Mombasa">Mombasa</option>
+                    <option value="Kwale">Kwale</option>
+                </select>
+                <textarea name="Message" placeholder="Your message here..." rows="4" required></textarea>
+                <button type="submit">📩 Send Inquiry</button>
+                <input type="hidden" name="_subject" value="New Soyosoyo Membership Inquiry">
                 <input type="hidden" name="_captcha" value="false">
             </form>
         </section>
@@ -452,7 +465,6 @@
         <p>&copy; 2025 SOYOSOYO SACCO. All rights reserved. | <a href="mailto:info@soyosoyosacco.com">info@soyosoyosacco.com</a></p>
     </footer>
 
-    <!-- Scripts -->
     <script src="./scripts/main.js"></script>
     <script src="./scripts/calculator.js"></script>
     <script src="./scripts/chatbot.js"></script>
