@@ -2,11 +2,11 @@
 document.addEventListener('DOMContentLoaded', () => {
     const carouselData = [
         { number: 141, description: "Total Members" },
-        { number: 799000, description: "Member Savings" },
-        { number: 209000, description: "Bank Balance" },
-        { number: 93, description: "Number of Loans Given" },
-        { number: 1667000, description: "Value of Loans Given" },
-        { number: 28000, description: "Profit" },
+        { number: 805000, description: "Member Savings" },
+        { number: 262000, description: "Bank Balance" },
+        { number: 94, description: "Number of Loans Given" },
+        { number: 1670000, description: "Value of Loans Given" },
+        { number: 31000, description: "Profit" },
         { number: 66, description: "Active Members" }
         // Add/remove items here—e.g., { number: 100, description: "New Stat" }
     ];
