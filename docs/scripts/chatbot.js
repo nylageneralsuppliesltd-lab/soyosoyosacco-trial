@@ -338,7 +338,7 @@
             this.floatBtn = document.createElement('button');
             this.floatBtn.id = 'soyosoyo-float-btn';
             this.floatBtn.innerHTML = `
-                <img src="./assets/chat-avatar.jpg" alt="Chat Support Avatar" onerror="this.src='./assets/141dd3faa98da9737b591161deac509a.jpg';">
+                <img src="./assets/judi.jpg" alt="Chat Support Avatar" onerror="this.src='./assets/141dd3faa98da9737b591161deac509a.jpg';">
                 <div class="soyosoyo-notification-badge">2</div>
             `;
             document.body.appendChild(this.floatBtn);
@@ -349,7 +349,7 @@
             this.widget.innerHTML = `
                 <div class="soyosoyo-header">
                     <div class="soyosoyo-logo">
-                        <img src="./assets/chat-avatar.jpg" alt="Soyosoyo Sacco Logo">
+                        <img src="./assets/judi.jpg" alt="Soyosoyo Sacco Logo">
                     </div>
                     <div class="soyosoyo-title">SOYOSOYO SACCO Assistant</div>
                     <button class="soyosoyo-close">×</button>
