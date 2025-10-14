@@ -140,17 +140,19 @@
         /* Join Instructions Section */
         .join-instructions {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 20px;
         }
         .join-instructions img {
-            max-width: 100%;
+            width: 100%;
+            max-width: 30%;
             height: auto;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 100, 0, 0.1);
         }
         .join-instructions .content {
             flex: 1;
+            max-width: 65%;
         }
         .join-instructions ul {
             list-style-type: disc;
@@ -159,6 +161,96 @@
         }
         .join-instructions strong {
             color: #006400;
+        }
+
+        /* Carousel Styles */
+        .carousel-join-section {
+            width: 100%;
+            margin-top: 20px;
+        }
+        .carousel-join-wrapper {
+            width: 100%;
+            overflow-x: hidden;
+            box-sizing: border-box;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .carousel-join-container {
+            width: 100%;
+            max-width: 100%;
+            overflow: hidden;
+            position: relative;
+            padding: 30px 0;
+            background: #e0e0e0;
+            box-sizing: border-box;
+        }
+        .carousel-join {
+            display: flex;
+            flex-wrap: nowrap;
+            animation: slide-join 20s linear infinite;
+        }
+        .carousel-join-item {
+            flex: 0 0 auto;
+            min-width: 0;
+            width: 280px;
+            margin: 0 30px;
+            text-align: center;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            box-sizing: border-box;
+        }
+        .carousel-join-button {
+            background: #90EE90;
+            color: #006400;
+            padding: 15px 20px;
+            border-radius: 5px;
+            border: none;
+            font-family: 'Lato', Arial, sans-serif;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+            cursor: pointer;
+            display: block;
+            width: 100%;
+            text-align: center;
+            text-decoration: none;
+            box-sizing: border-box;
+        }
+        .carousel-join-button:hover {
+            transform: translateY(-2px);
+            background: #228B22;
+            color: white;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        .carousel-join-button .prefix {
+            margin-right: 5px;
+        }
+        .carousel-join-button .counter-value {
+            font-family: 'Lato', Arial, sans-serif;
+            display: inline-block;
+            min-width: 60px;
+            text-align: left;
+        }
+        .carousel-join-description {
+            margin-top: 10px;
+            font-family: 'Lato', Arial, sans-serif;
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+            line-height: 1.4;
+            box-sizing: border-box;
+        }
+        .carousel-join:hover {
+            animation-play-state: paused;
+        }
+        @keyframes slide-join {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(calc(-1 * (280px + 2*30px) * 4)); }
         }
 
         /* Form Styling */
@@ -330,104 +422,14 @@
             .join-instructions img {
                 max-width: 100%;
             }
+            .join-instructions .content {
+                max-width: 100%;
+            }
         }
         @media (min-width: 769px) {
             .tool-section {
                 flex: 1 1 calc(50% - 15px);
             }
-            .join-instructions img {
-                max-width: 40%;
-            }
-        }
-
-        /* Carousel Styles */
-        .carousel-join-section {
-            width: 100%;
-            margin-top: 20px;
-        }
-        .carousel-join-wrapper {
-            width: 100%;
-            overflow-x: hidden;
-            box-sizing: border-box;
-            min-height: 200px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .carousel-join-container {
-            width: 100%;
-            max-width: 100%;
-            overflow: hidden;
-            position: relative;
-            padding: 30px 0;
-            background: #e0e0e0;
-            box-sizing: border-box;
-        }
-        .carousel-join {
-            display: flex;
-            flex-wrap: nowrap;
-            animation: slide-join 20s linear infinite;
-        }
-        .carousel-join-item {
-            flex: 0 0 auto;
-            min-width: 0;
-            width: 280px;
-            margin: 0 30px;
-            text-align: center;
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            box-sizing: border-box;
-        }
-        .carousel-join-button {
-            background: #90EE90;
-            color: #006400;
-            padding: 15px 20px;
-            border-radius: 5px;
-            border: none;
-            font-family: 'Lato', Arial, sans-serif;
-            font-size: 18px;
-            font-weight: bold;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-            cursor: pointer;
-            display: block;
-            width: 100%;
-            text-align: center;
-            text-decoration: none;
-            box-sizing: border-box;
-        }
-        .carousel-join-button:hover {
-            transform: translateY(-2px);
-            background: #228B22;
-            color: white;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        }
-        .carousel-join-button .prefix {
-            margin-right: 5px;
-        }
-        .carousel-join-button .counter-value {
-            font-family: 'Lato', Arial, sans-serif;
-            display: inline-block;
-            min-width: 60px;
-            text-align: left;
-        }
-        .carousel-join-description {
-            margin-top: 10px;
-            font-family: 'Lato', Arial, sans-serif;
-            font-size: 14px;
-            font-weight: bold;
-            color: #333;
-            line-height: 1.4;
-            box-sizing: border-box;
-        }
-        .carousel-join:hover {
-            animation-play-state: paused;
-        }
-        @keyframes slide-join {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(calc(-1 * (280px + 2*30px) * 4)); }
         }
         @media (max-width: 600px) {
             .carousel-join-item {
@@ -527,12 +529,13 @@
                     <li><strong>Access Our App:</strong> You will receive an SMS invitation to download our exclusive mobile app, empowering you to conveniently track your savings and manage your account with ease.</li>
                 </ul>
             </div>
-            <!-- Joining Information Carousel -->
-            <div class="carousel-join-section">
-                <div class="carousel-join-wrapper">
-                    <div class="carousel-join-container">
-                        <div class="carousel-join"></div>
-                    </div>
+        </section>
+
+        <!-- Joining Information Carousel -->
+        <section class="section carousel-join-section">
+            <div class="carousel-join-wrapper">
+                <div class="carousel-join-container">
+                    <div class="carousel-join"></div>
                 </div>
             </div>
         </section>
