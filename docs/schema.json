@@ -1,44 +1,55 @@
+<script type="application/ld+json">
 {
-    "@context": "https://schema.org",
-    "@type": "FinancialCooperative",
-    "name": "SOYOSOYO SACCO",
-    "url": "https://soyosoyosacco.com",
-    "logo": "https://soyosoyosacco.com/assets/141dd3faa98da9737b591161deac509a.jpg",
-    "description": "Soyosoyo SACCO provides affordable loans, savings, and financial services to coastal Kenya communities. Join us for emergency loans, education financing, and member dividends.",
-    "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Mombasa",
-        "addressRegion": "Coast",
-        "addressCountry": "KE"
+  "@context": "https://schema.org",
+  "@type": "FinancialService",
+  "name": "SOYOSOYO SACCO",
+  "url": "https://soyosoyosacco.com",
+  "logo": "https://soyosoyosacco.com/assets/141dd3faa98da9737b591161deac509a.jpg",
+  "description": "Soyosoyo SACCO provides affordable loans, savings, and financial services to coastal Kenya communities, including education, emergency and development loans.",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Kilifi",
+    "addressRegion": "Coast",
+    "addressCountry": "KE"
+  },
+  "email": "mailto:info@soyosoyosacco.com",
+  "contactPoint": [
+    {
+      "@type": "ContactPoint",
+      "contactType": "customer service",
+      "email": "mailto:info@soyosoyosacco.com"
+    }
+  ],
+  "areaServed": [
+    {
+      "@type": "Place",
+      "name": "Kilifi"
     },
-    "telephone": "+254-700-000-000",
-    "email": "info@soyosoyosacco.com",
-    "sameAs": [
-        "https://www.facebook.com/soyosoyosacco",
-        "https://twitter.com/soyosoyosacco"
-    ],
-    "openingHours": "Mo-Fr 08:00-17:00",
-    "priceRange": "$$",
-    "areaServed": ["Mombasa", "Kilifi", "Kwale"],
-    "founder": {
-        "@type": "Person",
-        "name": "Judi Thoya"
+    {
+      "@type": "Place",
+      "name": "Mombasa"
     },
-    "numberOfEmployees": {
-        "@type": "QuantitativeValue",
-        "minValue": 10,
-        "maxValue": 50
+    {
+      "@type": "Place",
+      "name": "Kwale"
+    }
+  ],
+  "sameAs": [
+    "https://www.facebook.com/soyosoyosacco",
+    "https://www.instagram.com/soyosoyosacco/",
+    "https://twitter.com/SoyosoyoSACCO"
+  ],
+  "makesOffer": [
+    {
+      "@type": "FinancialProduct",
+      "name": "Emergency Loan",
+      "description": "Short-term loans for urgent needs (terms and amounts as provided by Soyosoyo SACCO)."
     },
-    "makesOffer": [
-        {
-            "@type": "FinancialProduct",
-            "name": "Emergency Loan",
-            "description": "Quick cash for urgent needs up to KSh 500,000"
-        },
-        {
-            "@type": "FinancialProduct", 
-            "name": "Education Loan",
-            "description": "School fees financing up to KSh 1,000,000"
-        }
-    ]
+    {
+      "@type": "FinancialProduct",
+      "name": "Education Loan",
+      "description": "Financing for school fees and related education costs (terms and amounts as provided by Soyosoyo SACCO)."
+    }
+  ]
 }
+</script>
