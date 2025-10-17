@@ -1,12 +1,9 @@
 User-agent: *
 Allow: /
 Disallow: /assets/
-Sitemap: https://nylageneralsuppliesltd-lab.github.io/soyosoyosacco-trial/sitemap.xml
 
-# Allow search engines
+Sitemap: https://soyosoyosacco.com/sitemap.xml
+
+# Allow search engines (Google, Bing, etc.)
 User-agent: Googlebot
 Allow: /
-
-# Block AI crawlers (optional)
-User-agent: GPTBot
-Disallow: /
