@@ -72,14 +72,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateAnimation() {
-        const itemWidth = window.innerWidth <= 600 ? (window.innerWidth <= 360 ? 250 : 300) : 350;
-        const margin = window.innerWidth <= 600 ? (window.innerWidth <= 360 ? 30 : 40) : 60;
+        const itemWidth = window.innerWidth <= 600 ? (window.innerWidth <= 360 ? 150 : 200) : 300;
+        const margin = window.innerWidth <= 600 ? (window.innerWidth <= 360 ? 10 : 15) : 40;
         const totalWidth = numItems * (itemWidth + (2 * margin));
         const duration = numItems * 3 * 1000;
         document.documentElement.style.setProperty('--carousel-duration', `${duration}ms`);
         document.documentElement.style.setProperty('--carousel-translate', `-${totalWidth}px`);
-        document.documentElement.style.setProperty('--item-width', `${itemWidth}px`);
-        document.documentElement.style.setProperty('--item-margin', `${margin}px`);
     }
 
     const observerOptions = { root: null, rootMargin: '0px', threshold: 0.3 };
