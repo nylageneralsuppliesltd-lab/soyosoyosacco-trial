@@ -1,4 +1,3 @@
-// carousel.js - Dynamic Stats Carousel
 document.addEventListener('DOMContentLoaded', () => {
     const carouselData = [
         { number: 141, description: "Total Members" },
@@ -8,13 +7,11 @@ document.addEventListener('DOMContentLoaded', () => {
         { number: 1816000, description: "Value of Loans Given" },
         { number: 37000, description: "Profit" },
         { number: 67, description: "Active Members" }
-        // Add/remove items here—e.g., { number: 100, description: "New Stat" }
     ];
 
     const carousel = document.querySelector('.carousel');
-    if (!carousel) return; // Exit if no carousel container
+    if (!carousel) return;
 
-    // Generate HTML dynamically (original + duplicate for loop)
     const generateItems = () => {
         let html = '';
         carouselData.forEach(item => {
@@ -25,7 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
         });
-        // Duplicate for seamless loop
         html += carouselData.map(item => `
             <div class="carousel-item">
                 <a href="#" class="carousel-button" data-target="${item.number}">${item.number}</a>
@@ -35,12 +31,11 @@ document.addEventListener('DOMContentLoaded', () => {
         carousel.innerHTML = html;
     };
 
-    generateItems(); // Build initial HTML
+    generateItems();
 
     const items = document.querySelectorAll('.carousel-item');
-    const numItems = carouselData.length; // Original count for calcs
+    const numItems = carouselData.length;
 
-    // Function to format numbers (with 'k' for thousands)
     function formatNumber(num) {
         if (isNaN(num)) return num;
         const isNegative = num < 0;
@@ -50,7 +45,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return isNegative ? '-' + formatted : formatted;
     }
 
-    // Animate counter from 0 to target
     function animateCounter(element, targetValue) {
         const target = parseInt(targetValue, 10);
         if (isNaN(target)) {
@@ -77,17 +71,17 @@ document.addEventListener('DOMContentLoaded', () => {
         element._animationFrameId = requestAnimationFrame(step);
     }
 
-    // Set dynamic animation duration and translateX
     function updateAnimation() {
-        const itemWidth = window.innerWidth <= 600 ? (window.innerWidth <= 360 ? 140 : 180) : 300;
-        const margin = window.innerWidth <= 600 ? (window.innerWidth <= 360 ? 10 : 20) : 40;
-        const totalWidth = numItems * (itemWidth + (2 * margin)); // Per set
-        const duration = numItems * 3 * 1000; // 3s per item
+        const itemWidth = window.innerWidth <= 600 ? (window.innerWidth <= 360 ? 250 : 300) : 350;
+        const margin = window.innerWidth <= 600 ? (window.innerWidth <= 360 ? 30 : 40) : 60;
+        const totalWidth = numItems * (itemWidth + (2 * margin));
+        const duration = numItems * 3 * 1000;
         document.documentElement.style.setProperty('--carousel-duration', `${duration}ms`);
         document.documentElement.style.setProperty('--carousel-translate', `-${totalWidth}px`);
+        document.documentElement.style.setProperty('--item-width', `${itemWidth}px`);
+        document.documentElement.style.setProperty('--item-margin', `${margin}px`);
     }
 
-    // Intersection Observer for viewport animations
     const observerOptions = { root: null, rootMargin: '0px', threshold: 0.3 };
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -106,7 +100,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }, observerOptions);
 
-    // Init: Set to 0, observe items
     items.forEach(item => {
         const button = item.querySelector('.carousel-button');
         if (button) {
@@ -115,7 +108,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Re-animate visible items every 3s
     setInterval(() => {
         items.forEach(item => {
             const button = item.querySelector('.carousel-button');
@@ -127,7 +119,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }, 3000);
 
-    // Update on resize
     window.addEventListener('resize', updateAnimation);
-    updateAnimation(); // Initial calc
+    updateAnimation();
 });
