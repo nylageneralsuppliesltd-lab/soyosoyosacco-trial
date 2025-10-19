@@ -1,4 +1,3 @@
-/* style.css */
 /* === RESET & GLOBAL === */
 * {
   box-sizing: border-box;
@@ -167,6 +166,9 @@ main {
 .carousel-section {
   padding: 2.5rem 0;
   background: #f9f9f9;
+  max-width: 1300px; /* Wider container */
+  margin: 0 auto;
+  padding: 0 15px;
 }
 
 .carousel {
@@ -185,8 +187,9 @@ main {
   display: inline-flex;
   flex-direction: column;
   align-items: center;
-  width: var(--item-width, 350px);
-  margin: 0 var(--item-margin, 60px);
+  width: 350px; /* Explicitly set to 350px */
+  margin: 0 60px; /* Increased margin */
+  padding: 20px; /* Increased padding */
 }
 
 .carousel-button {
@@ -201,6 +204,14 @@ main {
   color: #222;
   text-align: center;
   margin-top: 0.7em;
+}
+
+@media (min-width: 769px) {
+  /* Ensure carousel scales appropriately on larger screens */
+  .carousel-item {
+    width: 350px;
+    margin: 0 60px;
+  }
 }
 
 /* === CHATBOT === */
@@ -409,8 +420,8 @@ footer a:hover {
   }
 
   .carousel-item {
-    width: var(--item-width, 250px); /* Adjusted for mobile */
-    margin: 0 var(--item-margin, 30px); /* Adjusted margin */
+    width: 250px; /* Adjusted for mobile */
+    margin: 0 30px; /* Adjusted margin */
   }
 }
 
