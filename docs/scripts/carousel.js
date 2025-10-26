@@ -1,11 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
     const carouselData = [
         { number: 141, description: "Total Members" },
-        { number: 852000, description: "Member Savings" },
-        { number: 194000, description: "Bank Balance" },
-        { number: 98, description: "Number of Loans Given" },
-        { number: 1816000, description: "Value of Loans Given" },
-        { number: 37000, description: "Profit" },
+        { number: 864000, description: "Member Savings" },
+        { number: 254000, description: "Bank Balance" },
+        { number: 100, description: "Number of Loans Given" },
+        { number: 1827000, description: "Value of Loans Given" },
+        { number: 40000, description: "Profit" },
         { number: 67, description: "Active Members" }
     ];
 
