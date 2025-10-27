@@ -7,66 +7,40 @@ document.addEventListener('DOMContentLoaded', function() {
   const closeIcon = document.querySelector('.close-icon');
 
   if (toggleBtn && navLinks && menuIcon && closeIcon) {
+    toggleBtn.innerHTML = `
+      <svg class="menu-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#006400" stroke-width="2">
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+      <svg class="close-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#006400" stroke-width="2" style="display: none;">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    `;
+
     toggleBtn.addEventListener('click', (e) => {
       e.preventDefault();
       e.stopPropagation();
-      navLinks.classList.toggle('active');
-      menuIcon.style.display = navLinks.classList.contains('active') ? 'none' : 'block';
-      closeIcon.style.display = navLinks.classList.contains('active') ? 'block' : 'none';
+      navLinks.classList.toggle('show');
+      menuIcon.style.display = navLinks.classList.contains('show') ? 'none' : 'block';
+      closeIcon.style.display = navLinks.classList.contains('show') ? 'block' : 'none';
     });
 
     document.addEventListener('click', (e) => {
-      if (navLinks.classList.contains('active') && !navLinks.contains(e.target) && !toggleBtn.contains(e.target)) {
-        navLinks.classList.remove('active');
+      if (navLinks.classList.contains('show') && !navLinks.contains(e.target) && !toggleBtn.contains(e.target)) {
+        navLinks.classList.remove('show');
         menuIcon.style.display = 'block';
         closeIcon.style.display = 'none';
       }
     });
 
     window.addEventListener('resize', () => {
-      if (window.innerWidth > 768 && navLinks.classList.contains('active')) {
-        navLinks.classList.remove('active');
+      if (window.innerWidth > 768 && navLinks.classList.contains('show')) {
+        navLinks.classList.remove('show');
         menuIcon.style.display = 'block';
         closeIcon.style.display = 'none';
       }
     });
-  }
-
-  // Basic Carousel Logic
-  const carousel = document.querySelector('.carousel');
-  const slides = document.querySelectorAll('.carousel .slide');
-  let currentSlide = 0;
-
-  if (carousel && slides.length > 0) {
-    function showSlide(index) {
-      slides.forEach((slide, i) => {
-        slide.style.display = i === index ? 'block' : 'none';
-      });
-    }
-
-    function nextSlide() {
-      currentSlide = (currentSlide + 1) % slides.length;
-      showSlide(currentSlide);
-    }
-
-    // Initialize carousel
-    showSlide(currentSlide);
-    setInterval(nextSlide, 5000); // Change slide every 5 seconds
-
-    // Optional: Add navigation buttons if present
-    const nextBtn = document.querySelector('.carousel-next');
-    const prevBtn = document.querySelector('.carousel-prev');
-    if (nextBtn) {
-      nextBtn.addEventListener('click', () => {
-        currentSlide = (currentSlide + 1) % slides.length;
-        showSlide(currentSlide);
-      });
-    }
-    if (prevBtn) {
-      prevBtn.addEventListener('click', () => {
-        currentSlide = (currentSlide - 1 + slides.length) % slides.length;
-        showSlide(currentSlide);
-      });
-    }
   }
 });
