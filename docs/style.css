@@ -1,4 +1,4 @@
-/* Restored Original Styles from index.html */
+/* Reset and Base Styles */
 * {
     font-family: 'Lato', 'Arial', sans-serif;
     box-sizing: border-box;
@@ -23,11 +23,14 @@ h2 {
 }
 h3 {
     font-size: 20px;
-    font-weight: 600;
+    font-weight: 700;
+    margin-bottom: 10px;
 }
 p, li, a, button, input, select, textarea {
     font-size: 16px;
 }
+
+/* Member Portal Button */
 .member-portal {
     background: #006400;
     color: white;
@@ -41,10 +44,15 @@ p, li, a, button, input, select, textarea {
     background: #228B22;
     transform: translateY(-2px);
 }
+
+/* Header and Navbar */
 .site-header {
     background-color: #90EE90;
 }
 .navbar {
+    background-color: #90EE90;
+    color: #006400;
+    padding: 10px 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -53,7 +61,7 @@ p, li, a, button, input, select, textarea {
     padding: 0 15px;
 }
 .brand-logo {
-    max-width: 100px; /* Constrain logo size to prevent overflow */
+    max-width: 100px; /* Exact size from Jobs.html */
     height: auto;
 }
 .nav-links {
@@ -75,8 +83,13 @@ p, li, a, button, input, select, textarea {
     border: none;
     cursor: pointer;
 }
+.menu-icon, .close-icon {
+    display: none;
+}
+
+/* Hero Section */
 .hero {
-    background-image: url('./assets/header-image.jpg') !important;
+    background-image: url('./assets/header-image.jpg');
     background-size: cover;
     background-position: center;
     height: 40vh;
@@ -89,6 +102,14 @@ p, li, a, button, input, select, textarea {
 .hero::before {
     content: none;
 }
+.hero > div {
+    text-align: center;
+    max-width: 800px;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+}
+
+/* Main Container */
 .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -97,8 +118,9 @@ p, li, a, button, input, select, textarea {
     flex-wrap: wrap;
     gap: 15px;
     justify-content: space-between;
-    align-items: stretch;
 }
+
+/* Generic Section Styling */
 .section, .mission-vision-container, .core-values-container, .tool-section {
     background: #f9f9f9;
     border: 1px solid #90EE90;
@@ -133,6 +155,8 @@ p, li, a, button, input, select, textarea {
     border-radius: 8px;
     margin-bottom: 10px;
 }
+
+/* Products Grid */
 .products-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -169,12 +193,15 @@ p, li, a, button, input, select, textarea {
     background: #228B22;
     color: white;
 }
+
+/* Calculator Styles */
 .calculator-wrapper, .calculator {
     width: 100%;
     max-width: 450px;
     min-height: 300px;
     overflow-y: auto;
     padding-bottom: 15px;
+    margin: 0 auto;
 }
 .calculator select, .calculator input, .calculator button {
     width: 100%;
@@ -183,6 +210,9 @@ p, li, a, button, input, select, textarea {
     border: 1px solid #90EE90;
     border-radius: 4px;
     font-size: 14px;
+}
+.calculator input[readonly] {
+    background: #e0e0e0;
 }
 .calculator button {
     background: #90EE90;
@@ -204,12 +234,59 @@ p, li, a, button, input, select, textarea {
     text-align: left;
     line-height: 1.5;
 }
+.slider-container {
+    margin: 20px 0;
+}
+.slider-value {
+    text-align: center;
+    font-size: 14px;
+}
+.amortization-table, .fines-amortization-table {
+    margin-top: 20px;
+    width: 100%;
+    overflow-x: auto;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+th, td {
+    border: 1px solid #90EE90;
+    padding: 10px;
+    text-align: center;
+    font-size: 14px;
+}
+th {
+    background: #90EE90;
+    color: #006400;
+}
+.loan-chart {
+    margin-top: 20px;
+    max-width: 100%;
+}
+.fines-section {
+    margin-top: 20px;
+}
+.form-group {
+    margin-bottom: 15px;
+}
+.error-message {
+    color: red;
+    text-align: center;
+    margin-top: 10px;
+}
+.soyo-logo {
+    color: #006400;
+}
 .month-inputs {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     gap: 8px;
     margin-bottom: 15px;
 }
+
+/* Leadership Section */
 .leadership-section {
     text-align: center;
 }
@@ -248,37 +325,22 @@ p, li, a, button, input, select, textarea {
     font-size: 14px;
     font-weight: bold;
 }
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+
+/* Join Instructions */
+.join-instructions {
+    display: flex;
+    gap: 20px;
+    align-items: center;
 }
-footer {
-    background: #90EE90;
-    color: #006400;
-    text-align: center;
-    padding: 20px;
-    margin-top: 20px;
+.join-instructions img {
+    max-width: 300px;
+    border-radius: 8px;
 }
-footer a {
-    color: #006400;
-    text-decoration: none;
-}
-footer a:hover {
-    color: #228B22;
-}
-.social-icons {
-    margin-top: 10px;
-}
-.social-icons a {
-    color: #006400;
-    margin: 0 10px;
-    font-size: 24px;
-}
-.social-icons a:hover {
-    color: #228B22;
+.join-instructions .content {
+    flex: 1;
 }
 
-/* Carousel-Specific Styles (Only Addition) */
+/* Carousel-Specific Styles */
 .carousel-static {
     list-style: none;
     padding: 0;
@@ -347,12 +409,51 @@ footer a:hover {
     100% { transform: translateX(var(--carousel-translate, -2380px)); }
 }
 
+/* Footer */
+footer {
+    background: #90EE90;
+    color: #006400;
+    text-align: center;
+    padding: 20px;
+    margin-top: 20px;
+}
+footer a {
+    color: #006400;
+    text-decoration: none;
+}
+footer a:hover {
+    color: #228B22;
+}
+.social-icons {
+    margin-top: 10px;
+}
+.social-icons a {
+    color: #006400;
+    margin: 0 10px;
+    font-size: 24px;
+}
+.social-icons a:hover {
+    color: #228B22;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .navbar {
         position: relative;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
     }
     #menu-toggle {
+        display: block;
+    }
+    .menu-icon {
         display: block;
     }
     .nav-links {
@@ -369,6 +470,11 @@ footer a:hover {
     .nav-links.active {
         display: flex;
     }
+    .nav-links a {
+        padding: 10px;
+        width: 100%;
+        text-align: left;
+    }
     .member-portal {
         padding: 8px 15px;
         font-size: 14px;
@@ -383,6 +489,12 @@ footer a:hover {
     }
     .leadership-grid {
         grid-template-columns: 1fr;
+    }
+    .join-instructions {
+        flex-direction: column;
+    }
+    .join-instructions img {
+        max-width: 100%;
     }
     .carousel-item, .carousel-join-item {
         width: 180px;
