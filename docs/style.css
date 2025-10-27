@@ -95,11 +95,12 @@ p, li, a, button, input, select, textarea {
 /* Hero Section */
 .hero {
     background-image: url('./assets/header-image.jpg');
-    background-size: cover;
+    background-size: 100% auto; /* Stretches image end-to-end horizontally */
     background-position: center top;
     background-repeat: no-repeat;
-    height: 100px; /* Significantly reduced from 50vh/30vh */
-    min-height: 80px; /* Minimal height for text visibility */
+    width: 100%; /* Ensures full width */
+    height: 100px; /* Reduced size for desktop */
+    min-height: 80px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -114,7 +115,7 @@ p, li, a, button, input, select, textarea {
     max-width: 800px;
     color: white;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
-    font-size: 1rem; /* Reduced for smaller header */
+    font-size: 1rem;
 }
 
 /* Main Container */
@@ -339,6 +340,9 @@ p, li, a, button, input, select, textarea {
     visibility: visible;
     opacity: 1;
     transition: opacity 0.3s ease;
+    display: flex; /* Ensure vertical layout */
+    flex-direction: column; /* Stack button and description vertically */
+    align-items: center;
 }
 .carousel-join-item[style*="display: none"] {
     visibility: hidden;
@@ -362,6 +366,7 @@ p, li, a, button, input, select, textarea {
     width: 100%;
     text-align: center;
     text-decoration: none;
+    margin-bottom: 10px; /* Space between button and description */
 }
 .carousel-join-button:hover {
     transform: translateY(-2px);
@@ -379,7 +384,7 @@ p, li, a, button, input, select, textarea {
     text-align: left;
 }
 .carousel-join-description {
-    margin-top: 10px;
+    margin-top: 0; /* Remove top margin to align under button */
     font-family: 'Lato', Arial, sans-serif;
     font-size: 14px;
     font-weight: bold;
@@ -607,7 +612,7 @@ footer a:hover {
         position: absolute;
         top: 100%;
         left: 0;
-        width: fit-content; /* Fits the width of the longest text */
+        width: fit-content; /* Fits text content */
         background: #90EE90;
         padding: 10px;
         z-index: 1000;
@@ -617,9 +622,9 @@ footer a:hover {
     }
     .nav-links a {
         padding: 10px;
-        width: auto; /* Adjusts to text content */
+        width: auto;
         text-align: left;
-        display: inline-block; /* Ensures width matches text */
+        display: inline-block;
     }
     .member-portal {
         padding: 8px 15px;
@@ -647,14 +652,14 @@ footer a:hover {
         max-width: 100%;
     }
     .hero {
-        height: 80px; /* Reduced for mobile */
-        min-height: 60px;
+        height: 30vh; /* Restored original mobile height */
+        min-height: 250px;
         background-size: cover;
         background-position: center top;
     }
     .hero > div {
-        font-size: 0.9rem;
-        padding: 5px;
+        font-size: 1rem;
+        padding: 10px;
     }
     .carousel-container, .carousel-join-container {
         padding: 20px 0;
@@ -710,7 +715,7 @@ footer a:hover {
     .hero {
         height: 100px;
         min-height: 80px;
-        background-size: contain;
+        background-size: 100% auto;
         background-position: center;
         background-repeat: no-repeat;
     }
