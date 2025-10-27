@@ -35,6 +35,23 @@ p, li, a, button, input, select, textarea {
 
 /* Member Portal Button */
 .member-portal, a.member-portal {
+    background: #003087 !important; /* Deep navy like Co-operative Bank */
+    color: white !important;
+    padding: 8px 15px !important;
+    border-radius: 4px !important;
+    text-decoration: none !important;
+    font-weight: 700 !important;
+    display: inline-block !important;
+    transition: background 0.3s, transform 0.2s !important;
+}
+.member-portal:hover, a.member-portal:hover {
+    background: #004d40 !important; /* Dark green hover */
+    color: white !important;
+    transform: translateY(-2px) !important;
+}
+
+/* Job Apply Button */
+.job-apply-button, a.job-apply-button {
     background: #90EE90 !important;
     color: #006400 !important;
     padding: 10px 20px !important;
@@ -44,7 +61,7 @@ p, li, a, button, input, select, textarea {
     display: inline-block !important;
     transition: background 0.3s, transform 0.2s !important;
 }
-.member-portal:hover, a.member-portal:hover {
+.job-apply-button:hover, a.job-apply-button:hover {
     background: #228B22 !important;
     color: white !important;
     transform: translateY(-2px) !important;
@@ -74,13 +91,17 @@ p, li, a, button, input, select, textarea {
     gap: 15px !important;
 }
 .nav-links a {
-    color: #006400 !important;
+    background: #003087 !important; /* Deep navy like Co-operative Bank */
+    color: white !important;
+    padding: 8px 15px !important;
+    border-radius: 4px !important;
     text-decoration: none !important;
-    padding: 10px !important;
     font-weight: 600 !important;
+    transition: background 0.3s, color 0.3s !important;
 }
 .nav-links a:hover {
-    color: #228B22 !important;
+    background: #004d40 !important; /* Dark green hover */
+    color: white !important;
 }
 #menu-toggle {
     display: none !important;
@@ -97,18 +118,19 @@ p, li, a, button, input, select, textarea {
 /* Hero Section */
 .hero {
     background-image: url('./assets/header-image.jpg') !important;
-    background-size: 100% auto !important; /* Stretches end-to-end */
-    background-position: center top !important;
+    background-size: contain !important; /* Ensure image fits without cropping */
+    background-position: center center !important;
     background-repeat: no-repeat !important;
-    width: 100vw !important; /* Full viewport width */
-    height: 100px !important; /* Compact ribbon */
-    min-height: 80px !important;
+    background-color: #90EE90 !important; /* Fallback if image fails */
+    width: 100vw !important;
+    height: 41px !important; /* Match Co-operative Bank logo height */
+    min-height: 41px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    padding: 10px !important;
+    padding: 0 !important;
+    margin: 0 !important;
     animation: fadeIn 1s ease !important;
-    margin: 0 !important; /* Remove any margins causing gaps */
 }
 .hero::before {
     content: none !important;
@@ -117,8 +139,9 @@ p, li, a, button, input, select, textarea {
     text-align: center !important;
     max-width: 800px !important;
     color: white !important;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.7) !important;
-    font-size: 1rem !important;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.7) !important;
+    font-size: 0.8rem !important; /* Smaller for compact header */
+    padding: 2px !important;
 }
 
 /* Main Container */
@@ -344,7 +367,7 @@ p, li, a, button, input, select, textarea {
     opacity: 1 !important;
     transition: opacity 0.3s ease !important;
     display: flex !important;
-    flex-direction: column !important; /* Vertical stacking */
+    flex-direction: column !important;
     align-items: center !important;
 }
 .carousel-join-item[style*="display: none"] {
@@ -619,7 +642,7 @@ footer a:hover {
         position: absolute !important;
         top: 100% !important;
         left: 0 !important;
-        width: fit-content !important; /* Fits text content */
+        width: fit-content !important;
         background: #90EE90 !important;
         padding: 10px !important;
         z-index: 1000 !important;
@@ -628,12 +651,23 @@ footer a:hover {
         display: flex !important;
     }
     .nav-links a {
-        padding: 10px !important;
+        padding: 8px 10px !important;
         width: auto !important;
         text-align: left !important;
-        display: inline-block !important;
+        display: block !important;
+        background: #003087 !important;
+        color: white !important;
+        margin-bottom: 5px !important;
+    }
+    .nav-links a:hover {
+        background: #004d40 !important;
+        color: white !important;
     }
     .member-portal, a.member-portal {
+        padding: 8px 15px !important;
+        font-size: 14px !important;
+    }
+    .job-apply-button, a.job-apply-button {
         padding: 8px 15px !important;
         font-size: 14px !important;
     }
@@ -659,15 +693,15 @@ footer a:hover {
         max-width: 100% !important;
     }
     .hero {
-        height: 30vh !important; /* Restored original mobile height */
-        min-height: 250px !important;
-        background-size: cover !important;
-        background-position: center top !important;
-        width: 100vw !important;
+        height: 60px !important; /* Co-operative Bank mobile size */
+        min-height: 60px !important;
+        background-size: contain !important;
+        background-position: center center !important;
+        padding: 2px !important;
     }
     .hero > div {
-        font-size: 1rem !important;
-        padding: 10px !important;
+        font-size: 0.7rem !important;
+        padding: 2px !important;
     }
     .carousel-container, .carousel-join-container {
         padding: 20px 0 !important;
@@ -677,7 +711,7 @@ footer a:hover {
         margin: 0 20px !important;
         padding: 10px !important;
     }
-    .carousel-button, a.carousel-button {
+    .carousel-button, a.carousel uplifting {
         padding: 10px 15px !important;
         font-size: 16px !important;
     }
@@ -721,10 +755,10 @@ footer a:hover {
         flex: 1 1 calc(50% - 15px) !important;
     }
     .hero {
-        height: 100px !important;
-        min-height: 80px !important;
-        background-size: 100% auto !important;
-        background-position: center !important;
+        height: 41px !important;
+        min-height: 41px !important;
+        background-size: contain !important;
+        background-position: center center !important;
         background-repeat: no-repeat !important;
         width: 100vw !important;
     }
