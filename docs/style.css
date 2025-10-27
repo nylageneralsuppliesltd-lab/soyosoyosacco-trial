@@ -98,12 +98,12 @@ p, li, a, button, input, select, textarea {
     background-size: cover;
     background-position: center top;
     background-repeat: no-repeat;
-    height: 40vh;
-    min-height: 300px;
+    height: 100px; /* Significantly reduced from 50vh/30vh */
+    min-height: 80px; /* Minimal height for text visibility */
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: 10px;
     animation: fadeIn 1s ease;
 }
 .hero::before {
@@ -114,7 +114,7 @@ p, li, a, button, input, select, textarea {
     max-width: 800px;
     color: white;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
-    font-size: 1.2rem;
+    font-size: 1rem; /* Reduced for smaller header */
 }
 
 /* Main Container */
@@ -607,7 +607,7 @@ footer a:hover {
         position: absolute;
         top: 100%;
         left: 0;
-        right: 0;
+        width: fit-content; /* Fits the width of the longest text */
         background: #90EE90;
         padding: 10px;
         z-index: 1000;
@@ -617,8 +617,9 @@ footer a:hover {
     }
     .nav-links a {
         padding: 10px;
-        width: 100%;
+        width: auto; /* Adjusts to text content */
         text-align: left;
+        display: inline-block; /* Ensures width matches text */
     }
     .member-portal {
         padding: 8px 15px;
@@ -646,14 +647,14 @@ footer a:hover {
         max-width: 100%;
     }
     .hero {
-        height: 30vh;
-        min-height: 250px;
+        height: 80px; /* Reduced for mobile */
+        min-height: 60px;
         background-size: cover;
         background-position: center top;
     }
     .hero > div {
-        font-size: 1rem;
-        padding: 10px;
+        font-size: 0.9rem;
+        padding: 5px;
     }
     .carousel-container, .carousel-join-container {
         padding: 20px 0;
@@ -707,8 +708,8 @@ footer a:hover {
         flex: 1 1 calc(50% - 15px);
     }
     .hero {
-        height: 50vh;
-        min-height: 400px;
+        height: 100px;
+        min-height: 80px;
         background-size: contain;
         background-position: center;
         background-repeat: no-repeat;
