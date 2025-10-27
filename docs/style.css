@@ -33,59 +33,60 @@ p, li, a, button, input, select, textarea {
     font-size: 16px;
 }
 
-/* Header and Navbar */
+/* Header */
 header.site-header {
     background-color: #90EE90 !important;
     height: 50px !important; /* Slim band for desktop */
     display: flex !important;
     align-items: center !important;
+    justify-content: center !important;
     width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
 }
+
+/* Navbar */
 header.site-header .navbar {
     background-color: #90EE90 !important;
-    padding: 5px 15px !important; /* Reduced padding */
+    padding: 5px 15px !important; /* Minimal padding */
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
     max-width: 1200px !important;
-    margin: 0 auto !important;
     width: 100% !important;
     height: 100% !important;
 }
 header.site-header .brand-logo {
-    max-width: 40px !important; /* Smaller logo for slim header */
+    max-width: 40px !important; /* Compact logo */
     border-radius: 50% !important;
     object-fit: cover !important;
 }
 header.site-header .nav-links {
     display: flex !important;
-    gap: 10px !important; /* Tighter gap */
+    gap: 10px !important;
 }
 header.site-header .nav-links a {
     background: #003087 !important; /* Navy buttons */
-    color: white !important; /* White text */
-    padding: 6px 12px !important; /* Smaller padding */
+    color: white !important;
+    padding: 6px 12px !important;
     border-radius: 4px !important;
     text-decoration: none !important;
     font-weight: 600 !important;
-    font-size: 14px !important; /* Smaller font */
+    font-size: 14px !important;
     transition: background 0.3s, color 0.3s !important;
 }
 header.site-header .nav-links a:hover {
-    background: #004d40 !important; /* Dark green hover */
+    background: #004d40 !important;
     color: white !important;
 }
 header.site-header .member-portal, header.site-header a.member-portal {
-    background: #003087 !important; /* Navy button */
+    background: #003087 !important;
     color: white !important;
     padding: 6px 12px !important;
     border-radius: 4px !important;
     text-decoration: none !important;
     font-weight: 700 !important;
     font-size: 14px !important;
-    display: inline-block !important;
     transition: background 0.3s, transform 0.2s !important;
 }
 header.site-header .member-portal:hover, header.site-header a.member-portal:hover {
@@ -105,46 +106,42 @@ header.site-header .menu-icon, header.site-header .close-icon {
     height: 20px !important;
 }
 
-/* Hero Section */
-header.site-header .hero {
-    background-image: url('./assets/header-image.jpg') !important;
-    background-size: cover !important; /* Full coverage, no truncation */
-    background-position: center center !important;
-    background-repeat: no-repeat !important;
-    background-color: #90EE90 !important; /* Fallback */
+/* Header Banner */
+header.site-header .header-banner {
     width: 100% !important;
-    height: 50px !important; /* Slim for desktop */
-    min-height: 50px !important;
+    height: 250px !important; /* Prominent for desktop */
+    background-color: #90EE90 !important; /* Fallback */
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    padding: 5px !important;
-    margin: 0 !important;
-    animation: fadeIn 1s ease !important;
+    position: relative !important;
 }
-header.site-header .hero::before {
-    content: none !important;
+header.site-header .header-banner img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important; /* Full-width, no truncation */
 }
-header.site-header .hero > div {
+header.site-header .header-banner::after {
+    content: '' !important;
+    position: absolute !important;
+    inset: 0 !important;
+    background: rgba(0, 50, 0, 0.3) !important; /* Dark overlay */
+}
+header.site-header .header-banner > div {
     text-align: center !important;
     max-width: 800px !important;
     color: white !important;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.7) !important;
-    font-size: 0.9rem !important; /* Slightly larger for readability */
-    padding: 2px !important;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5) !important;
+    position: relative !important;
+    z-index: 2 !important;
+    padding: 10px !important;
 }
-header.site-header .hero > div h1 {
-    font-size: 1.2rem !important; /* Compact but readable */
-    margin-bottom: 5px !important;
+header.site-header .header-banner > div h1 {
+    font-size: 2.2rem !important;
+    margin-bottom: 10px !important;
 }
-header.site-header .hero > div p {
-    font-size: 0.8rem !important;
-}
-header.site-header .hero-image {
-    width: 100% !important;
-    max-width: 324px !important;
-    height: auto !important;
-    object-fit: contain !important;
+header.site-header .header-banner > div p {
+    font-size: 1.2rem !important;
 }
 
 /* Job Apply Button */
@@ -652,19 +649,13 @@ footer a:hover {
         height: 100% !important;
     }
     header.site-header .brand-logo {
-        max-width: 35px !important; /* Smaller for mobile */
-    }
-    header.site-header #menu-toggle {
-        display: block !important;
-    }
-    header.site-header .menu-icon {
-        display: block !important;
+        max-width: 35px !important;
     }
     header.site-header .nav-links {
         display: none !important;
         flex-direction: column !important;
         position: absolute !important;
-        top: 100% !important;
+        top: 60px !important;
         left: 0 !important;
         width: fit-content !important;
         background: #90EE90 !important;
@@ -676,21 +667,21 @@ footer a:hover {
     }
     header.site-header .nav-links a {
         padding: 6px 10px !important;
-        width: auto !important;
-        text-align: left !important;
-        display: block !important;
-        background: #003087 !important;
-        color: white !important;
-        margin-bottom: 5px !important;
         font-size: 13px !important;
-    }
-    header.site-header .nav-links a:hover {
-        background: #004d40 !important;
-        color: white !important;
+        margin-bottom: 5px !important;
     }
     header.site-header .member-portal, header.site-header a.member-portal {
         padding: 6px 10px !important;
         font-size: 13px !important;
+    }
+    header.site-header .header-banner {
+        height: 200px !important; /* Prominent for mobile */
+    }
+    header.site-header .header-banner > div h1 {
+        font-size: 1.5rem !important;
+    }
+    header.site-header .header-banner > div p {
+        font-size: 1rem !important;
     }
     .job-apply-button, a.job-apply-button {
         padding: 8px 15px !important;
@@ -717,21 +708,6 @@ footer a:hover {
     .join-instructions .content {
         max-width: 100% !important;
     }
-    header.site-header .hero {
-        height: 80px !important; /* Taller for mobile to avoid truncation */
-        min-height: 80px !important;
-        background-size: cover !important;
-        padding: 5px !important;
-    }
-    header.site-header .hero > div {
-        font-size: 0.8rem !important;
-    }
-    header.site-header .hero > div h1 {
-        font-size: 1.1rem !important;
-    }
-    header.site-header .hero > div p {
-        font-size: 0.7rem !important;
-    }
     .carousel-container, .carousel-join-container {
         padding: 20px 0 !important;
     }
@@ -755,9 +731,6 @@ footer a:hover {
     .carousel-join-button, a.carousel-join-button {
         padding: 8px 10px !important;
         font-size: 14px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
     }
     .carousel-join-button .counter-value, a.carousel-join-button .counter-value {
         min-width: 50px !important;
