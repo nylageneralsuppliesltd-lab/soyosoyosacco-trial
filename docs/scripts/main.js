@@ -1,7 +1,5 @@
 // scripts/main.js - Soyosoyo Sacco Site Initialization
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('Soyosoyo Sacco - main.js loaded');
-
   // Mobile Menu Toggle
   const toggleBtn = document.getElementById('menu-toggle');
   const navLinks = document.querySelector('.nav-links');
@@ -32,9 +30,5 @@ document.addEventListener('DOMContentLoaded', function() {
         closeIcon.style.display = 'none';
       }
     });
-
-    console.log('Mobile menu initialized');
   }
-
-  console.log('Site init complete');
 });
