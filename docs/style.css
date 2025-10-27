@@ -88,6 +88,8 @@ p, li, a, button, input, select, textarea {
 }
 .menu-icon, .close-icon {
     display: none;
+    width: 24px;
+    height: 24px;
 }
 
 /* Hero Section */
