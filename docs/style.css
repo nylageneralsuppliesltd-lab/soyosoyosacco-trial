@@ -1,4 +1,4 @@
-/* Restored Original Styles */
+/* Restored Original Styles from index.html */
 * {
     font-family: 'Lato', 'Arial', sans-serif;
     box-sizing: border-box;
@@ -45,15 +45,16 @@ p, li, a, button, input, select, textarea {
     background-color: #90EE90;
 }
 .navbar {
-    background-color: #90EE90;
-    color: #006400;
-    padding: 10px 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 15px;
+}
+.brand-logo {
+    max-width: 100px; /* Constrain logo size to prevent overflow */
+    height: auto;
 }
 .nav-links {
     display: flex;
@@ -87,12 +88,6 @@ p, li, a, button, input, select, textarea {
 }
 .hero::before {
     content: none;
-}
-.hero > div {
-    text-align: center;
-    max-width: 800px;
-    color: white;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
 }
 .container {
     max-width: 1200px;
@@ -174,29 +169,46 @@ p, li, a, button, input, select, textarea {
     background: #228B22;
     color: white;
 }
-.join-instructions {
-    display: flex;
-    align-items: flex-start;
-    gap: 20px;
-}
-.join-instructions img {
+.calculator-wrapper, .calculator {
     width: 100%;
-    max-width: 30%;
-    height: auto;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 100, 0, 0.1);
+    max-width: 450px;
+    min-height: 300px;
+    overflow-y: auto;
+    padding-bottom: 15px;
 }
-.join-instructions .content {
-    flex: 1;
-    max-width: 65%;
+.calculator select, .calculator input, .calculator button {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border: 1px solid #90EE90;
+    border-radius: 4px;
+    font-size: 14px;
 }
-.join-instructions ul {
-    list-style-type: disc;
-    padding-left: 30px;
-    margin: 10px 0;
-}
-.join-instructions strong {
+.calculator button {
+    background: #90EE90;
     color: #006400;
+    cursor: pointer;
+    font-weight: bold;
+}
+.calculator button:hover {
+    background: #228B22;
+    color: white;
+}
+.result {
+    margin-top: 15px;
+    padding: 15px;
+    font-size: 14px;
+    background: #ffffff;
+    border: 1px solid #90EE90;
+    border-radius: 4px;
+    text-align: left;
+    line-height: 1.5;
+}
+.month-inputs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 8px;
+    margin-bottom: 15px;
 }
 .leadership-section {
     text-align: center;
@@ -236,121 +248,9 @@ p, li, a, button, input, select, textarea {
     font-size: 14px;
     font-weight: bold;
 }
-.tool-section form input,
-.tool-section form select,
-.tool-section form textarea {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 12px;
-    border: 1px solid #90EE90;
-    border-radius: 8px;
-    font-size: 16px;
-}
-.tool-section form button {
-    width: 100%;
-    background: #90EE90;
-    color: #006400;
-    padding: 14px;
-    font-size: 16px;
-    font-weight: bold;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.3s, color 0.3s;
-}
-.tool-section form button:hover {
-    background: #228B22;
-    color: white;
-}
-.calculator-wrapper, .calculator {
-    width: 100%;
-    max-width: 450px;
-    min-height: 300px;
-    overflow-y: auto;
-    padding-bottom: 15px;
-    margin: 0 auto;
-}
-.calculator select, .calculator input, .calculator button {
-    width: 100%;
-    padding: 10px;
-    margin: 8px 0;
-    border: 1px solid #90EE90;
-    border-radius: 4px;
-    font-size: 14px;
-}
-.calculator input[readonly] {
-    background: #e0e0e0;
-}
-.calculator button {
-    background: #90EE90;
-    color: #006400;
-    cursor: pointer;
-    font-weight: bold;
-}
-.calculator button:hover {
-    background: #228B22;
-    color: white;
-}
-.result {
-    margin-top: 15px;
-    padding: 15px;
-    font-size: 14px;
-    background: #ffffff;
-    border: 1px solid #90EE90;
-    border-radius: 4px;
-    text-align: left;
-    line-height: 1.5;
-}
-.slider-container {
-    margin: 20px 0;
-}
-.slider-value {
-    text-align: center;
-    font-size: 14px;
-}
-.amortization-table, .fines-amortization-table {
-    margin-top: 20px;
-    width: 100%;
-    overflow-x: auto;
-}
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-}
-th, td {
-    border: 1px solid #90EE90;
-    padding: 10px;
-    text-align: center;
-    font-size: 14px;
-}
-th {
-    background: #90EE90;
-    color: #006400;
-}
-.loan-chart {
-    margin-top: 20px;
-    max-width: 100%;
-}
-.fines-section {
-    margin-top: 20px;
-}
-.form-group {
-    margin-bottom: 15px;
-}
-.error-message {
-    color: red;
-    text-align: center;
-    margin-top: 10px;
-}
-.soyo-logo {
-    color: #006400;
-}
-.month-inputs {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    gap: 8px;
-    margin-bottom: 15px;
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 footer {
     background: #90EE90;
@@ -377,12 +277,8 @@ footer a:hover {
 .social-icons a:hover {
     color: #228B22;
 }
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
 
-/* New Carousel Styles (Merged for Both Carousels) */
+/* Carousel-Specific Styles (Only Addition) */
 .carousel-static {
     list-style: none;
     padding: 0;
@@ -406,13 +302,12 @@ footer a:hover {
 .carousel, .carousel-join {
     display: flex;
     flex-wrap: nowrap;
-    animation: slide var(--carousel-duration, 42s) linear infinite;
-    visibility: visible;
+    animation: slide var(--carousel-duration, 21s) linear infinite;
 }
 .carousel-item, .carousel-join-item {
     flex: 0 0 auto;
-    width: var(--item-width, 250px);
-    margin: 0 var(--item-margin, 30px);
+    width: 250px;
+    margin: 0 30px;
     text-align: center;
     background: white;
     padding: 15px;
@@ -438,13 +333,6 @@ footer a:hover {
     transform: translateY(-3px);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
-.carousel-join-button .prefix {
-    margin-right: 5px;
-}
-.carousel-join-button .counter-value {
-    min-width: 60px;
-    display: inline-block;
-}
 .carousel-description, .carousel-join-description {
     margin-top: 10px;
     font-size: 16px;
@@ -456,20 +344,13 @@ footer a:hover {
 }
 @keyframes slide {
     0% { transform: translateX(0); }
-    100% { transform: translateX(var(--carousel-translate, -4760px)); }
-}
-@keyframes slide-join {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(var(--carousel-translate, -2480px)); }
+    100% { transform: translateX(var(--carousel-translate, -2380px)); }
 }
 
-/* Responsive Carousel Adjustments */
+/* Responsive Design */
 @media (max-width: 768px) {
     .navbar {
         position: relative;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
     }
     #menu-toggle {
         display: block;
@@ -488,11 +369,6 @@ footer a:hover {
     .nav-links.active {
         display: flex;
     }
-    .nav-links a {
-        padding: 10px;
-        width: 100%;
-        text-align: left;
-    }
     .member-portal {
         padding: 8px 15px;
         font-size: 14px;
@@ -508,27 +384,14 @@ footer a:hover {
     .leadership-grid {
         grid-template-columns: 1fr;
     }
-    .join-instructions {
-        flex-direction: column;
-        align-items: center;
-    }
-    .join-instructions img {
-        max-width: 100%;
-    }
-    .join-instructions .content {
-        max-width: 100%;
-    }
     .carousel-item, .carousel-join-item {
-        width: var(--item-width, 180px);
-        margin: 0 var(--item-margin, 20px);
+        width: 180px;
+        margin: 0 20px;
         padding: 10px;
     }
     .carousel-button, .carousel-join-button {
         padding: 10px 15px;
         font-size: 16px;
-    }
-    .carousel-join-button .counter-value {
-        min-width: 50px;
     }
     .carousel-description, .carousel-join-description {
         font-size: 14px;
@@ -547,16 +410,13 @@ footer a:hover {
 }
 @media (max-width: 600px) {
     .carousel-item, .carousel-join-item {
-        width: var(--item-width, 180px);
-        margin: 0 var(--item-margin, 20px);
+        width: 180px;
+        margin: 0 20px;
         padding: 10px;
     }
     .carousel-button, .carousel-join-button {
         padding: 10px 15px;
         font-size: 16px;
-    }
-    .carousel-join-button .counter-value {
-        min-width: 50px;
     }
     .carousel-description, .carousel-join-description {
         font-size: 14px;
@@ -564,16 +424,13 @@ footer a:hover {
 }
 @media (max-width: 360px) {
     .carousel-item, .carousel-join-item {
-        width: var(--item-width, 140px);
-        margin: 0 var(--item-margin, 10px);
+        width: 140px;
+        margin: 0 10px;
         padding: 8px;
     }
     .carousel-button, .carousel-join-button {
         padding: 8px 12px;
         font-size: 14px;
-    }
-    .carousel-join-button .counter-value {
-        min-width: 40px;
     }
     .carousel-description, .carousel-join-description {
         font-size: 12px;
