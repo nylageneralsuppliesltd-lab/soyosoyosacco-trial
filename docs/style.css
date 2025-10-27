@@ -59,6 +59,7 @@ p, li, a, button, input, select, textarea {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 15px;
+    width: 100%; /* Ensure navbar doesn't exceed screen width */
 }
 .brand-logo {
     max-width: 100px; /* Exact size from Jobs.html */
@@ -449,12 +450,20 @@ footer a:hover {
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
+        padding: 10px 15px; /* Ensure compact padding */
     }
     #menu-toggle {
         display: block;
     }
     .menu-icon {
         display: block;
+        width: 24px;
+        height: 24px;
+    }
+    .close-icon {
+        display: none;
+        width: 24px;
+        height: 24px;
     }
     .nav-links {
         display: none;
@@ -466,6 +475,7 @@ footer a:hover {
         background: #90EE90;
         padding: 10px;
         z-index: 1000;
+        width: 100%; /* Ensure menu fits screen */
     }
     .nav-links.active {
         display: flex;
