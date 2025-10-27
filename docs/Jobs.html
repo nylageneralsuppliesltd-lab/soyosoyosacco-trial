@@ -19,133 +19,9 @@
     <link rel="icon" href="./assets/141dd3faa98da9737b591161deac509a.jpg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./style.css">
-    <style>
-        /* Header Image Fix */
-        .hero {
-            background-image: url('./assets/header-image.jpg') !important;
-            background-size: 100% 100% !important; /* Stretch full width and height */
-            background-position: center top !important;
-            background-repeat: no-repeat !important;
-            width: 100vw !important; /* Full viewport width */
-            height: 200px !important; /* Compact for desktop */
-            min-height: 150px !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            padding: 0 !important; /* Remove padding */
-            margin: 0 !important;
-            animation: fadeIn 1s ease !important;
-        }
-        .hero > div {
-            text-align: center !important;
-            max-width: 800px !important;
-            color: white !important;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.7) !important;
-            font-size: 1.2rem !important;
-            padding: 10px !important;
-        }
-
-        /* Job Apply Buttons - Green Theme */
-        .job-apply-button {
-            background: #90EE90 !important;
-            color: #006400 !important;
-            padding: 10px 20px !important;
-            border-radius: 4px !important;
-            text-decoration: none !important;
-            font-weight: 700 !important;
-            display: inline-block !important;
-            transition: background 0.3s, transform 0.2s !important;
-        }
-        .job-apply-button:hover {
-            background: #228B22 !important;
-            color: white !important;
-            transform: translateY(-2px) !important;
-        }
-
-        /* Member Portal Button */
-        .member-portal {
-            background: #90EE90 !important;
-            color: #006400 !important;
-            padding: 10px 20px !important;
-            border-radius: 4px !important;
-            text-decoration: none !important;
-            font-weight: 700 !important;
-            display: inline-block !important;
-            transition: background 0.3s, transform 0.2s !important;
-        }
-        .member-portal:hover {
-            background: #228B22 !important;
-            color: white !important;
-            transform: translateY(-2px) !important;
-        }
-
-        /* Calculator Buttons */
-        .calculator button {
-            background: #90EE90 !important;
-            color: #006400 !important;
-            padding: 10px !important;
-            border: none !important;
-            border-radius: 4px !important;
-            font-weight: bold !important;
-            cursor: pointer !important;
-            width: 100% !important;
-            text-align: center !important;
-            transition: background 0.3s !important;
-        }
-        .calculator button:hover {
-            background: #228B22 !important;
-            color: white !important;
-        }
-
-        /* Mobile Header */
-        @media (max-width: 768px) {
-            .hero {
-                height: 30vh !important; /* Original mobile height */
-                min-height: 250px !important;
-                background-size: cover !important;
-                background-position: center top !important;
-                width: 100vw !important;
-                padding: 10px !important;
-            }
-            .hero > div {
-                font-size: 1rem !important;
-            }
-            .job-apply-button, .member-portal {
-                padding: 8px 15px !important;
-                font-size: 14px !important;
-            }
-        }
-
-        /* Mobile Menu */
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none !important;
-                flex-direction: column !important;
-                position: absolute !important;
-                top: 100% !important;
-                left: 0 !important;
-                width: fit-content !important;
-                background: #90EE90 !important;
-                padding: 10px !important;
-                z-index: 1000 !important;
-            }
-            .nav-links.show {
-                display: flex !important;
-            }
-            .nav-links a {
-                padding: 10px !important;
-                width: auto !important;
-                text-align: left !important;
-                display: inline-block !important;
-                color: #006400 !important;
-                text-decoration: none !important;
-            }
-            .nav-links a:hover {
-                color: #228B22 !important;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="./style.css?v=6">
+    
+    <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-05M38MYK0G"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -157,7 +33,9 @@
 <body>
     <header class="site-header">
         <div class="navbar">
-            <a href="index.html"><img class="brand-logo" src="./assets/141dd3faa98da9737b591161deac509a.jpg" alt="Soyosoyo Sacco Logo - Careers & Jobs"></a>
+            <a href="index.html">
+                <img class="brand-logo" src="./assets/141dd3faa98da9737b591161deac509a.jpg" alt="Soyosoyo Sacco Logo">
+            </a>
             <a href="https://chamasoft.com/login" class="member-portal">Member Portal</a>
             <button id="menu-toggle" aria-label="Toggle Menu">
                 <svg class="menu-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#006400" stroke-width="2">
@@ -178,7 +56,10 @@
                 <a href="Join-Us.html">Join Us</a>
             </nav>
         </div>
-        <div class="hero">
+
+        <!-- Prominent Full-Width Header Image -->
+        <div class="header-banner">
+            <img src="./assets/header-image.jpg" alt="Soyosoyo SACCO - Job Opportunities">
             <div>
                 <h1>Job Opportunities</h1>
                 <p>Join our team and contribute to the growth of Soyosoyo SACCO.</p>
@@ -187,8 +68,10 @@
     </header>
 
     <main class="container">
+        <!-- Job Listings -->
         <section class="section jobs-section">
             <h2 style="text-align: center;">CURRENT JOB OPENINGS - APPLY NOW</h2>
+
             <div class="job-listing">
                 <h3>Finance Manager</h3>
                 <p><strong>Salary:</strong> KSh 80,000 - 120,000/month</p>
@@ -205,8 +88,10 @@
                     <li>5+ years of experience in financial management.</li>
                     <li>CPA(K) certification preferred.</li>
                 </ul>
-                <a href="https://docs.google.com/forms/d/e/1FAIpQLSeZO-ZtY5T1juJPHgmuZHDEao7T9wORb6nOVNZwoWW4GTFltg/viewform?usp=sharing&ouid=110688686925732719395" target="_blank" class="job-apply-button">APPLY NOW - Finance Manager</a>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSeZO-ZtY5T1juJPHgmuZHDEao7T9wORb6nOVNZwoWW4GTFltg/viewform?usp=sharing&ouid=110688686925732719395" 
+                   target="_blank" class="job-apply-button">APPLY NOW - Finance Manager</a>
             </div>
+
             <div class="job-listing">
                 <h3>Customer Service Officer</h3>
                 <p><strong>Salary:</strong> KSh 40,000 - 60,000/month</p>
@@ -223,7 +108,8 @@
                     <li>2+ years in customer service.</li>
                     <li>Excellent communication skills.</li>
                 </ul>
-                <a href="https://docs.google.com/forms/d/e/1FAIpQLSeZO-ZtY5T1juJPHgmuZHDEao7T9wORb6nOVNZwoWW4GTFltg/viewform?usp=sharing&ouid=110688686925732719395" target="_blank" class="job-apply-button">APPLY NOW - Customer Service</a>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSeZO-ZtY5T1juJPHgmuZHDEao7T9wORb6nOVNZwoWW4GTFltg/viewform?usp=sharing&ouid=110688686925732719395" 
+                   target="_blank" class="job-apply-button">APPLY NOW - Customer Service</a>
             </div>
         </section>
 
@@ -323,33 +209,26 @@
     <footer>
         <p>&copy; 2025 SOYOSOYO SACCO. All rights reserved. | <a href="mailto:info@soyosoyosacco.com">info@soyosoyosacco.com</a></p>
         <div class="social-icons">
-            <a href="https://www.facebook.com/people/Soyosoyo-Sacco/61565783836766/" target="_blank">
-                <i class="fab fa-facebook-f"></i>
-            </a>
-            <a href="https://x.com/SoyosoyoSACCO" target="_blank">
-                <i class="fab fa-x-twitter"></i>
-            </a>
-            <a href="https://www.instagram.com/soyosoyosacco" target="_blank">
-                <i class="fab fa-instagram"></i>
-            </a>
+            <a href="https://www.facebook.com/people/Soyosoyo-Sacco/61565783836766/" target="_blank"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://x.com/SoyosoyoSACCO" target="_blank"><i class="fab fa-x-twitter"></i></a>
+            <a href="https://www.instagram.com/soyosoyosacco" target="_blank"><i class="fab fa-instagram"></i></a>
         </div>
     </footer>
 
+    <!-- Scripts -->
     <script src="./scripts/main.js"></script>
     <script src="./scripts/calculator.js"></script>
     <script src="./scripts/chatbot.js"></script>
     <script src="./scripts/seo.js"></script>
+
+    <!-- Structured Data (JobPosting) -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
         "@type": "JobPosting",
         "title": "Finance Manager",
         "description": "Manage financial reporting, budgeting, and compliance for Soyosoyo SACCO. CPA preferred.",
-        "identifier": {
-            "@type": "PropertyValue",
-            "name": "Soyosoyo SACCO",
-            "value": "FM-2025-001"
-        },
+        "identifier": { "@type": "PropertyValue", "name": "Soyosoyo SACCO", "value": "FM-2025-001" },
         "datePosted": "2025-10-16",
         "validThrough": "2025-12-31",
         "employmentType": "FULL_TIME",
@@ -370,16 +249,7 @@
         "baseSalary": {
             "@type": "MonetaryAmount",
             "currency": "KES",
-            "value": {
-                "@type": "QuantitativeValue",
-                "minValue": 80000,
-                "maxValue": 120000,
-                "unitText": "MONTH"
-            }
-        },
-        "applicantLocationRequirements": {
-            "@type": "Country",
-            "name": "KE"
+            "value": { "@type": "QuantitativeValue", "minValue": 80000, "maxValue": 120000, "unitText": "MONTH" }
         },
         "url": "https://soyosoyosacco.com/Jobs.html"
     }
@@ -390,11 +260,7 @@
         "@type": "JobPosting",
         "title": "Customer Service Officer",
         "description": "Handle customer inquiries, process loans & promote SACCO products in Kilifi.",
-        "identifier": {
-            "@type": "PropertyValue",
-            "name": "Soyosoyo SACCO",
-            "value": "CSO-2025-001"
-        },
+        "identifier": { "@type": "PropertyValue", "name": "Soyosoyo SACCO", "value": "CSO-2025-001" },
         "datePosted": "2025-10-16",
         "validThrough": "2025-12-31",
         "employmentType": "FULL_TIME",
@@ -415,43 +281,13 @@
         "baseSalary": {
             "@type": "MonetaryAmount",
             "currency": "KES",
-            "value": {
-                "@type": "QuantitativeValue",
-                "minValue": 40000,
-                "maxValue": 60000,
-                "unitText": "MONTH"
-            }
-        },
-        "applicantLocationRequirements": {
-            "@type": "Country",
-            "name": "KE"
+            "value": { "@type": "QuantitativeValue", "minValue": 40000, "maxValue": 60000, "unitText": "MONTH" }
         },
         "url": "https://soyosoyosacco.com/Jobs.html"
     }
     </script>
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "WebPage",
-        "name": "Jobs - Soyosoyo SACCO",
-        "url": "https://soyosoyosacco.com/Jobs.html",
-        "description": "Finance Manager & Customer Service jobs in Mombasa/Kilifi",
-        "isPartOf": {"@type": "FinancialCooperative", "name": "SOYOSOYO SACCO"},
-        "breadcrumb": {
-            "@type": "BreadcrumbList",
-            "itemListElement": [{
-                "@type": "ListItem",
-                "position": 1,
-                "name": "Home",
-                "item": "https://soyosoyosacco.com/"
-            },{
-                "@type": "ListItem",
-                "position": 2,
-                "name": "Jobs"
-            }]
-        }
-    }
-    </script>
+
+    <!-- Dynamic Schema Loader -->
     <script>
     fetch('/schema.json')
         .then(r => r.json())
