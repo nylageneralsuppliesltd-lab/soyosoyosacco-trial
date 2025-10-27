@@ -33,21 +33,118 @@ p, li, a, button, input, select, textarea {
     font-size: 16px;
 }
 
-/* Member Portal Button */
-.site-header .member-portal, .site-header a.member-portal {
-    background: #003087 !important; /* Deep navy like Co-operative Bank */
+/* Header and Navbar */
+header.site-header {
+    background-color: #90EE90 !important;
+    height: 50px !important; /* Slim band for desktop */
+    display: flex !important;
+    align-items: center !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+header.site-header .navbar {
+    background-color: #90EE90 !important;
+    padding: 5px 15px !important; /* Reduced padding */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+header.site-header .brand-logo {
+    max-width: 40px !important; /* Smaller logo for slim header */
+    border-radius: 50% !important;
+    object-fit: cover !important;
+}
+header.site-header .nav-links {
+    display: flex !important;
+    gap: 10px !important; /* Tighter gap */
+}
+header.site-header .nav-links a {
+    background: #003087 !important; /* Navy buttons */
+    color: white !important; /* White text */
+    padding: 6px 12px !important; /* Smaller padding */
+    border-radius: 4px !important;
+    text-decoration: none !important;
+    font-weight: 600 !important;
+    font-size: 14px !important; /* Smaller font */
+    transition: background 0.3s, color 0.3s !important;
+}
+header.site-header .nav-links a:hover {
+    background: #004d40 !important; /* Dark green hover */
     color: white !important;
-    padding: 8px 15px !important;
+}
+header.site-header .member-portal, header.site-header a.member-portal {
+    background: #003087 !important; /* Navy button */
+    color: white !important;
+    padding: 6px 12px !important;
     border-radius: 4px !important;
     text-decoration: none !important;
     font-weight: 700 !important;
+    font-size: 14px !important;
     display: inline-block !important;
     transition: background 0.3s, transform 0.2s !important;
 }
-.site-header .member-portal:hover, .site-header a.member-portal:hover {
-    background: #004d40 !important; /* Dark green hover */
+header.site-header .member-portal:hover, header.site-header a.member-portal:hover {
+    background: #004d40 !important;
     color: white !important;
     transform: translateY(-2px) !important;
+}
+header.site-header #menu-toggle {
+    display: none !important;
+    background: none !important;
+    border: none !important;
+    cursor: pointer !important;
+}
+header.site-header .menu-icon, header.site-header .close-icon {
+    display: none !important;
+    width: 20px !important;
+    height: 20px !important;
+}
+
+/* Hero Section */
+header.site-header .hero {
+    background-image: url('./assets/header-image.jpg') !important;
+    background-size: cover !important; /* Full coverage, no truncation */
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+    background-color: #90EE90 !important; /* Fallback */
+    width: 100% !important;
+    height: 50px !important; /* Slim for desktop */
+    min-height: 50px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 5px !important;
+    margin: 0 !important;
+    animation: fadeIn 1s ease !important;
+}
+header.site-header .hero::before {
+    content: none !important;
+}
+header.site-header .hero > div {
+    text-align: center !important;
+    max-width: 800px !important;
+    color: white !important;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.7) !important;
+    font-size: 0.9rem !important; /* Slightly larger for readability */
+    padding: 2px !important;
+}
+header.site-header .hero > div h1 {
+    font-size: 1.2rem !important; /* Compact but readable */
+    margin-bottom: 5px !important;
+}
+header.site-header .hero > div p {
+    font-size: 0.8rem !important;
+}
+header.site-header .hero-image {
+    width: 100% !important;
+    max-width: 324px !important;
+    height: auto !important;
+    object-fit: contain !important;
 }
 
 /* Job Apply Button */
@@ -65,83 +162,6 @@ p, li, a, button, input, select, textarea {
     background: #228B22 !important;
     color: white !important;
     transform: translateY(-2px) !important;
-}
-
-/* Header and Navbar */
-.site-header {
-    background-color: #90EE90 !important;
-}
-.navbar {
-    background-color: #90EE90 !important;
-    color: #006400 !important;
-    padding: 10px 15px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    max-width: 1200px !important;
-    margin: 0 auto !important;
-}
-.brand-logo {
-    max-width: 100px !important;
-    border-radius: 50% !important;
-    object-fit: cover !important;
-}
-.nav-links {
-    display: flex !important;
-    gap: 15px !important;
-}
-.site-header .nav-links a {
-    background: #003087 !important; /* Deep navy like Co-operative Bank */
-    color: white !important; /* Ensure white text */
-    padding: 8px 15px !important;
-    border-radius: 4px !important;
-    text-decoration: none !important;
-    font-weight: 600 !important;
-    transition: background 0.3s, color 0.3s !important;
-}
-.site-header .nav-links a:hover {
-    background: #004d40 !important; /* Dark green hover */
-    color: white !important;
-}
-#menu-toggle {
-    display: none !important;
-    background: none !important;
-    border: none !important;
-    cursor: pointer !important;
-}
-.menu-icon, .close-icon {
-    display: none !important;
-    width: 24px !important;
-    height: 24px !important;
-}
-
-/* Hero Section */
-.site-header .hero {
-    background-image: url('./assets/header-image.jpg') !important;
-    background-size: 100% auto !important; /* Stretch horizontally, maintain aspect ratio */
-    background-position: center center !important;
-    background-repeat: no-repeat !important;
-    background-color: #90EE90 !important; /* Fallback if image fails */
-    width: 100% !important; /* Full width within parent */
-    height: 41px !important; /* Match Co-operative Bank logo height */
-    min-height: 41px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    animation: fadeIn 1s ease !important;
-}
-.site-header .hero::before {
-    content: none !important;
-}
-.site-header .hero > div {
-    text-align: center !important;
-    max-width: 800px !important;
-    color: white !important;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.7) !important;
-    font-size: 0.8rem !important; /* Compact text */
-    padding: 2px !important;
 }
 
 /* Main Container */
@@ -624,19 +644,23 @@ footer a:hover {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .navbar {
-        position: relative !important;
-        flex-direction: row !important;
-        justify-content: space-between !important;
-        align-items: center !important;
+    header.site-header {
+        height: 60px !important; /* Slim band for mobile */
     }
-    #menu-toggle {
+    header.site-header .navbar {
+        padding: 5px 10px !important;
+        height: 100% !important;
+    }
+    header.site-header .brand-logo {
+        max-width: 35px !important; /* Smaller for mobile */
+    }
+    header.site-header #menu-toggle {
         display: block !important;
     }
-    .menu-icon {
+    header.site-header .menu-icon {
         display: block !important;
     }
-    .nav-links {
+    header.site-header .nav-links {
         display: none !important;
         flex-direction: column !important;
         position: absolute !important;
@@ -647,25 +671,26 @@ footer a:hover {
         padding: 10px !important;
         z-index: 1000 !important;
     }
-    .nav-links.show {
+    header.site-header .nav-links.show {
         display: flex !important;
     }
-    .site-header .nav-links a {
-        padding: 8px 10px !important;
+    header.site-header .nav-links a {
+        padding: 6px 10px !important;
         width: auto !important;
         text-align: left !important;
         display: block !important;
         background: #003087 !important;
-        color: white !important; /* Ensure white text */
+        color: white !important;
         margin-bottom: 5px !important;
+        font-size: 13px !important;
     }
-    .site-header .nav-links a:hover {
+    header.site-header .nav-links a:hover {
         background: #004d40 !important;
         color: white !important;
     }
-    .site-header .member-portal, .site-header a.member-portal {
-        padding: 8px 15px !important;
-        font-size: 14px !important;
+    header.site-header .member-portal, header.site-header a.member-portal {
+        padding: 6px 10px !important;
+        font-size: 13px !important;
     }
     .job-apply-button, a.job-apply-button {
         padding: 8px 15px !important;
@@ -692,16 +717,20 @@ footer a:hover {
     .join-instructions .content {
         max-width: 100% !important;
     }
-    .site-header .hero {
-        height: 60px !important; /* Co-operative Bank mobile size */
-        min-height: 60px !important;
-        background-size: 100% auto !important;
-        background-position: center center !important;
-        padding: 2px !important;
+    header.site-header .hero {
+        height: 80px !important; /* Taller for mobile to avoid truncation */
+        min-height: 80px !important;
+        background-size: cover !important;
+        padding: 5px !important;
     }
-    .site-header .hero > div {
+    header.site-header .hero > div {
+        font-size: 0.8rem !important;
+    }
+    header.site-header .hero > div h1 {
+        font-size: 1.1rem !important;
+    }
+    header.site-header .hero > div p {
         font-size: 0.7rem !important;
-        padding: 2px !important;
     }
     .carousel-container, .carousel-join-container {
         padding: 20px 0 !important;
