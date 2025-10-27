@@ -34,10 +34,11 @@ p, li, a, button, input, select, textarea {
 .member-portal {
     background: #006400;
     color: white;
-    padding: 8px 15px;
+    padding: 6px 12px;
     border-radius: 4px;
     text-decoration: none;
     font-weight: 700;
+    font-size: 14px;
     transition: background 0.3s, transform 0.2s;
 }
 .member-portal:hover {
@@ -52,27 +53,27 @@ p, li, a, button, input, select, textarea {
 .navbar {
     background-color: #90EE90;
     color: #006400;
-    padding: 5px 15px; /* Reduced padding for compact header */
+    padding: 4px 15px; /* Minimal padding for compact header */
     display: flex;
     align-items: center;
     justify-content: space-between;
     max-width: 1200px;
     margin: 0 auto;
     width: 100%;
-    min-height: 32px; /* Matches menu text height (~16px font + padding) */
+    min-height: 28px; /* Matches menu text height (~16px font + minimal padding) */
 }
 .brand-logo {
-    max-width: 80px; /* Slightly smaller for compact header */
+    max-width: 80px; /* Compact logo */
     height: auto;
 }
 .nav-links {
     display: flex;
-    gap: 10px;
+    gap: 8px;
 }
 .nav-links a {
     color: #006400;
     text-decoration: none;
-    padding: 5px 10px;
+    padding: 4px 8px;
     font-weight: 600;
     font-size: 16px;
 }
@@ -95,8 +96,10 @@ p, li, a, button, input, select, textarea {
 .hero {
     background-image: url('./assets/header-image.jpg');
     background-size: cover;
-    background-position: center;
-    height: 40vh;
+    background-position: center top; /* Ensures top of image (with text) is visible */
+    background-repeat: no-repeat;
+    height: 50vh; /* Increased height to show full image */
+    min-height: 300px; /* Ensures visibility on smaller screens */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -124,12 +127,13 @@ p, li, a, button, input, select, textarea {
     justify-content: space-between;
 }
 
-/* Form Styles (Join-Us.html) */
+/* Form Styles (Join-Us.html, Online-Forms.html) */
 form {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    max-width: 600px; /* Ensure form fits container */
+    max-width: 600px; /* Form fits container */
+    width: 100%; /* Full-width within container */
     margin: 0 auto;
 }
 form input, form select, form textarea, form button {
@@ -486,7 +490,7 @@ footer a:hover {
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        padding: 5px 15px;
+        padding: 4px 15px;
     }
     #menu-toggle {
         display: block;
@@ -504,23 +508,28 @@ footer a:hover {
         top: 100%;
         right: 0;
         background: #90EE90;
-        padding: 10px;
+        padding: 8px;
         z-index: 1000;
         width: auto; /* Only as wide as menu links */
-        max-width: 200px; /* Compact width */
+        max-width: 180px; /* Compact dropdown */
         text-align: right;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
     .nav-links.active {
         display: flex;
     }
     .nav-links a {
-        padding: 8px 15px;
+        padding: 6px 12px;
         width: 100%;
         text-align: right;
     }
     .member-portal {
-        padding: 6px 12px;
-        font-size: 14px;
+        padding: 5px 10px;
+        font-size: 13px;
+    }
+    .hero {
+        height: 40vh; /* Slightly reduced for mobile */
+        min-height: 250px;
     }
     .container {
         flex-direction: column;
@@ -555,7 +564,7 @@ footer a:hover {
         padding: 20px 0;
     }
     form {
-        max-width: 100%; /* Ensure form fits mobile */
+        max-width: 100%;
     }
 }
 @media (min-width: 769px) {
@@ -592,5 +601,9 @@ footer a:hover {
     }
     .carousel-description, .carousel-join-description {
         font-size: 12px;
+    }
+    .hero {
+        height: 35vh;
+        min-height: 200px;
     }
 }
