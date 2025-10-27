@@ -34,7 +34,7 @@ p, li, a, button, input, select, textarea {
 .member-portal {
     background: #006400;
     color: white;
-    padding: 10px 20px;
+    padding: 8px 15px;
     border-radius: 4px;
     text-decoration: none;
     font-weight: 700;
@@ -52,28 +52,29 @@ p, li, a, button, input, select, textarea {
 .navbar {
     background-color: #90EE90;
     color: #006400;
-    padding: 10px 0;
+    padding: 5px 15px; /* Reduced padding for compact header */
     display: flex;
     align-items: center;
     justify-content: space-between;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 15px;
-    width: 100%; /* Ensure navbar doesn't exceed screen width */
+    width: 100%;
+    min-height: 32px; /* Matches menu text height (~16px font + padding) */
 }
 .brand-logo {
-    max-width: 100px; /* Exact size from Jobs.html */
+    max-width: 80px; /* Slightly smaller for compact header */
     height: auto;
 }
 .nav-links {
     display: flex;
-    gap: 15px;
+    gap: 10px;
 }
 .nav-links a {
     color: #006400;
     text-decoration: none;
-    padding: 10px;
+    padding: 5px 10px;
     font-weight: 600;
+    font-size: 16px;
 }
 .nav-links a:hover {
     color: #228B22;
@@ -86,6 +87,8 @@ p, li, a, button, input, select, textarea {
 }
 .menu-icon, .close-icon {
     display: none;
+    width: 20px;
+    height: 20px;
 }
 
 /* Hero Section */
@@ -119,6 +122,39 @@ p, li, a, button, input, select, textarea {
     flex-wrap: wrap;
     gap: 15px;
     justify-content: space-between;
+}
+
+/* Form Styles (Join-Us.html) */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 600px; /* Ensure form fits container */
+    margin: 0 auto;
+}
+form input, form select, form textarea, form button {
+    width: 100%; /* Full-width fields */
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #90EE90;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+form button {
+    background: #90EE90;
+    color: #006400;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+form button:hover {
+    background: #228B22;
+    color: white;
+}
+form textarea {
+    resize: vertical;
+    min-height: 100px;
 }
 
 /* Generic Section Styling */
@@ -450,43 +486,40 @@ footer a:hover {
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        padding: 10px 15px; /* Ensure compact padding */
+        padding: 5px 15px;
     }
     #menu-toggle {
         display: block;
     }
     .menu-icon {
         display: block;
-        width: 24px;
-        height: 24px;
     }
     .close-icon {
         display: none;
-        width: 24px;
-        height: 24px;
     }
     .nav-links {
         display: none;
         flex-direction: column;
         position: absolute;
         top: 100%;
-        left: 0;
         right: 0;
         background: #90EE90;
         padding: 10px;
         z-index: 1000;
-        width: 100%; /* Ensure menu fits screen */
+        width: auto; /* Only as wide as menu links */
+        max-width: 200px; /* Compact width */
+        text-align: right;
     }
     .nav-links.active {
         display: flex;
     }
     .nav-links a {
-        padding: 10px;
+        padding: 8px 15px;
         width: 100%;
-        text-align: left;
+        text-align: right;
     }
     .member-portal {
-        padding: 8px 15px;
+        padding: 6px 12px;
         font-size: 14px;
     }
     .container {
@@ -520,6 +553,9 @@ footer a:hover {
     }
     .carousel-container, .carousel-join-container {
         padding: 20px 0;
+    }
+    form {
+        max-width: 100%; /* Ensure form fits mobile */
     }
 }
 @media (min-width: 769px) {
