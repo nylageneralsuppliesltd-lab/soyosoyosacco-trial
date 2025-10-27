@@ -7,30 +7,39 @@
 }
 
 body {
-    background: #ffffff;
+    background: #f8fafc !important; /* Light, modern background */
     font-size: 16px;
     line-height: 1.6;
-    color: #333;
+    color: #2d3748 !important; /* Darker, professional text */
 }
 
 /* Typography */
 h1 {
-    font-size: 28px;
-    font-weight: 900;
-    margin-bottom: 15px;
+    font-size: 32px !important; /* Bolder, larger headings */
+    font-weight: 900 !important;
+    letter-spacing: 0.02em !important; /* Markdown-inspired spacing */
+    margin-bottom: 20px !important;
+    color: #1a202c !important;
 }
 h2 {
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 10px;
+    font-size: 28px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.015em !important;
+    margin-bottom: 15px !important;
+    color: #1a202c !important;
 }
 h3 {
-    font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 10px;
+    font-size: 24px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.01em !important;
+    margin-bottom: 12px !important;
+    color: #1a202c !important;
 }
 p, li, a, button, input, select, textarea {
-    font-size: 16px;
+    font-size: 16px !important;
+    font-weight: 400 !important;
+    color: #2d3748 !important;
+    line-height: 1.8 !important; /* Improved readability */
 }
 
 /* Header */
@@ -48,7 +57,7 @@ header.site-header {
 /* Navbar */
 header.site-header .navbar {
     background-color: #90EE90 !important;
-    padding: 5px 15px !important; /* Minimal padding */
+    padding: 5px 15px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
@@ -57,7 +66,7 @@ header.site-header .navbar {
     height: 100% !important;
 }
 header.site-header .brand-logo {
-    max-width: 40px !important; /* Compact logo */
+    max-width: 40px !important;
     border-radius: 50% !important;
     object-fit: cover !important;
 }
@@ -66,18 +75,18 @@ header.site-header .nav-links {
     gap: 10px !important;
 }
 header.site-header .nav-links a {
-    background: #003087 !important; /* Navy buttons */
+    background: #003087 !important;
     color: white !important;
     padding: 6px 12px !important;
     border-radius: 4px !important;
     text-decoration: none !important;
     font-weight: 600 !important;
     font-size: 14px !important;
-    transition: background 0.3s, color 0.3s !important;
+    transition: background 0.3s, transform 0.2s !important;
 }
 header.site-header .nav-links a:hover {
     background: #004d40 !important;
-    color: white !important;
+    transform: scale(1.05) !important;
 }
 header.site-header .member-portal, header.site-header a.member-portal {
     background: #003087 !important;
@@ -91,8 +100,7 @@ header.site-header .member-portal, header.site-header a.member-portal {
 }
 header.site-header .member-portal:hover, header.site-header a.member-portal:hover {
     background: #004d40 !important;
-    color: white !important;
-    transform: translateY(-2px) !important;
+    transform: scale(1.05) !important;
 }
 header.site-header #menu-toggle {
     display: none !important;
@@ -109,8 +117,8 @@ header.site-header .menu-icon, header.site-header .close-icon {
 /* Header Banner */
 header.site-header .header-banner {
     width: 100% !important;
-    height: 250px !important; /* Prominent for desktop */
-    background-color: #90EE90 !important; /* Fallback */
+    height: 250px !important;
+    background-color: #90EE90 !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -119,13 +127,13 @@ header.site-header .header-banner {
 header.site-header .header-banner img {
     width: 100% !important;
     height: 100% !important;
-    object-fit: cover !important; /* Full-width, no truncation */
+    object-fit: cover !important;
 }
 header.site-header .header-banner::after {
     content: '' !important;
     position: absolute !important;
     inset: 0 !important;
-    background: rgba(0, 50, 0, 0.3) !important; /* Dark overlay */
+    background: rgba(0, 50, 0, 0.3) !important;
 }
 header.site-header .header-banner > div {
     text-align: center !important;
@@ -144,183 +152,209 @@ header.site-header .header-banner > div p {
     font-size: 1.2rem !important;
 }
 
-/* Job Apply Button */
-.job-apply-button, a.job-apply-button {
-    background: #90EE90 !important;
-    color: #006400 !important;
-    padding: 10px 20px !important;
-    border-radius: 4px !important;
-    text-decoration: none !important;
-    font-weight: 700 !important;
-    display: inline-block !important;
-    transition: background 0.3s, transform 0.2s !important;
-}
-.job-apply-button:hover, a.job-apply-button:hover {
-    background: #228B22 !important;
-    color: white !important;
-    transform: translateY(-2px) !important;
-}
-
 /* Main Container */
-.container {
+main .container {
     max-width: 1200px !important;
-    margin: 0 auto !important;
+    margin: 20px auto !important; /* Extra spacing */
     padding: 0 15px !important;
     display: flex !important;
     flex-wrap: wrap !important;
-    gap: 15px !important;
-    justify-content: space-between !important;
+    gap: 20px !important; /* Increased for elegance */
+    justify-content: center !important; /* Centered stacking */
     align-items: stretch !important;
 }
 
 /* Generic Section Styling */
-.section, .mission-vision-container, .core-values-container, .tool-section, .carousel-join-section {
-    background: #f9f9f9 !important;
+main .section, main .mission-vision-container, main .core-values-container, main .tool-section, main .carousel-join-section {
+    background: linear-gradient(145deg, #ffffff, #f7fafc) !important; /* Subtle gradient */
     border: 1px solid #90EE90 !important;
-    border-radius: 8px !important;
-    box-shadow: 0 4px 12px rgba(0, 100, 0, 0.1) !important;
-    padding: 15px !important;
+    border-radius: 12px !important; /* Softer corners */
+    box-shadow: 0 8px 24px rgba(0, 100, 0, 0.2) !important; /* Stronger shadow */
+    padding: 20px !important; /* More padding */
     margin: 15px 0 !important;
     flex: 1 1 100% !important;
     transition: transform 0.3s, box-shadow 0.3s !important;
-    animation: fadeIn 0.5s ease !important;
+    animation: popIn 0.5s ease !important; /* Modern animation */
 }
-.section:hover, .mission-vision-container:hover, .core-values-container:hover, .tool-section:hover, .carousel-join-section:hover {
-    transform: translateY(-5px) !important;
-    box-shadow: 0 6px 16px rgba(0, 100, 0, 0.15) !important;
+main .section:hover, main .mission-vision-container:hover, main .core-values-container:hover, main .tool-section:hover, main .carousel-join-section:hover {
+    transform: scale(1.02) !important; /* Pop-out effect */
+    box-shadow: 0 12px 32px rgba(0, 100, 0, 0.25) !important;
 }
 
 /* Mission, Vision, Core Values */
-.mission-vision-container, .core-values-container {
-    flex: 1 1 calc(33.33% - 15px) !important;
-    min-width: 250px !important;
-    max-width: 350px !important;
+main .mission-vision-container, main .core-values-container {
+    flex: 1 1 calc(33.33% - 20px) !important;
+    min-width: 280px !important;
+    max-width: 360px !important;
     text-align: center !important;
 }
-.core-values-container ul {
+main .core-values-container ul {
     list-style-type: square !important;
-    padding-left: 30px !important;
+    padding-left: 25px !important; /* Tighter alignment */
     text-align: left !important;
-    font-size: 14px !important;
+    font-size: 15px !important;
+    color: #2d3748 !important;
 }
-.mission-vision-container img, .core-values-container img {
+main .core-values-container ul li {
+    margin-bottom: 8px !important;
+    position: relative !important;
+}
+main .core-values-container ul li::before {
+    color: #006400 !important; /* Green bullets */
+}
+main .mission-vision-container img, main .core-values-container img {
     width: 100% !important;
-    max-height: 150px !important;
+    max-height: 160px !important;
+    object-fit: cover !important;
+    border-radius: 8px !important;
+    margin-bottom: 15px !important;
+    box-shadow: 0 4px 8px rgba(0, 100, 0, 0.1) !important;
+}
+
+/* Products Section */
+main .products-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+    gap: 20px !important;
+}
+main .product-card {
+    background: linear-gradient(145deg, #ffffff, #f7fafc) !important;
+    border: 1px solid #90EE90 !important;
+    padding: 15px !important;
+    border-radius: 12px !important;
+    box-shadow: 0 8px 24px rgba(0, 100, 0, 0.2) !important;
+    transition: transform 0.3s, box-shadow 0.3s !important;
+}
+main .product-card:hover {
+    transform: scale(1.02) !important;
+    box-shadow: 0 12px 32px rgba(0, 100, 0, 0.25) !important;
+}
+main .product-card img {
+    width: 100% !important;
+    height: 160px !important;
     object-fit: cover !important;
     border-radius: 8px !important;
     margin-bottom: 10px !important;
 }
-
-/* Products Section */
-.products-grid {
-    display: grid !important;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important;
-    gap: 15px !important;
-}
-.product-card {
-    background: #f9f9f9 !important;
-    border: 1px solid #90EE90 !important;
-    padding: 10px !important;
-    border-radius: 8px !important;
-    transition: transform 0.3s !important;
-}
-.product-card:hover {
-    transform: translateY(-5px) !important;
-}
-.product-card img {
-    width: 100% !important;
-    height: 150px !important;
-    object-fit: cover !important;
-    border-radius: 4px !important;
-}
-.products-button, a.products-button {
+main .products-button, main a.products-button {
     background: #90EE90 !important;
     color: #006400 !important;
-    padding: 10px !important;
+    padding: 12px !important;
     text-decoration: none !important;
-    border-radius: 4px !important;
+    border-radius: 6px !important;
     display: block !important;
     text-align: center !important;
-    font-weight: 600 !important;
-    transition: background 0.3s !important;
+    font-weight: 700 !important;
+    transition: background 0.3s, transform 0.2s !important;
 }
-.products-button:hover, a.products-button:hover {
+main .products-button:hover, main a.products-button:hover {
     background: #228B22 !important;
     color: white !important;
+    transform: scale(1.05) !important;
 }
 
 /* Join Instructions Section */
-.join-instructions {
+main .join-instructions {
     display: flex !important;
     align-items: flex-start !important;
     gap: 20px !important;
 }
-.join-instructions img {
+main .join-instructions img {
     width: 100% !important;
     max-width: 30% !important;
     height: auto !important;
     border-radius: 8px !important;
     box-shadow: 0 4px 8px rgba(0, 100, 0, 0.1) !important;
 }
-.join-instructions .content {
+main .join-instructions .content {
     flex: 1 !important;
     max-width: 65% !important;
 }
-.join-instructions ul {
+main .join-instructions ul {
     list-style-type: disc !important;
-    padding-left: 30px !important;
-    margin: 10px 0 !important;
+    padding-left: 25px !important;
+    margin: 12px 0 !important;
+    font-size: 15px !important;
+    color: #2d3748 !important;
 }
-.join-instructions strong {
+main .join-instructions ul li {
+    margin-bottom: 8px !important;
+}
+main .join-instructions ul li::before {
     color: #006400 !important;
+}
+main .join-instructions strong {
+    color: #006400 !important;
+    font-weight: 700 !important;
+}
+
+/* Job Apply Button */
+main .job-apply-button, main a.job-apply-button {
+    background: #90EE90 !important;
+    color: #006400 !important;
+    padding: 12px 20px !important;
+    border-radius: 6px !important;
+    text-decoration: none !important;
+    font-weight: 700 !important;
+    display: inline-block !important;
+    transition: background 0.3s, transform 0.2s !important;
+}
+main .job-apply-button:hover, main a.job-apply-button:hover {
+    background: #228B22 !important;
+    color: white !important;
+    transform: scale(1.05) !important;
 }
 
 /* Carousel (index.html) */
-.carousel-wrapper {
+main .carousel-wrapper {
     width: 100% !important;
     overflow-x: hidden !important;
 }
-.carousel-container {
+main .carousel-container {
     width: 100% !important;
     max-width: 1200px !important;
-    margin: 0 auto !important;
+    margin: 20px auto !important;
     overflow: hidden !important;
     position: relative !important;
     padding: 30px 0 !important;
-    background: #f9f9f9 !important;
+    background: linear-gradient(145deg, #ffffff, #f7fafc) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 8px 24px rgba(0, 100, 0, 0.2) !important;
 }
-.carousel {
+main .carousel {
     display: flex !important;
     flex-wrap: nowrap !important;
     align-items: center !important;
     animation: slide var(--carousel-duration, 21s) linear infinite !important;
 }
-.carousel-item {
+main .carousel-item {
     flex: 0 0 auto !important;
-    width: 250px !important;
-    margin: 0 30px !important;
+    width: 260px !important;
+    margin: 0 20px !important;
     text-align: center !important;
-    background: white !important;
+    background: #ffffff !important;
     padding: 15px !important;
-    border-radius: 8px !important;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    transition: opacity 0.3s ease !important;
+    border-radius: 10px !important;
+    box-shadow: 0 6px 16px rgba(0, 100, 0, 0.15) !important;
+    transition: transform 0.3s, box-shadow 0.3s !important;
 }
-.carousel-item[style*="display: none"] {
+main .carousel-item:hover {
+    transform: scale(1.03) !important;
+    box-shadow: 0 10px 24px rgba(0, 100, 0, 0.2) !important;
+}
+main .carousel-item[style*="display: none"] {
     visibility: hidden !important;
     opacity: 0 !important;
 }
-.carousel-button, a.carousel-button {
+main .carousel-button, main a.carousel-button {
     background: #87CEEB !important;
     color: white !important;
     padding: 15px 25px !important;
     border-radius: 8px !important;
     border: none !important;
-    font-size: 20px !important;
-    font-weight: bold !important;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15) !important;
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    box-shadow: 0 6px 12px rgba(0, 100, 0, 0.15) !important;
     transition: transform 0.2s, box-shadow 0.2s !important;
     cursor: pointer !important;
     display: block !important;
@@ -328,281 +362,289 @@ header.site-header .header-banner > div p {
     text-align: center !important;
     text-decoration: none !important;
 }
-.carousel-button:hover, a.carousel-button:hover {
-    transform: translateY(-3px) !important;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2) !important;
+main .carousel-button:hover, main a.carousel-button:hover {
+    transform: scale(1.05) !important;
+    box-shadow: 0 8px 16px rgba(0, 100, 0, 0.2) !important;
 }
-.carousel-description {
+main .carousel-description {
     margin-top: 10px !important;
-    font-size: 16px !important;
-    font-weight: bold !important;
-    color: #333 !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    color: #2d3748 !important;
 }
-.carousel:hover {
+main .carousel:hover {
     animation-play-state: paused !important;
 }
 @keyframes slide {
     0% { transform: translateX(0); }
-    100% { transform: translateX(var(--carousel-translate, -2380px)); }
+    100% { transform: translateX(var(--carousel-translate, -2320px)); }
 }
 
 /* Carousel Join (Join-Us.html) */
-.carousel-join-wrapper {
+main .carousel-join-wrapper {
     width: 100% !important;
     overflow-x: hidden !important;
-    min-height: 200px !important;
+    min-height: 220px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
 }
-.carousel-join-container {
+main .carousel-join-container {
     width: 100% !important;
     max-width: 1200px !important;
-    margin: 0 auto !important;
+    margin: 20px auto !important;
     overflow: hidden !important;
     position: relative !important;
     padding: 30px 0 !important;
-    background: #e0e0e0 !important;
+    background: linear-gradient(145deg, #ffffff, #f7fafc) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 8px 24px rgba(0, 100, 0, 0.2) !important;
 }
-.carousel-join {
+main .carousel-join {
     display: flex !important;
     flex-wrap: nowrap !important;
     align-items: center !important;
     animation: slide-join 20s linear infinite !important;
 }
-.carousel-join-item {
+main .carousel-join-item {
     flex: 0 0 auto !important;
     min-width: 0 !important;
     width: 280px !important;
-    margin: 0 30px !important;
+    margin: 0 20px !important;
     text-align: center !important;
-    background: white !important;
+    background: #ffffff !important;
     padding: 15px !important;
-    border-radius: 8px !important;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    transition: opacity 0.3s ease !important;
+    border-radius: 10px !important;
+    box-shadow: 0 6px 16px rgba(0, 100, 0, 0.15) !important;
+    transition: transform 0.3s, box-shadow 0.3s !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
 }
-.carousel-join-item[style*="display: none"] {
+main .carousel-join-item:hover {
+    transform: scale(1.03) !important;
+    box-shadow: 0 10px 24px rgba(0, 100, 0, 0.2) !important;
+}
+main .carousel-join-item[style*="display: none"] {
     visibility: hidden !important;
     opacity: 0 !important;
 }
-.carousel-join-button, a.carousel-join-button {
+main .carousel-join-button, main a.carousel-join-button {
     background: #90EE90 !important;
     color: #006400 !important;
     padding: 15px 20px !important;
-    border-radius: 5px !important;
+    border-radius: 6px !important;
     border: none !important;
-    font-family: 'Lato', Arial, sans-serif !important;
     font-size: 18px !important;
-    font-weight: bold !important;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease !important;
+    font-weight: 700 !important;
+    box-shadow: 0 4px 8px rgba(0, 100, 0, 0.1) !important;
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s !important;
     cursor: pointer !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     width: 100% !important;
-    text-align: center !important;
     text-decoration: none !important;
     margin-bottom: 10px !important;
 }
-.carousel-join-button:hover, a.carousel-join-button:hover {
-    transform: translateY(-2px) !important;
+main .carousel-join-button:hover, main a.carousel-join-button:hover {
+    transform: scale(1.05) !important;
     background: #228B22 !important;
     color: white !important;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15) !important;
+    box-shadow: 0 6px 12px rgba(0, 100, 0, 0.15) !important;
 }
-.carousel-join-button .prefix {
+main .carousel-join-button .prefix {
     margin-right: 5px !important;
 }
-.carousel-join-button .counter-value {
+main .carousel-join-button .counter-value {
     font-family: 'Lato', Arial, sans-serif !important;
     display: inline-block !important;
     min-width: 60px !important;
     text-align: left !important;
 }
-.carousel-join-description {
+main .carousel-join-description {
     margin-top: 0 !important;
-    font-family: 'Lato', Arial, sans-serif !important;
     font-size: 14px !important;
-    font-weight: bold !important;
-    color: #333 !important;
+    font-weight: 600 !important;
+    color: #2d3748 !important;
     line-height: 1.4 !important;
 }
-.carousel-join:hover {
+main .carousel-join:hover {
     animation-play-state: paused !important;
 }
 @keyframes slide-join {
     0% { transform: translateX(0); }
-    100% { transform: translateX(calc(-1 * (280px + 2*30px) * 4)); }
+    100% { transform: translateX(calc(-1 * (280px + 2*20px) * 4)); }
 }
 
 /* Leadership Section */
-.leadership-section {
+main .leadership-section {
     text-align: center !important;
 }
-.leadership-grid {
+main .leadership-grid {
     display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
     gap: 20px !important;
     margin-top: 20px !important;
 }
-.leader-profile {
-    background: white !important;
-    border-radius: 8px !important;
+main .leader-profile {
+    background: linear-gradient(145deg, #ffffff, #f7fafc) !important;
+    border-radius: 12px !important;
     padding: 15px !important;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+    box-shadow: 0 8px 24px rgba(0, 100, 0, 0.2) !important;
     transition: transform 0.3s, box-shadow 0.3s !important;
 }
-.leader-profile:hover {
-    transform: translateY(-5px) !important;
-    box-shadow: 0 6px 12px rgba(0, 100, 0, 0.15) !important;
+main .leader-profile:hover {
+    transform: scale(1.02) !important;
+    box-shadow: 0 12px 32px rgba(0, 100, 0, 0.25) !important;
 }
-.leader-profile img {
-    width: 150px !important;
-    height: 150px !important;
+main .leader-profile img {
+    width: 160px !important;
+    height: 160px !important;
     border-radius: 50% !important;
     object-fit: cover !important;
-    margin-bottom: 10px !important;
+    margin-bottom: 12px !important;
     border: 2px solid #90EE90 !important;
 }
-.leader-profile h3 {
+main .leader-profile h3 {
     color: #006400 !important;
-    font-size: 18px !important;
-    margin-bottom: 5px !important;
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    margin-bottom: 8px !important;
 }
-.leader-profile p {
-    color: #333 !important;
-    font-size: 14px !important;
-    font-weight: bold !important;
+main .leader-profile p {
+    color: #2d3748 !important;
+    font-size: 15px !important;
+    font-weight: 500 !important;
 }
 
 /* Form Styling */
-.tool-section form button, .tool-section form a.button {
+main .tool-section form button, main .tool-section form a.button {
     width: 100% !important;
     background: #90EE90 !important;
     color: #006400 !important;
     padding: 14px !important;
     font-size: 16px !important;
-    font-weight: bold !important;
+    font-weight: 700 !important;
     border: none !important;
-    border-radius: 8px !important;
+    border-radius: 6px !important;
     cursor: pointer !important;
-    transition: background 0.3s, color 0.3s !important;
+    transition: background 0.3s, transform 0.2s !important;
     text-decoration: none !important;
     display: block !important;
     text-align: center !important;
 }
-.tool-section form button:hover, .tool-section form a.button:hover {
+main .tool-section form button:hover, main .tool-section form a.button:hover {
     background: #228B22 !important;
     color: white !important;
+    transform: scale(1.05) !important;
 }
-.tool-section form input,
-.tool-section form select,
-.tool-section form textarea {
+main .tool-section form input,
+main .tool-section form select,
+main .tool-section form textarea {
     width: 100% !important;
     padding: 12px !important;
     margin-bottom: 12px !important;
     border: 1px solid #90EE90 !important;
     border-radius: 8px !important;
     font-size: 16px !important;
+    background: #f7fafc !important;
 }
 
 /* Calculator Styles */
-.calculator-wrapper, .calculator {
+main .calculator-wrapper, main .calculator {
     width: 100% !important;
-    max-width: 450px !important;
-    min-height: 300px !important;
+    max-width: 480px !important;
+    min-height: 320px !important;
     overflow-y: auto !important;
     padding-bottom: 15px !important;
     margin: 0 auto !important;
 }
-.calculator select, .calculator input, .calculator button, .calculator a.button {
+main .calculator select, main .calculator input, main .calculator button, main .calculator a.button {
     width: 100% !important;
-    padding: 10px !important;
-    margin: 8px 0 !important;
+    padding: 12px !important;
+    margin: 10px 0 !important;
     border: 1px solid #90EE90 !important;
-    border-radius: 4px !important;
-    font-size: 14px !important;
+    border-radius: 6px !important;
+    font-size: 15px !important;
 }
-.calculator input[readonly] {
-    background: #e0e0e0 !important;
+main .calculator input[readonly] {
+    background: #e5e7eb !important;
 }
-.calculator button, .calculator a.button {
+main .calculator button, main .calculator a.button {
     background: #90EE90 !important;
     color: #006400 !important;
     cursor: pointer !important;
-    font-weight: bold !important;
+    font-weight: 700 !important;
     text-decoration: none !important;
 }
-.calculator button:hover, .calculator a.button:hover {
+main .calculator button:hover, main .calculator a.button:hover {
     background: #228B22 !important;
     color: white !important;
+    transform: scale(1.05) !important;
 }
-.result {
+main .result {
     margin-top: 15px !important;
     padding: 15px !important;
-    font-size: 14px !important;
+    font-size: 15px !important;
     background: #ffffff !important;
     border: 1px solid #90EE90 !important;
-    border-radius: 4px !important;
+    border-radius: 8px !important;
     text-align: left !important;
-    line-height: 1.5 !important;
+    line-height: 1.6 !important;
+    box-shadow: 0 4px 8px rgba(0, 100, 0, 0.1) !important;
 }
-.slider-container {
+main .slider-container {
     margin: 20px 0 !important;
 }
-.slider-value {
+main .slider-value {
     text-align: center !important;
-    font-size: 14px !important;
+    font-size: 15px !important;
+    color: #2d3748 !important;
 }
-.amortization-table, .fines-amortization-table {
+main .amortization-table, main .fines-amortization-table {
     margin-top: 20px !important;
     width: 100% !important;
     overflow-x: auto !important;
 }
-table {
+main table {
     width: 100% !important;
     border-collapse: collapse !important;
     margin-top: 10px !important;
 }
-th, td {
+main th, main td {
     border: 1px solid #90EE90 !important;
-    padding: 10px !important;
+    padding: 12px !important;
     text-align: center !important;
-    font-size: 14px !important;
+    font-size: 15px !important;
 }
-th {
+main th {
     background: #90EE90 !important;
     color: #006400 !important;
+    font-weight: 700 !important;
 }
-.loan-chart {
+main .loan-chart {
     margin-top: 20px !important;
     max-width: 100% !important;
 }
-.fines-section {
+main .fines-section {
     margin-top: 20px !important;
 }
-.form-group {
+main .form-group {
     margin-bottom: 15px !important;
 }
-.error-message {
-    color: red !important;
+main .error-message {
+    color: #dc2626 !important;
     text-align: center !important;
     margin-top: 10px !important;
 }
-.soyo-logo {
+main .soyo-logo {
     color: #006400 !important;
 }
-.month-inputs {
+main .month-inputs {
     display: grid !important;
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)) !important;
-    gap: 8px !important;
+    gap: 10px !important;
     margin-bottom: 15px !important;
 }
 
@@ -611,38 +653,40 @@ footer {
     background: #90EE90 !important;
     color: #006400 !important;
     text-align: center !important;
-    padding: 20px 0 !important;
-    margin-top: 20px !important;
+    padding: 25px 0 !important;
+    margin-top: 30px !important;
+    box-shadow: 0 -4px 12px rgba(0, 100, 0, 0.1) !important;
 }
 footer a {
     color: #006400 !important;
     text-decoration: none !important;
+    font-weight: 600 !important;
 }
 footer a:hover {
     color: #228B22 !important;
 }
-.social-icons {
-    margin-top: 10px !important;
+footer .social-icons {
+    margin-top: 12px !important;
 }
-.social-icons a {
+footer .social-icons a {
     color: #006400 !important;
-    margin: 0 10px !important;
-    font-size: 20px !important;
+    margin: 0 12px !important;
+    font-size: 22px !important;
 }
-.social-icons a:hover {
+footer .social-icons a:hover {
     color: #228B22 !important;
 }
 
 /* Animations */
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+@keyframes popIn {
+    0% { opacity: 0; transform: scale(0.95); }
+    100% { opacity: 1; transform: scale(1); }
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
     header.site-header {
-        height: 60px !important; /* Slim band for mobile */
+        height: 60px !important;
     }
     header.site-header .navbar {
         padding: 5px 10px !important;
@@ -675,7 +719,7 @@ footer a:hover {
         font-size: 13px !important;
     }
     header.site-header .header-banner {
-        height: 200px !important; /* Prominent for mobile */
+        height: 200px !important;
     }
     header.site-header .header-banner > div h1 {
         font-size: 1.5rem !important;
@@ -683,136 +727,135 @@ footer a:hover {
     header.site-header .header-banner > div p {
         font-size: 1rem !important;
     }
-    .job-apply-button, a.job-apply-button {
-        padding: 8px 15px !important;
-        font-size: 14px !important;
-    }
-    .container {
+    main .container {
         flex-direction: column !important;
         align-items: center !important;
+        gap: 15px !important;
     }
-    .mission-vision-container, .core-values-container, .tool-section, .join-instructions {
+    main .mission-vision-container, main .core-values-container, main .tool-section, main .join-instructions {
         max-width: 100% !important;
         flex: 1 1 100% !important;
     }
-    .leadership-grid {
+    main .products-grid {
         grid-template-columns: 1fr !important;
     }
-    .join-instructions {
+    main .leadership-grid {
+        grid-template-columns: 1fr !important;
+    }
+    main .join-instructions {
         flex-direction: column !important;
         align-items: center !important;
     }
-    .join-instructions img {
+    main .join-instructions img {
         max-width: 100% !important;
     }
-    .join-instructions .content {
+    main .join-instructions .content {
         max-width: 100% !important;
     }
-    .carousel-container, .carousel-join-container {
+    main .carousel-container, main .carousel-join-container {
         padding: 20px 0 !important;
     }
-    .carousel-item {
-        width: 180px !important;
-        margin: 0 20px !important;
-        padding: 10px !important;
+    main .carousel-item {
+        width: 200px !important;
+        margin: 0 15px !important;
+        padding: 12px !important;
     }
-    .carousel-button, a.carousel-button {
-        padding: 10px 15px !important;
+    main .carousel-button, main a.carousel-button {
+        padding: 12px 15px !important;
         font-size: 16px !important;
     }
-    .carousel-description {
+    main .carousel-description {
         font-size: 14px !important;
     }
-    .carousel-join-item {
-        width: 200px !important;
+    main .carousel-join-item {
+        width: 220px !important;
         margin: 0 10px !important;
-        padding: 8px !important;
+        padding: 12px !important;
     }
-    .carousel-join-button, a.carousel-join-button {
-        padding: 8px 10px !important;
-        font-size: 14px !important;
+    main .carousel-join-button, main a.carousel-join-button {
+        padding: 12px 15px !important;
+        font-size: 16px !important;
     }
-    .carousel-join-button .counter-value, a.carousel-join-button .counter-value {
+    main .carousel-join-button .counter-value, main a.carousel-join-button .counter-value {
         min-width: 50px !important;
     }
-    .carousel-join-description {
-        font-size: 12px !important;
-        font-weight: bold !important;
+    main .carousel-join-description {
+        font-size: 13px !important;
     }
     @keyframes slide {
         0% { transform: translateX(0); }
-        100% { transform: translateX(calc(-1 * (180px + 2*20px) * 7)); }
+        100% { transform: translateX(calc(-1 * (200px + 2*15px) * 7)); }
     }
     @keyframes slide-join {
         0% { transform: translateX(0); }
-        100% { transform: translateX(calc(-1 * (200px + 2*10px) * 4)); }
+        100% { transform: translateX(calc(-1 * (220px + 2*10px) * 4)); }
     }
 }
 
 @media (max-width: 600px) {
-    .carousel-item {
+    main .carousel-item {
         width: 180px !important;
-        margin: 0 20px !important;
+        margin: 0 12px !important;
         padding: 10px !important;
     }
-    .carousel-button, a.carousel-button {
-        padding: 10px 15px !important;
-        font-size: 16px !important;
+    main .carousel-button, main a.carousel-button {
+        padding: 10px 12px !important;
+        font-size: 15px !important;
     }
-    .carousel-description {
-        font-size: 14px !important;
+    main .carousel-description {
+        font-size: 13px !important;
     }
-    .carousel-join-item {
+    main .carousel-join-item {
         width: 200px !important;
-        margin: 0 10px !important;
-        padding: 8px !important;
+        margin: 0 8px !important;
+        padding: 10px !important;
     }
-    .carousel-join-button, a.carousel-join-button {
-        padding: 8px 10px !important;
-        font-size: 14px !important;
+    main .carousel-join-button, main a.carousel-join-button {
+        padding: 10px 12px !important;
+        font-size: 15px !important;
     }
-    .carousel-join-button .counter-value, a.carousel-join-button .counter-value {
-        min-width: 50px !important;
+    main .carousel-join-button .counter-value, main a.carousel-join-button .counter-value {
+        min-width: 45px !important;
     }
-    .carousel-join-description {
+    main .carousel-join-description {
         font-size: 12px !important;
     }
 }
 
 @media (max-width: 360px) {
-    .carousel-item {
-        width: 140px !important;
-        margin: 0 10px !important;
+    main .carousel-item {
+        width: 160px !important;
+        margin: 0 8px !important;
         padding: 8px !important;
     }
-    .carousel-button, a.carousel-button {
-        padding: 8px 12px !important;
+    main .carousel-button, main a.carousel-button {
+        padding: 8px 10px !important;
         font-size: 14px !important;
     }
-    .carousel-description {
+    main .carousel-description {
         font-size: 12px !important;
     }
-    .carousel-join-item {
-        width: 160px !important;
+    main .carousel-join-item {
+        width: 180px !important;
         margin: 0 5px !important;
-        padding: 5px !important;
+        padding: 8px !important;
     }
-    .carousel-join-button, a.carousel-join-button {
-        padding: 6px 8px !important;
-        font-size: 12px !important;
+    main .carousel-join-button, main a.carousel-join-button {
+        padding: 8px 10px !important;
+        font-size: 14px !important;
     }
-    .carousel-join-button .counter-value, a.carousel-join-button .counter-value {
+    main .carousel-join-button .counter-value, main a.carousel-join-button .counter-value {
         min-width: 40px !important;
     }
-    .carousel-join-description {
-        font-size: 10px !important;
+    main .carousel-join-description {
+        font-size: 11px !important;
     }
     @keyframes slide {
         0% { transform: translateX(0); }
-        100% { transform: translateX(calc(-1 * (140px + 2*10px) * 7)); }
+        100% { transform: translateX(calc(-1 * (160px + 2*8px) * 7)); }
     }
     @keyframes slide-join {
         0% { transform: translateX(0); }
-        100% { transform: translateX(calc(-1 * (160px + 2*5px) * 4)); }
+        100% { transform: translateX(calc(-1 * (180px + 2*5px) * 4)); }
     }
 }
