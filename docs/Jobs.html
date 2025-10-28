@@ -9,7 +9,7 @@
     <meta property="og:type" content="website">
     <meta property="og:title" content="HIRING! Finance Manager & Customer Service - Soyosoyo SACCO">
     <meta property="og:description" content="Finance Manager Mombasa KSh 80K-120K | Customer Service Kilifi KSh 40K-60K. Apply FREE!">
-    <meta property="og:image" content="https://soyosoyosacco.com/assets/141dd3faa98da9737b581161deac509a.jpg">
+    <meta property="og:image" content="https://soyosoyosacco.com/assets/141dd3faa98da9737b591161deac509a.jpg">
     <meta property="og:url" content="https://soyosoyosacco.com/Jobs.html">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="HIRING NOW! SACCO Jobs Mombasa/Kilifi">
@@ -19,7 +19,7 @@
     <link rel="icon" href="./assets/141dd3faa98da9737b591161deac509a.jpg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./style.css?v=7">
+    <link rel="stylesheet" href="./style.css?v=10">
 
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-05M38MYK0G"></script>
@@ -36,11 +36,9 @@
 <header class="site-header">
     <div class="navbar">
         <a href="index.html">
-            <img class="brand-logo" src="./assets/141dd3faa98da9737b591161deac509a.jpg" alt="Soyosoyo Sacco Logo">
+            <img class="brand-logo round" src="./assets/141dd3faa98da9737b591161deac509a.jpg" alt="Soyosoyo Sacco Logo">
         </a>
-
         <a href="https://chamasoft.com/login" class="member-portal">Member Portal</a>
-
         <button id="menu-toggle" aria-label="Toggle Menu">
             <svg class="menu-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#006400" stroke-width="2">
                 <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -52,7 +50,6 @@
                 <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
         </button>
-
         <nav class="nav-links">
             <a href="index.html">Home</a>
             <a href="Products.html">Products</a>
@@ -120,12 +117,13 @@
         </div>
     </section>
 
-    <!-- Loan Calculator -->
+    <!-- Loan Calculator – FULLY WORKING -->
     <section class="section tool-section" id="loan-calculator">
         <h2>Loan Calculator</h2>
         <div class="calculator-wrapper">
             <div class="calculator">
                 <h2><span class="soyo-logo">SOYOSOYO</span> SACCO Loan Calculator</h2>
+
                 <div class="form-group">
                     <label for="loanType">Loan Type:</label>
                     <select id="loanType" onchange="updateFields()">
@@ -137,24 +135,35 @@
                         <option value="apiCulture">Api Culture Loan</option>
                     </select>
                 </div>
+
                 <div class="form-group interest-rate">
                     <label for="rate">Annual Interest Rate (%):</label>
                     <input type="text" id="rate" readonly placeholder="Select a loan type">
                 </div>
+
                 <div class="form-group tenure">
                     <label for="tenure">Tenure (Months):</label>
                     <input type="text" id="tenure" readonly placeholder="Select a loan type">
                 </div>
+
                 <div class="form-group slider-container">
                     <label for="principalSlider">Loan Amount (KES):</label>
-                    <input type="range" id="principalSlider" min="1000" max="1000000" step="1000" value="1000">
-                    <div class="slider-value" id="principalValue">KES 1000</div>
+                    <input type="range" id="principalSlider" min="1000" max="1000000" step="1000" value="10000" oninput="updateSliderValue()">
+                    <div class="slider-value" id="principalValue">KES 10,000</div>
                 </div>
+
                 <button onclick="calculateLoan()">Calculate Loan</button>
                 <div class="result" id="result"></div>
 
-                <!-- (Keep your full calculator JS logic in calculator.js) -->
-                <!-- Tables, fines, chart, etc. remain in calculator.js -->
+                <button onclick="toggleAmortizationTable()" id="amortizationButton" style="display:none;">View Amortization Table</button>
+                <div class="amortization-table" id="amortizationTable" style="display:none;">
+                    <table>
+                        <thead>
+                            <tr><th>Month</th><th>Payment</th><th>Principal</th><th>Interest</th><th>Balance</th></tr>
+                        </thead>
+                        <tbody id="amortizationBody"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </section>
@@ -170,11 +179,94 @@
     </div>
 </footer>
 
-<!-- Scripts -->
-<script src="./scripts/main.js"></script>
-<script src="./scripts/calculator.js"></script>
-<script src="./scripts/chatbot.js"></script>
-<script src="./scripts/seo.js"></script>
+<!-- ==================== CALCULATOR SCRIPT (INLINE) ==================== -->
+<script>
+/* Loan Types Configuration */
+const loanConfig = {
+    emergency:   { rate: 12, tenure: 12 },
+    medicare:    { rate: 10, tenure: 24 },
+    education:   { rate: 8,  tenure: 36 },
+    development: { rate: 14, tenure: 48 },
+    apiCulture:  { rate: 15, tenure: 60 }
+};
+
+/* Update rate & tenure when loan type changes */
+function updateFields() {
+    const type = document.getElementById('loanType').value;
+    if (type && loanConfig[type]) {
+        document.getElementById('rate').value = loanConfig[type].rate;
+        document.getElementById('tenure').value = loanConfig[type].tenure;
+    } else {
+        document.getElementById('rate').value = '';
+        document.getElementById('tenure').value = '';
+    }
+    updateSliderValue();
+}
+
+/* Update slider display */
+function updateSliderValue() {
+    const val = document.getElementById('principalSlider').value;
+    document.getElementById('principalValue').textContent = `KES ${parseInt(val).toLocaleString()}`;
+}
+
+/* Main Calculation */
+function calculateLoan() {
+    const type = document.getElementById('loanType').value;
+    const principal = parseFloat(document.getElementById('principalSlider').value);
+    const rate = parseFloat(document.getElementById('rate').value);
+    const tenure = parseFloat(document.getElementById('tenure').value);
+
+    if (!type || isNaN(principal) || isNaN(rate) || isNaN(tenure)) {
+        document.getElementById('result').innerHTML = '<p style="color:red;">Please select a loan type and valid values.</p>';
+        return;
+    }
+
+    const monthlyRate = rate / 100 / 12;
+    const monthlyPayment = (principal * monthlyRate * Math.pow(1 + monthlyRate, tenure)) / (Math.pow(1 + monthlyRate, tenure) - 1);
+    const totalPayable = monthlyPayment * tenure;
+    const totalInterest = totalPayable - principal;
+
+    const resultHTML = `
+        <p><strong>Monthly Payment:</strong> KES ${monthlyPayment.toFixed(2).toLocaleString()}</p>
+        <p><strong>Total Payable:</strong> KES ${totalPayable.toFixed(2).toLocaleString()}</p>
+        <p><strong>Total Interest:</strong> KES ${totalInterest.toFixed(2).toLocaleString()}</p>
+    `;
+
+    document.getElementById('result').innerHTML = resultHTML;
+    document.getElementById('amortizationButton').style.display = 'block';
+    generateAmortizationTable(principal, monthlyRate, monthlyPayment, tenure);
+}
+
+/* Amortization Table */
+function generateAmortizationTable(principal, monthlyRate, monthlyPayment, tenure) {
+    let balance = principal;
+    let tableBody = '';
+
+    for (let month = 1; month <= tenure; month++) {
+        const interest = balance * monthlyRate;
+        const principalPaid = monthlyPayment - interest;
+        balance -= principalPaid;
+
+        tableBody += `<tr>
+            <td>${month}</td>
+            <td>${monthlyPayment.toFixed(2)}</td>
+            <td>${principalPaid.toFixed(2)}</td>
+            <td>${interest.toFixed(2)}</td>
+            <td>${Math.max(balance, 0).toFixed(2)}</td>
+        </tr>`;
+    }
+
+    document.getElementById('amortizationBody').innerHTML = tableBody;
+}
+
+function toggleAmortizationTable() {
+    const table = document.getElementById('amortizationTable');
+    table.style.display = table.style.display === 'none' ? 'block' : 'none';
+}
+
+/* Initialize */
+updateFields();
+</script>
 
 <!-- Mobile Menu Toggle -->
 <script>
