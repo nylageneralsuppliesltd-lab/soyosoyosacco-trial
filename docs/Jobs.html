@@ -19,7 +19,8 @@
     <link rel="icon" href="./assets/141dd3faa98da9737b591161deac509a.jpg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
-    <!-- FINAL CSS v16 -->
+    
+    <!-- FINAL CSS v21 -->
     <link rel="stylesheet" href="./style.css?v=21">
 
     <!-- Google Analytics -->
@@ -127,7 +128,7 @@
 
                 <div class="form-group">
                     <label for="loanType">Loan Type:</label>
-                    <select id="loanType" onchange="updateFields()"> <!-- FIXED: = added -->
+                    <select id="loanType" onchange="updateFields()">
                         <option value="">Select Loan Type</option>
                         <option value="emergency">Emergency Loan</option>
                         <option value="medicare">Medicare Loan</option>
@@ -237,7 +238,7 @@
 <script src="./scripts/chatbot.js"></script>
 <script src="./scripts/seo.js"></script>
 
-<!-- Mobile Menu Toggle – FIXED -->
+<!-- Mobile Menu Toggle – WORKING -->
 <script>
     const toggle = document.getElementById('menu-toggle');
     const nav = document.querySelector('.nav-links');
@@ -252,7 +253,6 @@
         });
     }
 
-    // Initialize calculator on load
     document.addEventListener('DOMContentLoaded', () => {
         updateFields();
         updateSliderValue('principal');
