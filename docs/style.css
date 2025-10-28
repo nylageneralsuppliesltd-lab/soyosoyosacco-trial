@@ -329,3 +329,27 @@ footer a:hover { color:#228B22; }
 @media (min-width: 769px) {
     .section { flex:1 1 calc(50% - 1.5rem); }
 }
+/* === LOAN CALCULATOR – RESULTS BELOW BUTTON === */
+.calculator .result {
+    margin-top: 1.2rem !important;
+    padding: 1rem !important;
+    background: #e6f7e6 !important;
+    border-radius: 6px !important;
+    font-weight: 600 !important;
+    color: #006400 !important;
+    min-height: 60px;
+    display: block !important;
+}
+
+/* === ERROR MESSAGE STYLING === */
+.error-message {
+    background: #ffebee;
+    color: #c62828;
+    padding: 1rem;
+    border-radius: 6px;
+    margin-top: 1rem;
+    font-weight: 600;
+}
+
+/* === ROUND LOGO === */
+.round, .brand-logo { border-radius: 50% !important; object-fit: cover !important; }
