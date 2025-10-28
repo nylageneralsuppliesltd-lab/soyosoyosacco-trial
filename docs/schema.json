@@ -5,51 +5,77 @@
   "name": "SOYOSOYO SACCO",
   "url": "https://soyosoyosacco.com",
   "logo": "https://soyosoyosacco.com/assets/141dd3faa98da9737b591161deac509a.jpg",
-  "description": "Soyosoyo SACCO provides affordable loans, savings, and financial services to coastal Kenya communities, including education, emergency and development loans.",
+  "image": "https://soyosoyosacco.com/assets/header-image.jpg",
+  "description": "Soyosoyo SACCO offers affordable loans, savings, and financial empowerment to coastal Kenya communities in Kilifi, Mombasa, and Kwale. Products include Emergency, Education, Medicare, Development, and Api Culture loans at 1% interest.",
   "address": {
     "@type": "PostalAddress",
     "addressLocality": "Kilifi",
     "addressRegion": "Coast",
     "addressCountry": "KE"
   },
-  "email": "mailto:info@soyosoyosacco.com",
-  "contactPoint": [
-    {
-      "@type": "ContactPoint",
-      "contactType": "customer service",
-      "email": "mailto:info@soyosoyosacco.com"
-    }
-  ],
+  "email": "info@soyosoyosacco.com",
+  "telephone": "+254700000000",
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "Customer Service",
+    "email": "info@soyosoyosacco.com",
+    "areaServed": ["Kilifi", "Mombasa", "Kwale"]
+  },
   "areaServed": [
-    {
-      "@type": "Place",
-      "name": "Kilifi"
-    },
-    {
-      "@type": "Place",
-      "name": "Mombasa"
-    },
-    {
-      "@type": "Place",
-      "name": "Kwale"
-    }
+    { "@type": "Place", "name": "Kilifi" },
+    { "@type": "Place", "name": "Mombasa" },
+    { "@type": "Place", "name": "Kwale" }
   ],
   "sameAs": [
-    "https://www.facebook.com/soyosoyosacco",
-    "https://www.instagram.com/soyosoyosacco/",
-    "https://twitter.com/SoyosoyoSACCO"
+    "https://www.facebook.com/people/Soyosoyo-Sacco/61565783836766/",
+    "https://x.com/SoyosoyoSACCO",
+    "https://www.instagram.com/soyosoyosacco"
   ],
   "makesOffer": [
     {
-      "@type": "FinancialProduct",
-      "name": "Emergency Loan",
-      "description": "Short-term loans for urgent needs (terms and amounts as provided by Soyosoyo SACCO)."
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "FinancialProduct",
+        "name": "Emergency Loan",
+        "description": "Instant short-term loan for urgent needs. 1% interest. Fast approval."
+      }
     },
     {
-      "@type": "FinancialProduct",
-      "name": "Education Loan",
-      "description": "Financing for school fees and related education costs (terms and amounts as provided by Soyosoyo SACCO)."
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "FinancialProduct",
+        "name": "Education Loan",
+        "description": "Pay school fees with ease. Up to 36 months. 1% interest."
+      }
+    },
+    {
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "FinancialProduct",
+        "name": "Medicare Loan",
+        "description": "Cover medical bills and healthcare costs. Flexible repayment."
+      }
+    },
+    {
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "FinancialProduct",
+        "name": "Development Loan",
+        "description": "Build your business or home. Long-term, low-interest financing."
+      }
+    },
+    {
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "FinancialProduct",
+        "name": "Api Culture Loan",
+        "description": "Support for beekeeping and honey production enterprises."
+      }
     }
-  ]
+  ],
+  "openingHours": "Mo-Fr 08:00-17:00, Fr 08:00-17:00",
+  "foundingDate": "2024",
+  "legalName": "Soyosoyo Savings and Credit Cooperative Society",
+  "slogan": "Empowering Coastal Communities Through Affordable Finance"
 }
 </script>
