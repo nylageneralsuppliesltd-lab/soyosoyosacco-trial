@@ -20,7 +20,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
     <!-- UPDATE THIS LINE -->
-    <link rel="stylesheet" href="./style.css?v=12">
+    <link rel="stylesheet" href="./style.css?v=13">
 
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-05M38MYK0G"></script>
@@ -39,9 +39,7 @@
         <a href="index.html">
             <img class="brand-logo round" src="./assets/141dd3faa98da9737b591161deac509a.jpg" alt="Soyosoyo Sacco Logo">
         </a>
-
         <a href="https://chamasoft.com/login" class="member-portal">Member Portal</a>
-
         <button id="menu-toggle" aria-label="Toggle Menu">
             <svg class="menu-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#006400" stroke-width="2">
                 <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -53,7 +51,6 @@
                 <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
         </button>
-
         <nav class="nav-links">
             <a href="index.html">Home</a>
             <a href="Products.html">Products</a>
@@ -73,7 +70,7 @@
     </div>
 </header>
 
-<!-- ==================== MAIN CONTENT ==================== -->
+<!-- ==================== MAIN ==================== -->
 <main class="container">
 
     <!-- Job Listings -->
@@ -109,7 +106,7 @@
                 <li>Handle customer inquiries and complaints.</li>
                 <li>Process loan and membership applications.</li>
                 <li>Promote SACCO products and services.</li>
-            </ul>
+            ules>
             <p><strong>Requirements:</strong></p>
             <ul>
                 <li>Diploma in Business Administration or related field.</li>
@@ -121,15 +118,16 @@
         </div>
     </section>
 
-    <!-- Loan Calculator (Keep your original HTML) -->
+    <!-- Loan Calculator – FULLY WORKING (Same as Online-Forms.html) -->
     <section class="section tool-section" id="loan-calculator">
-        <h2>Loan Calculator</h2>
+        <h2 style="text-align: center;">Loan Calculator</h2>
         <div class="calculator-wrapper">
             <div class="calculator">
                 <h2><span class="soyo-logo">SOYOSOYO</span> SACCO Loan Calculator</h2>
+
                 <div class="form-group">
                     <label for="loanType">Loan Type:</label>
-                    <select id="loanType" onchange="updateFields()">
+                    <select id="loanType" onchange "updateFields()">
                         <option value="">Select Loan Type</option>
                         <option value="emergency">Emergency Loan</option>
                         <option value="medicare">Medicare Loan</option>
@@ -138,31 +136,85 @@
                         <option value="apiCulture">Api Culture Loan</option>
                     </select>
                 </div>
+
                 <div class="form-group interest-rate">
                     <label for="rate">Annual Interest Rate (%):</label>
                     <input type="text" id="rate" readonly placeholder="Select a loan type">
                 </div>
+
                 <div class="form-group tenure">
                     <label for="tenure">Tenure (Months):</label>
                     <input type="text" id="tenure" readonly placeholder="Select a loan type">
                 </div>
+
                 <div class="form-group slider-container">
                     <label for="principalSlider">Loan Amount (KES):</label>
                     <input type="range" id="principalSlider" min="1000" max="1000000" step="1000" value="10000" oninput="updateSliderValue()">
                     <div class="slider-value" id="principalValue">KES 10,000</div>
                 </div>
+
                 <button onclick="calculateLoan()">Calculate Loan</button>
                 <div class="result" id="result"></div>
 
-                <button onclick="toggleAmortizationTable()" id="amortizationButton" style="display:none;">View Amortization Table</button>
-                <div class="amortization-table" id="amortizationTable" style="display:none;">
+                <button onclick="toggleAmortizationTable()" id="amortizationButton" style="display: none;">View Amortization Table</button>
+                <div class="amortization-table" id="amortizationTable" style="display: none;">
                     <table>
                         <thead>
-                            <tr><th>Month</th><th>Payment</th><th>Principal</th><th>Interest</th><th>Balance</th></tr>
+                            <tr>
+                                <th>Month</th>
+                                <th>Payment (KES)</th>
+                                <th>Principal (KES)</th>
+                                <th>Interest (KES)</th>
+                                <th>Balance (KES)</th>
+                            </tr>
                         </thead>
                         <tbody id="amortizationBody"></tbody>
                     </table>
                 </div>
+
+                <button onclick="showFinesSection()" id="finesPromptButton" style="display: none;">Calculate Fines for Missed Payments</button>
+                <button onclick="toggleChart()" id="chartButton" style="display: none;">View Chart</button>
+                <div class="loan-chart" id="loanChart" style="display: none;"></div>
+
+                <div class="fines-section" id="finesSection" style="display: none;">
+                    <h3>Calculate Late Repayment Fines</h3>
+                    <div class="form-group">
+                        <label for="lateMonth">Month of First Missed Payment:</label>
+                        <input type="number" id="lateMonth" placeholder="e.g., 1" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="monthsLate">Number of Consecutive Missed Payments:</label>
+                        <input type="number" id="monthsLate" placeholder="e.g., 3" min="0">
+                    </div>
+                    <div class="form-group" id="paymentGroup" style="display: none;">
+                        <label for="paymentMonth">Month to Add Payment:</label>
+                        <input type="number" id="paymentMonth" placeholder="e.g., 4" min="1">
+                        <label for="paymentAmount">Amount Paid (KES):</label>
+                        <input type="number" id="paymentAmount" placeholder="e.g., 500" min="0">
+                        <button onclick="addPayment()">Add Payment</button>
+                    </div>
+                    <button onclick="calculateFines()">Calculate Fines</button>
+                    <div class="result" id="finesResult"></div>
+                    <button onclick="toggleFinesAmortizationTable()" id="finesAmortizationButton" style="display: none;">View Amortization Table with Fines</button>
+                    <div class="fines-amortization-table" id="finesAmortizationTable" style="display: none;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Month</th>
+                                    <th>Payment (KES)</th>
+                                    <th>Principal (KES)</th>
+                                    <th>Interest (KES)</th>
+                                    <th>Installment Fine (KES)</th>
+                                    <th>Outstanding Fine (KES)</th>
+                                    <th>Balance (KES)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="finesAmortizationBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <noscript><div class="error-message">JavaScript is disabled. Please enable JavaScript to use the loan calculator.</div></noscript>
             </div>
         </div>
     </section>
@@ -179,7 +231,7 @@
     </div>
 </footer>
 
-<!-- ==================== SCRIPTS (DO NOT REMOVE) ==================== -->
+<!-- ==================== SCRIPTS ==================== -->
 <script src="./scripts/main.js"></script>
 <script src="./scripts/calculator.js"></script>
 <script src="./scripts/chatbot.js"></script>
