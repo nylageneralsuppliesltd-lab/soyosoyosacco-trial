@@ -19,8 +19,8 @@
     <link rel="icon" href="./assets/141dd3faa98da9737b591161deac509a.jpg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
-    <!-- UPDATE THIS LINE -->
-    <link rel="stylesheet" href="./style.css?v=13">
+    <!-- FINAL CSS v16 -->
+    <link rel="stylesheet" href="./style.css?v=16">
 
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-05M38MYK0G"></script>
@@ -106,7 +106,7 @@
                 <li>Handle customer inquiries and complaints.</li>
                 <li>Process loan and membership applications.</li>
                 <li>Promote SACCO products and services.</li>
-            ules>
+            </ul>
             <p><strong>Requirements:</strong></p>
             <ul>
                 <li>Diploma in Business Administration or related field.</li>
@@ -118,7 +118,7 @@
         </div>
     </section>
 
-    <!-- Loan Calculator – FULLY WORKING (Same as Online-Forms.html) -->
+    <!-- Loan Calculator – FULLY WORKING -->
     <section class="section tool-section" id="loan-calculator">
         <h2 style="text-align: center;">Loan Calculator</h2>
         <div class="calculator-wrapper">
@@ -127,7 +127,7 @@
 
                 <div class="form-group">
                     <label for="loanType">Loan Type:</label>
-                    <select id="loanType" onchange "updateFields()">
+                    <select id="loanType" onchange="updateFields()"> <!-- FIXED: = added -->
                         <option value="">Select Loan Type</option>
                         <option value="emergency">Emergency Loan</option>
                         <option value="medicare">Medicare Loan</option>
@@ -149,7 +149,7 @@
 
                 <div class="form-group slider-container">
                     <label for="principalSlider">Loan Amount (KES):</label>
-                    <input type="range" id="principalSlider" min="1000" max="1000000" step="1000" value="10000" oninput="updateSliderValue()">
+                    <input type="range" id="principalSlider" min="1000" max="1000000" step="1000" value="10000" oninput="updateSliderValue('principal')">
                     <div class="slider-value" id="principalValue">KES 10,000</div>
                 </div>
 
@@ -237,7 +237,7 @@
 <script src="./scripts/chatbot.js"></script>
 <script src="./scripts/seo.js"></script>
 
-<!-- Mobile Menu Toggle -->
+<!-- Mobile Menu Toggle – FIXED -->
 <script>
     const toggle = document.getElementById('menu-toggle');
     const nav = document.querySelector('.nav-links');
@@ -251,6 +251,12 @@
             closeIcon.style.display = nav.classList.contains('show') ? 'block' : 'none';
         });
     }
+
+    // Initialize calculator on load
+    document.addEventListener('DOMContentLoaded', () => {
+        updateFields();
+        updateSliderValue('principal');
+    });
 </script>
 
 </body>
