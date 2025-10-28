@@ -1,8 +1,9 @@
 /* ========================================
-   SOYOSOYO SACCO – FINAL v29
-   Cache-busted: ?v=29
-   HEADER IMAGE: docs/assets/header-image.jpg – NOW VISIBLE
-   MOBILE MENU: FIXED | TEXT OVER IMAGE | ALL PAGES
+   SOYOSOYO SACCO – FINAL v31
+   Cache-busted: ?v=31
+   MENU: FULLY WORKING + NAVY BLUE & WHITE (COOL CONTRAST)
+   HEADER IMAGE: ./assets/header-image.jpg
+   ALL PAGES: CONSISTENT & BEAUTIFUL
    ======================================== */
 
 /* ----------------- RESET & BASE ----------------- */
@@ -34,7 +35,7 @@ a:hover { text-decoration:underline; }
 img { max-width:100%; height:auto; display:block; }
 .round, .brand-logo { border-radius:50% !important; object-fit:cover !important; }
 
-/* ----------------- HEADER (ALL PAGES) ----------------- */
+/* ----------------- HEADER ----------------- */
 header.site-header { 
     background:#90EE90; 
     width:100%; 
@@ -64,7 +65,10 @@ header.site-header .nav-links a {
     transition:0.3s;
 }
 header.site-header .member-portal:hover,
-header.site-header .nav-links a:hover { background:#004d40; }
+header.site-header .nav-links a:hover { 
+    background:#001f5b; 
+    transform: translateY(-2px);
+}
 header.site-header .nav-links { 
     display:flex; 
     gap:0.8rem; 
@@ -87,7 +91,7 @@ header.site-header .close-icon {
     height:22px; 
 }
 
-/* HERO – HEADER IMAGE NOW VISIBLE & FULLY WORKING */
+/* HERO – CORRECT IMAGE PATH */
 .hero {
     position: relative;
     width: 100%;
@@ -96,7 +100,7 @@ header.site-header .close-icon {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    background-color: #f0f0f0; /* fallback if image fails */
+    background-color: #f0f0f0;
 }
 .hero::before {
     content: '';
@@ -229,7 +233,7 @@ header.site-header .close-icon {
     color:#fff; 
 }
 
-/* ----------------- CAROUSEL: LEFT to RIGHT ----------------- */
+/* ----------------- CAROUSEL ----------------- */
 .carousel-wrapper { width: 100%; overflow-x: hidden; box-sizing: border-box; }
 .carousel-container { 
     width: 100%; max-width: 100%; overflow: hidden; 
@@ -275,7 +279,7 @@ header.site-header .close-icon {
 }
 .carousel:hover { animation-play-state: paused; }
 
-/* ----------------- MOBILE RESPONSIVE – MENU FIXED ----------------- */
+/* ----------------- MOBILE MENU – 100% WORKING + NAVY & WHITE ----------------- */
 @media (max-width: 768px) {
     header.site-header .navbar { 
         height:60px; 
@@ -289,19 +293,19 @@ header.site-header .close-icon {
         display: block !important; 
     }
     header.site-header .nav-links {
-        position: absolute;
+        position: fixed;
         top: 60px;
         left: 0;
         width: 100%;
-        background: #90EE90;
-        padding: 1.2rem 1rem;
+        background: #003087; /* NAVY BLUE */
+        padding: 1.5rem 1rem;
         z-index: 9999;
-        border-radius: 0 0 12px 12px;
-        box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+        border-radius: 0 0 16px 16px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
         flex-direction: column;
-        gap: 0.5rem;
-        transition: all 0.3s ease;
-        transform: translateY(-100%);
+        gap: 0.8rem;
+        transition: all 0.35s ease;
+        transform: translateY(-120%);
         opacity: 0;
         visibility: hidden;
     }
@@ -311,11 +315,20 @@ header.site-header .close-icon {
         visibility: visible;
     }
     header.site-header .nav-links a { 
-        margin: 0.4rem 0; 
-        font-size: 1rem; 
-        padding: 0.6rem 1rem;
-        border-radius: 6px;
-        background: rgba(0, 48, 135, 0.1);
+        color: #ffffff !important; /* WHITE TEXT */
+        background: #001f5b; /* DARKER NAVY */
+        padding: 0.9rem 1.2rem;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        text-align: center;
+        transition: 0.3s;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    header.site-header .nav-links a:hover {
+        background: #90EE90;
+        color: #003087 !important;
+        transform: translateY(-3px);
     }
     .hero { height:260px; }
     .hero .banner-text { padding:1.2rem; }
