@@ -1,14 +1,11 @@
 // scripts/main.js - Soyosoyo Sacco Site Initialization
-document.addEventListener('DOMContentDOMContentLoaded', function() {
-  // Mobile Menu Toggle
+document.addEventListener('DOMContentLoaded', function() {
   const toggleBtn = document.getElementById('menu-toggle');
   const navLinks = document.querySelector('.nav-links');
-  const menuIcon = document.querySelector('.menu-icon');
-  const closeIcon = document.querySelector('.close-icon');
 
   if (toggleBtn && navLinks) {
-    // Inject SVG icons (only if not already present)
-    if (!menuIcon || !closeIcon) {
+    // Inject SVG icons if not present
+    if (!toggleBtn.querySelector('.menu-icon')) {
       toggleBtn.innerHTML = `
         <svg class="menu-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#006400" stroke-width="2">
           <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -22,33 +19,30 @@ document.addEventListener('DOMContentDOMContentLoaded', function() {
       `;
     }
 
-    // Re-select after injection
-    const menuIconFinal = toggleBtn.querySelector('.menu-icon');
-    const closeIconFinal = toggleBtn.querySelector('.close-icon');
+    const menuIcon = toggleBtn.querySelector('.menu-icon');
+    const closeIcon = toggleBtn.querySelector('.close-icon');
 
     toggleBtn.addEventListener('click', (e) => {
       e.preventDefault();
       e.stopPropagation();
       navLinks.classList.toggle('show');
-      menuIconFinal.style.display = navLinks.classList.contains('show') ? 'none' : 'block';
-      closeIconFinal.style.display = navLinks.classList.contains('show') ? 'block' : 'none';
+      menuIcon.style.display = navLinks.classList.contains('show') ? 'none' : 'block';
+      closeIcon.style.display = navLinks.classList.contains('show') ? 'block' : 'none';
     });
 
-    // Close on outside click
     document.addEventListener('click', (e) => {
       if (navLinks.classList.contains('show') && !navLinks.contains(e.target) && !toggleBtn.contains(e.target)) {
         navLinks.classList.remove('show');
-        menuIconFinal.style.display = 'block';
-        closeIconFinal.style.display = 'none';
+        menuIcon.style.display = 'block';
+        closeIcon.style.display = 'none';
       }
     });
 
-    // Close on resize (desktop)
     window.addEventListener('resize', () => {
       if (window.innerWidth > 768 && navLinks.classList.contains('show')) {
         navLinks.classList.remove('show');
-        menuIconFinal.style.display = 'block';
-        closeIconFinal.style.display = 'none';
+        menuIcon.style.display = 'block';
+        closeIcon.style.display = 'none';
       }
     });
   }
