@@ -20,8 +20,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
     
-    <!-- FINAL CSS v25 -->
-    <link rel="stylesheet" href="./style.css?v=26">
+    <!-- FINAL CSS v28 -->
+    <link rel="stylesheet" href="./style.css?v=28">
 
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-05M38MYK0G"></script>
@@ -61,7 +61,7 @@
         </nav>
     </div>
 
-    <!-- ORIGINAL HERO IMAGE RESTORED -->
+    <!-- HERO IMAGE + TEXT OVERLAY (FIXED & CONSISTENT) -->
     <div class="hero">
         <div class="banner-text">
             <h1>Join Us</h1>
@@ -145,7 +145,7 @@
 <footer>
     <p>© 2025 SOYOSOYO SACCO. All rights reserved. | <a href="mailto:info@soyosoyosacco.com">info@soyosoyosacco.com</a></p>
     <div class="social-icons">
-        <a href="ojas://www.facebook.com/people/Soyosoyo-Sacco/61565783836766/" target="_blank"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://www.facebook.com/people/Soyosoyo-Sacco/61565783836766/" target="_blank"><i class="fab fa-facebook-f"></i></a>
         <a href="https://x.com/SoyosoyoSACCO" target="_blank"><i class="fab fa-x-twitter"></i></a>
         <a href="https://www.instagram.com/soyosoyosacco" target="_blank"><i class="fab fa-instagram"></i></a>
     </div>
@@ -158,20 +158,32 @@
 <script src="./scripts/carousel-join.js"></script>
 <script src="./scripts/seo.js"></script>
 
-<!-- Mobile Menu Toggle – FIXED -->
+<!-- Mobile Menu Toggle – FULLY FIXED -->
 <script>
-    const toggle = document.getElementById('menu-toggle');
-    const nav = document.querySelector('.nav-links');
-    const menuIcon = document.querySelector('.menu-icon');
-    const closeIcon = document.querySelector('.close-icon');
+    document.addEventListener('DOMContentLoaded', () => {
+        const toggle = document.getElementById('menu-toggle');
+        const nav = document.querySelector('.nav-links');
+        const menuIcon = document.querySelector('.menu-icon');
+        const closeIcon = document.querySelector('.close-icon');
 
-    if (toggle && nav) {
-        toggle.addEventListener('click', () => {
-            nav.classList.toggle('show');
-            menuIcon.style.display = nav.classList.contains('show') ? 'none' : 'block';
-            closeIcon.style.display = nav.classList.contains('show') ? 'block' : 'none';
-        });
-    }
+        if (toggle && nav) {
+            toggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                nav.classList.toggle('show');
+                menuIcon.style.display = nav.classList.contains('show') ? 'none' : 'block';
+                closeIcon.style.display = nav.classList.contains('show') ? 'block' : 'none';
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!nav.contains(e.target) && !toggle.contains(e.target)) {
+                    nav.classList.remove('show');
+                    menuIcon.style.display = 'block';
+                    closeIcon.style.display = 'none';
+                }
+            });
+        }
+    });
 </script>
 
 <!-- Structured Data -->
