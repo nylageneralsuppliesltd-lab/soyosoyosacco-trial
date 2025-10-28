@@ -1,9 +1,24 @@
-/* ========================================
-   SOYOSOYO SACCO – FULLY RESTORED & MODERNIZED
-   Version: 9 | Cache-busted: ?v=9
-   Preserves ALL original elements (calculator, forms, tables)
-   Fixes: round logos, header image, mobile menu, layout gaps
-   ======================================== */
+/* -------------------------------------------------
+   SOYOSOYO SACCO – FINAL v10
+   Fixes: 
+   • Header banner text = pure white
+   • Keeps all previous fixes (round logos, mobile menu, etc.)
+   ------------------------------------------------- */
+
+/* (All previous CSS from v9 remains unchanged) */
+
+/* === HEADER BANNER TEXT – PURE WHITE === */
+header.site-header .banner-text,
+header.site-header .banner-text h1,
+header.site-header .banner-text p {
+    color: #ffffff !important;
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.7) !important;
+}
+
+/* Optional: stronger contrast on dark images */
+header.site-header .banner-text h1 {
+    font-weight: 900 !important;
+}
 
 /* ----------------- RESET & BASE ----------------- */
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
