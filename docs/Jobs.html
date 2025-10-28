@@ -20,7 +20,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
     
-    <!-- FINAL CSS v31 – MENU FIXED + NAVY BLUE THEME -->
+    <!-- FINAL CSS v31 – MENU VIA main.js -->
     <link rel="stylesheet" href="./style.css?v=31">
 
     <!-- Google Analytics -->
@@ -42,15 +42,7 @@
         </a>
         <a href="https://chamasoft.com/login" class="member-portal">Member Portal</a>
         <button id="menu-toggle" aria-label="Toggle Menu">
-            <svg class="menu-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#006400" stroke-width="2">
-                <line x1="3" y1="6" x2="21" y2="6"></line>
-                <line x1="3" y1="12" x2="21" y2="12"></line>
-                <line x1="3" y1="18" x2="21" y2="18"></line>
-            </svg>
-            <svg class="close-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#006400" stroke-width="2" style="display:none;">
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
+            <!-- Icons injected by main.js -->
         </button>
         <nav class="nav-links">
             <a href="index.html">Home</a>
@@ -61,7 +53,7 @@
         </nav>
     </div>
 
-    <!-- HERO IMAGE + TEXT OVERLAY – IMAGE FROM ./assets/header-image.jpg -->
+    <!-- HERO IMAGE + TEXT OVERLAY -->
     <div class="hero">
         <div class="banner-text">
             <h1>Job Opportunities</h1>
@@ -118,7 +110,7 @@
         </div>
     </section>
 
-    <!-- Loan Calculator – FULLY WORKING -->
+    <!-- Loan Calculator -->
     <section class="section tool-section" id="loan-calculator">
         <h2 style="text-align: center;">Loan Calculator</h2>
         <div class="calculator-wrapper">
@@ -237,33 +229,9 @@
 <script src="./scripts/chatbot.js"></script>
 <script src="./scripts/seo.js"></script>
 
-<!-- Mobile Menu Toggle – 100% WORKING (v31) -->
+<!-- Initialize Calculator on Load -->
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const toggle = document.getElementById('menu-toggle');
-        const nav = document.querySelector('.nav-links');
-        const menuIcon = document.querySelector('.menu-icon');
-        const closeIcon = document.querySelector('.close-icon');
-
-        if (toggle && nav) {
-            toggle.addEventListener('click', (e) => {
-                e.stopPropagation();
-                nav.classList.toggle('show');
-                menuIcon.style.display = nav.classList.contains('show') ? 'none' : 'block';
-                closeIcon.style.display = nav.classList.contains('show') ? 'block' : 'none';
-            });
-
-            // Close when clicking outside
-            document.addEventListener('click', (e) => {
-                if (!nav.contains(e.target) && !toggle.contains(e.target)) {
-                    nav.classList.remove('show');
-                    menuIcon.style.display = 'block';
-                    closeIcon.style.display = 'none';
-                }
-            });
-        }
-
-        // Initialize calculator
         if (typeof updateFields === 'function') updateFields();
         if (typeof updateSliderValue === 'function') updateSliderValue('principal');
     });
