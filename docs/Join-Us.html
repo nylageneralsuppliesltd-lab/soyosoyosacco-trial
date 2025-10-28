@@ -20,8 +20,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
     
-    <!-- FINAL CSS v28 -->
-    <link rel="stylesheet" href="./style.css?v=28">
+    <!-- FINAL CSS v31 – MENU via main.js -->
+    <link rel="stylesheet" href="./style.css?v=31">
 
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-05M38MYK0G"></script>
@@ -42,15 +42,7 @@
         </a>
         <a href="https://chamasoft.com/login" class="member-portal">Member Portal</a>
         <button id="menu-toggle" aria-label="Toggle Menu">
-            <svg class="menu-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#006400" stroke-width="2">
-                <line x1="3" y1="6" x2="21" y2="6"></line>
-                <line x1="3" y1="12" x2="21" y2="12"></line>
-                <line x1="3" y1="18" x2="21" y2="18"></line>
-            </svg>
-            <svg class="close-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#006400" stroke-width="2" style="display:none;">
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
+            <!-- Icons injected by main.js -->
         </button>
         <nav class="nav-links">
             <a href="index.html">Home</a>
@@ -61,7 +53,7 @@
         </nav>
     </div>
 
-    <!-- HERO IMAGE + TEXT OVERLAY (FIXED & CONSISTENT) -->
+    <!-- HERO IMAGE + TEXT OVERLAY -->
     <div class="hero">
         <div class="banner-text">
             <h1>Join Us</h1>
@@ -158,71 +150,152 @@
 <script src="./scripts/carousel-join.js"></script>
 <script src="./scripts/seo.js"></script>
 
-<!-- Mobile Menu Toggle – FULLY FIXED -->
+<!-- Initialize Carousel (if needed) -->
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const toggle = document.getElementById('menu-toggle');
-        const nav = document.querySelector('.nav-links');
-        const menuIcon = document.querySelector('.menu-icon');
-        const closeIcon = document.querySelector('.close-icon');
-
-        if (toggle && nav) {
-            toggle.addEventListener('click', (e) => {
-                e.stopPropagation();
-                nav.classList.toggle('show');
-                menuIcon.style.display = nav.classList.contains('show') ? 'none' : 'block';
-                closeIcon.style.display = nav.classList.contains('show') ? 'block' : 'none';
-            });
-
-            // Close menu when clicking outside
-            document.addEventListener('click', (e) => {
-                if (!nav.contains(e.target) && !toggle.contains(e.target)) {
-                    nav.classList.remove('show');
-                    menuIcon.style.display = 'block';
-                    closeIcon.style.display = 'none';
-                }
-            });
-        }
+        // Optional: Initialize carousel-join.js if it has init code
+        if (typeof initJoinCarousel === 'function') initJoinCarousel();
     });
 </script>
 
-<!-- Structured Data -->
+<!-- SCHEMA.ORG – FULL FINANCIAL SERVICE + JOIN ACTION (ALL PAGES) -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "WebPage",
-  "name": "Join Soyosoyo SACCO - FREE Membership",
-  "url": "https://soyosoyosacco.com/Join-Us.html",
-  "description": "FREE Membership with KSh 200 M-PESA deposit. Instant access to 1% loans",
-  "isPartOf": {"@type": "FinancialCooperative", "name": "SOYOSOYO SACCO"},
-  "breadcrumb": {
-    "@type": "BreadcrumbList",
-    "itemListElement": [{
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "https://soyosoyosacco.com/"
-    },{
-      "@type": "ListItem",
-      "position": 2,
-      "name": "Join Us"
-    }]
-  }
+  "@type": "FinancialService",
+  "name": "SOYOSOYO SACCO",
+  "url": "https://soyosoyosacco.com",
+  "logo": "https://soyosoyosacco.com/assets/141dd3faa98da9737b591161deac509a.jpg",
+  "image": "https://soyosoyosacco.com/assets/header-image.jpg",
+  "description": "Soyosoyo SACCO offers affordable loans, savings, and financial empowerment to coastal Kenya communities in Kilifi, Mombasa, and Kwale. Products include Emergency, Education, Medicare, Development, and Api Culture loans at 1% interest.",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Kilifi",
+    "addressRegion": "Coast",
+    "addressCountry": "KE"
+  },
+  "email": "info@soyosoyosacco.com",
+  "telephone": "+254700000000",
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "Customer Service",
+    "email": "info@soyosoyosacco.com",
+    "areaServed": ["Kilifi", "Mombasa", "Kwale"]
+  },
+  "areaServed": [
+    { "@type": "Place", "name": "Kilifi" },
+    { "@type": "Place", "name": "Mombasa" },
+    { "@type": "Place", "name": "Kwale" }
+  ],
+  "sameAs": [
+    "https://www.facebook.com/people/Soyosoyo-Sacco/61565783836766/",
+    "https://x.com/SoyosoyoSACCO",
+    "https://www.instagram.com/soyosoyosacco"
+  ],
+  "makesOffer": [
+    {
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "FinancialProduct",
+        "name": "Emergency Loan",
+        "description": "Instant short-term loan for urgent needs. 1% interest. Fast approval."
+      }
+    },
+    {
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "FinancialProduct",
+        "name": "Education Loan",
+        "description": "Pay school fees with ease. Up to 36 months. 1% interest."
+      }
+    },
+    {
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "FinancialProduct",
+        "name": "Medicare Loan",
+        "description": "Cover medical bills and healthcare costs. Flexible repayment."
+      }
+    },
+    {
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "FinancialProduct",
+        "name": "Development Loan",
+        "description": "Build your business or home. Long-term, low-interest financing."
+      }
+    },
+    {
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "FinancialProduct",
+        "name": "Api Culture Loan",
+        "description": "Support for beekeeping and honey production enterprises."
+      }
+    }
+  ],
+  "openingHours": "Mo-Fr 08:00-17:00, Sa 09:00-13:00",
+  "foundingDate": "2024",
+  "legalName": "Soyosoyo Savings and Credit Cooperative Society",
+  "slogan": "Empowering Coastal Communities Through Affordable Finance"
 }
 </script>
+
+<!-- PAGE-SPECIFIC SCHEMA: Join Action -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "JoinAction",
-  "agent": {"@type": "Person"},
+  "name": "Join Soyosoyo SACCO",
+  "description": "Become a member with KSh 200 M-PESA deposit. Instant access to 1% loans.",
+  "url": "https://soyosoyosacco.com/Join-Us.html",
+  "agent": {
+    "@type": "Person",
+    "name": "Member"
+  },
   "instrument": [
-    {"@type": "MonetaryAmount", "name": "Registration Fee", "value": 200, "currency": "KES"},
-    {"@type": "MonetaryAmount", "name": "Monthly Contribution", "value": 200, "currency": "KES"},
-    {"@type": "MonetaryAmount", "name": "Monthly Risk Fund", "value": 50, "currency": "KES"},
-    {"@type": "MonetaryAmount", "name": "Share Capital", "value": 3000, "currency": "KES"}
+    {
+      "@type": "MonetaryAmount",
+      "name": "Initial Deposit",
+      "value": 200,
+      "currency": "KES"
+    },
+    {
+      "@type": "MonetaryAmount",
+      "name": "Monthly Contribution",
+      "value": 200,
+      "currency": "KES"
+    },
+    {
+      "@type": "MonetaryAmount",
+      "name": "Monthly Risk Fund",
+      "value": 50,
+      "currency": "KES"
+    },
+    {
+      "@type": "MonetaryAmount",
+      "name": "Share Capital (Minimum)",
+      "value": 3000,
+      "currency": "KES"
+    }
   ],
-  "target": {"@type": "EntryPoint", "urlTemplate": "https://soyosoyosacco.com/Join-Us.html"},
-  "participant": {"@type": "FinancialService", "name": "Soyosoyo SACCO"}
+  "target": {
+    "@type": "EntryPoint",
+    "urlTemplate": "https://soyosoyosacco.com/Join-Us.html"
+  },
+  "participant": {
+    "@type": "FinancialService",
+    "name": "Soyosoyo SACCO"
+  },
+  "result": {
+    "@type": "Membership",
+    "name": "Soyosoyo SACCO Member",
+    "benefit": [
+      "Access to 1% interest loans",
+      "Annual dividends",
+      "Mobile app access"
+    ]
+  }
 }
 </script>
 
