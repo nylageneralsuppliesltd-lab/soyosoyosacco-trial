@@ -20,8 +20,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
     
-    <!-- FINAL CSS v28 -->
-    <link rel="stylesheet" href="./style.css?v=28">
+    <!-- FINAL CSS v31 – MENU FIXED + NAVY BLUE THEME -->
+    <link rel="stylesheet" href="./style.css?v=31">
 
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-05M38MYK0G"></script>
@@ -61,7 +61,7 @@
         </nav>
     </div>
 
-    <!-- HERO IMAGE + TEXT OVERLAY (FIXED) -->
+    <!-- HERO IMAGE + TEXT OVERLAY – IMAGE FROM ./assets/header-image.jpg -->
     <div class="hero">
         <div class="banner-text">
             <h1>Job Opportunities</h1>
@@ -237,7 +237,7 @@
 <script src="./scripts/chatbot.js"></script>
 <script src="./scripts/seo.js"></script>
 
-<!-- Mobile Menu Toggle – FIXED & WORKING -->
+<!-- Mobile Menu Toggle – 100% WORKING (v31) -->
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const toggle = document.getElementById('menu-toggle');
@@ -253,7 +253,7 @@
                 closeIcon.style.display = nav.classList.contains('show') ? 'block' : 'none';
             });
 
-            // Close on outside click
+            // Close when clicking outside
             document.addEventListener('click', (e) => {
                 if (!nav.contains(e.target) && !toggle.contains(e.target)) {
                     nav.classList.remove('show');
@@ -264,8 +264,8 @@
         }
 
         // Initialize calculator
-        updateFields();
-        updateSliderValue('principal');
+        if (typeof updateFields === 'function') updateFields();
+        if (typeof updateSliderValue === 'function') updateSliderValue('principal');
     });
 </script>
 
