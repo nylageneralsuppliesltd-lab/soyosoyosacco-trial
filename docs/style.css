@@ -1,6 +1,7 @@
 /* ========================================
-   SOYOSOYO SACCO – FINAL v48
-   Cache-busted: ?v=48
+   SOYOSOYO SACCO – FINAL v51
+   Cache-busted: ?v=51
+   TWO CAROUSELS: INDEX + JOIN-US – NO CONFLICTS
    % GROWTH + GREEN/RED ARROWS + NUMBERS ON BARS
    MOBILE BARS: CENTERED, NO EDGE OVERFLOW
    DESIGN RESTORED – NO FULL-SCREEN STRETCH
@@ -308,7 +309,7 @@ header.site-header #menu-toggle {
     .month-inputs { grid-template-columns: 1fr; }
 }
 
-/* ----------------- CAROUSEL ----------------- */
+/* ----------------- INDEX CAROUSEL (FINANCIAL HIGHLIGHTS) – WORKING ----------------- */
 .carousel-wrapper {
     overflow: hidden;
     background: #f0fdf4;
@@ -346,7 +347,50 @@ header.site-header #menu-toggle {
     0% { transform: translateX(0); }
     100% { transform: translateX(var(--carousel-translate, -2100px)); }
 }
-.carousel-wrapper:hover .carousel { animation-play-state: paused; }
+.carousel-wrapper:hover .carousel {
+    animation-play-state: paused;
+}
+
+/* ----------------- JOIN-US CAROUSEL (FIXED: NO HORIZONTAL SCROLL) ----------------- */
+.carousel-join-wrapper {
+    overflow: hidden;
+    padding: 2rem 0;
+    background: #f0fdf4;
+}
+.carousel-join {
+    display: flex;
+    width: max-content;
+    animation: scroll-join var(--carousel-duration, 40s) linear infinite;
+}
+.carousel-join-item {
+    flex: 0 0 var(--item-width, 280px);
+    margin: 0 var(--item-margin, 30px);
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    text-align: center;
+}
+.carousel-join-button {
+    background: #90EE90;
+    color: #006400;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1.5rem;
+    margin-bottom: 0.8rem;
+}
+.carousel-join-description {
+    font-size: 0.95rem;
+    color: #333;
+}
+@keyframes scroll-join {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(var(--carousel-translate, -1200px)); }
+}
+.carousel-join-wrapper:hover .carousel-join {
+    animation-play-state: paused;
+}
 
 /* ----------------- MOBILE MENU ----------------- */
 @media (max-width: 768px) {
@@ -395,8 +439,8 @@ header.site-header #menu-toggle {
     .hero .banner-text p { font-size: 1.1rem; }
     .container { margin: 1.5rem auto; padding: 0 0.8rem; }
     .section, .tool-section { padding: 1.6rem; margin-bottom: 1.5rem; }
-    .carousel-wrapper { padding: 1.5rem 0; }
-    .carousel-item { flex: 0 0 80vw; margin: 0 10px; }
+    .carousel-wrapper, .carousel-join-wrapper { padding: 1.5rem 0; }
+    .carousel-item, .carousel-join-item { flex: 0 0 80vw; margin: 0 10px; }
 }
 
 /* ----------------- FOOTER ----------------- */
