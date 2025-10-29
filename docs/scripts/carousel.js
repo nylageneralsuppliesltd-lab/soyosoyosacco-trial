@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // === UPDATE THESE 7 VALUES DAILY ===
   const carouselData = [
-    { number: 143, description: "Total Members" },
+    { number: 144, description: "Total Members" },
     { number: 881265, description: "Member Savings" },
     { number: 278875, description: "Bank Balance" },
     { number: 101, description: "Number of Loans Given" },
