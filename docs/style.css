@@ -1,9 +1,9 @@
 /* ========================================
-   SOYOSOYO SACCO – FINAL v34
-   Cache-busted: ?v=34
-   HERO: 45vh max, scrolls, NO overlap
-   CAROUSELS: Index + Join-Us both roll
-   CLEAN | MOBILE SYNC | NO BREAKAGE
+   SOYOSOYO SACCO – FINAL v35
+   Cache-busted: ?v=35
+   HERO: Scrolls with page (not fixed)
+   JOIN-US CAROUSEL: No horizontal overflow, mobile-safe
+   ALL PAGES: Smooth scroll, no wobble
    ======================================== */
 
 /* ----------------- RESET & BASE ----------------- */
@@ -14,6 +14,7 @@ body {
     background:#f8fafc; 
     color:#2d3748; 
     line-height:1.7; 
+    overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
 /* ----------------- TYPOGRAPHY ----------------- */
@@ -33,12 +34,11 @@ a:hover { text-decoration:underline; }
 img { max-width:100%; height:auto; display:block; }
 .round, .brand-logo { border-radius:50% !important; object-fit:cover !important; }
 
-/* ----------------- HEADER ----------------- */
+/* ----------------- HEADER (SCROLLS – NOT STICKY) ----------------- */
 header.site-header { 
     background:#ffffff; 
     width:100%; 
-    position:sticky; 
-    top:0; 
+    position: relative; /* NOT sticky */
     z-index:1000; 
     box-shadow:0 2px 10px rgba(0,0,0,0.1);
 }
@@ -46,7 +46,7 @@ header.site-header .navbar {
     display:flex; 
     align-items:center; 
     justify-content:space-between;
-  padding:0.6rem 1.2rem; 
+    padding:0.6rem 1.2rem; 
     max-width:1200px; 
     margin:0 auto; 
     height:56px;
@@ -83,7 +83,7 @@ header.site-header .close-icon {
     height:22px; 
 }
 
-/* ----------------- HERO (FIXED: SMALLER, SCROLLS, NO OVERLAP) ----------------- */
+/* ----------------- HERO (SCROLLS, NOT FIXED) ----------------- */
 .hero {
     position: relative;
     width: 100%;
@@ -91,9 +91,9 @@ header.site-header .close-icon {
     min-height: 350px;
     max-height: 480px;
     background: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.55)), url('./assets/header-image.jpg') center/cover no-repeat;
-    background-attachment: scroll !important;
+    background-attachment: scroll;
     margin: 0 0 2.5rem 0;
-    overflow: visible;
+    overflow: hidden;
     z-index: 1;
 }
 .hero .banner-text {
@@ -117,15 +117,6 @@ header.site-header .close-icon {
 .hero .banner-text p { 
     font-size: 1.25rem; 
     font-weight: 500; 
-}
-
-/* Ensure content appears BELOW hero */
-.site-header + .hero { margin-top: 0; }
-main, .container { 
-    position: relative; 
-    z-index: 2; 
-    background: #f8fafc; 
-    margin-top: -1px;
 }
 
 /* ----------------- MAIN LAYOUT ----------------- */
@@ -289,8 +280,8 @@ main, .container {
     color:white; 
     border:none; 
     padding:0.9rem; 
-    border-radius:30px; 
-    font  font-weight:700; 
+    border-radius:30px;
+    font-weight:700; 
     cursor:pointer; 
     width:100%; 
     font-size:1rem; 
@@ -351,7 +342,12 @@ main, .container {
     animation-play-state: paused;
 }
 
-/* ----------------- JOIN-US CAROUSEL (MEMBERSHIP FEES) ----------------- */
+/* ----------------- JOIN-US CAROUSEL (FIXED: NO HORIZONTAL SCROLL) ----------------- */
+.carousel-join-wrapper {
+    overflow: hidden;
+    padding: 2rem 0;
+    background: #f0fdf4;
+}
 .carousel-join {
     display: flex;
     width: max-content;
@@ -383,7 +379,9 @@ main, .container {
     0% { transform: translateX(0); }
     100% { transform: translateX(var(--carousel-translate, -1200px)); }
 }
-.carousel-join:hover { animation-play-state: paused; }
+.carousel-join-wrapper:hover .carousel-join {
+    animation-play-state: paused;
+}
 
 /* ----------------- MOBILE ----------------- */
 @media (max-width: 768px) {
@@ -437,6 +435,13 @@ main, .container {
     h1 { font-size: 2rem; }
     h2 { font-size: 1.6rem; }
     .month-inputs input { font-size: 0.9rem; }
+    
+    /* JOIN-US CAROUSEL MOBILE FIX */
+    .carousel-join-wrapper { padding: 1.5rem 0; }
+    .carousel-join-item { 
+        flex: 0 0 80vw; 
+        margin: 0 5px; 
+    }
 }
 
 /* ----------------- FOOTER ----------------- */
