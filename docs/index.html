@@ -21,8 +21,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
     
-    <!-- CSS v43 – SYNCED WITH carousel.js -->
-    <link rel="stylesheet" href="./style.css?v=43">
+    <!-- CSS v44 – FIXED CALCULATOR -->
+    <link rel="stylesheet" href="./style.css?v=44">
 
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-05M38MYK0G"></script>
@@ -180,7 +180,7 @@
         </div>
     </section>
 
-    <!-- LOAN CALCULATOR -->
+    <!-- LOAN CALCULATOR – FULLY WORKING (FROM Products.html) -->
     <section class="tool-section" id="loan-calculator">
         <h2 style="text-align: center;">Loan Calculator</h2>
         <div class="calculator-wrapper">
@@ -212,6 +212,65 @@
                 </div>
                 <button onclick="calculateLoan()">Calculate Loan</button>
                 <div class="result" id="result"></div>
+
+                <button onclick="toggleAmortizationTable()" id="amortizationButton" style="display: none;">View Amortization Table</button>
+                <div class="amortization-table" id="amortizationTable" style="display: none;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Month</th>
+                                <th>Payment (KES)</th>
+                                <th>Principal (KES)</th>
+                                <th>Interest (KES)</th>
+                                <th>Balance (KES)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="amortizationBody"></tbody>
+                    </table>
+                </div>
+
+                <button onclick="showFinesSection()" id="finesPromptButton" style="display: none;">Calculate Fines for Missed Payments</button>
+                <button onclick="toggleChart()" id="chartButton" style="display: none;">View Chart</button>
+                <div class="loan-chart" id="loanChart" style="display: none;"></div>
+
+                <div class="fines-section" id="finesSection" style="display: none;">
+                    <h3>Calculate Late Repayment Fines</h3>
+                    <div class="form-group">
+                        <label for="lateMonth">Month of First Missed Payment:</label>
+                        <input type="number" id="lateMonth" placeholder="e.g., 1" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="monthsLate">Number of Consecutive Missed Payments:</label>
+                        <input type="number" id="monthsLate" placeholder="e.g., 3" min="0">
+                    </div>
+                    <div class="form-group" id="paymentGroup" style="display: none;">
+                        <label for="paymentMonth">Month to Add Payment:</label>
+                        <input type="number" id="paymentMonth" placeholder="e.g., 4" min="1">
+                        <label for="paymentAmount">Amount Paid (KES):</label>
+                        <input type="number" id="paymentAmount" placeholder="e.g., 500" min="0">
+                        <button onclick="addPayment()">Add Payment</button>
+                    </div>
+                    <button onclick="calculateFines()">Calculate Fines</button>
+                    <div class="result" id="finesResult"></div>
+                    <button onclick="toggleFinesAmortizationTable()" id="finesAmortizationButton" style="display: none;">View Amortization Table with Fines</button>
+                    <div class="fines-amortization-table" id="finesAmortizationTable" style="display: none;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Month</th>
+                                    <th>Payment (KES)</th>
+                                    <th>Principal (KES)</th>
+                                    <th>Interest (KES)</th>
+                                    <th>Installment Fine (KES)</th>
+                                    <th>Outstanding Fine (KES)</th>
+                                    <th>Balance (KES)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="finesAmortizationBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
                 <noscript><div class="error-message">JavaScript is disabled. Please enable JavaScript to use the loan calculator.</div></noscript>
             </div>
         </div>
