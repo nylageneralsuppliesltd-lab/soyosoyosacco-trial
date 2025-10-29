@@ -1,11 +1,8 @@
 /* ========================================
-   SOYOSOYO SACCO – FINAL v41
-   Cache-busted: ?v=41
-   SINGLE SOURCE: Update in JS → All sync
-   4 MODERN CHARTS: Jan vs Today
-   VIBRANT COLORS: Purple, Amber, Emerald, Red
-   CAPTIVATING: Smooth, rounded, hover
-   FULLY RESPONSIVE
+   SOYOSOYO SACCO – FINAL v42
+   Cache-busted: ?v=42
+   SINGLE SOURCE + NUMBERS ON BARS
+   MOBILE BARS: CENTERED, NO EDGE OVERFLOW
    ======================================== */
 
 /* ----------------- RESET & BASE ----------------- */
@@ -36,7 +33,7 @@ a:hover { text-decoration:underline; }
 img { max-width:100%; height:auto; display:block; }
 .round, .brand-logo { border-radius:50% !important; object-fit:cover !important; }
 
-/* ----------------- HEADER (SCROLLS – NOT STICKY) ----------------- */
+/* ----------------- HEADER ----------------- */
 header.site-header { 
     background:#ffffff; 
     width:100%; 
@@ -79,13 +76,8 @@ header.site-header #menu-toggle {
     background:none; 
     border:none; 
 }
-header.site-header .menu-icon, 
-header.site-header .close-icon { 
-    width:22px; 
-    height:22px; 
-}
 
-/* ----------------- HERO: NO OVERLAY, WHITE TEXT ----------------- */
+/* ----------------- HERO ----------------- */
 .hero {
     position: relative;
     width: 100%;
@@ -131,7 +123,7 @@ header.site-header .close-icon {
 }
 
 /* ----------------- SECTIONS ----------------- */
-.section, .tool-section, .product-card, .form-embed, .jobs-section, .join-section {
+.section, .tool-section, .product-card {
     background:#ffffff;
     border-radius:16px; 
     padding:2rem;
@@ -250,7 +242,7 @@ header.site-header .close-icon {
     box-shadow: 0 8px 20px rgba(0,100,0,0.35);
 }
 
-/* ----------------- LOAN CALCULATOR ----------------- */
+/* ----------------- LOAN & DIVIDENDS CALCULATOR ----------------- */
 .calculator {
     background:#fff; 
     padding:2rem; 
@@ -295,8 +287,6 @@ header.site-header .close-icon {
     background:#004d00; 
     transform:translateY(-2px);
 }
-
-/* ----------------- DIVIDENDS CALCULATOR ----------------- */
 #dividends-calculator .calculator {
     max-width: 800px;
     display: grid;
@@ -317,7 +307,7 @@ header.site-header .close-icon {
     .month-inputs { grid-template-columns: 1fr; }
 }
 
-/* ----------------- INDEX CAROUSEL (FINANCIAL HIGHLIGHTS) – WORKING ----------------- */
+/* ----------------- CAROUSEL ----------------- */
 .carousel-wrapper {
     overflow: hidden;
     background: #f0fdf4;
@@ -355,63 +345,17 @@ header.site-header .close-icon {
     0% { transform: translateX(0); }
     100% { transform: translateX(var(--carousel-translate, -2100px)); }
 }
-.carousel-wrapper:hover .carousel {
-    animation-play-state: paused;
-}
+.carousel-wrapper:hover .carousel { animation-play-state: paused; }
 
-/* ----------------- JOIN-US CAROUSEL (FIXED: NO HORIZONTAL SCROLL) ----------------- */
-.carousel-join-wrapper {
-    overflow: hidden;
-    padding: 2rem 0;
-    background: #f0fdf4;
-}
-.carousel-join {
-    display: flex;
-    width: max-content;
-    animation: scroll-join var(--carousel-duration, 40s) linear infinite;
-}
-.carousel-join-item {
-    flex: 0 0 var(--item-width, 280px);
-    margin: 0 var(--item-margin, 30px);
-    background: white;
-    padding: 1.5rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    text-align: center;
-}
-.carousel-join-button {
-    background: #90EE90;
-    color: #006400;
-    padding: 1rem 1.5rem;
-    border-radius: 8px;
-    font-weight: bold;
-    font-size: 1.5rem;
-    margin-bottom: 0.8rem;
-}
-.carousel-join-description {
-    font-size: 0.95rem;
-    color: #333;
-}
-@keyframes scroll-join {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(var(--carousel-translate, -1200px)); }
-}
-.carousel-join-wrapper:hover .carousel-join {
-    animation-play-state: paused;
-}
-
-/* ----------------- MOBILE ----------------- */
+/* ----------------- MOBILE MENU ----------------- */
 @media (max-width: 768px) {
     header.site-header .navbar { height:60px; padding:0.5rem 0.8rem; }
     header.site-header .brand-logo { width:38px; height:38px; }
     header.site-header #menu-toggle { display: block !important; }
-    
-    /* MOBILE MENU: NARROW RIGHT-SLIDE (TEXT-WIDTH ONLY) */
     header.site-header .nav-links {
         position: fixed;
         top: 60px;
         right: 0;
-        left: auto;
         width: auto;
         max-width: 240px;
         background: #003087;
@@ -445,33 +389,13 @@ header.site-header .close-icon {
         background: #90EE90;
         color: #003087 !important;
     }
-
-    .hero { 
-        height: 40vh; 
-        min-height: 300px; 
-        max-height: 400px; 
-    }
+    .hero { height: 40vh; min-height: 300px; max-height: 400px; }
     .hero .banner-text h1 { font-size: 2rem; }
     .hero .banner-text p { font-size: 1.1rem; }
     .container { margin: 1.5rem auto; padding: 0 0.8rem; }
     .section, .tool-section { padding: 1.6rem; margin-bottom: 1.5rem; }
-    h1 { font-size: 2rem; }
-    h2 { font-size: 1.6rem; }
-    .month-inputs input { font-size: 0.9rem; }
-    
-    /* JOIN-US CAROUSEL MOBILE FIX */
-    .carousel-join-wrapper { padding: 1.5rem 0; }
-    .carousel-join-item { 
-        flex: 0 0 80vw; 
-        margin: 0 5px; 
-    }
-
-    /* INDEX CAROUSEL MOBILE */
     .carousel-wrapper { padding: 1.5rem 0; }
-    .carousel-item {
-        flex: 0 0 80vw;
-        margin: 0 10px;
-    }
+    .carousel-item { flex: 0 0 80vw; margin: 0 10px; }
 }
 
 /* ----------------- FOOTER ----------------- */
@@ -496,7 +420,7 @@ footer a:hover { color:#ffffff; }
     transform:scale(1.15); 
 }
 
-/* ----------------- GROWTH CHARTS GRID (NEW v41) ----------------- */
+/* ----------------- GROWTH CHARTS – CENTERED BARS, NUMBERS ----------------- */
 .growth-charts-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -505,19 +429,19 @@ footer a:hover { color:#ffffff; }
 }
 .chart-card {
     background: #ffffff;
-    padding: 1.6rem;
+    padding: 1.6rem 1.2rem;
     border-radius: 18px;
     box-shadow: 0 8px 25px rgba(0,0,0,0.08);
     text-align: center;
     transition: transform 0.3s ease;
     overflow: hidden;
+    position: relative;
 }
-.chart-card:hover {
-    transform: translateY(-6px);
-}
+.chart-card:hover { transform: translateY(-6px); }
 .chart-card canvas {
     height: 180px !important;
     margin: 0 auto;
+    max-width: 100%;
 }
 .chart-card p {
     margin-top: 0.8rem;
@@ -525,11 +449,17 @@ footer a:hover { color:#ffffff; }
     color: #1f2937;
     font-size: 0.95rem;
 }
-@media (max-width: 768px) {
-    .growth-charts-grid { grid-template-columns: 1fr; }
-    .chart-card canvas { height: 160px !important; }
-}
 
-/* ----------------- REMOVE OLD VISUALS (v40) ----------------- */
-/* .financial-visuals-section, .financial-visuals-grid, .counter-card, .growth-comparison, .chart-container → DEPRECATED */
-/* They are replaced by .growth-charts-grid */
+/* MOBILE: CENTER BARS, NO EDGE OVERFLOW */
+@media (max-width: 768px) {
+    .growth-charts-grid { 
+        grid-template-columns: 1fr; 
+        gap: 1.2rem;
+    }
+    .chart-card {
+        padding: 1.4rem 1rem;
+    }
+    .chart-card canvas { 
+        height: 160px !important; 
+    }
+}
