@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     { number: 881265, description: "Member Savings" },
     { number: 278875, description: "Bank Balance" },
     { number: 101, description: "Number of Loans Given" },
-    { number: 1837200, description: "Value of Loans Given" },
+    { number: 1837900, description: "Value of Loans Given" },
     { number: 43375, description: "Profit" },
     { number: 69, description: "Active Members" }
   ];
@@ -18,8 +18,8 @@ document.addEventListener('DOMContentLoaded', () => {
     jan: {
       members: 101,
       loans: 283500,
-      contributions: 331000,
-      profit: -60000
+      contributions: 331263,
+      profit: -60056
     },
     today: {
       members: carouselData[0].number,           // Total Members
