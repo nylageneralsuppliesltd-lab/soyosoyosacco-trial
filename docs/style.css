@@ -1,8 +1,8 @@
 /* ========================================
-   SOYOSOYO SACCO – FINAL v37
-   Cache-busted: ?v=37
-   HERO: NO OVERLAY – IMAGE FULLY VISIBLE
-   ALL TEXT ON HERO: PURE WHITE
+   SOYOSOYO SACCO – FINAL v38
+   Cache-busted: ?v=38
+   MOBILE MENU: NARROW RIGHT-SLIDE (TEXT-WIDTH ONLY)
+   HERO: NO OVERLAY, WHITE TEXT
    CAROUSEL: WORKING
    NO WOBBLE | SMOOTH
    ======================================== */
@@ -404,41 +404,47 @@ header.site-header .close-icon {
     header.site-header .navbar { height:60px; padding:0.5rem 0.8rem; }
     header.site-header .brand-logo { width:38px; height:38px; }
     header.site-header #menu-toggle { display: block !important; }
+    
+    /* MOBILE MENU: NARROW RIGHT-SLIDE (TEXT-WIDTH ONLY) */
     header.site-header .nav-links {
         position: fixed;
         top: 60px;
-        left: 0;
-        width: 100%;
+        right: 0;
+        left: auto;
+        width: auto;
+        max-width: 240px;
         background: #003087;
-        padding: 1.2rem 1rem;
+        padding: 1.2rem 1.5rem;
         z-index: 9999;
-        border-radius: 0 0 16px 16px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        border-radius: 0 0 0 16px;
+        box-shadow: -6px 10px 25px rgba(0,0,0,0.3);
         flex-direction: column;
-        gap: 0.6rem;
+        gap: 0.8rem;
         transition: all 0.35s ease;
-        transform: translateY(-120%);
+        transform: translateX(100%);
         opacity: 0;
         visibility: hidden;
     }
     header.site-header .nav-links.show {
-        transform: translateY(0);
+        transform: translateX(0);
         opacity: 1;
         visibility: visible;
     }
-    header.site-header .nav-links a { 
+    header.site-header .nav-links a {
         color: #ffffff !important;
         background: #001f5b;
-        padding: 0.8rem 1.2rem;
+        padding: 0.75rem 1.2rem;
         border-radius: 8px;
         font-weight: 700;
         font-size: 1rem;
         text-align: center;
+        white-space: nowrap;
     }
     header.site-header .nav-links a:hover {
         background: #90EE90;
         color: #003087 !important;
     }
+
     .hero { 
         height: 40vh; 
         min-height: 300px; 
