@@ -21,8 +21,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
     
-    <!-- CSS v45 – % GROWTH + ARROWS -->
-    <link rel="stylesheet" href="./style.css?v=45">
+    <!-- CSS v46 – PROFIT GROWTH FIXED -->
+    <link rel="stylesheet" href="./style.css?v=46">
 
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-05M38MYK0G"></script>
@@ -354,7 +354,7 @@
 <script src="./scripts/carousel.js"></script>
 <script src="./scripts/seo.js"></script>
 
-<!-- CHART.JS + DATALABELS + % GROWTH + ARROWS -->
+<!-- CHART.JS + DATALABELS + FIXED PROFIT GROWTH -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 <script>
@@ -368,6 +368,8 @@
 
         function renderCharts() {
             const data = window.saccoData;
+            const jan = data.jan;
+            const today = data.today;
 
             const colors = {
                 members: { jan: '#8B5CF6', today: '#C4B5FD' },
@@ -380,33 +382,38 @@
                 return isMoney ? 'KES ' + value.toLocaleString() : value.toLocaleString();
             };
 
+            // CORRECT GROWTH: FROM LOSS TO PROFIT = +100%
             const calculateGrowth = (jan, today) => {
                 if (jan === 0) return today > 0 ? 100 : 0;
+                if (jan < 0 && today >= 0) return 100; // Loss to profit
+                if (jan < 0 && today < 0) return ((today - jan) / Math.abs(jan)) * 100;
                 return ((today - jan) / jan) * 100;
             };
 
-            const updateGrowthIndicator = (id, growth) => {
+            const updateGrowthIndicator = (id, growth, janValue, todayValue) => {
                 const el = document.getElementById(id);
                 const isPositive = growth > 0;
                 const arrow = isPositive ? 'up' : (growth < 0 ? 'down' : 'right');
                 const colorClass = isPositive ? 'positive' : (growth < 0 ? 'negative' : '');
-                
-                el.innerHTML = `<i class="fas fa-arrow-${arrow}"></i> ${Math.abs(growth).toFixed(1)}%`;
+
+                const displayGrowth = (janValue < 0 && todayValue >= 0) ? 100 : Math.abs(growth).toFixed(1);
+
+                el.innerHTML = `<i class="fas fa-arrow-${arrow}"></i> ${displayGrowth}%`;
                 el.className = `growth-indicator ${colorClass}`;
             };
 
-            const createChart = (id, jan, today, label, color, growthId) => {
+            const createChart = (id, janVal, todayVal, label, color, growthId) => {
                 const ctx = document.getElementById(id).getContext('2d');
                 const isMoney = label.includes('KES');
-                const growth = calculateGrowth(jan, today);
-                updateGrowthIndicator(growthId, growth);
+                const growth = calculateGrowth(janVal, todayVal);
+                updateGrowthIndicator(growthId, growth, janVal, todayVal);
 
                 new Chart(ctx, {
                     type: 'bar',
                     data: {
                         labels: ['Jan 2025', 'Today'],
                         datasets: [{
-                            data: [jan, today],
+                            data: [janVal, todayVal],
                             backgroundColor: [color.jan, color.today],
                             borderColor: [color.jan, color.today],
                             borderWidth: 2,
@@ -447,10 +454,10 @@
                 });
             };
 
-            createChart('chartMembers', data.jan.members, data.today.members, 'Members', colors.members, 'growthMembers');
-            createChart('chartLoans', data.jan.loans, data.today.loans, 'Loans (KES)', colors.loans, 'growthLoans');
-            createChart('chartContributions', data.jan.contributions, data.today.contributions, 'Contributions (KES)', colors.contributions, 'growthContributions');
-            createChart('chartProfit', data.jan.profit, data.today.profit, 'Profit (KES)', colors.profit, 'growthProfit');
+            createChart('chartMembers', jan.members, today.members, 'Members', colors.members, 'growthMembers');
+            createChart('chartLoans', jan.loans, today.loans, 'Loans (KES)', colors.loans, 'growthLoans');
+            createChart('chartContributions', jan.contributions, today.contributions, 'Contributions (KES)', colors.contributions, 'growthContributions');
+            createChart('chartProfit', jan.profit, today.profit, 'Profit (KES)', colors.profit, 'growthProfit');
         }
     });
 </script>
