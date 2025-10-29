@@ -5,8 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // === UPDATE THESE 7 VALUES DAILY ===
   const carouselData = [
     { number: 143, description: "Total Members" },
-    { number: 875000, description: "Member Savings" },
-    { number: 273000, description: "Bank Balance" },
+    { number: 881000, description: "Member Savings" },
+    { number: 278000, description: "Bank Balance" },
     { number: 101, description: "Number of Loans Given" },
     { number: 1837000, description: "Value of Loans Given" },
     { number: 43000, description: "Profit" },
@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // === AUTO-SYNC: Push 4 key values to window.saccoData ===
   window.saccoData = {
     jan: {
-      members: 94,
+      members: 101,
       loans: 283500,
       contributions: 331000,
       profit: -60000
