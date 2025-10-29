@@ -1,7 +1,8 @@
-// scripts/carousel.js – Financial Highlights Carousel (Index Page)
+// scripts/carousel.js – AUTO-SYNC 4 METRICS TO INDEX
 document.addEventListener('DOMContentLoaded', () => {
   document.body.classList.add('js-enabled');
 
+  // === UPDATE THESE 7 VALUES DAILY ===
   const carouselData = [
     { number: 143, description: "Total Members" },
     { number: 875000, description: "Member Savings" },
@@ -12,10 +13,26 @@ document.addEventListener('DOMContentLoaded', () => {
     { number: 69, description: "Active Members" }
   ];
 
+  // === AUTO-SYNC: Push 4 key values to window.saccoData ===
+  window.saccoData = {
+    jan: {
+      members: 80,
+      loans: 1200000,
+      contributions: 600000,
+      profit: 15000
+    },
+    today: {
+      members: carouselData[0].number,           // Total Members
+      loans: carouselData[4].number,             // Value of Loans Given
+      contributions: carouselData[1].number,     // Member Savings
+      profit: carouselData[5].number             // Profit
+    }
+  };
+
+  // === REST OF CAROUSEL CODE (UNCHANGED) ===
   const carousel = document.querySelector('.carousel');
   if (!carousel) return;
 
-  // Generate + Duplicate Items
   const generateItems = () => {
     const itemHTML = carouselData.map(item => `
       <article class="carousel-item" role="listitem">
@@ -23,12 +40,10 @@ document.addEventListener('DOMContentLoaded', () => {
         <p class="carousel-description">${item.description}</p>
       </article>
     `).join('');
-
-    carousel.innerHTML = itemHTML + itemHTML; // Duplicate for seamless loop
+    carousel.innerHTML = itemHTML + itemHTML;
   };
   generateItems();
 
-  // Format number (1,000 → 1k)
   const formatNumber = (num) => {
     if (isNaN(num)) return num;
     const abs = Math.abs(num);
@@ -37,7 +52,6 @@ document.addEventListener('DOMContentLoaded', () => {
       .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
-  // Animate counter
   const animateCounter = (el, target) => {
     const end = +target;
     let start = 0, id = null;
@@ -52,7 +66,6 @@ document.addEventListener('DOMContentLoaded', () => {
     requestAnimationFrame(step);
   };
 
-  // Intersection Observer
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       const btn = entry.target.querySelector('.carousel-button');
@@ -69,7 +82,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btn) observer.observe(item);
   });
 
-  // Responsive Animation
   const update = () => {
     const w = window.innerWidth;
     const iw = w <= 768 ? 220 : 300;
