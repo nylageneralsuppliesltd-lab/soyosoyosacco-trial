@@ -1,11 +1,11 @@
 /* ========================================
-   SOYOSOYO SACCO – FINAL v40
-   Cache-busted: ?v=40
-   CAROUSEL: PRESERVED
-   VISUALS: FIXED FIT, NO GLIDE
-   4 METRICS: Members, Loans, Contributions, Profit
-   2-STAGE BAR CHART: Jan 2025 vs Now
-   COLORFUL, CLEAN, RESPONSIVE
+   SOYOSOYO SACCO – FINAL v41
+   Cache-busted: ?v=41
+   SINGLE SOURCE: Update in JS → All sync
+   4 MODERN CHARTS: Jan vs Today
+   VIBRANT COLORS: Purple, Amber, Emerald, Red
+   CAPTIVATING: Smooth, rounded, hover
+   FULLY RESPONSIVE
    ======================================== */
 
 /* ----------------- RESET & BASE ----------------- */
@@ -276,7 +276,7 @@ header.site-header .close-icon {
     width:100%; 
     padding:0.85rem; 
     border:1px solid #90EE90; 
-    border, border-radius:8px; 
+    border-radius:8px; 
     font-size:1rem;
 }
 .calculator button {
@@ -496,90 +496,40 @@ footer a:hover { color:#ffffff; }
     transform:scale(1.15); 
 }
 
-/* ----------------- FINANCIAL VISUALS – FIXED FIT, 4 METRICS, 2-STAGE BAR ----------------- */
-.financial-visuals-section {
-    margin-top: 2rem;
-    padding: 0 1rem;
-    overflow: hidden;
-}
-.financial-visuals-grid {
+/* ----------------- GROWTH CHARTS GRID (NEW v41) ----------------- */
+.growth-charts-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 1.2rem;
-    margin: 1.5rem 0;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
 }
-.counter-card {
+.chart-card {
     background: #ffffff;
-    padding: 1.4rem 1rem;
-    border-radius: 14px;
+    padding: 1.6rem;
+    border-radius: 18px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
     text-align: center;
-    box-shadow: 0 5px 16px rgba(0,0,0,0.07);
     transition: transform 0.3s ease;
-    min-height: 120px;
-}
-.counter-card:hover {
-    transform: translateY(-5px);
-}
-.counter-icon {
-    font-size: 1.9rem;
-    color: #006400;
-    margin-bottom: 0.6rem;
-}
-.counter-value {
-    font-size: 1.8rem;
-    font-weight: 900;
-    color: #003087;
-    margin-bottom: 0.3rem;
-}
-.counter-card p {
-    font-size: 0.88rem;
-    color: #2d3748;
-    margin: 0;
-}
-
-/* 2-STAGE BAR CHART: Jan vs Now */
-.growth-comparison {
-    margin-top: 2rem;
-    background: #ffffff;
-    padding: 1.8rem;
-    border-radius: 16px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
     overflow: hidden;
 }
-.growth-comparison h3 {
-    text-align: center;
-    margin-bottom: 1.2rem;
-    color: #006400;
-    font-size: 1.4rem;
+.chart-card:hover {
+    transform: translateY(-6px);
 }
-.chart-container {
-    position: relative;
-    height: 300px;
-    max-width: 100%;
+.chart-card canvas {
+    height: 180px !important;
     margin: 0 auto;
 }
-#growthChart {
-    width: 100% !important;
-    height: 100% !important;
+.chart-card p {
+    margin-top: 0.8rem;
+    font-weight: 600;
+    color: #1f2937;
+    font-size: 0.95rem;
+}
+@media (max-width: 768px) {
+    .growth-charts-grid { grid-template-columns: 1fr; }
+    .chart-card canvas { height: 160px !important; }
 }
 
-/* MOBILE: STACK & FIT */
-@media (max-width: 768px) {
-    .financial-visuals-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 1rem;
-    }
-    .counter-card {
-        padding: 1.2rem 0.8rem;
-        min-height: 100px;
-    }
-    .counter-value {
-        font-size: 1.6rem;
-    }
-    .growth-comparison {
-        padding: 1.4rem;
-    }
-    .chart-container {
-        height: 240px;
-    }
-}
+/* ----------------- REMOVE OLD VISUALS (v40) ----------------- */
+/* .financial-visuals-section, .financial-visuals-grid, .counter-card, .growth-comparison, .chart-container → DEPRECATED */
+/* They are replaced by .growth-charts-grid */
