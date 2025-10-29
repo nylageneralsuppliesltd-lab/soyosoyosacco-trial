@@ -3,13 +3,13 @@ document.addEventListener('DOMContentLoaded', () => {
   document.body.classList.add('js-enabled');
 
   const carouselData = [
-    { number: 141, description: "Total Members" },
-    { number: 864000, description: "Member Savings" },
-    { number: 254000, description: "Bank Balance" },
-    { number: 100, description: "Number of Loans Given" },
-    { number: 1827000, description: "Value of Loans Given" },
-    { number: 40000, description: "Profit" },
-    { number: 67, description: "Active Members" }
+    { number: 143, description: "Total Members" },
+    { number: 86000, description: "Member Savings" },
+    { number: 273000, description: "Bank Balance" },
+    { number: 101, description: "Number of Loans Given" },
+    { number: 1837000, description: "Value of Loans Given" },
+    { number: 42000, description: "Profit" },
+    { number: 69, description: "Active Members" }
   ];
 
   const carousel = document.querySelector('.carousel');
