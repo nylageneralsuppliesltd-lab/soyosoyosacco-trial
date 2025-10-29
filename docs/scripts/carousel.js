@@ -9,17 +9,17 @@ document.addEventListener('DOMContentLoaded', () => {
     { number: 273000, description: "Bank Balance" },
     { number: 101, description: "Number of Loans Given" },
     { number: 1837000, description: "Value of Loans Given" },
-    { number: 42000, description: "Profit" },
+    { number: 43000, description: "Profit" },
     { number: 69, description: "Active Members" }
   ];
 
   // === AUTO-SYNC: Push 4 key values to window.saccoData ===
   window.saccoData = {
     jan: {
-      members: 80,
-      loans: 1200000,
-      contributions: 600000,
-      profit: 15000
+      members: 94,
+      loans: 283500,
+      contributions: 331000,
+      profit: -60000
     },
     today: {
       members: carouselData[0].number,           // Total Members
