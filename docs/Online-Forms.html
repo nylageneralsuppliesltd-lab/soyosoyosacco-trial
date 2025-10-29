@@ -19,7 +19,11 @@
     <link rel="icon" href="./assets/141dd3faa98da9737b591161deac509a.jpg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./style.css">
+    
+    <!-- FINAL CSS v31 – MENU via main.js -->
+    <link rel="stylesheet" href="./style.css?v=31">
+
+    <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-05M38MYK0G"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -29,88 +33,128 @@
     </script>
 </head>
 <body>
-    <header class="site-header">
-        <div class="navbar">
-            <a href="index.html"><img class="brand-logo" src="./assets/141dd3faa98da9737b591161deac509a.jpg" alt="Soyosoyo Sacco Logo"></a>
-            <a href="https://chamasoft.com/login" class="member-portal">Member Portal</a>
-            <button id="menu-toggle" aria-label="Toggle Menu">
-                <svg class="menu-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#006400" stroke-width="2">
-                    <line x1="3" y1="6" x2="21" y2="6"></line>
-                    <line x1="3" y1="12" x2="21" y2="12"></line>
-                    <line x1="3" y1="18" x2="21" y2="18"></line>
-                </svg>
-                <svg class="close-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#006400" stroke-width="2" style="display: none;">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-            </button>
-            <nav class="nav-links">
-                <a href="index.html">Home</a>
-                <a href="Products.html">Products</a>
-                <a href="Online-Forms.html">Online Forms</a>
-                <a href="Jobs.html">Jobs</a>
-                <a href="Join-Us.html">Join Us</a>
-            </nav>
-        </div>
-        <div class="hero">
-            <div>
-                <h1>Online Forms</h1>
-                <p>Apply for membership with our easy-to-use forms.</p>
-            </div>
-        </div>
-    </header>
 
-    <main class="container">
-        <!-- Membership Application Form (Google Form Embed) -->
-        <section class="section tool-section">
-            <h2 style="text-align: center;">Membership Application Form</h2>
-            <div class="google-form-embed">
-                <iframe 
-                    src="https://docs.google.com/forms/d/e/1FAIpQLSdDboh2Wb7EMmFlNON-q21FXyTDnS_g2_egmD-03WlOwQj6gA/viewform?embedded=true" 
-                    width="100%" 
-                    height="800" 
-                    frameborder="0" 
-                    marginheight="0" 
-                    marginwidth="0">
-                    Loading…
-                </iframe>
-            </div>
-        </section>
+<!-- ==================== HEADER ==================== -->
+<header class="site-header">
+    <div class="navbar">
+        <a href="index.html">
+            <img class="brand-logo round" src="./assets/141dd3faa98da9737b591161deac509a.jpg" alt="Soyosoyo Sacco Logo">
+        </a>
+        <a href="https://chamasoft.com/login" class="member-portal">Member Portal</a>
+        <button id="menu-toggle" aria-label="Toggle Menu">
+            <!-- Icons injected by main.js -->
+        </button>
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="Products.html">Products</a>
+            <a href="Online-Forms.html">Online Forms</a>
+            <a href="Jobs.html">Jobs</a>
+            <a href="Join-Us.html">Join Us</a>
+        </nav>
+    </div>
 
-        <!-- Loan Calculator Tool -->
-        <section class="section tool-section" id="loan-calculator">
-            <h2 style="text-align: center;">Loan Calculator</h2>
-            <div class="calculator-wrapper">
-                <div class="calculator">
-                    <h2><span class="soyo-logo">SOYOSOYO</span> SACCO Loan Calculator</h2>
+    <!-- HERO IMAGE + TEXT OVERLAY -->
+    <div class="hero">
+        <div class="banner-text">
+            <h1>Online Forms</h1>
+            <p>Apply for membership with our easy-to-use forms.</p>
+        </div>
+    </div>
+</header>
+
+<!-- ==================== MAIN ==================== -->
+<main class="container">
+
+    <!-- Membership Application Form (Google Form Embed) -->
+    <section class="section tool-section">
+        <h2 style="text-align: center;">Membership Application Form</h2>
+        <div class="google-form-embed">
+            <iframe 
+                src="https://docs.google.com/forms/d/e/1FAIpQLSdDboh2Wb7EMmFlNON-q21FXyTDnS_g2_egmD-03WlOwQj6gA/viewform?embedded=true" 
+                width="100%" 
+                height="800" 
+                frameborder="0" 
+                marginheight="0" 
+                marginwidth="0">
+                Loading…
+            </iframe>
+        </div>
+    </section>
+
+    <!-- Loan Calculator Tool -->
+    <section class="section tool-section" id="loan-calculator">
+        <h2 style="text-align: center;">Loan Calculator</h2>
+        <div class="calculator-wrapper">
+            <div class="calculator">
+                <h2><span class="soyo-logo">SOYOSOYO</span> SACCO Loan Calculator</h2>
+                <div class="form-group">
+                    <label for="loanType">Loan Type:</label>
+                    <select id="loanType" onchange="updateFields()">
+                        <option value="">Select Loan Type</option>
+                        <option value="emergency">Emergency Loan</option>
+                        <option value="medicare">Medicare Loan</option>
+                        <option value="education">Education Loan</option>
+                        <option value="development">Development Loan</option>
+                        <option value="apiCulture">Api Culture Loan</option>
+                    </select>
+                </div>
+                <div class="form-group interest-rate">
+                    <label for="rate">Annual Interest Rate (%):</label>
+                    <input type="text" id="rate" readonly placeholder="Select a loan type">
+                </div>
+                <div class="form-group tenure">
+                    <label for="tenure">Tenure (Months):</label>
+                    <input type="text" id="tenure" readonly placeholder="Select a loan type">
+                </div>
+                <div class="form-group slider-container">
+                    <label for="principalSlider">Loan Amount (KES):</label>
+                    <input type="range" id="principalSlider" min="1000" max="1000000" step="1000" value="10000" oninput="updateSliderValue('principal')">
+                    <div class="slider-value" id="principalValue">KES 10,000</div>
+                </div>
+                <button onclick="calculateLoan()">Calculate Loan</button>
+                <div class="result" id="result"></div>
+
+                <button onclick="toggleAmortizationTable()" id="amortizationButton" style="display: none;">View Amortization Table</button>
+                <div class="amortization-table" id="amortizationTable" style="display: none;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Month</th>
+                                <th>Payment (KES)</th>
+                                <th>Principal (KES)</th>
+                                <th>Interest (KES)</th>
+                                <th>Balance (KES)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="amortizationBody"></tbody>
+                    </table>
+                </div>
+
+                <button onclick="showFinesSection()" id="finesPromptButton" style="display: none;">Calculate Fines for Missed Payments</button>
+                <button onclick="toggleChart()" id="chartButton" style="display: none;">View Chart</button>
+                <div class="loan-chart" id="loanChart" style="display: none;"></div>
+
+                <div class="fines-section" id="finesSection" style="display: none;">
+                    <h3>Calculate Late Repayment Fines</h3>
                     <div class="form-group">
-                        <label for="loanType">Loan Type:</label>
-                        <select id="loanType" onchange="updateFields()">
-                            <option value="">Select Loan Type</option>
-                            <option value="emergency">Emergency Loan</option>
-                            <option value="medicare">Medicare Loan</option>
-                            <option value="education">Education Loan</option>
-                            <option value="development">Development Loan</option>
-                            <option value="apiCulture">Api Culture Loan</option>
-                        </select>
+                        <label for="lateMonth">Month of First Missed Payment:</label>
+                        <input type="number" id="lateMonth" placeholder="e.g., 1" min="1">
                     </div>
-                    <div class="form-group interest-rate">
-                        <label for="rate">Annual Interest Rate (%):</label>
-                        <input type="text" id="rate" readonly placeholder="Select a loan type">
+                    <div class="form-group">
+                        <label for="monthsLate">Number of Consecutive Missed Payments:</label>
+                        <input type="number" id="monthsLate" placeholder="e.g., 3" min="0">
                     </div>
-                    <div class="form-group tenure">
-                        <label for="tenure">Tenure (Months):</label>
-                        <input type="text" id="tenure" readonly placeholder="Select a loan type">
+                    <div class="form-group" id="paymentGroup" style="display: none;">
+                        <label for="paymentMonth">Month to Add Payment:</label>
+                        <input type="number" id="paymentMonth" placeholder="e.g., 4" min="1">
+                        <label for="paymentAmount">Amount Paid (KES):</label>
+                        <input type="number" id="paymentAmount" placeholder="e.g., 500" min="0">
+                        <button onclick="addPayment()">Add Payment</button>
                     </div>
-                    <div class="form-group slider-container">
-                        <label for="principalSlider">Loan Amount (KES):</label>
-                        <input type="range" id="principalSlider" min="1000" max="1000000" step="1000" value="1000">
-                        <div class="slider-value" id="principalValue">KES 1000</div>
-                    </div>
-                    <button onclick="calculateLoan()">Calculate Loan</button>
-                    <div class="result" id="result"></div>
-                    <button onclick="toggleAmortizationTable()" id="amortizationButton" style="display: none;">View Amortization Table</button>
-                    <div class="amortization-table" id="amortizationTable" style="display: none;">
+                    <button onclick="calculateFines()">Calculate Fines</button>
+                    <div class="result" id="finesResult"></div>
+                    <button onclick="toggleFinesAmortizationTable()" id="finesAmortizationButton" style="display: none;">View Amortization Table with Fines</button>
+                    <div class="fines-amortization-table" id="finesAmortizationTable" style="display: none;">
                         <table>
                             <thead>
                                 <tr>
@@ -118,158 +162,223 @@
                                     <th>Payment (KES)</th>
                                     <th>Principal (KES)</th>
                                     <th>Interest (KES)</th>
+                                    <th>Installment Fine (KES)</th>
+                                    <th>Outstanding Fine (KES)</th>
                                     <th>Balance (KES)</th>
                                 </tr>
                             </thead>
-                            <tbody id="amortizationBody"></tbody>
+                            <tbody id="finesAmortizationBody"></tbody>
                         </table>
                     </div>
-                    <button onclick="showFinesSection()" id="finesPromptButton" style="display: none;">Calculate Fines for Missed Payments</button>
-                    <button onclick="toggleChart()" id="chartButton" style="display: none;">View Chart</button>
-                    <div class="loan-chart" id="loanChart" style="display: none;"></div>
-                    <div class="fines-section" id="finesSection" style="display: none;">
-                        <h3>Calculate Late Repayment Fines</h3>
-                        <div class="form-group">
-                            <label for="lateMonth">Month of First Missed Payment:</label>
-                            <input type="number" id="lateMonth" placeholder="e.g., 1" min="1">
-                        </div>
-                        <div class="form-group">
-                            <label for="monthsLate">Number of Consecutive Missed Payments:</label>
-                            <input type="number" id="monthsLate" placeholder="e.g., 3" min="0">
-                        </div>
-                        <div class="form-group" id="paymentGroup" style="display: none;">
-                            <label for="paymentMonth">Month to Add Payment:</label>
-                            <input type="number" id="paymentMonth" placeholder="e.g., 4" min="1">
-                            <label for="paymentAmount">Amount Paid (KES):</label>
-                            <input type="number" id="paymentAmount" placeholder="e.g., 500" min="0">
-                            <button onclick="addPayment()">Add Payment</button>
-                        </div>
-                        <button onclick="calculateFines()">Calculate Fines</button>
-                        <div class="result" id="finesResult"></div>
-                        <button onclick="toggleFinesAmortizationTable()" id="finesAmortizationButton" style="display: none;">View Amortization Table with Fines</button>
-                        <div class="fines-amortization-table" id="finesAmortizationTable" style="display: none;">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Month</th>
-                                        <th>Payment (KES)</th>
-                                        <th>Principal (KES)</th>
-                                        <th>Interest (KES)</th>
-                                        <th>Installment Fine (KES)</th>
-                                        <th>Outstanding Fine (KES)</th>
-                                        <th>Balance (KES)</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="finesAmortizationBody"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <noscript><div class="error-message">JavaScript is disabled. Please enable JavaScript to use the loan calculator.</div></noscript>
                 </div>
-            </div>
-        </section>
 
-        <!-- Dividends Calculator Tool -->
-        <section class="section tool-section" id="dividends-calculator">
-            <h2 style="text-align: center;">Dividends Calculator</h2>
-            <div class="calculator">
-                <div class="form-group">
-                    <label for="dividendRate">Dividend Rate (%):</label>
-                    <input type="number" id="dividendRate" placeholder="Enter annual dividend rate" step="0.01">
-                </div>
-                <div class="month-inputs">
-                    <input type="number" id="jan" placeholder="Jan Shares">
-                    <input type="number" id="feb" placeholder="Feb Shares">
-                    <input type="number" id="mar" placeholder="Mar Shares">
-                    <input type="number" id="apr" placeholder="Apr Shares">
-                    <input type="number" id="may" placeholder="May Shares">
-                    <input type="number" id="jun" placeholder="Jun Shares">
-                    <input type="number" id="jul" placeholder="Jul Shares">
-                    <input type="number" id="aug" placeholder="Aug Shares">
-                    <input type="number" id="sep" placeholder="Sep Shares">
-                    <input type="number" id="oct" placeholder="Oct Shares">
-                    <input type="number" id="nov" placeholder="Nov Shares">
-                    <input type="number" id="dec" placeholder="Dec Shares">
-                </div>
-                <button onclick="calculateDividend()">Calculate Dividend</button>
-                <div class="result" id="dividendResult"></div>
+                <noscript><div class="error-message">JavaScript is disabled. Please enable JavaScript to use the loan calculator.</div></noscript>
             </div>
-        </section>
-    </main>
-
-    <footer>
-        <p>&copy; 2025 SOYOSOYO SACCO. All rights reserved. | <a href="mailto:info@soyosoyosacco.com">info@soyosoyosacco.com</a></p>
-        <div class="social-icons">
-            <a href="https://www.facebook.com/people/Soyosoyo-Sacco/61565783836766/" target="_blank">
-                <i class="fab fa-facebook-f"></i>
-            </a>
-            <a href="https://x.com/SoyosoyoSACCO" target="_blank">
-                <i class="fab fa-x-twitter"></i>
-            </a>
-            <a href="https://www.instagram.com/soyosoyosacco" target="_blank">
-                <i class="fab fa-instagram"></i>
-            </a>
         </div>
-    </footer>
+    </section>
 
-    <script src="./scripts/main.js"></script>
-    <script src="./scripts/calculator.js"></script>
-    <script src="./scripts/chatbot.js"></script>
-    <script src="./scripts/dividendscalculator.js"></script>
-    <script src="./scripts/seo.js"></script>
-    <script type="application/ld+json">
+    <!-- Dividends Calculator Tool -->
+    <section class="section tool-section" id="dividends-calculator">
+        <h2 style="text-align: center;">Dividends Calculator</h2>
+        <div class="calculator">
+            <div class="form-group">
+                <label for="dividendRate">Dividend Rate (%):</label>
+                <input type="number" id="dividendRate" placeholder="Enter annual dividend rate" step="0.01">
+            </div>
+            <div class="month-inputs">
+                <input type="number" id="jan" placeholder="Jan Shares">
+                <input type="number" id="feb" placeholder="Feb Shares">
+                <input type="number" id="mar" placeholder="Mar Shares">
+                <input type="number" id="apr" placeholder="Apr Shares">
+                <input type="number" id="may" placeholder="May Shares">
+                <input type="number" id="jun" placeholder="Jun Shares">
+                <input type="number" id="jul" placeholder="Jul Shares">
+                <input type="number" id="aug" placeholder="Aug Shares">
+                <input type="number" id="sep" placeholder="Sep Shares">
+                <input type="number" id="oct" placeholder="Oct Shares">
+                <input type="number" id="nov" placeholder="Nov Shares">
+                <input type="number" id="dec" placeholder="Dec Shares">
+            </div>
+            <button onclick="calculateDividend()">Calculate Dividend</button>
+            <div class="result" id="dividendResult"></div>
+        </div>
+    </section>
+
+</main>
+
+<!-- ==================== FOOTER ==================== -->
+<footer>
+    <p>© 2025 SOYOSOYO SACCO. All rights reserved. | <a href="mailto:info@soyosoyosacco.com">info@soyosoyosacco.com</a></p>
+    <div class="social-icons">
+        <a href="https://www.facebook.com/people/Soyosoyo-Sacco/61565783836766/" target="_blank"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://x.com/SoyosoyoSACCO" target="_blank"><i class="fab fa-x-twitter"></i></a>
+        <a href="https://www.instagram.com/soyosoyosacco" target="_blank"><i class="fab fa-instagram"></i></a>
+    </div>
+</footer>
+
+<!-- ==================== SCRIPTS ==================== -->
+<script src="./scripts/main.js"></script>
+<script src="./scripts/calculator.js"></script>
+<script src="./scripts/chatbot.js"></script>
+<script src="./scripts/dividendscalculator.js"></script>
+<script src="./scripts/seo.js"></script>
+
+<!-- Initialize Calculators -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        if (typeof updateFields === 'function') updateFields();
+        if (typeof updateSliderValue === 'function') updateSliderValue('principal');
+    });
+</script>
+
+<!-- SCHEMA.ORG – FULL FINANCIAL SERVICE + ONLINE FORMS (ALL PAGES) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FinancialService",
+  "name": "SOYOSOYO SACCO",
+  "url": "https://soyosoyosacco.com",
+  "logo": "https://soyosoyosacco.com/assets/141dd3faa98da9737b591161deac509a.jpg",
+  "image": "https://soyosoyosacco.com/assets/header-image.jpg",
+  "description": "Soyosoyo SACCO offers affordable loans, savings, and financial empowerment to coastal Kenya communities in Kilifi, Mombasa, and Kwale. Products include Emergency, Education, Medicare, Development, and Api Culture loans at 1% interest.",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Kilifi",
+    "addressRegion": "Coast",
+    "addressCountry": "KE"
+  },
+  "email": "info@soyosoyosacco.com",
+  "telephone": "+254700000000",
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "Customer Service",
+    "email": "info@soyosoyosacco.com",
+    "areaServed": ["Kilifi", "Mombasa", "Kwale"]
+  },
+  "areaServed": [
+    { "@type": "Place", "name": "Kilifi" },
+    { "@type": "Place", "name": "Mombasa" },
+    { "@type": "Place", "name": "Kwale" }
+  ],
+  "sameAs": [
+    "https://www.facebook.com/people/Soyosoyo-Sacco/61565783836766/",
+    "https://x.com/SoyosoyoSACCO",
+    "https://www.instagram.com/soyosoyosacco"
+  ],
+  "makesOffer": [
     {
-        "@context": "https://schema.org",
-        "@type": "WebPage",
-        "name": "Online Forms - Soyosoyo SACCO",
-        "url": "https://soyosoyosacco.com/Online-Forms.html",
-        "description": "FREE Online Membership Application and Loan Forms",
-        "isPartOf": {"@type": "FinancialCooperative", "name": "SOYOSOYO SACCO"},
-        "breadcrumb": {
-            "@type": "BreadcrumbList",
-            "itemListElement": [{
-                "@type": "ListItem",
-                "position": 1,
-                "name": "Home",
-                "item": "https://soyosoyosacco.com/"
-            },{
-                "@type": "ListItem",
-                "position": 2,
-                "name": "Online Forms"
-            }]
-        },
-        "mainEntity": {
-            "@type": "ItemList",
-            "name": "Soyosoyo SACCO Online Forms",
-            "itemListElement": [
-                {
-                    "@type": "ApplyAction",
-                    "name": "Membership Application",
-                    "description": "FREE online membership form - Join in 2 minutes",
-                    "target": {
-                        "@type": "EntryPoint",
-                        "urlTemplate": "https://docs.google.com/forms/d/e/1FAIpQLSdDboh2Wb7EMmFlNON-q21FXyTDnS_g2_egmD-03WlOwQj6gA/viewform?embedded=true"
-                    }
-                },
-                {
-                    "@type": "LoanOrCredit",
-                    "name": "Loan Calculator",
-                    "description": "Calculate loan payments and dividends instantly"
-                }
-            ]
-        }
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "FinancialProduct",
+        "name": "Emergency Loan",
+        "description": "Instant short-term loan for urgent needs. 1% interest. Fast approval."
+      }
+    },
+    {
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "FinancialProduct",
+        "name": "Education Loan",
+        "description": "Pay school fees with ease. Up to 36 months. 1% interest."
+      }
+    },
+    {
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "FinancialProduct",
+        "name": "Medicare Loan",
+        "description": "Cover medical bills and healthcare costs. Flexible repayment."
+      }
+    },
+    {
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "FinancialProduct",
+        "name": "Development Loan",
+        "description": "Build your business or home. Long-term, low-interest financing."
+      }
+    },
+    {
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "FinancialProduct",
+        "name": "Api Culture Loan",
+        "description": "Support for beekeeping and honey production enterprises."
+      }
     }
-    </script>
-    <script>
-    fetch('/schema.json')
-        .then(r => r.json())
-        .then(data => {
-            const script = document.createElement('script');
-            script.type = 'application/ld+json';
-            script.text = JSON.stringify(data);
-            document.head.appendChild(script);
-        })
-        .catch(() => console.log('Schema loaded from inline'));
-    </script>
+  ],
+  "openingHours": "Mo-Fr 08:00-17:00, Sa 09:00-13:00",
+  "foundingDate": "2024",
+  "legalName": "Soyosoyo Savings and Credit Cooperative Society",
+  "slogan": "Empowering Coastal Communities Through Affordable Finance"
+}
+</script>
+
+<!-- PAGE-SPECIFIC SCHEMA: Online Forms & Apply Actions -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Online Forms - Soyosoyo SACCO",
+  "url": "https://soyosoyosacco.com/Online-Forms.html",
+  "description": "FREE Online Membership Application and Loan Forms",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "Soyosoyo SACCO",
+    "url": "https://soyosoyosacco.com"
+  },
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://soyosoyosacco.com/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Online Forms"
+      }
+    ]
+  },
+  "mainEntity": {
+    "@type": "ItemList",
+    "name": "Soyosoyo SACCO Online Applications",
+    "itemListElement": [
+      {
+        "@type": "ApplyAction",
+        "name": "Membership Application Form",
+        "description": "FREE online membership form - Join Soyosoyo SACCO in 2 minutes",
+        "url": "https://docs.google.com/forms/d/e/1FAIpQLSdDboh2Wb7EMmFlNON-q21FXyTDnS_g2_egmD-03WlOwQj6gA/viewform?embedded=true",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://docs.google.com/forms/d/e/1FAIpQLSdDboh2Wb7EMmFlNON-q21FXyTDnS_g2_egmD-03WlOwQj6gA/viewform?embedded=true"
+        }
+      },
+      {
+        "@type": "CalculateAction",
+        "name": "Loan Calculator",
+        "description": "Calculate loan repayments, interest, and fines instantly",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://soyosoyosacco.com/Online-Forms.html#loan-calculator"
+        }
+      },
+      {
+        "@type": "CalculateAction",
+        "name": "Dividends Calculator",
+        "description": "Estimate your annual dividend payout based on monthly shares",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://soyosoyosacco.com/Online-Forms.html#dividends-calculator"
+        }
+      }
+    ]
+  }
+}
+</script>
+
 </body>
 </html>
