@@ -21,8 +21,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
     
-    <!-- FINAL CSS v31 – MENU via main.js -->
-    <link rel="stylesheet" href="./style.css?v=31">
+    <!-- CSS v36 – CAROUSEL FIXED -->
+    <link rel="stylesheet" href="./style.css?v=36">
 
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-05M38MYK0G"></script>
@@ -42,9 +42,7 @@
             <img class="brand-logo round" src="./assets/141dd3faa98da9737b591161deac509a.jpg" alt="Soyosoyo Sacco Logo">
         </a>
         <a href="https://chamasoft.com/login" class="member-portal">Member Portal</a>
-        <button id="menu-toggle" aria-label="Toggle Menu">
-            <!-- Icons injected by main.js -->
-        </button>
+        <button id="menu-toggle" aria-label="Toggle Menu"></button>
         <nav class="nav-links">
             <a href="index.html">Home</a>
             <a href="Products.html">Products</a>
@@ -54,7 +52,7 @@
         </nav>
     </div>
 
-    <!-- HERO IMAGE + TEXT OVERLAY -->
+    <!-- HERO -->
     <div class="hero">
         <div class="banner-text">
             <h1>Welcome to Soyosoyo SACCO</h1>
@@ -157,22 +155,12 @@
         </div>
     </section>
 
-    <!-- Financial Highlights Carousel -->
-    <section class="section carousel-wrapper">
-        <h2>Soyosoyo SACCO Financial Highlights</h2>
-        <p>Our impact in Coastal Kenya’s savings and loans community.</p>
-        <div class="carousel-container">
-            <div class="carousel" aria-label="Financial Metrics Carousel">
-                <ul class="carousel-static">
-                    <li><strong>141</strong> Total Members</li>
-                    <li><strong>KES 864,000</strong> Member Savings</li>
-                    <li><strong>KES 254,000</strong> Bank Balance</li>
-                    <li><strong>100</strong> Number of Loans Given</li>
-                    <li><strong>KES 1,827,000</strong> Value of Loans Given</li>
-                    <li><strong>KES 40,000</strong> Profit</li>
-                    <li><strong>67</strong> Active Members</li>
-                </ul>
-            </div>
+    <!-- Financial Highlights Carousel – FIXED -->
+    <section class="section">
+        <h2 style="text-align: center;">Soyosoyo SACCO Financial Highlights</h2>
+        <p style="text-align: center;">Our impact in Coastal Kenya’s savings and loans community.</p>
+        <div class="carousel-wrapper">
+            <div class="carousel" aria-label="Financial Metrics Carousel"></div>
         </div>
     </section>
 
@@ -319,16 +307,15 @@
 <script src="./scripts/carousel.js"></script>
 <script src="./scripts/seo.js"></script>
 
-<!-- Initialize Calculators -->
+<!-- Initialize Carousel -->
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         if (typeof updateFields === 'function') updateFields();
         if (typeof updateSliderValue === 'function') updateSliderValue('principal');
-        if (typeof initCarousel === 'function') initCarousel();
     });
 </script>
 
-<!-- SCHEMA.ORG – FULL FINANCIAL SERVICE + HOME PAGE (ALL PAGES) -->
+<!-- SCHEMA.ORG – FULL FINANCIAL SERVICE + HOME PAGE -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
