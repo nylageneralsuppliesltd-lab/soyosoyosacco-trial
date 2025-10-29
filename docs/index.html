@@ -21,8 +21,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
     
-    <!-- CSS v39 – CAROUSEL PRESERVED + VISUALS ADDED BELOW -->
-    <link rel="stylesheet" href="./style.css?v=39">
+    <!-- CSS v40 – FIXED VISUALS + JAN vs NOW BAR -->
+    <link rel="stylesheet" href="./style.css?v=40">
 
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-05M38MYK0G"></script>
@@ -158,50 +158,39 @@
         </div>
     </section>
 
-    <!-- NEW: FINANCIAL VISUALS – ADDED BELOW CAROUSEL -->
+    <!-- NEW: FINANCIAL VISUALS – 4 METRICS + JAN vs NOW BAR CHART -->
     <section class="section financial-visuals-section">
         <h2 style="text-align: center; margin-bottom: 1.5rem;">Our Growth in Numbers</h2>
+        
+        <!-- 4 COUNTERS -->
         <div class="financial-visuals-grid">
-
-            <!-- COUNTER 1: Members -->
             <div class="counter-card">
                 <div class="counter-icon"><i class="fas fa-users"></i></div>
                 <div class="counter-value" data-target="143">0</div>
                 <p>Total Members</p>
             </div>
-
-            <!-- COUNTER 2: Savings -->
-            <div class="counter-card">
-                <div class="counter-icon"><i class="fas fa-piggy-bank"></i></div>
-                <div class="counter-value" data-target="875000">0</div>
-                <p>Member Savings (KES)</p>
-            </div>
-
-            <!-- COUNTER 3: Loans Given -->
             <div class="counter-card">
                 <div class="counter-icon"><i class="fas fa-hand-holding-usd"></i></div>
                 <div class="counter-value" data-target="1837000">0</div>
                 <p>Loans Disbursed (KES)</p>
             </div>
-
-            <!-- COUNTER 4: Active Members -->
             <div class="counter-card">
-                <div class="counter-icon"><i class="fas fa-user-check"></i></div>
-                <div class="counter-value" data-target="69">0</div>
-                <p>Active Members</p>
+                <div class="counter-icon"><i class="fas fa-piggy-bank"></i></div>
+                <div class="counter-value" data-target="875000">0</div>
+                <p>Contributions (KES)</p>
             </div>
-
+            <div class="counter-card">
+                <div class="counter-icon"><i class="fas fa-chart-line"></i></div>
+                <div class="counter-value" data-target="42000">0</div>
+                <p>Profit (KES)</p>
+            </div>
         </div>
 
-        <!-- MINI CHARTS -->
-        <div class="mini-charts">
-            <div class="chart-card">
-                <canvas id="savingsChart"></canvas>
-                <p>Savings Growth (Last 12 Months)</p>
-            </div>
-            <div class="chart-card">
-                <canvas id="loansChart"></canvas>
-                <p>Loans Issued (Last 12 Months)</p>
+        <!-- 2-STAGE BAR CHART -->
+        <div class="growth-comparison">
+            <h3>January 2025 vs Today</h3>
+            <div class="chart-container">
+                <canvas id="growthChart"></canvas>
             </div>
         </div>
     </section>
@@ -290,7 +279,7 @@
 <script src="./scripts/carousel.js"></script>
 <script src="./scripts/seo.js"></script>
 
-<!-- CHART.JS + COUNTER ANIMATION -->
+<!-- CHART.JS + COUNTERS + GROWTH CHART -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     // COUNTER ANIMATION
@@ -321,47 +310,46 @@
 
     counters.forEach(counter => observer.observe(counter));
 
-    // MINI CHARTS
+    // JAN vs NOW BAR CHART
     document.addEventListener('DOMContentLoaded', () => {
-        const savingsCtx = document.getElementById('savingsChart').getContext('2d');
-        const loansCtx = document.getElementById('loansChart').getContext('2d');
+        const ctx = document.getElementById('growthChart').getContext('2d');
 
-        new Chart(savingsCtx, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                datasets: [{
-                    label: 'Savings (KES)',
-                    data: [600000, 650000, 680000, 700000, 720000, 740000, 760000, 780000, 800000, 830000, 850000, 875000],
-                    borderColor: '#006400',
-                    backgroundColor: 'rgba(0, 100, 0, 0.1)',
-                    tension: 0.4,
-                    fill: true
-                }]
-            },
-            options: { 
-                responsive: true, 
-                plugins: { legend: { display: false } }, 
-                scales: { y: { display: false }, x: { display: false } } 
-            }
-        });
-
-        new Chart(loansCtx, {
+        new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                datasets: [{
-                    label: 'Loans (KES)',
-                    data: [1400000, 1450000, 1500000, 1550000, 1600000, 1650000, 1700000, 1750000, 1780000, 1800000, 1820000, 1837000],
-                    backgroundColor: '#90EE90',
-                    borderColor: '#006400',
-                    borderWidth: 1
-                }]
+                labels: ['Members', 'Loans (KES)', 'Contributions (KES)', 'Profit (KES)'],
+                datasets: [
+                    {
+                        label: 'January 2025',
+                        data: [80, 1200000, 600000, 15000],
+                        backgroundColor: 'rgba(0, 100, 0, 0.7)',
+                        borderColor: '#004d00',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Today',
+                        data: [143, 1837000, 875000, 42000],
+                        backgroundColor: 'rgba(144, 238, 144, 0.8)',
+                        borderColor: '#006400',
+                        borderWidth: 1
+                    }
+                ]
             },
-            options: { 
-                responsive: true, 
-                plugins: { legend: { display: false } }, 
-                scales: { y: { display: false }, x: { display: false } } 
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: { font: { size: 13 }, padding: 20 }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { callback: value => 'KES ' + value.toLocaleString() }
+                    }
+                }
             }
         });
     });
@@ -484,7 +472,7 @@
     "itemListElement": [
       {
         "@type": "ListItem",
-        "position": 1,
+        "position: 1,
         "name": "Home"
       }
     ]
