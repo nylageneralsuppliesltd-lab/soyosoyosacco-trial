@@ -1,9 +1,9 @@
 /* ========================================
    SOYOSOYO SACCO – FINAL v33
    Cache-busted: ?v=33
-   ALL 9 ISSUES FIXED | MOBILE + DESKTOP SYNC
-   MENU: NAVY BLUE + WHITE | CAROUSEL ROLLING
-   NO DOUBLE CONTAINERS | CLEAN TYPOGRAPHY
+   HERO: Fixed size, scrolls, content visible
+   CAROUSELS: Index (static) + Join-Us (join) both roll
+   NO DOUBLE CONTAINERS | CLEAN | MOBILE SYNC
    ======================================== */
 
 /* ----------------- RESET & BASE ----------------- */
@@ -16,7 +16,7 @@ body {
     line-height:1.7; 
 }
 
-/* ----------------- TYPOGRAPHY (CLEAN & REDUCED) ----------------- */
+/* ----------------- TYPOGRAPHY ----------------- */
 h1 { font-size:2.3rem; font-weight:900; margin-bottom:1rem; }
 h2 { font-size:1.8rem; font-weight:800; margin-bottom:0.9rem; }
 h3 { font-size:1.5rem; font-weight:700; margin-bottom:0.7rem; }
@@ -83,13 +83,17 @@ header.site-header .close-icon {
     height:22px; 
 }
 
-/* HERO – FULL BLEED + OVERLAY */
+/* ----------------- HERO (FIXED: NOT COVERING CONTENT) ----------------- */
 .hero {
     position: relative;
     width: 100%;
-    height: 70vh;
-    min-height: 500px;
+    height: 65vh;
+    min-height: 420px;
+    max-height: 600px;
     background: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.55)), url('./assets/header-image.jpg') center/cover no-repeat;
+    background-attachment: scroll;
+    margin-bottom: 2rem;
+    overflow: hidden;
 }
 .hero .banner-text {
     position: absolute;
@@ -114,14 +118,14 @@ header.site-header .close-icon {
     font-weight: 500; 
 }
 
-/* ----------------- MAIN LAYOUT (NO DOUBLE WRAP) ----------------- */
+/* ----------------- MAIN LAYOUT ----------------- */
 .container {
     max-width:1200px; 
     margin:2rem auto; 
     padding:0 1rem;
 }
 
-/* ----------------- SECTIONS (SINGLE CONTAINER) ----------------- */
+/* ----------------- SECTIONS ----------------- */
 .section, .tool-section, .product-card, .form-embed, .jobs-section, .join-section {
     background:#ffffff;
     border-radius:16px; 
@@ -133,12 +137,10 @@ header.site-header .close-icon {
 .section:hover, .tool-section:hover, .product-card:hover { 
     transform:translateY(-6px); 
 }
-
-/* Remove double nesting */
 .tool-section > .calculator-wrapper { all: unset; }
 .calculator-wrapper { display: contents; }
 
-/* ----------------- MISSION / VISION / CORE VALUES (FIXED) ----------------- */
+/* ----------------- MISSION / VISION / CORE VALUES ----------------- */
 .mission-vision-container,
 .core-values-container {
     display: flex;
@@ -176,7 +178,7 @@ header.site-header .close-icon {
     }
 }
 
-/* ----------------- LEADERSHIP GRID (UNIFORM CIRCLES) ----------------- */
+/* ----------------- LEADERSHIP ----------------- */
 .leadership-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -199,7 +201,7 @@ header.site-header .close-icon {
 .leader-profile h3 { font-size: 1.15rem; margin: 0.5rem 0; }
 .leader-profile p { font-size: 0.9rem; color: #006400; font-weight: 700; }
 
-/* ----------------- PRODUCTS GRID ----------------- */
+/* ----------------- PRODUCTS ----------------- */
 .products-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -220,7 +222,7 @@ header.site-header .close-icon {
     color: #003300;
 }
 
-/* ----------------- BUTTONS (PREMIUM & CONSISTENT) ----------------- */
+/* ----------------- BUTTONS ----------------- */
 .products-button,
 .join-button,
 .job-apply-button {
@@ -243,7 +245,7 @@ header.site-header .close-icon {
     box-shadow: 0 8px 20px rgba(0,100,0,0.35);
 }
 
-/* ----------------- LOAN CALCULATOR (CLEAN) ----------------- */
+/* ----------------- LOAN CALCULATOR ----------------- */
 .calculator {
     background:#fff; 
     padding:2rem; 
@@ -289,7 +291,7 @@ header.site-header .close-icon {
     transform:translateY(-2px);
 }
 
-/* ----------------- DIVIDENDS CALCULATOR (SPACIOUS) ----------------- */
+/* ----------------- DIVIDENDS CALCULATOR ----------------- */
 #dividends-calculator .calculator {
     max-width: 800px;
     display: grid;
@@ -310,22 +312,20 @@ header.site-header .close-icon {
     .month-inputs { grid-template-columns: 1fr; }
 }
 
-/* ----------------- CAROUSEL (AUTO-ROLLING + JOIN-US FIX) ----------------- */
-.carousel-wrapper { overflow: hidden; margin: 2rem 0; }
-.carousel-container { 
-    background: #f0fdf4; 
-    padding: 2rem 0; 
+/* ----------------- INDEX CAROUSEL (FINANCIAL HIGHLIGHTS) ----------------- */
+.carousel-container {
+    background: #f0fdf4;
+    padding: 2rem 0;
     overflow: hidden;
-}
-.carousel {
-    display: flex;
-    animation: scroll 20s linear infinite;
+    margin: 2rem 0;
 }
 .carousel-static {
     display: flex;
     gap: 2.5rem;
     padding: 0 1rem;
     white-space: nowrap;
+    width: 200%;
+    animation: scroll 20s linear infinite;
 }
 .carousel-static li {
     font-weight: 700;
@@ -337,10 +337,45 @@ header.site-header .close-icon {
     0% { transform: translateX(0); }
     100% { transform: translateX(-50%); }
 }
-.carousel-static { width: 200%; }
-.carousel:hover { animation-play-state: paused; }
+.carousel-container:hover .carousel-static {
+    animation-play-state: paused;
+}
 
-/* ----------------- MOBILE MENU (NAVY + WHITE) ----------------- */
+/* ----------------- JOIN-US CAROUSEL (MEMBERSHIP FEES) ----------------- */
+.carousel-join {
+    display: flex;
+    width: max-content;
+    animation: scroll-join var(--carousel-duration, 40s) linear infinite;
+}
+.carousel-join-item {
+    flex: 0 0 var(--item-width, 280px);
+    margin: 0 var(--item-margin, 30px);
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    text-align: center;
+}
+.carousel-join-button {
+    background: #90EE90;
+    color: #006400;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1.5rem;
+    margin-bottom: 0.8rem;
+}
+.carousel-join-description {
+    font-size: 0.95rem;
+    color: #333;
+}
+@keyframes scroll-join {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(var(--carousel-translate, -1200px)); }
+}
+.carousel-join:hover { animation-play-state: paused; }
+
+/* ----------------- MOBILE ----------------- */
 @media (max-width: 768px) {
     header.site-header .navbar { height:60px; padding:0.5rem 0.8rem; }
     header.site-header .brand-logo { width:38px; height:38px; }
@@ -380,7 +415,7 @@ header.site-header .close-icon {
         background: #90EE90;
         color: #003087 !important;
     }
-    .hero { height: 60vh; min-height: 420px; }
+    .hero { height: 60vh; min-height: 380px; }
     .hero .banner-text h1 { font-size: 2.1rem; }
     .hero .banner-text p { font-size: 1.15rem; }
     .container { margin: 1.5rem auto; padding: 0 0.8rem; }
