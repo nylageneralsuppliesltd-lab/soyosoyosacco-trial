@@ -21,8 +21,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
     
-    <!-- CSS v38 – PREMIUM MINIMAL -->
-    <link rel="stylesheet" href="./style.css?v=38">
+    <!-- CSS v39 – CAROUSEL PRESERVED + VISUALS ADDED BELOW -->
+    <link rel="stylesheet" href="./style.css?v=39">
 
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-05M38MYK0G"></script>
@@ -149,12 +149,60 @@
         </div>
     </section>
 
-    <!-- FINANCIAL HIGHLIGHTS CAROUSEL -->
+    <!-- FINANCIAL HIGHLIGHTS CAROUSEL – KEPT INTACT -->
     <section class="section">
         <h2 style="text-align: center;">Financial Highlights</h2>
         <p style="text-align: center; margin-bottom: 1.5rem;">Our impact in numbers.</p>
         <div class="carousel-wrapper">
             <div class="carousel" aria-label="Financial Metrics Carousel"></div>
+        </div>
+    </section>
+
+    <!-- NEW: FINANCIAL VISUALS – ADDED BELOW CAROUSEL -->
+    <section class="section financial-visuals-section">
+        <h2 style="text-align: center; margin-bottom: 1.5rem;">Our Growth in Numbers</h2>
+        <div class="financial-visuals-grid">
+
+            <!-- COUNTER 1: Members -->
+            <div class="counter-card">
+                <div class="counter-icon"><i class="fas fa-users"></i></div>
+                <div class="counter-value" data-target="143">0</div>
+                <p>Total Members</p>
+            </div>
+
+            <!-- COUNTER 2: Savings -->
+            <div class="counter-card">
+                <div class="counter-icon"><i class="fas fa-piggy-bank"></i></div>
+                <div class="counter-value" data-target="875000">0</div>
+                <p>Member Savings (KES)</p>
+            </div>
+
+            <!-- COUNTER 3: Loans Given -->
+            <div class="counter-card">
+                <div class="counter-icon"><i class="fas fa-hand-holding-usd"></i></div>
+                <div class="counter-value" data-target="1837000">0</div>
+                <p>Loans Disbursed (KES)</p>
+            </div>
+
+            <!-- COUNTER 4: Active Members -->
+            <div class="counter-card">
+                <div class="counter-icon"><i class="fas fa-user-check"></i></div>
+                <div class="counter-value" data-target="69">0</div>
+                <p>Active Members</p>
+            </div>
+
+        </div>
+
+        <!-- MINI CHARTS -->
+        <div class="mini-charts">
+            <div class="chart-card">
+                <canvas id="savingsChart"></canvas>
+                <p>Savings Growth (Last 12 Months)</p>
+            </div>
+            <div class="chart-card">
+                <canvas id="loansChart"></canvas>
+                <p>Loans Issued (Last 12 Months)</p>
+            </div>
         </div>
     </section>
 
@@ -190,7 +238,6 @@
                 </div>
                 <button onclick="calculateLoan()">Calculate Loan</button>
                 <div class="result" id="result"></div>
-                <!-- [Rest of calculator fields – unchanged] -->
                 <noscript><div class="error-message">JavaScript is disabled. Please enable JavaScript to use the loan calculator.</div></noscript>
             </div>
         </div>
@@ -243,7 +290,84 @@
 <script src="./scripts/carousel.js"></script>
 <script src="./scripts/seo.js"></script>
 
-<!-- Initialize -->
+<!-- CHART.JS + COUNTER ANIMATION -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // COUNTER ANIMATION
+    const counters = document.querySelectorAll('.counter-value');
+    const speed = 120;
+
+    const startCounter = (counter) => {
+        const target = +counter.getAttribute('data-target');
+        const count = +counter.innerText;
+        const inc = target / speed;
+
+        if (count < target) {
+            counter.innerText = Math.ceil(count + inc).toLocaleString();
+            setTimeout(() => startCounter(counter), 15);
+        } else {
+            counter.innerText = target.toLocaleString();
+        }
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                startCounter(entry.target);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.5 });
+
+    counters.forEach(counter => observer.observe(counter));
+
+    // MINI CHARTS
+    document.addEventListener('DOMContentLoaded', () => {
+        const savingsCtx = document.getElementById('savingsChart').getContext('2d');
+        const loansCtx = document.getElementById('loansChart').getContext('2d');
+
+        new Chart(savingsCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [{
+                    label: 'Savings (KES)',
+                    data: [600000, 650000, 680000, 700000, 720000, 740000, 760000, 780000, 800000, 830000, 850000, 875000],
+                    borderColor: '#006400',
+                    backgroundColor: 'rgba(0, 100, 0, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: { 
+                responsive: true, 
+                plugins: { legend: { display: false } }, 
+                scales: { y: { display: false }, x: { display: false } } 
+            }
+        });
+
+        new Chart(loansCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [{
+                    label: 'Loans (KES)',
+                    data: [1400000, 1450000, 1500000, 1550000, 1600000, 1650000, 1700000, 1750000, 1780000, 1800000, 1820000, 1837000],
+                    backgroundColor: '#90EE90',
+                    borderColor: '#006400',
+                    borderWidth: 1
+                }]
+            },
+            options: { 
+                responsive: true, 
+                plugins: { legend: { display: false } }, 
+                scales: { y: { display: false }, x: { display: false } } 
+            }
+        });
+    });
+</script>
+
+<!-- Initialize Calculators -->
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         if (typeof updateFields === 'function') updateFields();
@@ -251,7 +375,7 @@
     });
 </script>
 
-<!-- SCHEMA.ORG – FULL FINANCIAL SERVICE + HOME PAGE -->
+<!-- SCHEMA.ORG – UNCHANGED -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -343,7 +467,6 @@
 }
 </script>
 
-<!-- PAGE-SPECIFIC SCHEMA: Home Page -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
