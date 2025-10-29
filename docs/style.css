@@ -1,12 +1,319 @@
 /* ========================================
    SOYOSOYO SACCO – FINAL v39
    Cache-busted: ?v=39
-   CAROUSEL PRESERVED
-   FINANCIAL VISUALS ADDED BELOW
+   CAROUSEL: PRESERVED
+   FINANCIAL VISUALS: ADDED BELOW CAROUSEL
+   NO CONFLICTS | FULLY RESPONSIVE
    ======================================== */
 
-/* [ALL PREVIOUS STYLES FROM v38 – UNCHANGED] */
-/* ... (Keep everything up to the end of v38) ... */
+/* ----------------- RESET & BASE ----------------- */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; overflow-x:hidden; font-size:16px; }
+body { 
+    font-family: 'Lato', Arial, sans-serif; 
+    background:#f8fafc; 
+    color:#2d3748; 
+    line-height:1.7; 
+    overflow-x: hidden;
+}
+
+/* ----------------- TYPOGRAPHY ----------------- */
+h1 { font-size:2.3rem; font-weight:900; margin-bottom:1rem; }
+h2 { font-size:1.8rem; font-weight:800; margin-bottom:0.9rem; }
+h3 { font-size:1.5rem; font-weight:700; margin-bottom:0.7rem; }
+h4 { font-size:1.3rem; font-weight:700; }
+p, li, label, input, select, button, a { font-size:1rem; color:#2d3748; }
+ul { list-style:disc inside; margin:1rem 0; padding-left:1.5rem; }
+ul li { margin-bottom:0.5rem; }
+
+/* ----------------- LINKS ----------------- */
+a { text-decoration:none; color:inherit; }
+a:hover { text-decoration:underline; }
+
+/* ----------------- IMAGES ----------------- */
+img { max-width:100%; height:auto; display:block; }
+.round, .brand-logo { border-radius:50% !important; object-fit:cover !important; }
+
+/* ----------------- HEADER (SCROLLS – NOT STICKY) ----------------- */
+header.site-header { 
+    background:#ffffff; 
+    width:100%; 
+    position: relative;
+    z-index:1000; 
+    box-shadow:0 2px 10px rgba(0,0,0,0.1);
+}
+header.site-header .navbar {
+    display:flex; 
+    align-items:center; 
+    justify-content:space-between;
+    padding:0.6rem 1.2rem; 
+    max-width:1200px; 
+    margin:0 auto; 
+    height:56px;
+}
+header.site-header .brand-logo { width:42px; height:42px; }
+header.site-header .member-portal,
+header.site-header .nav-links a {
+    background:#003087; 
+    color:#fff; 
+    padding:0.5rem 1rem; 
+    border-radius:30px;
+    font-weight:700; 
+    font-size:0.9rem; 
+    transition:0.3s;
+}
+header.site-header .member-portal:hover,
+header.site-header .nav-links a:hover { 
+    background:#001f5b; 
+    transform: translateY(-2px);
+}
+header.site-header .nav-links { 
+    display:flex; 
+    gap:1.2rem; 
+}
+header.site-header #menu-toggle { 
+    display:none; 
+    cursor:pointer; 
+    background:none; 
+    border:none; 
+}
+header.site-header .menu-icon, 
+header.site-header .close-icon { 
+    width:22px; 
+    height:22px; 
+}
+
+/* ----------------- HERO: NO OVERLAY, WHITE TEXT ----------------- */
+.hero {
+    position: relative;
+    width: 100%;
+    height: 45vh;
+    min-height: 350px;
+    max-height: 480px;
+    background: url('./assets/header-image.jpg') center/cover no-repeat;
+    background-attachment: scroll;
+    margin: 0 0 2.5rem 0;
+    overflow: hidden;
+    z-index: 1;
+}
+.hero .banner-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    color: #ffffff !important;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+    text-align: center;
+    padding: 1.5rem;
+    max-width: 900px;
+    width: 92%;
+}
+.hero .banner-text h1 { 
+    font-size: 2.6rem; 
+    margin-bottom: 0.8rem; 
+    font-weight: 900; 
+    color: #ffffff;
+}
+.hero .banner-text p { 
+    font-size: 1.25rem; 
+    font-weight: 500; 
+    color: #ffffff;
+}
+
+/* ----------------- MAIN LAYOUT ----------------- */
+.container {
+    max-width:1200px; 
+    margin:2rem auto; 
+    padding:0 1rem;
+}
+
+/* ----------------- SECTIONS ----------------- */
+.section, .tool-section, .product-card, .form-embed, .jobs-section, .join-section {
+    background:#ffffff;
+    border-radius:16px; 
+    padding:2rem;
+    box-shadow:0 8px 24px rgba(0,0,0,0.08);
+    margin-bottom:2rem;
+    transition:transform 0.3s ease;
+}
+.section:hover, .tool-section:hover, .product-card:hover { 
+    transform:translateY(-6px); 
+}
+.tool-section > .calculator-wrapper { all: unset; }
+.calculator-wrapper { display: contents; }
+
+/* ----------------- MISSION / VISION / CORE VALUES ----------------- */
+.mission-vision-container,
+.core-values-container {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    background: white;
+    padding: 1.8rem;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+    margin: 1.5rem 0;
+}
+.mission-vision-container img,
+.core-values-container img {
+    width: 85px;
+    height: 85px;
+    border: 3px solid #006400;
+    flex-shrink: 0;
+}
+.mission-vision-container h2,
+.core-values-container h2 {
+    color: #006400;
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+}
+@media (max-width: 768px) {
+    .mission-vision-container,
+    .core-values-container {
+        flex-direction: column;
+        text-align: center;
+    }
+    .mission-vision-container img,
+    .core-values-container img {
+        width: 70px;
+        height: 70px;
+    }
+}
+
+/* ----------------- LEADERSHIP ----------------- */
+.leadership-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+.leader-profile {
+    text-align: center;
+    background: white;
+    padding: 1.5rem;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+}
+.leader-profile img {
+    width: 110px;
+    height: 110px;
+    border: 4px solid #006400;
+    margin: 0 auto 0.8rem;
+}
+.leader-profile h3 { font-size: 1.15rem; margin: 0.5rem 0; }
+.leader-profile p { font-size: 0.9rem; color: #006400; font-weight: 700; }
+
+/* ----------------- PRODUCTS ----------------- */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.8rem;
+    margin-top: 1.5rem;
+}
+.product-card {
+    text-align: center;
+}
+.product-card img {
+    height: 180px;
+    object-fit: cover;
+    border-radius: 12px 12px 0 0;
+}
+.product-card h2 {
+    font-size: 1.3rem;
+    margin: 1rem 0 0.5rem;
+    color: #003300;
+}
+
+/* ----------------- BUTTONS ----------------- */
+.products-button,
+.join-button,
+.job-apply-button {
+    display: inline-block;
+    background: #006400;
+    color: white;
+    padding: 0.75rem 1.8rem;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin: 1.2rem 0;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0,100,0,0.25);
+}
+.products-button:hover,
+.join-button:hover,
+.job-apply-button:hover {
+    background: #004d00;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,100,0,0.35);
+}
+
+/* ----------------- LOAN CALCULATOR ----------------- */
+.calculator {
+    background:#fff; 
+    padding:2rem; 
+    border-radius:16px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.1);
+    max-width: 600px;
+    margin: 0 auto;
+}
+.calculator h2 { 
+    font-size:1.7rem; 
+    margin-bottom:1.2rem; 
+    color:#006400; 
+    text-align:center; 
+}
+.form-group { margin-bottom:1.5rem; }
+.form-group label { 
+    display:block; 
+    margin-bottom:0.6rem; 
+    font-weight:600; 
+    color:#1a202c; 
+}
+.form-group input, .form-group select {
+    width:100%; 
+    padding:0.85rem; 
+    border:1px solid #90EE90; 
+    border-radius:8px; 
+    font-size:1rem;
+}
+.calculator button {
+    background:#006400; 
+    color:white; 
+    border:none; 
+    padding:0.9rem; 
+    border-radius:30px;
+    font-weight:700; 
+    cursor:pointer; 
+    width:100%; 
+    font-size:1rem; 
+    transition:0.3s;
+}
+.calculator button:hover { 
+    background:#004d00; 
+    transform:translateY(-2px);
+}
+
+/* ----------------- DIVIDENDS CALCULATOR ----------------- */
+#dividends-calculator .calculator {
+    max-width: 800px;
+    display: grid;
+    gap: 1.2rem;
+}
+.month-inputs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.8rem;
+}
+.month-inputs input {
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 0.95rem;
+}
+@media (max-width: 768px) {
+    .month-inputs { grid-template-columns: 1fr; }
+}
 
 /* ----------------- INDEX CAROUSEL (FINANCIAL HIGHLIGHTS) – WORKING ----------------- */
 .carousel-wrapper {
@@ -48,6 +355,143 @@
 }
 .carousel-wrapper:hover .carousel {
     animation-play-state: paused;
+}
+
+/* ----------------- JOIN-US CAROUSEL (FIXED: NO HORIZONTAL SCROLL) ----------------- */
+.carousel-join-wrapper {
+    overflow: hidden;
+    padding: 2rem 0;
+    background: #f0fdf4;
+}
+.carousel-join {
+    display: flex;
+    width: max-content;
+    animation: scroll-join var(--carousel-duration, 40s) linear infinite;
+}
+.carousel-join-item {
+    flex: 0 0 var(--item-width, 280px);
+    margin: 0 var(--item-margin, 30px);
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    text-align: center;
+}
+.carousel-join-button {
+    background: #90EE90;
+    color: #006400;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1.5rem;
+    margin-bottom: 0.8rem;
+}
+.carousel-join-description {
+    font-size: 0.95rem;
+    color: #333;
+}
+@keyframes scroll-join {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(var(--carousel-translate, -1200px)); }
+}
+.carousel-join-wrapper:hover .carousel-join {
+    animation-play-state: paused;
+}
+
+/* ----------------- MOBILE ----------------- */
+@media (max-width: 768px) {
+    header.site-header .navbar { height:60px; padding:0.5rem 0.8rem; }
+    header.site-header .brand-logo { width:38px; height:38px; }
+    header.site-header #menu-toggle { display: block !important; }
+    
+    /* MOBILE MENU: NARROW RIGHT-SLIDE (TEXT-WIDTH ONLY) */
+    header.site-header .nav-links {
+        position: fixed;
+        top: 60px;
+        right: 0;
+        left: auto;
+        width: auto;
+        max-width: 240px;
+        background: #003087;
+        padding: 1.2rem 1.5rem;
+        z-index: 9999;
+        border-radius: 0 0 0 16px;
+        box-shadow: -6px 10px 25px rgba(0,0,0,0.3);
+        flex-direction: column;
+        gap: 0.8rem;
+        transition: all 0.35s ease;
+        transform: translateX(100%);
+        opacity: 0;
+        visibility: hidden;
+    }
+    header.site-header .nav-links.show {
+        transform: translateX(0);
+        opacity: 1;
+        visibility: visible;
+    }
+    header.site-header .nav-links a {
+        color: #ffffff !important;
+        background: #001f5b;
+        padding: 0.75rem 1.2rem;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 1rem;
+        text-align: center;
+        white-space: nowrap;
+    }
+    header.site-header .nav-links a:hover {
+        background: #90EE90;
+        color: #003087 !important;
+    }
+
+    .hero { 
+        height: 40vh; 
+        min-height: 300px; 
+        max-height: 400px; 
+    }
+    .hero .banner-text h1 { font-size: 2rem; }
+    .hero .banner-text p { font-size: 1.1rem; }
+    .container { margin: 1.5rem auto; padding: 0 0.8rem; }
+    .section, .tool-section { padding: 1.6rem; margin-bottom: 1.5rem; }
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.6rem; }
+    .month-inputs input { font-size: 0.9rem; }
+    
+    /* JOIN-US CAROUSEL MOBILE FIX */
+    .carousel-join-wrapper { padding: 1.5rem 0; }
+    .carousel-join-item { 
+        flex: 0 0 80vw; 
+        margin: 0 5px; 
+    }
+
+    /* INDEX CAROUSEL MOBILE */
+    .carousel-wrapper { padding: 1.5rem 0; }
+    .carousel-item {
+        flex: 0 0 80vw;
+        margin: 0 10px;
+    }
+}
+
+/* ----------------- FOOTER ----------------- */
+footer {
+    background:#003087; 
+    color:#ffffff; 
+    text-align:center; 
+    padding:3rem 1rem; 
+    margin-top:4rem;
+    font-size:1rem;
+}
+footer a { color:#90EE90; text-decoration:none; font-weight:600; }
+footer a:hover { color:#ffffff; }
+.social-icons a { 
+    margin:0 1rem; 
+    font-size:1.5rem; 
+    color:#90EE90; 
+    transition:0.3s; 
+}
+.social-icons a:hover { 
+    color:#ffffff; 
+    transform:scale(1.15); 
 }
 
 /* ----------------- FINANCIAL VISUALS – ADDED BELOW CAROUSEL ----------------- */
@@ -113,4 +557,17 @@
     font-weight: 600;
 }
 
-/* [Rest of v38 styles – unchanged] */
+/* MOBILE RESPONSIVE FOR VISUALS */
+@media (max-width: 768px) {
+    .financial-visuals-grid {
+        grid-template-columns: 1fr;
+        gap: 1.2rem;
+    }
+    .mini-charts {
+        grid-template-columns: 1fr;
+        gap: 1.2rem;
+    }
+    .chart-card canvas {
+        max-height: 160px;
+    }
+}
