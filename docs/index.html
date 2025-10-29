@@ -21,8 +21,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
     
-    <!-- CSS v42 – MOBILE BARS CENTERED + LABELS -->
-    <link rel="stylesheet" href="./style.css?v=42">
+    <!-- CSS v43 – SYNCED WITH carousel.js -->
+    <link rel="stylesheet" href="./style.css?v=43">
 
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-05M38MYK0G"></script>
@@ -156,26 +156,7 @@
         </div>
     </section>
 
-    <!-- SINGLE SOURCE: UPDATE FIGURES HERE -->
-    <script>
-        // UPDATE THESE VALUES ONLY → CAROUSEL + CHARTS AUTO-SYNC
-        window.saccoData = {
-            jan: {
-                members: 106,
-                loans: 283500,
-                contributions: 331000,
-                profit: -60000
-            },
-            today: {
-                members: 143,
-                loans: 1837000,
-                contributions: 875000,
-                profit: 42000
-            }
-        };
-    </script>
-
-    <!-- 4 MODERN CHARTS WITH NUMBERS ON BARS -->
+    <!-- 4 MODERN CHARTS – AUTO-SYNCED FROM carousel.js -->
     <section class="section">
         <h2 style="text-align: center; margin-bottom: 1.5rem;">Growth Since January 2025</h2>
         
@@ -283,99 +264,89 @@
 <script src="./scripts/carousel.js"></script>
 <script src="./scripts/seo.js"></script>
 
-<!-- CHART.JS + DATALABELS + CENTERED BARS -->
+<!-- CHART.JS + DATALABELS + AUTO-SYNC FROM carousel.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const data = window.saccoData;
+        // Wait for carousel.js to set window.saccoData
+        const waitForSaccoData = setInterval(() => {
+            if (window.saccoData) {
+                clearInterval(waitForSaccoData);
+                renderCharts();
+            }
+        }, 50);
 
-        // Update carousel
-        window.carouselData = [
-            { value: data.today.members.toLocaleString(), label: "Members" },
-            { value: "KES " + (data.today.loans / 1000).toFixed(0) + "K", label: "Loans Disbursed" },
-            { value: "KES " + (data.today.contributions / 1000).toFixed(0) + "K", label: "Contributions" },
-            { value: "KES " + (data.today.profit / 1000).toFixed(0) + "K", label: "Profit" }
-        ];
-        if (typeof initCarousel === 'function') initCarousel();
+        function renderCharts() {
+            const data = window.saccoData;
 
-        // Vibrant colors
-        const colors = {
-            members: { jan: '#8B5CF6', today: '#C4B5FD' },
-            loans: { jan: '#F59E0B', today: '#FBBF24' },
-            contributions: { jan: '#10B981', today: '#34D399' },
-            profit: { jan: '#EF4444', today: '#F87171' }
-        };
+            // Vibrant colors
+            const colors = {
+                members: { jan: '#8B5CF6', today: '#C4B5FD' },
+                loans: { jan: '#F59E0B', today: '#FBBF24' },
+                contributions: { jan: '#10B981', today: '#34D399' },
+                profit: { jan: '#EF4444', today: '#F87171' }
+            };
 
-        const formatNumber = (value, isMoney = false) => {
-            return isMoney ? 'KES ' + value.toLocaleString() : value.toLocaleString();
-        };
+            const formatNumber = (value, isMoney = false) => {
+                return isMoney ? 'KES ' + value.toLocaleString() : value.toLocaleString();
+            };
 
-        const createChart = (id, jan, today, label, color) => {
-            const ctx = document.getElementById(id).getContext('2d');
-            const isMoney = label.includes('KES');
+            const createChart = (id, jan, today, label, color) => {
+                const ctx = document.getElementById(id).getContext('2d');
+                const isMoney = label.includes('KES');
 
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['Jan 2025', 'Today'],
-                    datasets: [{
-                        data: [jan, today],
-                        backgroundColor: [color.jan, color.today],
-                        borderColor: [color.jan, color.today],
-                        borderWidth: 2,
-                        borderRadius: 10,
-                        barThickness: 'flex',
-                        maxBarThickness: 60
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: { label: ctx => formatNumber(ctx.raw, isMoney) }
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Jan 2025', 'Today'],
+                        datasets: [{
+                            data: [jan, today],
+                            backgroundColor: [color.jan, color.today],
+                            borderColor: [color.jan, color.today],
+                            borderWidth: 2,
+                            borderRadius: 10,
+                            barThickness: 'flex',
+                            maxBarThickness: 60
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: { label: ctx => formatNumber(ctx.raw, isMoney) }
+                            },
+                            datalabels: {
+                                anchor: 'end',
+                                align: 'top',
+                                color: '#1f2937',
+                                font: { weight: 'bold', size: 12 },
+                                formatter: value => formatNumber(value, isMoney),
+                                backgroundColor: 'rgba(255, 255, 255, 0.92)',
+                                borderRadius: 6,
+                                padding: 6,
+                                shadowBlur: 8,
+                                shadowColor: 'rgba(0,0,0,0.2)'
+                            }
                         },
-                        datalabels: {
-                            anchor: 'end',
-                            align: 'top',
-                            color: '#1f2937',
-                            font: { weight: 'bold', size: 12 },
-                            formatter: value => formatNumber(value, isMoney),
-                            backgroundColor: 'rgba(255, 255, 255, 0.92)',
-                            borderRadius: 6,
-                            padding: 6,
-                            shadowBlur: 8,
-                            shadowColor: 'rgba(0,0,0,0.2)'
-                        }
-                    },
-                    scales: {
-                        x: {
-                            grid: { display: false },
-                            ticks: { padding: 12 }
+                        scales: {
+                            x: { grid: { display: false }, ticks: { padding: 12 } },
+                            y: { beginAtZero: true, display: false }
                         },
-                        y: {
-                            beginAtZero: true,
-                            display: false
-                        }
+                        layout: { padding: { left: 10, right: 10, top: 30 } },
+                        animation: { duration: 1600, easing: 'easeOutQuart' }
                     },
-                    layout: {
-                        padding: { left: 10, right: 10, top: 30 }
-                    },
-                    animation: {
-                        duration: 1600,
-                        easing: 'easeOutQuart'
-                    }
-                },
-                plugins: [ChartDataLabels]
-            });
-        };
+                    plugins: [ChartDataLabels]
+                });
+            };
 
-        createChart('chartMembers', data.jan.members, data.today.members, 'Members', colors.members);
-        createChart('chartLoans', data.jan.loans, data.today.loans, 'Loans (KES)', colors.loans);
-        createChart('chartContributions', data.jan.contributions, data.today.contributions, 'Contributions (KES)', colors.contributions);
-        createChart('chartProfit', data.jan.profit, data.today.profit, 'Profit (KES)', colors.profit);
+            createChart('chartMembers', data.jan.members, data.today.members, 'Members', colors.members);
+            createChart('chartLoans', data.jan.loans, data.today.loans, 'Loans (KES)', colors.loans);
+            createChart('chartContributions', data.jan.contributions, data.today.contributions, 'Contributions (KES)', colors.contributions);
+            createChart('chartProfit', data.jan.profit, data.today.profit, 'Profit (KES)', colors.profit);
+        }
     });
 </script>
 
@@ -387,19 +358,30 @@
     });
 </script>
 
-<!-- SCHEMA.ORG -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "FinancialService",
-  "name": "SOYOSOYO SACCO",
-  "additionalProperty": [
-    {"@type": "PropertyValue", "name": "Total Members", "value": 143},
-    {"@type": "PropertyValue", "name": "Loans Disbursed", "value": 1837000, "unitCode": "KES"},
-    {"@type": "PropertyValue", "name": "Contributions", "value": 875000, "unitCode": "KES"},
-    {"@type": "PropertyValue", "name": "Profit", "value": 42000, "unitCode": "KES"}
-  ]
-}
+<!-- SCHEMA.ORG – AUTO-UPDATES FROM carousel.js -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const updateSchema = setInterval(() => {
+            if (window.saccoData) {
+                clearInterval(updateSchema);
+                const schema = {
+                    "@context": "https://schema.org",
+                    "@type": "FinancialService",
+                    "name": "SOYOSOYO SACCO",
+                    "additionalProperty": [
+                        {"@type": "PropertyValue", "name": "Total Members", "value": window.saccoData.today.members},
+                        {"@type": "PropertyValue", "name": "Loans Disbursed", "value": window.saccoData.today.loans, "unitCode": "KES"},
+                        {"@type": "PropertyValue", "name": "Contributions", "value": window.saccoData.today.contributions, "unitCode": "KES"},
+                        {"@type": "PropertyValue", "name": "Profit", "value": window.saccoData.today.profit, "unitCode": "KES"}
+                    ]
+                };
+                const script = document.createElement('script');
+                script.type = 'application/ld+json';
+                script.text = JSON.stringify(schema);
+                document.head.appendChild(script);
+            }
+        }, 50);
+    });
 </script>
 
 </body>
