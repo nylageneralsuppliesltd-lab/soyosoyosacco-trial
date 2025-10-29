@@ -344,7 +344,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 
-<!-- GROWTH CHARTS + CAROUSEL -->
+<!-- CHART.JS + DATALABELS – FONTS UPGRADED -->
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const waitForData = setInterval(() => {
@@ -378,19 +378,53 @@
             const createChart = (id, j, t, label, color, gid) => {
                 const g = growth(j, t);
                 updateIndicator(gid, g);
+
                 new Chart(document.getElementById(id).getContext('2d'), {
                     type: 'bar',
-                    data: { labels: ['Jan 2025', 'Today'], datasets: [{ data: [j, t], backgroundColor: [color.jan, color.today], borderRadius: 10, maxBarThickness: 60 }] },
+                    data: {
+                        labels: ['Jan 2025', 'Today'],
+                        datasets: [{
+                            data: [j, t],
+                            backgroundColor: [color.jan, color.today],
+                            borderRadius: 10,
+                            maxBarThickness: 60
+                        }]
+                    },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
                         plugins: {
                             legend: { display: false },
-                            tooltip: { callbacks: { label: ctx => format(ctx.raw, label.includes('KES')) } },
-                            datalabels: { anchor: 'end', align: 'top', color: '#1f2937', font: { weight: 'bold', size: 12 }, formatter: v => format(v, label.includes('KES')), backgroundColor: 'rgba(255,255,255,0.92)', borderRadius: 6, padding: 6 }
+                            tooltip: {
+                                callbacks: { label: ctx => format(ctx.raw, label.includes('KES')) }
+                            },
+                            datalabels: {
+                                anchor: 'end',
+                                align: 'top',
+                                color: '#1a1a1a',  // DARKER TEXT
+                                font: {
+                                    weight: '900',  // ULTRA BOLD
+                                    size: 14        // +2px FROM 12 → BIGGER
+                                },
+                                formatter: v => format(v, label.includes('KES')),
+                                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                                borderRadius: 6,
+                                padding: 7,
+                                shadowBlur: 6,
+                                shadowColor: 'rgba(0,0,0,0.15)'
+                            }
                         },
-                        scales: { x: { grid: { display: false } }, y: { display: false, beginAtZero: true } },
-                        layout: { padding: { top: 30 } }
+                        scales: {
+                            x: {
+                                grid: { display: false },
+                                ticks: {
+                                    color: '#1a1a1a',
+                                    font: { weight: 'bold', size: 13 }  // X-AXIS LABELS BOLDER
+                                }
+                            },
+                            y: { display: false, beginAtZero: true }
+                        },
+                        layout: { padding: { top: 36, left: 8, right: 8 } }  // SLIGHT TOP PAD FOR BIGGER FONT
                     },
                     plugins: [ChartDataLabels]
                 });
