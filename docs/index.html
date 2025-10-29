@@ -21,8 +21,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
     
-    <!-- CSS v40 – FIXED VISUALS + JAN vs NOW BAR -->
-    <link rel="stylesheet" href="./style.css?v=40">
+    <!-- CSS v41 – MODERN CHARTS, SINGLE SOURCE -->
+    <link rel="stylesheet" href="./style.css?v=41">
 
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-05M38MYK0G"></script>
@@ -76,7 +76,7 @@
         </div>
     </section>
 
-    <!-- MISSION -->
+    <!-- MISSION / VISION / CORE VALUES -->
     <div class="mission-vision-container">
         <img src="./assets/0065564ad0f92baf9be886b031073979.jpg" alt="Mission" class="round">
         <div>
@@ -85,7 +85,6 @@
         </div>
     </div>
 
-    <!-- VISION -->
     <div class="mission-vision-container">
         <img src="./assets/d8c3d49708ed9831ff753b3548c717aa.jpg" alt="Vision" class="round">
         <div>
@@ -94,7 +93,6 @@
         </div>
     </div>
 
-    <!-- CORE VALUES -->
     <div class="core-values-container">
         <img src="./assets/8119c4ebd64ccbe641d0563d23444c34.jpg" alt="Core Values" class="round">
         <div>
@@ -149,7 +147,7 @@
         </div>
     </section>
 
-    <!-- FINANCIAL HIGHLIGHTS CAROUSEL – KEPT INTACT -->
+    <!-- FINANCIAL HIGHLIGHTS CAROUSEL -->
     <section class="section">
         <h2 style="text-align: center;">Financial Highlights</h2>
         <p style="text-align: center; margin-bottom: 1.5rem;">Our impact in numbers.</p>
@@ -158,39 +156,49 @@
         </div>
     </section>
 
-    <!-- NEW: FINANCIAL VISUALS – 4 METRICS + JAN vs NOW BAR CHART -->
-    <section class="section financial-visuals-section">
-        <h2 style="text-align: center; margin-bottom: 1.5rem;">Our Growth in Numbers</h2>
-        
-        <!-- 4 COUNTERS -->
-        <div class="financial-visuals-grid">
-            <div class="counter-card">
-                <div class="counter-icon"><i class="fas fa-users"></i></div>
-                <div class="counter-value" data-target="143">0</div>
-                <p>Total Members</p>
-            </div>
-            <div class="counter-card">
-                <div class="counter-icon"><i class="fas fa-hand-holding-usd"></i></div>
-                <div class="counter-value" data-target="1837000">0</div>
-                <p>Loans Disbursed (KES)</p>
-            </div>
-            <div class="counter-card">
-                <div class="counter-icon"><i class="fas fa-piggy-bank"></i></div>
-                <div class="counter-value" data-target="875000">0</div>
-                <p>Contributions (KES)</p>
-            </div>
-            <div class="counter-card">
-                <div class="counter-icon"><i class="fas fa-chart-line"></i></div>
-                <div class="counter-value" data-target="42000">0</div>
-                <p>Profit (KES)</p>
-            </div>
-        </div>
+    <!-- SINGLE SOURCE: UPDATE HERE -->
+    <script>
+        // UPDATE THESE VALUES ONLY
+        window.saccoData = {
+            jan: {
+                members: 106,
+                loans: 283500,
+                contributions: 331000,
+                profit: -60000
+            },
+            today: {
+                members: 143,
+                loans: 1837000,
+                contributions: 875000,
+                profit: 42000
+            }
+        };
+    </script>
 
-        <!-- 2-STAGE BAR CHART -->
-        <div class="growth-comparison">
-            <h3>January 2025 vs Today</h3>
-            <div class="chart-container">
-                <canvas id="growthChart"></canvas>
+    <!-- 4 MODERN CHARTS BELOW -->
+    <section class="section financial-visuals-section">
+        <h2 style="text-align: center; margin-bottom: 1.5rem;">Growth Since January 2025</h2>
+        
+        <div class="growth-charts-grid">
+            <!-- Chart 1: Members -->
+            <div class="chart-card">
+                <canvas id="chartMembers"></canvas>
+                <p><i class="fas fa-users"></i> Total Members</p>
+            </div>
+            <!-- Chart 2: Loans -->
+            <div class="chart-card">
+                <canvas id="chartLoans"></canvas>
+                <p><i class="fas fa-hand-holding-usd"></i> Loans Disbursed</p>
+            </div>
+            <!-- Chart 3: Contributions -->
+            <div class="chart-card">
+                <canvas id="chartContributions"></canvas>
+                <p><i class="fas fa-piggy-bank"></i> Contributions</p>
+            </div>
+            <!-- Chart 4: Profit -->
+            <div class="chart-card">
+                <canvas id="chartProfit"></canvas>
+                <p><i class="fas fa-chart-line"></i> Profit</p>
             </div>
         </div>
     </section>
@@ -279,79 +287,76 @@
 <script src="./scripts/carousel.js"></script>
 <script src="./scripts/seo.js"></script>
 
-<!-- CHART.JS + COUNTERS + GROWTH CHART -->
+<!-- CHART.JS + MODERN CHARTS -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // COUNTER ANIMATION
-    const counters = document.querySelectorAll('.counter-value');
-    const speed = 120;
-
-    const startCounter = (counter) => {
-        const target = +counter.getAttribute('data-target');
-        const count = +counter.innerText;
-        const inc = target / speed;
-
-        if (count < target) {
-            counter.innerText = Math.ceil(count + inc).toLocaleString();
-            setTimeout(() => startCounter(counter), 15);
-        } else {
-            counter.innerText = target.toLocaleString();
-        }
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                startCounter(entry.target);
-                observer.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.5 });
-
-    counters.forEach(counter => observer.observe(counter));
-
-    // JAN vs NOW BAR CHART
+    // AUTO-SYNC CAROUSEL → CHARTS
     document.addEventListener('DOMContentLoaded', () => {
-        const ctx = document.getElementById('growthChart').getContext('2d');
+        const data = window.saccoData;
 
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Members', 'Loans (KES)', 'Contributions (KES)', 'Profit (KES)'],
-                datasets: [
-                    {
-                        label: 'January 2025',
-                        data: [80, 1200000, 600000, 15000],
-                        backgroundColor: 'rgba(0, 100, 0, 0.7)',
-                        borderColor: '#004d00',
-                        borderWidth: 1
-                    },
-                    {
-                        label: 'Today',
-                        data: [143, 1837000, 875000, 42000],
-                        backgroundColor: 'rgba(144, 238, 144, 0.8)',
-                        borderColor: '#006400',
-                        borderWidth: 1
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                        labels: { font: { size: 13 }, padding: 20 }
-                    }
+        // Update carousel.js data
+        window.carouselData = [
+            { value: data.today.members.toLocaleString(), label: "Members" },
+            { value: "KES " + (data.today.loans / 1000).toFixed(0) + "K", label: "Loans Disbursed" },
+            { value: "KES " + (data.today.contributions / 1000).toFixed(0) + "K", label: "Contributions" },
+            { value: "KES " + (data.today.profit / 1000).toFixed(0) + "K", label: "Profit" }
+        ];
+
+        // Re-init carousel
+        if (typeof initCarousel === 'function') initCarousel();
+
+        // Chart Colors (vibrant, per metric)
+        const colors = {
+            members: { jan: '#8B5CF6', today: '#C4B5FD' },     // Purple
+            loans: { jan: '#F59E0B', today: '#FBBF24' },       // Amber
+            contributions: { jan: '#10B981', today: '#34D399' }, // Emerald
+            profit: { jan: '#EF4444', today: '#F87171' }        // Red
+        };
+
+        const createChart = (id, jan, today, label, color) => {
+            const ctx = document.getElementById(id).getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Jan 2025', 'Today'],
+                    datasets: [{
+                        label: label,
+                        data: [jan, today],
+                        backgroundColor: [color.jan, color.today],
+                        borderColor: [color.jan, color.today],
+                        borderWidth: 2,
+                        borderRadius: 8,
+                        barThickness: 50
+                    }]
                 },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: { callback: value => 'KES ' + value.toLocaleString() }
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => label.includes('KES') 
+                                    ? 'KES ' + ctx.raw.toLocaleString()
+                                    : ctx.raw.toLocaleString()
+                            }
+                        }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, display: false },
+                        x: { grid: { display: false } }
+                    },
+                    animation: {
+                        duration: 1500,
+                        easing: 'easeOutQuart'
                     }
                 }
-            }
-        });
+            });
+        };
+
+        createChart('chartMembers', data.jan.members, data.today.members, 'Members', colors.members);
+        createChart('chartLoans', data.jan.loans, data.today.loans, 'Loans (KES)', colors.loans);
+        createChart('chartContributions', data.jan.contributions, data.today.contributions, 'Contributions (KES)', colors.contributions);
+        createChart('chartProfit', data.jan.profit, data.today.profit, 'Profit (KES)', colors.profit);
     });
 </script>
 
@@ -363,7 +368,7 @@
     });
 </script>
 
-<!-- SCHEMA.ORG – UNCHANGED -->
+<!-- SCHEMA.ORG -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -371,124 +376,12 @@
   "name": "SOYOSOYO SACCO",
   "url": "https://soyosoyosacco.com",
   "logo": "https://soyosoyosacco.com/assets/141dd3faa98da9737b591161deac509a.jpg",
-  "image": "https://soyosoyosacco.com/assets/header-image.jpg",
-  "description": "Soyosoyo SACCO offers affordable loans, savings, and financial empowerment to coastal Kenya communities in Kilifi, Mombasa, and Kwale. Products include Emergency, Education, Medicare, Development, and Api Culture loans at 1% interest.",
-  "address": {
-    "@type": "PostalAddress",
-    "addressLocality": "Kilifi",
-    "addressRegion": "Coast",
-    "addressCountry": "KE"
-  },
-  "email": "info@soyosoyosacco.com",
-  "telephone": "+254700000000",
-  "contactPoint": {
-    "@type": "ContactPoint",
-    "contactType": "Customer Service",
-    "email": "info@soyosoyosacco.com",
-    "areaServed": ["Kilifi", "Mombasa", "Kwale"]
-  },
-  "areaServed": [
-    { "@type": "Place", "name": "Kilifi" },
-    { "@type": "Place", "name": "Mombasa" },
-    { "@type": "Place", "name": "Kwale" }
-  ],
-  "sameAs": [
-    "https://www.facebook.com/people/Soyosoyo-Sacco/61565783836766/",
-    "https://x.com/SoyosoyoSACCO",
-    "https://www.instagram.com/soyosoyosacco"
-  ],
-  "makesOffer": [
-    {
-      "@type": "Offer",
-      "itemOffered": {
-        "@type": "FinancialProduct",
-        "name": "Emergency Loan",
-        "description": "Instant short-term loan for urgent needs. 1% interest. Fast approval."
-      }
-    },
-    {
-      "@type": "Offer",
-      "itemOffered": {
-        "@type": "FinancialProduct",
-        "name": "Education Loan",
-        "description": "Pay school fees with ease. Up to 36 months. 1% interest."
-      }
-    },
-    {
-      "@type": "Offer",
-      "itemOffered": {
-        "@type": "FinancialProduct",
-        "name": "Medicare Loan",
-        "description": "Cover medical bills and healthcare costs. Flexible repayment."
-      }
-    },
-    {
-      "@type": "Offer",
-      "itemOffered": {
-        "@type": "FinancialProduct",
-        "name": "Development Loan",
-        "description": "Build your business or home. Long-term, low-interest financing."
-      }
-    },
-    {
-      "@type": "Offer",
-      "itemOffered": {
-        "@type": "FinancialProduct",
-        "name": "Api Culture Loan",
-        "description": "Support for beekeeping and honey production enterprises."
-      }
-    }
-  ],
-  "openingHours": "Mo-Fr 08:00-17:00, Sa 09:00-13:00",
-  "foundingDate": "2024",
-  "legalName": "Soyosoyo Savings and Credit Cooperative Society",
-  "slogan": "Empowering Coastal Communities Through Affordable Finance",
   "additionalProperty": [
     {"@type": "PropertyValue", "name": "Total Members", "value": 143},
-    {"@type": "PropertyValue", "name": "Member Savings", "value": 875000, "unitCode": "KES"},
-    {"@type": "PropertyValue", "name": "Bank Balance", "value": 273000, "unitCode": "KES"},
-    {"@type": "PropertyValue", "name": "Number of Loans Given", "value": 101},
-    {"@type": "PropertyValue", "name": "Value of Loans Given", "value": 1837000, "unitCode": "KES"},
-    {"@type": "PropertyValue", "name": "Profit", "value": 42000, "unitCode": "KES"},
-    {"@type": "PropertyValue", "name": "Active Members", "value": 69}
+    {"@type": "PropertyValue", "name": "Loans Disbursed", "value": 1837000, "unitCode": "KES"},
+    {"@type": "PropertyValue", "name": "Contributions", "value": 875000, "unitCode": "KES"},
+    {"@type": "PropertyValue", "name": "Profit", "value": 42000, "unitCode": "KES"}
   ]
-}
-</script>
-
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebPage",
-  "name": "Soyosoyo SACCO - Home",
-  "url": "https://soyosoyosacco.com/",
-  "description": "Affordable 1% monthly loans and savings for Coastal Kenya. Join with KSh 200 M-PESA deposit.",
-  "isPartOf": {
-    "@type": "WebSite",
-    "name": "Soyosoyo SACCO",
-    "url": "https://soyosoyosacco.com"
-  },
-  "breadcrumb": {
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      {
-        "@type": "ListItem",
-        "position: 1,
-        "name": "Home"
-      }
-    ]
-  },
-  "mainEntity": {
-    "@type": "Organization",
-    "name": "Soyosoyo SACCO",
-    "foundingDate": "1998-07-15",
-    "legalName": "Soyosoyo Savings and Credit Cooperative Society",
-    "founder": [
-      {"@type": "Person", "name": "Judith Malombo Mramba"},
-      {"@type": "Person", "name": "Jeremiah Kalama Lewa"},
-      {"@type": "Person", "name": "Sidi Saro Ngowa"},
-      {"@type": "Person", "name": "Thomas Thoya Kitsao"}
-    ]
-  }
 }
 </script>
 
