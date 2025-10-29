@@ -1,5 +1,7 @@
+// scripts/carousel.js – Financial Highlights Carousel (Index Page)
 document.addEventListener('DOMContentLoaded', () => {
   document.body.classList.add('js-enabled');
+
   const carouselData = [
     { number: 141, description: "Total Members" },
     { number: 864000, description: "Member Savings" },
@@ -13,97 +15,73 @@ document.addEventListener('DOMContentLoaded', () => {
   const carousel = document.querySelector('.carousel');
   if (!carousel) return;
 
+  // Generate + Duplicate Items
   const generateItems = () => {
-    let html = '';
-    carouselData.forEach(item => {
-      html += `
-        <article class="carousel-item" role="listitem">
-          <h3 class="carousel-button" data-target="${item.number}">${item.number}</h3>
-          <p class="carousel-description">${item.description}</p>
-        </article>
-      `;
-    });
-    // Duplicate for infinite loop
-    html += carouselData.map(item => `
+    const itemHTML = carouselData.map(item => `
       <article class="carousel-item" role="listitem">
-        <h3 class="carousel-button" data-target="${item.number}">${item.number}</h3>
+        <h3 class="carousel-button" data-target="${item.number}">0</h3>
         <p class="carousel-description">${item.description}</p>
       </article>
     `).join('');
-    carousel.innerHTML = html;
-  };
 
+    carousel.innerHTML = itemHTML + itemHTML; // Duplicate for seamless loop
+  };
   generateItems();
 
-  function formatNumber(num) {
+  // Format number (1,000 → 1k)
+  const formatNumber = (num) => {
     if (isNaN(num)) return num;
-    const isNegative = num < 0;
-    const absNum = Math.abs(num);
-    let formatted = absNum >= 1000 ? (absNum / 1000).toFixed(0) + 'k' : absNum.toString();
-    formatted = formatted.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    return isNegative ? '-' + formatted : formatted;
-  }
+    const abs = Math.abs(num);
+    return (abs >= 1000 ? (abs / 1000).toFixed(0) + 'k' : abs)
+      .toString()
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
 
-  function animateCounter(element, targetValue) {
-    const target = parseInt(targetValue, 10);
-    if (isNaN(target)) {
-      element.textContent = targetValue;
-      return;
-    }
-    let start = 0;
+  // Animate counter
+  const animateCounter = (el, target) => {
+    const end = +target;
+    let start = 0, id = null;
     const duration = 600;
-    let startTime = null;
-    if (element._animationFrameId) cancelAnimationFrame(element._animationFrameId);
-
-    const step = (currentTime) => {
-      if (!startTime) startTime = currentTime;
-      const progress = Math.min((currentTime - startTime) / duration, 1);
-      const currentValue = start + (progress * (target - start));
-      element.textContent = formatNumber(Math.round(currentValue));
-      if (progress < 1) {
-        element._animationFrameId = requestAnimationFrame(step);
-      } else {
-        element.textContent = formatNumber(target);
-        element._animationFrameId = null;
-      }
+    const step = (now) => {
+      if (!id) id = now;
+      const progress = Math.min((now - id) / duration, 1);
+      const value = Math.round(start + progress * (end - start));
+      el.textContent = formatNumber(value);
+      if (progress < 1) requestAnimationFrame(step);
     };
-    element._animationFrameId = requestAnimationFrame(step);
-  }
+    requestAnimationFrame(step);
+  };
 
-  const items = document.querySelectorAll('.carousel-item');
+  // Intersection Observer
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-      const button = entry.target.querySelector('.carousel-button');
-      if (entry.isIntersecting && button) {
-        animateCounter(button, button.dataset.target);
-      } else if (button) {
-        button.textContent = '0';
-        if (button._animationFrameId) {
-          cancelAnimationFrame(button._animationFrameId);
-          button._animationFrameId = null;
-        }
+      const btn = entry.target.querySelector('.carousel-button');
+      if (entry.isIntersecting && btn) {
+        animateCounter(btn, btn.dataset.target);
+      } else if (btn) {
+        btn.textContent = '0';
       }
     });
-  }, { root: null, rootMargin: '0px', threshold: 0.3 });
+  }, { threshold: 0.3 });
 
-  items.forEach(item => {
-    const button = item.querySelector('.carousel-button');
-    if (button) {
-      button.textContent = '0';
-      observer.observe(item);
-    }
+  document.querySelectorAll('.carousel-item').forEach(item => {
+    const btn = item.querySelector('.carousel-button');
+    if (btn) observer.observe(item);
   });
 
-  function updateAnimation() {
-    const itemWidth = window.innerWidth <= 768 ? 250 : 350;
-    const margin = window.innerWidth <= 768 ? 30 : 60;
-    const totalWidth = carouselData.length * (itemWidth + 2 * margin) * 2; // Account for duplicates
-    document.documentElement.style.setProperty('--item-width', `${itemWidth}px`);
-    document.documentElement.style.setProperty('--item-margin', `${margin}px`);
-    document.documentElement.style.setProperty('--carousel-translate', `-${totalWidth}px`);
-    document.documentElement.style.setProperty('--carousel-duration', `${carouselData.length * 6 * 1000}ms`);
-  }
+  // Responsive Animation
+  const update = () => {
+    const w = window.innerWidth;
+    const iw = w <= 768 ? 220 : 300;
+    const m = w <= 768 ? 20 : 40;
+    const total = carouselData.length * (iw + 2 * m) * 2;
 
-  window.addEventListener('resize', updateAnimation);
-  updateAnimation();
+    document.documentElement.style.setProperty('--item-width', iw + 'px');
+    document.documentElement.style.setProperty('--item-margin', m + 'px');
+    document.documentElement.style.setProperty('--carousel-translate', `-${total}px`);
+    document.documentElement.style.setProperty('--carousel-duration', `${carouselData.length * 8}s`);
+  };
+
+  window.addEventListener('resize', update);
+  update();
 });
