@@ -19,7 +19,11 @@
     <link rel="icon" href="./assets/141dd3faa98da9737b591161deac509a.jpg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./style.css">
+    
+    <!-- FINAL CSS v31 – MENU via main.js -->
+    <link rel="stylesheet" href="./style.css?v=31">
+
+    <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-05M38MYK0G"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -29,123 +33,130 @@
     </script>
 </head>
 <body>
-    <header class="site-header">
-        <div class="navbar">
-            <a href="index.html"><img class="brand-logo" src="./assets/141dd3faa98da9737b591161deac509a.jpg" alt="Soyosoyo Sacco Logo"></a>
-            <a href="https://chamasoft.com/login" class="member-portal">Member Portal</a>
-            <button id="menu-toggle" aria-label="Toggle Menu">
-                <svg class="menu-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#006400" stroke-width="2">
-                    <line x1="3" y1="6" x2="21" y2="6"></line>
-                    <line x1="3" y1="12" x2="21" y2="12"></line>
-                    <line x1="3" y1="18" x2="21" y2="18"></line>
-                </svg>
-                <svg class="close-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#006400" stroke-width="2" style="display: none;">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-            </button>
-            <nav class="nav-links">
-                <a href="index.html">Home</a>
-                <a href="Products.html">Products</a>
-                <a href="Online-Forms.html">Online Forms</a>
-                <a href="Jobs.html">Jobs</a>
-                <a href="Join-Us.html">Join Us</a>
-            </nav>
+
+<!-- ==================== HEADER ==================== -->
+<header class="site-header">
+    <div class="navbar">
+        <a href="index.html">
+            <img class="brand-logo round" src="./assets/141dd3faa98da9737b591161deac509a.jpg" alt="Soyosoyo Sacco Logo">
+        </a>
+        <a href="https://chamasoft.com/login" class="member-portal">Member Portal</a>
+        <button id="menu-toggle" aria-label="Toggle Menu">
+            <!-- Icons injected by main.js -->
+        </button>
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="Products.html">Products</a>
+            <a href="Online-Forms.html">Online Forms</a>
+            <a href="Jobs.html">Jobs</a>
+            <a href="Join-Us.html">Join Us</a>
+        </nav>
+    </div>
+
+    <!-- HERO IMAGE + TEXT OVERLAY -->
+    <div class="hero">
+        <div class="banner-text">
+            <h1>Our Products</h1>
+            <p>Explore tailored financial solutions to meet your needs.</p>
         </div>
-        <div class="hero">
-            <div>
-                <h1>Our Products</h1>
-                <p>Explore tailored financial solutions to meet your needs.</p>
+    </div>
+</header>
+
+<!-- ==================== MAIN ==================== -->
+<main class="container">
+
+    <!-- Loan Policy -->
+    <section class="section">
+        <h2 style="text-align: center;">Loan Policy</h2>
+        <h3 style="text-align: center;">Eligibility</h3>
+        <ul class="policy-list">
+            <li>Active membership for at least 6 months.</li>
+            <li>Minimum savings contribution of KSh 3,200.</li>
+        </ul>
+        <h3 style="text-align: center;">Loan Limits</h3>
+        <ul class="policy-list">
+            <li>Borrow up to 3 times your savings, capped at KSh 1,000,000.</li>
+            <li>Loans approved by the management committee, exclusive to members.</li>
+        </ul>
+        <h3 style="text-align: center;">Security</h3>
+        <ul class="policy-list">
+            <li>Secured by member or guarantor deposits.</li>
+            <li>Loans exceeding savings require guarantors.</li>
+        </ul>
+    </section>
+
+    <!-- Products Grid -->
+    <section class="section">
+        <h2 style="text-align: center;">Our Loan Products</h2>
+        <div class="products-grid">
+            <!-- Development Loan -->
+            <div class="product-card">
+                <img src="./assets/c56e235f3288f4f775b9e87e5fea1161.jpg" alt="Development Loan - Soyosoyo SACCO Kenya">
+                <h2>Development Loan</h2>
+                <p>Finance property acquisition, business startups, or agricultural projects.</p>
+                <ul>
+                    <li>Up to KSh 1,000,000 (3x savings)</li>
+                    <li>1% monthly interest (simple)</li>
+                    <li>12-month repayment</li>
+                    <li>Requires 3 guarantors</li>
+                </ul>
+            </div>
+
+            <!-- Emergency Loan -->
+            <div class="product-card">
+                <img src="./assets/db9853d73fef26b528aa4367086f8252.jpg" alt="Emergency Loan - Soyosoyo SACCO Quick Cash">
+                <h2>Emergency Loan</h2>
+                <p>Quick financial support for unexpected challenges.</p>
+                <ul>
+                    <li>3% monthly interest (simple)</li>
+                    <li>3-month repayment</li>
+                    <li>One loan at a time</li>
+                    <li>Requires 1 guarantor</li>
+                </ul>
+            </div>
+
+            <!-- Medicare Loan -->
+            <div class="product-card">
+                <img src="./assets/1bbe203c93786b35fe54438d25752261.jpg" alt="Medicare Loan - Soyosoyo SACCO Medical Financing">
+                <h2>Medicare Loan</h2>
+                <p>Cover medical expenses with direct payments to hospitals.</p>
+                <ul>
+                    <li>4% annual interest (0.33% monthly, simple)</li>
+                    <li>12-month repayment</li>
+                    <li>Amount based on repayment ability</li>
+                    <li>Requires 3 guarantors</li>
+                </ul>
+            </div>
+
+            <!-- Education Loan -->
+            <div class="product-card">
+                <img src="./assets/9f6ef9a029c7d6708c969b43e85c0a8f.jpg" alt="Education Loan - Soyosoyo SACCO School Fees">
+                <h2>Education Loan</h2>
+                <p>Fund school fees with direct payments to educational institutions.</p>
+                <ul>
+                    <li>4% annual interest (0.33% monthly, simple)</li>
+                    <li>12-month repayment</li>
+                    <li>Amount based on repayment ability</li>
+                    <li>Requires 3 guarantors</li>
+                </ul>
             </div>
         </div>
-    </header>
+    </section>
 
-    <main class="container">
-        <!-- Loan Policy -->
-        <section class="section">
-            <h2 style="text-align: center;">Loan Policy</h2>
-            <h3 style="text-align: center;">Eligibility</h3>
-            <ul class="policy-list">
-                <li>Active membership for at least 6 months.</li>
-                <li>Minimum savings contribution of KSh 3,200.</li>
-            </ul>
-            <h3 style="text-align: center;">Loan Limits</h3>
-            <ul class="policy-list">
-                <li>Borrow up to 3 times your savings, capped at KSh 1,000,000.</li>
-                <li>Loans approved by the management committee, exclusive to members.</li>
-            </ul>
-            <h3 style="text-align: center;">Security</h3>
-            <ul class="policy-list">
-                <li>Secured by member or guarantor deposits.</li>
-                <li>Loans exceeding savings require guarantors.</li>
-            </ul>
-        </section>
-
-        <!-- Products Grid -->
-        <section class="section">
-            <h2 style="text-align: center;">Our Loan Products</h2>
-            <div class="products-grid">
-                <!-- Development Loan -->
-                <div class="product-card">
-                    <img src="./assets/c56e235f3288f4f775b9e87e5fea1161.jpg" alt="Development Loan - Soyosoyo SACCO Kenya">
-                    <h2>Development Loan</h2>
-                    <p>Finance property acquisition, business startups, or agricultural projects.</p>
-                    <ul>
-                        <li>Up to KSh 1,000,000 (3x savings)</li>
-                        <li>1% monthly interest (simple)</li>
-                        <li>12-month repayment</li>
-                        <li>Requires 3 guarantors</li>
-                    </ul>
-                </div>
-
-                <!-- Emergency Loan -->
-                <div class="product-card">
-                    <img src="./assets/db9853d73fef26b528aa4367086f8252.jpg" alt="Emergency Loan - Soyosoyo SACCO Quick Cash">
-                    <h2>Emergency Loan</h2>
-                    <p>Quick financial support for unexpected challenges.</p>
-                    <ul>
-                        <li>3% monthly interest (simple)</li>
-                        <li>3-month repayment</li>
-                        <li>One loan at a time</li>
-                        <li>Requires 1 guarantor</li>
-                    </ul>
-                </div>
-
-                <!-- Medicare Loan -->
-                <div class="product-card">
-                    <img src="./assets/1bbe203c93786b35fe54438d25752261.jpg" alt="Medicare Loan - Soyosoyo SACCO Medical Financing">
-                    <h2>Medicare Loan</h2>
-                    <p>Cover medical expenses with direct payments to hospitals.</p>
-                    <ul>
-                        <li>4% annual interest (0.33% monthly, simple)</li>
-                        <li>12-month repayment</li>
-                        <li>Amount based on repayment ability</li>
-                        <li>Requires 3 guarantors</li>
-                    </ul>
-                </div>
-
-                <!-- Education Loan -->
-                <div class="product-card">
-                    <img src="./assets/9f6ef9a029c7d6708c969b43e85c0a8f.jpg" alt="Education Loan - Soyosoyo SACCO School Fees">
-                    <h2>Education Loan</h2>
-                    <p>Fund school fees with direct payments to educational institutions.</p>
-                    <ul>
-                        <li>4% annual interest (0.33% monthly, simple)</li>
-                        <li>12-month repayment</li>
-                        <li>Amount based on repayment ability</li>
-                        <li>Requires 3 guarantors</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <!-- Loan Inquiry Form -->
-        <section class="section tool-section" id="loan-inquiry">
-            <h2 style="text-align: center;">Interested in a Loan?</h2>
-            <form action="https://formspree.io/f/mdkznvdo" method="POST">
+    <!-- Loan Inquiry Form -->
+    <section class="section tool-section" id="loan-inquiry">
+        <h2 style="text-align: center;">Interested in a Loan?</h2>
+        <form action="https://formspree.io/f/mdkznvdo" method="POST" class="calculator">
+            <div class="form-group">
                 <input type="text" name="Full Name" placeholder="Full Name" required>
+            </div>
+            <div class="form-group">
                 <input type="email" name="Email" placeholder="Email Address" required>
+            </div>
+            <div class="form-group">
                 <input type="tel" name="Phone" placeholder="Phone Number (e.g., +254...)" required>
+            </div>
+            <div class="form-group">
                 <select name="Loan Type" required>
                     <option value="" disabled selected>Select Loan Type</option>
                     <option value="Development Loan">Development Loan</option>
@@ -153,53 +164,98 @@
                     <option value="Education Loan">Education Loan</option>
                     <option value="Medicare Loan">Medicare Loan</option>
                 </select>
+            </div>
+            <div class="form-group">
                 <select name="Residential County" required>
                     <option value="" disabled selected>Select Residential County</option>
                     <option value="Kilifi">Kilifi</option>
                     <option value="Mombasa">Mombasa</option>
                     <option value="Kwale">Kwale</option>
                 </select>
+            </div>
+            <div class="form-group">
                 <textarea name="Message" placeholder="Your message..." rows="4"></textarea>
-                <button type="submit">Submit Inquiry</button>
-                <input type="hidden" name="_subject" value="New Soyosoyo Loan Inquiry">
-                <input type="hidden" name="_captcha" value="false">
-            </form>
-        </section>
+            </div>
+            <button type="submit">Submit Inquiry</button>
+            <input type="hidden" name="_subject" value="New Soyosoyo Loan Inquiry">
+            <input type="hidden" name="_captcha" value="false">
+        </form>
+    </section>
 
-        <!-- Loan Calculator Tool -->
-        <section class="section tool-section" id="loan-calculator">
-            <h2 style="text-align: center;">Loan Calculator</h2>
-            <div class="calculator-wrapper">
-                <div class="calculator">
-                    <h2><span class="soyo-logo">SOYOSOYO</span> SACCO Loan Calculator</h2>
+    <!-- Loan Calculator Tool -->
+    <section class="section tool-section" id="loan-calculator">
+        <h2 style="text-align: center;">Loan Calculator</h2>
+        <div class="calculator-wrapper">
+            <div class="calculator">
+                <h2><span class="soyo-logo">SOYOSOYO</span> SACCO Loan Calculator</h2>
+                <div class="form-group">
+                    <label for="loanType">Loan Type:</label>
+                    <select id="loanType" onchange="updateFields()">
+                        <option value="">Select Loan Type</option>
+                        <option value="emergency">Emergency Loan</option>
+                        <option value="medicare">Medicare Loan</option>
+                        <option value="education">Education Loan</option>
+                        <option value="development">Development Loan</option>
+                        <option value="apiCulture">Api Culture Loan</option>
+                    </select>
+                </div>
+                <div class="form-group interest-rate">
+                    <label for="rate">Annual Interest Rate (%):</label>
+                    <input type="text" id="rate" readonly placeholder="Select a loan type">
+                </div>
+                <div class="form-group tenure">
+                    <label for="tenure">Tenure (Months):</label>
+                    <input type="text" id="tenure" readonly placeholder="Select a loan type">
+                </div>
+                <div class="form-group slider-container">
+                    <label for="principalSlider">Loan Amount (KES):</label>
+                    <input type="range" id="principalSlider" min="1000" max="1000000" step="1000" value="10000" oninput="updateSliderValue('principal')">
+                    <div class="slider-value" id="principalValue">KES 10,000</div>
+                </div>
+                <button onclick="calculateLoan()">Calculate Loan</button>
+                <div class="result" id="result"></div>
+
+                <button onclick="toggleAmortizationTable()" id="amortizationButton" style="display: none;">View Amortization Table</button>
+                <div class="amortization-table" id="amortizationTable" style="display: none;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Month</th>
+                                <th>Payment (KES)</th>
+                                <th>Principal (KES)</th>
+                                <th>Interest (KES)</th>
+                                <th>Balance (KES)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="amortizationBody"></tbody>
+                    </table>
+                </div>
+
+                <button onclick="showFinesSection()" id="finesPromptButton" style="display: none;">Calculate Fines for Missed Payments</button>
+                <button onclick="toggleChart()" id="chartButton" style="display: none;">View Chart</button>
+                <div class="loan-chart" id="loanChart" style="display: none;"></div>
+
+                <div class="fines-section" id="finesSection" style="display: none;">
+                    <h3>Calculate Late Repayment Fines</h3>
                     <div class="form-group">
-                        <label for="loanType">Loan Type:</label>
-                        <select id="loanType" onchange="updateFields()">
-                            <option value="">Select Loan Type</option>
-                            <option value="emergency">Emergency Loan</option>
-                            <option value="medicare">Medicare Loan</option>
-                            <option value="education">Education Loan</option>
-                            <option value="development">Development Loan</option>
-                            <option value="apiCulture">Api Culture Loan</option>
-                        </select>
+                        <label for="lateMonth">Month of First Missed Payment:</label>
+                        <input type="number" id="lateMonth" placeholder="e.g., 1" min="1">
                     </div>
-                    <div class="form-group interest-rate">
-                        <label for="rate">Annual Interest Rate (%):</label>
-                        <input type="text" id="rate" readonly placeholder="Select a loan type">
+                    <div class="form-group">
+                        <label for="monthsLate">Number of Consecutive Missed Payments:</label>
+                        <input type="number" id="monthsLate" placeholder="e.g., 3" min="0">
                     </div>
-                    <div class="form-group tenure">
-                        <label for="tenure">Tenure (Months):</label>
-                        <input type="text" id="tenure" readonly placeholder="Select a loan type">
+                    <div class="form-group" id="paymentGroup" style="display: none;">
+                        <label for="paymentMonth">Month to Add Payment:</label>
+                        <input type="number" id="paymentMonth" placeholder="e.g., 4" min="1">
+                        <label for="paymentAmount">Amount Paid (KES):</label>
+                        <input type="number" id="paymentAmount" placeholder="e.g., 500" min="0">
+                        <button onclick="addPayment()">Add Payment</button>
                     </div>
-                    <div class="form-group slider-container">
-                        <label for="principalSlider">Loan Amount (KES):</label>
-                        <input type="range" id="principalSlider" min="1000" max="1000000" step="1000" value="1000">
-                        <div class="slider-value" id="principalValue">KES 1000</div>
-                    </div>
-                    <button onclick="calculateLoan()">Calculate Loan</button>
-                    <div class="result" id="result"></div>
-                    <button onclick="toggleAmortizationTable()" id="amortizationButton" style="display: none;">View Amortization Table</button>
-                    <div class="amortization-table" id="amortizationTable" style="display: none;">
+                    <button onclick="calculateFines()">Calculate Fines</button>
+                    <div class="result" id="finesResult"></div>
+                    <button onclick="toggleFinesAmortizationTable()" id="finesAmortizationButton" style="display: none;">View Amortization Table with Fines</button>
+                    <div class="fines-amortization-table" id="finesAmortizationTable" style="display: none;">
                         <table>
                             <thead>
                                 <tr>
@@ -207,141 +263,182 @@
                                     <th>Payment (KES)</th>
                                     <th>Principal (KES)</th>
                                     <th>Interest (KES)</th>
+                                    <th>Installment Fine (KES)</th>
+                                    <th>Outstanding Fine (KES)</th>
                                     <th>Balance (KES)</th>
                                 </tr>
                             </thead>
-                            <tbody id="amortizationBody"></tbody>
+                            <tbody id="finesAmortizationBody"></tbody>
                         </table>
                     </div>
-                    <button onclick="showFinesSection()" id="finesPromptButton" style="display: none;">Calculate Fines for Missed Payments</button>
-                    <button onclick="toggleChart()" id="chartButton" style="display: none;">View Chart</button>
-                    <div class="loan-chart" id="loanChart" style="display: none;"></div>
-                    <div class="fines-section" id="finesSection" style="display: none;">
-                        <h3>Calculate Late Repayment Fines</h3>
-                        <div class="form-group">
-                            <label for="lateMonth">Month of First Missed Payment:</label>
-                            <input type="number" id="lateMonth" placeholder="e.g., 1" min="1">
-                        </div>
-                        <div class="form-group">
-                            <label for="monthsLate">Number of Consecutive Missed Payments:</label>
-                            <input type="number" id="monthsLate" placeholder="e.g., 3" min="0">
-                        </div>
-                        <div class="form-group" id="paymentGroup" style="display: none;">
-                            <label for="paymentMonth">Month to Add Payment:</label>
-                            <input type="number" id="paymentMonth" placeholder="e.g., 4" min="1">
-                            <label for="paymentAmount">Amount Paid (KES):</label>
-                            <input type="number" id="paymentAmount" placeholder="e.g., 500" min="0">
-                            <button onclick="addPayment()">Add Payment</button>
-                        </div>
-                        <button onclick="calculateFines()">Calculate Fines</button>
-                        <div class="result" id="finesResult"></div>
-                        <button onclick="toggleFinesAmortizationTable()" id="finesAmortizationButton" style="display: none;">View Amortization Table with Fines</button>
-                        <div class="fines-amortization-table" id="finesAmortizationTable" style="display: none;">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Month</th>
-                                        <th>Payment (KES)</th>
-                                        <th>Principal (KES)</th>
-                                        <th>Interest (KES)</th>
-                                        <th>Installment Fine (KES)</th>
-                                        <th>Outstanding Fine (KES)</th>
-                                        <th>Balance (KES)</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="finesAmortizationBody"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <noscript><div class="error-message">JavaScript is disabled. Please enable JavaScript to use the loan calculator.</div></noscript>
                 </div>
+
+                <noscript><div class="error-message">JavaScript is disabled. Please enable JavaScript to use the loan calculator.</div></noscript>
             </div>
-        </section>
-
-        <!-- Join Us Button -->
-        <section class="section" style="text-align: center;">
-            <a href="Join-Us.html" class="join-button">Join Us Today</a>
-        </section>
-    </main>
-
-    <footer>
-        <p>&copy; 2025 SOYOSOYO SACCO. All rights reserved. | <a href="mailto:info@soyosoyosacco.com">info@soyosoyosacco.com</a></p>
-        <div class="social-icons">
-            <a href="https://www.facebook.com/people/Soyosoyo-Sacco/61565783836766/" target="_blank">
-                <i class="fab fa-facebook-f"></i>
-            </a>
-            <a href="https://x.com/SoyosoyoSACCO" target="_blank">
-                <i class="fab fa-x-twitter"></i>
-            </a>
-            <a href="https://www.instagram.com/soyosoyosacco" target="_blank">
-                <i class="fab fa-instagram"></i>
-            </a>
         </div>
-    </footer>
+    </section>
 
-    <script src="./scripts/main.js"></script>
-    <script src="./scripts/calculator.js"></script>
-    <script src="./scripts/chatbot.js"></script>
-    <script src="./scripts/seo.js"></script>
-    <script type="application/ld+json">
+    <!-- Join Us Button -->
+    <section class="section" style="text-align: center;">
+        <a href="Join-Us.html" class="join-button">Join Us Today</a>
+    </section>
+
+</main>
+
+<!-- ==================== FOOTER ==================== -->
+<footer>
+    <p>© 2025 SOYOSOYO SACCO. All rights reserved. | <a href="mailto:info@soyosoyosacco.com">info@soyosoyosacco.com</a></p>
+    <div class="social-icons">
+        <a href="https://www.facebook.com/people/Soyosoyo-Sacco/61565783836766/" target="_blank"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://x.com/SoyosoyoSACCO" target="_blank"><i class="fab fa-x-twitter"></i></a>
+        <a href="https://www.instagram.com/soyosoyosacco" target="_blank"><i class="fab fa-instagram"></i></a>
+    </div>
+</footer>
+
+<!-- ==================== SCRIPTS ==================== -->
+<script src="./scripts/main.js"></script>
+<script src="./scripts/calculator.js"></script>
+<script src="./scripts/chatbot.js"></script>
+<script src="./scripts/seo.js"></script>
+
+<!-- Initialize Calculator -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        if (typeof updateFields === 'function') updateFields();
+        if (typeof updateSliderValue === 'function') updateSliderValue('principal');
+    });
+</script>
+
+<!-- SCHEMA.ORG – FULL FINANCIAL SERVICE + LOAN PRODUCTS (ALL PAGES) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FinancialService",
+  "name": "SOYOSOYO SACCO",
+  "url": "https://soyosoyosacco.com",
+  "logo": "https://soyosoyosacco.com/assets/141dd3faa98da9737b591161deac509a.jpg",
+  "image": "https://soyosoyosacco.com/assets/header-image.jpg",
+  "description": "Soyosoyo SACCO offers affordable loans, savings, and financial empowerment to coastal Kenya communities in Kilifi, Mombasa, and Kwale. Products include Emergency, Education, Medicare, Development, and Api Culture loans at 1% interest.",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Kilifi",
+    "addressRegion": "Coast",
+    "addressCountry": "KE"
+  },
+  "email": "info@soyosoyosacco.com",
+  "telephone": "+254700000000",
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "Customer Service",
+    "email": "info@soyosoyosacco.com",
+    "areaServed": ["Kilifi", "Mombasa", "Kwale"]
+  },
+  "areaServed": [
+    { "@type": "Place", "name": "Kilifi" },
+    { "@type": "Place", "name": "Mombasa" },
+    { "@type": "Place", "name": "Kwale" }
+  ],
+  "sameAs": [
+    "https://www.facebook.com/people/Soyosoyo-Sacco/61565783836766/",
+    "https://x.com/SoyosoyoSACCO",
+    "https://www.instagram.com/soyosoyosacco"
+  ],
+  "makesOffer": [
     {
-        "@context": "https://schema.org",
-        "@type": "WebPage",
-        "name": "Soyosoyo SACCO Products",
-        "url": "https://soyosoyosacco.com/Products.html",
-        "description": "Emergency, Medicare, Education, Development Loans at 1% monthly interest",
-        "isPartOf": {"@type": "FinancialCooperative", "name": "SOYOSOYO SACCO"},
-        "breadcrumb": {
-            "@type": "BreadcrumbList",
-            "itemListElement": [{
-                "@type": "ListItem",
-                "position": 1,
-                "name": "Home",
-                "item": "https://soyosoyosacco.com/"
-            },{
-                "@type": "ListItem",
-                "position": 2,
-                "name": "Products"
-            }]
-        },
-        "mainEntity": {
-            "@type": "ItemList",
-            "name": "Soyosoyo SACCO Loan Products",
-            "itemListElement": [
-                {
-                    "@type": "FinancialProduct",
-                    "name": "Development Loan",
-                    "description": "Finance property, business, agriculture up to KSh 1,000,000 at 1% monthly"
-                },
-                {
-                    "@type": "FinancialProduct",
-                    "name": "Emergency Loan",
-                    "description": "Quick cash for urgent needs at 3% monthly, 3-month repayment"
-                },
-                {
-                    "@type": "FinancialProduct",
-                    "name": "Medicare Loan",
-                    "description": "Medical expenses financing at 0.33% monthly, direct hospital payments"
-                },
-                {
-                    "@type": "FinancialProduct",
-                    "name": "Education Loan",
-                    "description": "School fees financing at 0.33% monthly, direct institution payments"
-                }
-            ]
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "FinancialProduct",
+        "name": "Development Loan",
+        "description": "Finance property, business, or agriculture. Up to KSh 1,000,000. 1% monthly interest. 12-month repayment.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "KES",
+          "availability": "https://schema.org/InStock"
         }
+      }
+    },
+    {
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "FinancialProduct",
+        "name": "Emergency Loan",
+        "description": "Quick cash for urgent needs. 3% monthly interest. 3-month repayment. One loan at a time.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "KES",
+          "availability": "https://schema.org/InStock"
+        }
+      }
+    },
+    {
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "FinancialProduct",
+        "name": "Medicare Loan",
+        "description": "Cover medical expenses. Direct hospital payments. 0.33% monthly interest. 12-month repayment.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "KES",
+          "availability": "https://schema.org/InStock"
+        }
+      }
+    },
+    {
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "FinancialProduct",
+        "name": "Education Loan",
+        "description": "Fund school fees. Direct payments to institutions. 0.33% monthly interest. 12-month repayment.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "KES",
+          "availability": "https://schema.org/InStock"
+        }
+      }
     }
-    </script>
-    <script>
-    fetch('/schema.json')
-        .then(r => r.json())
-        .then(data => {
-            const script = document.createElement('script');
-            script.type = 'application/ld+json';
-            script.text = JSON.stringify(data);
-            document.head.appendChild(script);
-        })
-        .catch(() => console.log('Schema loaded from inline'));
-    </script>
+  ],
+  "openingHours": "Mo-Fr 08:00-17:00, Sa 09:00-13:00",
+  "foundingDate": "2024",
+  "legalName": "Soyosoyo Savings and Credit Cooperative Society",
+  "slogan": "Empowering Coastal Communities Through Affordable Finance"
+}
+</script>
+
+<!-- PAGE-SPECIFIC SCHEMA: Products Page -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Loan Products - Soyosoyo SACCO",
+  "url": "https://soyosoyosacco.com/Products.html",
+  "description": "Explore 1% monthly loans: Development, Emergency, Medicare, Education. Apply online in Mombasa, Kilifi, Kwale.",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "Soyosoyo SACCO",
+    "url": "https://soyosoyosacco.com"
+  },
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://soyosoyosacco.com/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Products"
+      }
+    ]
+  }
+}
+</script>
+
 </body>
 </html>
