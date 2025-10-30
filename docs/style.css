@@ -485,6 +485,27 @@ header.site-header #menu-toggle {
     }
 }
 
+/* ----------------- DESKTOP FULL-WIDTH ENLARGEMENT – SAFE, SYMMETRIC SCALE ----------------- */
+@media (min-width: 769px) {
+    .container { 
+        max-width: 1400px; /* Increased from 1200px for fuller desktop use without overflow */
+        margin: 2rem auto; 
+        padding: 0 1.5rem; /* Slight padding increase for symmetry on wider screens */
+    }
+    /* Symmetric scale for key elements to match enlarged container */
+    .section, .tool-section { padding: 2.2rem; } /* Minor padding bump for breathing room */
+    h1 { font-size: 2.5rem; } /* Slight h1 enlargement for balance */
+    h2 { font-size: 1.95rem; } /* Proportional h2 scaling */
+    .products-grid { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); } /* Wider product cards */
+    .product-card img { height: 200px; } /* Scaled image height for symmetry */
+    .leadership-grid { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); } /* Wider leader profiles */
+    .leader-profile img { width: 130px; height: 130px; } /* Symmetric profile image scale */
+    .carousel-item { --item-width: 340px; --item-margin: 45px; } /* Wider carousel items for desktop */
+    .carousel-join-item { --item-width: 320px; --item-margin: 35px; } /* Adjusted join carousel */
+    .mission-vision-container, .core-values-container { padding: 2rem; } /* Scaled containers */
+    .mission-vision-container img, .core-values-container img { width: 100px; height: 100px; } /* Larger icons */
+}
+
 /* ----------------- FOOTER ----------------- */
 footer {
     background:#003087; 
