@@ -440,7 +440,18 @@ header.site-header #menu-toggle {
     .container { margin: 1.5rem auto; padding: 0 0.8rem; }
     .section, .tool-section { padding: 1.6rem; margin-bottom: 1.5rem; }
     .carousel-wrapper, .carousel-join-wrapper { padding: 1.5rem 0; }
-    .carousel-item, .carousel-join-item { flex: 0 0 80vw; margin: 0 10px; }
+    .carousel-item, .carousel-join-item { 
+        flex: 0 0 42vw; /* Reduced from 80vw to ~42vw to fit at least two items side-by-side */
+        margin: 0 8px; /* Slightly reduced margins for better fit without overflow */
+        padding: 1.2rem; /* Reduced internal padding to keep contents compact */
+    }
+    .carousel-button, .carousel-join-button { 
+        font-size: 1.3rem; /* Slightly reduced button font size for mobile */
+        padding: 0.8rem 1.2rem; 
+    }
+    .carousel-description, .carousel-join-description { 
+        font-size: 0.85rem; /* Reduced description font size */
+    }
 }
 
 /* ----------------- FOOTER ----------------- */
