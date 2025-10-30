@@ -139,6 +139,23 @@ header.site-header #menu-toggle {
 .tool-section > .calculator-wrapper { all: unset; }
 .calculator-wrapper { display: contents; }
 
+/* ----------------- JOIN INSTRUCTIONS LAYOUT – TARGETED FIX FOR PHONE-IMAGE ----------------- */
+.join-instructions {
+    display: flex;
+    align-items: flex-start;
+    gap: 2rem;
+}
+.join-instructions img.round { /* Specifically targets the phone-image with .round class */
+    width: 280px;
+    height: 280px;
+    flex-shrink: 0;
+    margin: 0;
+}
+.join-instructions .content {
+    flex: 1;
+    text-align: left;
+}
+
 /* ----------------- MISSION / VISION / CORE VALUES ----------------- */
 .mission-vision-container,
 .core-values-container {
@@ -451,6 +468,20 @@ header.site-header #menu-toggle {
     }
     .carousel-description, .carousel-join-description { 
         font-size: 0.85rem; /* Reduced description font size */
+    }
+    /* MOBILE FIX FOR JOIN-INSTRUCTIONS: STACK VERTICALLY, KEEP IMAGE AS-IS (FINE ON MOBILE) */
+    .join-instructions {
+        flex-direction: column;
+        text-align: center;
+        gap: 1.5rem;
+    }
+    .join-instructions img.round {
+        width: 200px;
+        height: 200px;
+        margin: 0 auto;
+    }
+    .join-instructions .content {
+        text-align: center;
     }
 }
 
