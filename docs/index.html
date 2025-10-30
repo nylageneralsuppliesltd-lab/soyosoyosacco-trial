@@ -351,7 +351,6 @@
             if (window.saccoData) {
                 clearInterval(waitForData);
                 renderCharts();
-                renderCarousel();
             }
         }, 50);
 
@@ -434,26 +433,6 @@
             createChart('chartLoans', jan.loans, today.loans, 'Loans (KES)', colors.loans, 'growthLoans');
             createChart('chartContributions', jan.contributions, today.contributions, 'Contributions (KES)', colors.contributions, 'growthContributions');
             createChart('chartProfit', jan.profit, today.profit, 'Profit (KES)', colors.profit, 'growthProfit');
-        }
-
-        function renderCarousel() {
-            const { today } = window.saccoData;
-            const items = [
-                { value: today.members, label: 'Members', icon: 'users' },
-                { value: today.loans, label: 'Loans Disbursed', icon: 'hand-holding-usd', money: true },
-                { value: today.contributions, label: 'Contributions', icon: 'piggy-bank', money: true },
-                { value: today.profit, label: 'Profit', icon: 'chart-line', money: true }
-            ];
-            const carousel = document.querySelector('.carousel');
-            carousel.innerHTML = items.map(i => `
-                <div class="carousel-item">
-                    <div class="carousel-button">${i.money ? 'KES ' : ''}${i.value.toLocaleString()}</div>
-                    <div class="carousel-description">${i.label}</div>
-                </div>
-            `).join('');
-            const w = 340 * items.length + 40 * (items.length - 1);
-            carousel.style.setProperty('--carousel-translate', `-${w}px`);
-            carousel.style.setProperty('--carousel-duration', `${Math.max(30, items.length * 8)}s`);
         }
 
         // Initialize calculators
