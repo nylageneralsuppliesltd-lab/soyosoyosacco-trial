@@ -86,10 +86,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const w = window.innerWidth;
     const iw = w <= 768 ? 220 : 300;
     const m = w <= 768 ? 20 : 40;
-    const total = carouselData.length * (iw + 2 * m) * 2;
+    // FIXED: total = width of ONE set (7 items) for seamless loop translate
+    const total = carouselData.length * (iw + 2 * m);
 
     document.documentElement.style.setProperty('--item-width', iw + 'px');
     document.documentElement.style.setProperty('--item-margin', m + 'px');
+    // FIXED: Translate by -ONE set width (not full 14), so second set aligns perfectly
     document.documentElement.style.setProperty('--carousel-translate', `-${total}px`);
     document.documentElement.style.setProperty('--carousel-duration', `${carouselData.length * 8}s`);
   };
