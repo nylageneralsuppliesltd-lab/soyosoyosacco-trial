@@ -54,9 +54,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const w = window.innerWidth;
     const iw = w <= 600 ? 200 : w <= 360 ? 160 : 280;
     const m = w <= 600 ? 10 : w <= 360 ? 5 : 30;
-    const total = carouselData.length * (iw + 2 * m) * 2;
+    // FIXED: total = width of ONE set (4 items) for seamless loop translate
+    const total = carouselData.length * (iw + 2 * m);
+
     document.documentElement.style.setProperty('--item-width', iw + 'px');
     document.documentElement.style.setProperty('--item-margin', m + 'px');
+    // FIXED: Translate by -ONE set width (not full 8), so second set aligns perfectly
     document.documentElement.style.setProperty('--carousel-translate', '-' + total + 'px');
     document.documentElement.style.setProperty('--carousel-duration', carouselData.length * 10 + 's');
   };
