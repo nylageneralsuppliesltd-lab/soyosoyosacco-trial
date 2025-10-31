@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
     
-    <!-- CSS v52 – FIXED FROM PRODUCTS.HTML -->
+    <!-- CSS v52 -->
     <link rel="stylesheet" href="./style.css?v=52">
 
     <!-- Google Analytics -->
@@ -193,7 +193,6 @@
                 <p><i class="fas fa-chart-line"></i> Profit</p>
                 <div id="growthProfit" class="growth-indicator"></div>
             </div>
-            <!-- ROA CHART WITH GLOWING ARROW -->
             <div class="chart-card">
                 <canvas id="chartROA"></canvas>
                 <p><i class="fas fa-percentage"></i> Return on Assets (ROA)</p>
@@ -202,7 +201,7 @@
         </div>
     </section>
 
-    <!-- LOAN CALCULATOR – 100% WORKING (FROM PRODUCTS.HTML) -->
+    <!-- LOAN CALCULATOR -->
     <section class="tool-section" id="loan-calculator">
         <h2 style="text-align: center;">Loan Calculator</h2>
         <div class="calculator-wrapper">
@@ -350,108 +349,18 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 
-<!-- CHART.JS RENDERING – WITH ROA + GLOWING GROWTH ARROW -->
+<!-- UNIFORM GROWTH ARROW FOR ALL CHARTS -->
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const waitForData = setInterval(() => {
-            if (window.saccoData) {
-                clearInterval(waitForData);
-                renderCharts();
-            }
-        }, 50);
+    // Global Arrow Plugin – applies to ALL charts
+    const growthArrowPlugin = {
+        id: 'growthArrow',
+        afterDraw: function(chart) {
+            const { ctx, scales, data, canvas } = chart;
+            const dataset = data.datasets[0];
+            const janVal = dataset.data[0];
+            const todayVal = dataset.data[1];
+            const growthPercent = janVal === 0 ? 0 : ((todayVal - janVal) / Math.abs(janVal)) * 100;
 
-        function renderCharts() {
-            const { jan, today } = window.saccoData;
-            const colors = {
-                members: { jan: '#8B5CF6', today: '#C4B5FD' },
-                loans: { jan: '#F59E0B', today: '#FBBF24' },
-                contributions: { jan: '#10B981', today: '#34D399' },
-                profit: { jan: '#EF4444', today: '#F87171' },
-                roa: { jan: '#0EA5E9', today: '#7DD3FC' } // TEAL → SKY BLUE
-            };
-
-            const format = (v, money = false) => money ? 'KES ' + v.toLocaleString() : v.toLocaleString();
-            const growth = (j, t) => j === 0 ? (t === 0 ? 0 : 100) : ((t - j) / Math.abs(j)) * 100;
-
-            const updateIndicator = (id, g) => {
-                const el = document.getElementById(id);
-                const arrow = g > 0 ? 'up' : g < 0 ? 'down' : 'right';
-                const cls = g > 0 ? 'positive' : g < 0 ? 'negative' : '';
-                el.innerHTML = `<i class="fas fa-arrow-${arrow}"></i> ${Math.abs(g).toFixed(1)}%`;
-                el.className = `growth-indicator ${cls}`;
-            };
-
-            const createChart = (id, j, t, label, color, gid) => {
-                const g = growth(j, t);
-                updateIndicator(gid, g);
-
-                const ctx = document.getElementById(id).getContext('2d');
-                const chart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Jan 2025', 'Today'],
-                        datasets: [{
-                            data: [j, t],
-                            backgroundColor: [color.jan, color.today],
-                            borderRadius: 10,
-                            maxBarThickness: 60
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                callbacks: { label: ctx => format(ctx.raw, label.includes('KES')) }
-                            },
-                            datalabels: {
-                                anchor: 'end',
-                                align: 'top',
-                                color: '#1a1a1a',
-                                font: { weight: '900', size: 14 },
-                                formatter: v => label.includes('%') ? v.toFixed(2) + '%' : format(v, label.includes('KES')),
-                                backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                                borderRadius: 6,
-                                padding: 7,
-                                shadowBlur: 6,
-                                shadowColor: 'rgba(0,0,0,0.15)'
-                            }
-                        },
-                        scales: {
-                            x: { grid: { display: false }, ticks: { color: '#1a1a1a', font: { weight: 'bold', size: 13 } } },
-                            y: { display: false, beginAtZero: true }
-                        },
-                        layout: { padding: { top: 50, left: 8, right: 8 } },
-                        animation: {
-                            onComplete: () => {
-                                if (id === 'chartROA') drawGrowthArrow(chart, j, t, g);
-                            }
-                        }
-                    },
-                    plugins: [ChartDataLabels]
-                });
-
-                // Draw arrow for ROA only
-                if (id === 'chartROA') {
-                    setTimeout(() => drawGrowthArrow(chart, j, t, g), 300);
-                }
-            };
-
-            // ROA = Profit / Contributions × 100
-            const janROA = jan.contributions > 0 ? (jan.profit / jan.contributions) * 100 : 0;
-            const todayROA = today.contributions > 0 ? (today.profit / today.contributions) * 100 : 0;
-
-            createChart('chartMembers', jan.members, today.members, 'Members', colors.members, 'growthMembers');
-            createChart('chartLoans', jan.loans, today.loans, 'Loans (KES)', colors.loans, 'growthLoans');
-            createChart('chartContributions', jan.contributions, today.contributions, 'Contributions (KES)', colors.contributions, 'growthContributions');
-            createChart('chartProfit', jan.profit, today.profit, 'Profit (KES)', colors.profit, 'growthProfit');
-            createChart('chartROA', janROA, todayROA, 'ROA (%)', colors.roa, 'growthROA');
-        }
-
-        // GLOWING GROWTH ARROW (ROA ONLY)
-        function drawGrowthArrow(chart, janVal, todayVal, growthPercent) {
-            const { ctx, scales, chartArea } = chart;
             const xScale = scales.x;
             const yScale = scales.y;
 
@@ -496,6 +405,96 @@
             }
 
             ctx.restore();
+        }
+    };
+
+    // Register once
+    Chart.register(growthArrowPlugin);
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const waitForData = setInterval(() => {
+            if (window.saccoData) {
+                clearInterval(waitForData);
+                renderCharts();
+            }
+        }, 50);
+
+        function renderCharts() {
+            const { jan, today } = window.saccoData;
+            const colors = {
+                members: { jan: '#8B5CF6', today: '#C4B5FD' },
+                loans: { jan: '#F59E0B', today: '#FBBF24' },
+                contributions: { jan: '#10B981', today: '#34D399' },
+                profit: { jan: '#EF4444', today: '#F87171' },
+                roa: { jan: '#0EA5E9', today: '#7DD3FC' }
+            };
+
+            const format = (v, money = false) => money ? 'KES ' + v.toLocaleString() : v.toLocaleString();
+            const growth = (j, t) => j === 0 ? (t === 0 ? 0 : 100) : ((t - j) / Math.abs(j)) * 100;
+
+            const updateIndicator = (id, g) => {
+                const el = document.getElementById(id);
+                const arrow = g > 0 ? 'up' : g < 0 ? 'down' : 'right';
+                const cls = g > 0 ? 'positive' : g < 0 ? 'negative' : '';
+                el.innerHTML = `<i class="fas fa-arrow-${arrow}"></i> ${Math.abs(g).toFixed(1)}%`;
+                el.className = `growth-indicator ${cls}`;
+            };
+
+            const createChart = (id, j, t, label, color, gid) => {
+                const g = growth(j, t);
+                updateIndicator(gid, g);
+
+                new Chart(document.getElementById(id).getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['Jan 2025', 'Today'],
+                        datasets: [{
+                            data: [j, t],
+                            backgroundColor: [color.jan, color.today],
+                            borderRadius: 10,
+                            maxBarThickness: 60
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: { label: ctx => format(ctx.raw, label.includes('KES')) }
+                            },
+                            datalabels: {
+                                anchor: 'end',
+                                align: 'top',
+                                color: '#1a1a1a',
+                                font: { weight: '900', size: 14 },
+                                formatter: v => label.includes('%') ? v.toFixed(2) + '%' : format(v, label.includes('KES')),
+                                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                                borderRadius: 6,
+                                padding: 7,
+                                shadowBlur: 6,
+                                shadowColor: 'rgba(0,0,0,0.15)'
+                            }
+                        },
+                        scales: {
+                            x: { grid: { display: false }, ticks: { color: '#1a1a1a', font: { weight: 'bold', size: 13 } } },
+                            y: { display: false, beginAtZero: true }
+                        },
+                        layout: { padding: { top: 50, left: 8, right: 8 } }
+                    },
+                    plugins: [ChartDataLabels]
+                });
+            };
+
+            // ROA = Profit / Contributions × 100
+            const janROA = jan.contributions > 0 ? (jan.profit / jan.contributions) * 100 : 0;
+            const todayROA = today.contributions > 0 ? (today.profit / today.contributions) * 100 : 0;
+
+            createChart('chartMembers', jan.members, today.members, 'Members', colors.members, 'growthMembers');
+            createChart('chartLoans', jan.loans, today.loans, 'Loans (KES)', colors.loans, 'growthLoans');
+            createChart('chartContributions', jan.contributions, today.contributions, 'Contributions (KES)', colors.contributions, 'growthContributions');
+            createChart('chartProfit', jan.profit, today.profit, 'Profit (KES)', colors.profit, 'growthProfit');
+            createChart('chartROA', janROA, todayROA, 'ROA (%)', colors.roa, 'growthROA');
         }
 
         // Initialize calculators
