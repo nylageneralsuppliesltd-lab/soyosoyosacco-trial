@@ -349,11 +349,11 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 
-<!-- DYNAMIC GROWTH ARROW: GREEN (UP) / RED (DOWN) -->
+<!-- CLEAN GROWTH ARROW: NO SHADOWS, GREEN/RED -->
 <script>
-    // Dynamic Arrow Plugin – Green for growth, Red for decline
-    const dynamicGrowthArrowPlugin = {
-        id: 'dynamicGrowthArrow',
+    // Clean Arrow Plugin – No shadows, crisp lines
+    const cleanGrowthArrowPlugin = {
+        id: 'cleanGrowthArrow',
         afterDraw: function(chart) {
             const { ctx, scales, data } = chart;
             const dataset = data.datasets[0];
@@ -374,14 +374,12 @@
             const angle = Math.atan2(y2 - y1, x2 - x1);
 
             const color = isPositive ? '#10B981' : '#EF4444'; // GREEN / RED
-            const shadowColor = isPositive ? '#10B981' : '#EF4444';
 
             // Line
             ctx.save();
             ctx.strokeStyle = color;
-            ctx.lineWidth = 3; // Thinner
-            ctx.shadowBlur = 10;
-            ctx.shadowColor = shadowColor;
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
             ctx.beginPath();
             ctx.moveTo(x1, y1);
             ctx.lineTo(x2, y2);
@@ -394,8 +392,6 @@
             ctx.lineTo(x2 - headLength * Math.cos(angle + Math.PI / 6), y2 - headLength * Math.sin(angle + Math.PI / 6));
             ctx.closePath();
             ctx.fillStyle = color;
-            ctx.shadowBlur = 6;
-            ctx.shadowColor = shadowColor;
             ctx.fill();
 
             // % Label
@@ -413,7 +409,7 @@
     };
 
     // Register once
-    Chart.register(dynamicGrowthArrowPlugin);
+    Chart.register(cleanGrowthArrowPlugin);
 
     document.addEventListener('DOMContentLoaded', () => {
         const waitForData = setInterval(() => {
