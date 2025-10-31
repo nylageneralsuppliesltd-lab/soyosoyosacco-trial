@@ -175,27 +175,27 @@
         <div class="growth-charts-grid">
             <div class="chart-card">
                 <canvas id="chartMembers"></canvas>
-                <p><i class="fas fa-users"></i> Total Members</p>
+                <p>Total Members</p>
                 <div id="growthMembers" class="growth-indicator"></div>
             </div>
             <div class="chart-card">
                 <canvas id="chartLoans"></canvas>
-                <p><i class="fas fa-hand-holding-usd"></i> Loans Disbursed</p>
+                <p>Loans Disbursed</p>
                 <div id="growthLoans" class="growth-indicator"></div>
             </div>
             <div class="chart-card">
                 <canvas id="chartContributions"></canvas>
-                <p><i class="fas fa-piggy-bank"></i> Contributions</p>
+                <p>Contributions</p>
                 <div id="growthContributions" class="growth-indicator"></div>
             </div>
             <div class="chart-card">
                 <canvas id="chartProfit"></canvas>
-                <p><i class="fas fa-chart-line"></i> Profit</p>
+                <p>Profit</p>
                 <div id="growthProfit" class="growth-indicator"></div>
             </div>
             <div class="chart-card">
                 <canvas id="chartROA"></canvas>
-                <p><i class="fas fa-percentage"></i> Return on Assets (ROA)</p>
+                <p>Return on Assets (ROA)</p>
                 <div id="growthROA" class="growth-indicator"></div>
             </div>
         </div>
@@ -331,9 +331,9 @@
 <footer>
     <p>© 2025 SOYOSOYO SACCO. All rights reserved. | <a href="mailto:info@soyosoyosacco.com">info@soyosoyosacco.com</a></p>
     <div class="social-icons">
-        <a href="https://www.facebook.com/people/Soyosoyo-Sacco/61565783836766/" target="_blank"><i class="fab fa-facebook-f"></i></a>
-        <a href="https://x.com/SoyosoyoSACCO" target="_blank"><i class="fab fa-x-twitter"></i></a>
-        <a href="https://www.instagram.com/soyosoyosacco" target="_blank"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.facebook.com/people/Soyosoyo-Sacco/61565783836766/" target="_blank">Facebook</a>
+        <a href="https://x.com/SoyosoyoSACCO" target="_blank">Twitter</a>
+        <a href="https://www.instagram.com/soyosoyosacco" target="_blank">Instagram</a>
     </div>
 </footer>
 
@@ -349,17 +349,18 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 
-<!-- UNIFORM GROWTH ARROW FOR ALL CHARTS -->
+<!-- DYNAMIC GROWTH ARROW: GREEN (UP) / RED (DOWN) -->
 <script>
-    // Global Arrow Plugin – applies to ALL charts
-    const growthArrowPlugin = {
-        id: 'growthArrow',
+    // Dynamic Arrow Plugin – Green for growth, Red for decline
+    const dynamicGrowthArrowPlugin = {
+        id: 'dynamicGrowthArrow',
         afterDraw: function(chart) {
-            const { ctx, scales, data, canvas } = chart;
+            const { ctx, scales, data } = chart;
             const dataset = data.datasets[0];
             const janVal = dataset.data[0];
             const todayVal = dataset.data[1];
             const growthPercent = janVal === 0 ? 0 : ((todayVal - janVal) / Math.abs(janVal)) * 100;
+            const isPositive = growthPercent > 0;
 
             const xScale = scales.x;
             const yScale = scales.y;
@@ -369,15 +370,18 @@
             const y1 = yScale.getPixelForValue(janVal);
             const y2 = yScale.getPixelForValue(todayVal);
 
-            const headLength = 16;
+            const headLength = 14;
             const angle = Math.atan2(y2 - y1, x2 - x1);
+
+            const color = isPositive ? '#10B981' : '#EF4444'; // GREEN / RED
+            const shadowColor = isPositive ? '#10B981' : '#EF4444';
 
             // Line
             ctx.save();
-            ctx.strokeStyle = '#0EA5E9';
-            ctx.lineWidth = 4;
-            ctx.shadowBlur = 12;
-            ctx.shadowColor = '#0EA5E9';
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 3; // Thinner
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = shadowColor;
             ctx.beginPath();
             ctx.moveTo(x1, y1);
             ctx.lineTo(x2, y2);
@@ -389,9 +393,9 @@
             ctx.lineTo(x2 - headLength * Math.cos(angle - Math.PI / 6), y2 - headLength * Math.sin(angle - Math.PI / 6));
             ctx.lineTo(x2 - headLength * Math.cos(angle + Math.PI / 6), y2 - headLength * Math.sin(angle + Math.PI / 6));
             ctx.closePath();
-            ctx.fillStyle = '#0EA5E9';
-            ctx.shadowBlur = 8;
-            ctx.shadowColor = '#0EA5E9';
+            ctx.fillStyle = color;
+            ctx.shadowBlur = 6;
+            ctx.shadowColor = shadowColor;
             ctx.fill();
 
             // % Label
@@ -399,9 +403,9 @@
                 const midX = (x1 + x2) / 2;
                 const midY = (y1 + y2) / 2 - 15;
                 ctx.font = 'bold 13px Lato';
-                ctx.fillStyle = '#0EA5E9';
+                ctx.fillStyle = color;
                 ctx.textAlign = 'center';
-                ctx.fillText(`${growthPercent > 0 ? '+' : ''}${growthPercent.toFixed(1)}%`, midX, midY);
+                ctx.fillText(`${isPositive ? '+' : ''}${growthPercent.toFixed(1)}%`, midX, midY);
             }
 
             ctx.restore();
@@ -409,7 +413,7 @@
     };
 
     // Register once
-    Chart.register(growthArrowPlugin);
+    Chart.register(dynamicGrowthArrowPlugin);
 
     document.addEventListener('DOMContentLoaded', () => {
         const waitForData = setInterval(() => {
