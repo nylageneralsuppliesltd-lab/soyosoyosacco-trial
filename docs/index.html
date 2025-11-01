@@ -45,6 +45,73 @@
         .growth-indicator.negative { color: #EF4444; }
         .growth-indicator i { margin-right: 4px; font-size: 0.9em; }
     </style>
+
+    <!-- MEMBER ACTIVITIES CAROUSEL STYLES -->
+    <style>
+        .member-activities-section {
+            margin-top: 3rem;
+            padding: 2rem 0;
+            background-color: #f8f9fa;
+        }
+        .member-activities-carousel {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 12px;
+        }
+        .member-activities-carousel .slides {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+            height: 300px; /* Fixed height for images */
+        }
+        .member-activities-carousel .slide {
+            min-width: 100%;
+            height: 300px;
+            flex-shrink: 0;
+        }
+        .member-activities-carousel .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .member-activities-carousel .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            z-index: 10;
+        }
+        .member-activities-carousel .prev { left: 10px; }
+        .member-activities-carousel .next { right: 10px; }
+        .member-activities-carousel .dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 1rem;
+        }
+        .member-activities-carousel .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #ccc;
+            cursor: pointer;
+        }
+        .member-activities-carousel .dot.active {
+            background: #10B981;
+        }
+        @media (max-width: 768px) {
+            .member-activities-carousel .slides,
+            .member-activities-carousel .slide {
+                height: 200px;
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -330,6 +397,18 @@
         </div>
     </section>
 
+    <!-- MEMBER ACTIVITIES CAROUSEL -->
+    <section class="member-activities-section">
+        <h2 style="text-align: center;">Member Activities</h2>
+        <p style="text-align: center; margin-bottom: 1.5rem;">See what our members are up to.</p>
+        <div class="member-activities-carousel">
+            <div class="slides" id="memberSlides"></div>
+            <button class="nav-btn prev" onclick="changeSlide(-1)">&#10094;</button>
+            <button class="nav-btn next" onclick="changeSlide(1)">&#10095;</button>
+            <div class="dots" id="memberDots"></div>
+        </div>
+    </section>
+
 </main>
 
 <!-- =================: FOOTER – ICONS ONLY (LIKE OTHER PAGES) -->
@@ -354,6 +433,67 @@
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 
 <script>
+    // MEMBER ACTIVITIES CAROUSEL SCRIPT
+    const memberImages = [
+        './assets/01acb621480e99c389cea4973abe4896.jpg',
+        './assets/3161c755955816487a8b0cd796d43c29.jpg',
+        './assets/c1cbf8720115247da59d153d3f0be3b0.jpg',
+        './assets/b8a8a30e9531f4d1cac3ddf56c594b5a.jpg',
+        './assets/8053495671fa13e271078ad77beff286.jpg',
+        './assets/8640680b79eba02a8544ba3bbbcdd655.jpg',
+        './assets/8c145fcc127b3fad7cbe25bc847f3e8c.jpg'
+    ];
+
+    let currentSlide = 0;
+
+    function initMemberCarousel() {
+        const slidesContainer = document.getElementById('memberSlides');
+        const dotsContainer = document.getElementById('memberDots');
+
+        // Create slides
+        memberImages.forEach((imgSrc, index) => {
+            const slide = document.createElement('div');
+            slide.className = 'slide';
+            slide.innerHTML = `<img src="${imgSrc}" alt="Member Activity ${index + 1}" loading="lazy">`;
+            slidesContainer.appendChild(slide);
+
+            // Create dots
+            const dot = document.createElement('span');
+            dot.className = 'dot';
+            dot.onclick = () => goToSlide(index);
+            dotsContainer.appendChild(dot);
+        });
+
+        showSlide(currentSlide);
+    }
+
+    function showSlide(index) {
+        const slides = document.querySelectorAll('#memberSlides .slide');
+        const dots = document.querySelectorAll('#memberDots .dot');
+        const totalSlides = slides.length;
+
+        if (index >= totalSlides) currentSlide = 0;
+        else if (index < 0) currentSlide = totalSlides - 1;
+        else currentSlide = index;
+
+        document.getElementById('memberSlides').style.transform = `translateX(-${currentSlide * 100}%)`;
+
+        dots.forEach((dot, i) => {
+            dot.className = i === currentSlide ? 'dot active' : 'dot';
+        });
+    }
+
+    function changeSlide(direction) {
+        showSlide(currentSlide + direction);
+    }
+
+    function goToSlide(index) {
+        showSlide(index);
+    }
+
+    // Auto-advance (optional: every 5 seconds)
+    setInterval(() => changeSlide(1), 5000);
+
     // CLEAN GROWTH ARROW PLUGIN
     const cleanGrowthArrowPlugin = {
         id: 'cleanGrowthArrow',
@@ -512,6 +652,7 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         renderGrowthCharts();
+        initMemberCarousel();  // Initialize member carousel
         if (typeof updateFields === 'function') updateFields();
         if (typeof updateSliderValue === 'function') updateSliderValue('principal');
     });
