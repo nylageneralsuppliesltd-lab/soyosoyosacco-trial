@@ -461,14 +461,27 @@
                         plugins: {
                             legend: { display: false },
                             tooltip: {
-                                callbacks: { label: ctx => format(ctx.raw, label.includes('KES') || label.includes('Ratio')) }
+                                callbacks: { 
+                                    label: ctx => {
+                                        const val = ctx.raw;
+                                        if (label.includes('ROA') || label.includes('Liquidity')) {
+                                            return (val * 100).toFixed(2) + '%';
+                                        }
+                                        return format(val, label.includes('KES'));
+                                    }
+                                }
                             },
                             datalabels: {
                                 anchor: 'end',
                                 align: 'top',
                                 color: '#1a1a1a',
                                 font: { weight: '900', size: 14 },
-                                formatter: v => label.includes('Ratio') ? (v * 100).toFixed(2) + '%' : format(v, label.includes('KES')),
+                                formatter: v => {
+                                    if (label.includes('ROA') || label.includes('Liquidity')) {
+                                        return (v * 100).toFixed(2) + '%';
+                                    }
+                                    return format(v, label.includes('KES'));
+                                },
                                 backgroundColor: 'rgba(255, 255, 255, 0.95)',
                                 borderRadius: 6,
                                 padding: 7,
@@ -486,11 +499,11 @@
                 });
             };
 
-            // ROA = Profit / Contributions × 100
+            // ROA = Profit / Contributions × 100 (already in % form)
             const janROA = jan.contributions > 0 ? (jan.profit / jan.contributions) * 100 : 0;
             const todayROA = today.contributions > 0 ? (today.profit / today.contributions) * 100 : 0;
 
-            // ACCURATE LIQUIDITY RATIO = Bank Balance / Contributions
+            // Liquidity Ratio = Bank Balance / Contributions (as ratio → convert to %)
             const janLiquidity = jan.contributions > 0 ? (jan.bankBalance / jan.contributions) : 0;
             const todayLiquidity = today.contributions > 0 ? (today.bankBalance / today.contributions) : 0;
 
@@ -499,7 +512,7 @@
             createChart('chartContributions', jan.contributions, today.contributions, 'Contributions (KES)', colors.contributions, 'growthContributions');
             createChart('chartProfit', jan.profit, today.profit, 'Profit (KES)', colors.profit, 'growthProfit');
             createChart('chartROA', janROA, todayROA, 'ROA (%)', colors.roa, 'growthROA');
-            createChart('chartLiquidity', janLiquidity, todayLiquidity, 'Liquidity Ratio', colors.liquidity, 'growthLiquidity');
+            createChart('chartLiquidity', janLiquidity, todayLiquidity, 'Liquidity Ratio (%)', colors.liquidity, 'growthLiquidity');
         }
 
         if (typeof updateFields === 'function') updateFields();
