@@ -68,7 +68,7 @@
 
     <!-- HERO -->
     <div class="hero">
-        <div classS="banner-text">
+        <div class="banner-text">
             <h1>Soyosoyo SACCO</h1>
             <p>Empowering Coastal Kenya with 1% Loans & High Dividends</p>
         </div>
@@ -354,7 +354,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 
-<!-- CHART RENDERING WITH CORRECT ROA = (Profit / Contributions) × 100 -->
+<!-- CLEAN GROWTH ARROW + CHART RENDERING -->
 <script>
     const cleanGrowthArrowPlugin = {
         id: 'cleanGrowthArrow',
@@ -497,7 +497,7 @@
                 });
             };
 
-            // ROA = (Profit / Contributions) × 100 → in %
+            // ROA = (Profit / Contributions) × 100 → CONFIRMED & FORCED
             const janROA = jan.contributions > 0 ? (jan.profit / jan.contributions) * 100 : 0;
             const todayROA = today.contributions > 0 ? (today.profit / today.contributions) * 100 : 0;
 
