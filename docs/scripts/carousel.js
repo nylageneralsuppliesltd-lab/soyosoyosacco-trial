@@ -1,537 +1,101 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="msvalidate.01" content="858002EEAD3486E0F9BDC0652A4071B4" />
-    <title>Soyosoyo SACCO | Affordable Loans & Savings in Coastal Kenya</title>
-    <meta name="description" content="Join Soyosoyo SACCO for 1% monthly loans, high dividends, and financial empowerment. Emergency, education, and development loans available in Mombasa, Kilifi, Kwale.">
-    <meta name="keywords" content="SACCO Kenya, loans Mombasa, savings cooperative, emergency loan, education loan, Soyosoyo SACCO">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="Soyosoyo SACCO | Affordable Loans & Savings in Coastal Kenya">
-    <meta property="og:description" content="Join Soyosoyo SACCO for 1% monthly loans, high dividends, and financial empowerment. Emergency, education, and development loans in Coastal Kenya.">
-    <meta property="og:image" content="https://soyosoyosacco.com/assets/141dd3faa98da9737b591161deac509a.jpg">
-    <meta property="og:url" content="https://soyosoyosacco.com/">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Soyosoyo SACCO | Affordable Loans & Savings">
-    <meta name="twitter:description" content="1% monthly loans in Coastal Kenya. Join with KSh 200!">
-    <meta name="twitter:image" content="https://soyosoyosacco.com/assets/141dd3faa98da9737b591161deac509a.jpg">
-    <link rel="canonical" href="https://soyosoyosacco.com/">
-    <link rel="icon" href="./assets/141dd3faa98da9737b591161deac509a.jpg">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
-    
-    <!-- CSS v52 -->
-    <link rel="stylesheet" href="./style.css?v=52">
+// scripts/carousel.js – AUTO-SYNC 4 METRICS + LIQUIDITY USING BANK BALANCE
+document.addEventListener('DOMContentLoaded', () => {
+  document.body.classList.add('js-enabled');
 
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-05M38MYK0G"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-05M38MYK0G');
-    </script>
+  // === UPDATE THESE 7 VALUES DAILY ===
+  const carouselData = [
+    { number: 144, description: "Total Members" },
+    { number: 886915, description: "Member Savings" },
+    { number: 272740, description: "Bank Balance" },
+    { number: 103, description: "Number of Loans Given" },
+    { number: 1907900, description: "Value of Loans Given" },
+    { number: 51538, description: "Profit" },
+    { number: 69, description: "Active Members" }
+  ];
 
-    <!-- GROWTH INDICATOR STYLES -->
-    <style>
-        .growth-indicator {
-            text-align: center;
-            margin-top: 0.5rem;
-            font-weight: bold;
-            font-size: 1rem;
-        }
-        .growth-indicator.positive { color: #10B981; }
-        .growth-indicator.negative { color: #EF4444; }
-        .growth-indicator i { margin-right: 4px; font-size: 0.9em; }
-    </style>
-</head>
-<body>
+  // === AUTO-SYNC: Push 4 key values + Jan 2025 bank balance to window.saccoData ===
+  window.saccoData = {
+    jan: {
+      members: 101,
+      loans: 283500,
+      contributions: 331263,
+      profit: -60056,
+      bankBalance: 113742  // ← JAN 2025 BANK BALANCE (AS PROVIDED)
+    },
+    today: {
+      members: carouselData[0].number,           // Total Members
+      loans: carouselData[4].number,             // Value of Loans Given
+      contributions: carouselData[1].number,     // Member Savings
+      profit: carouselData[5].number,            // Profit
+      bankBalance: carouselData[2].number        // Bank Balance (Today)
+    }
+  };
 
-<!-- ==================== HEADER ==================== -->
-<header class="site-header">
-    <div class="navbar">
-        <a href="index.html">
-            <img class="brand-logo round" src="./assets/141dd3faa98da9737b591161deac509a.jpg" alt="Soyosoyo Sacco Logo">
-        </a>
-        <a href="https://chamasoft.com/login" class="member-portal">Member Portal</a>
-        <button id="menu-toggle" aria-label="Toggle Menu"></button>
-        <nav class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="Products.html">Products</a>
-            <a href="Online-Forms.html">Online Forms</a>
-            <a href="Jobs.html">Jobs</a>
-            <a href="About.html">About</a>
-            <a href="Join-Us.html">Join Us</a>
-        </nav>
-    </div>
+  // === REST OF CAROUSEL CODE (UNCHANGED) ===
+  const carousel = document.querySelector('.carousel');
+  if (!carousel) return;
 
-    <!-- HERO -->
-    <div class="hero">
-        <div class="banner-text">
-            <h1>Soyosoyo SACCO</h1>
-            <p>Empowering Coastal Kenya with 1% Loans & High Dividends</p>
-        </div>
-    </div>
-</header>
+  const generateItems = () => {
+    const itemHTML = carouselData.map(item => `
+      <article class="carousel-item" role="listitem">
+        <h3 class="carousel-button" data-target="${item.number}">0</h3>
+        <p class="carousel-description">${item.description}</p>
+      </article>
+    `).join('');
+    carousel.innerHTML = itemHTML + itemHTML;
+  };
+  generateItems();
 
-<!-- ==================== MAIN ==================== -->
-<main class="container">
+  const formatNumber = (num) => {
+    if (isNaN(num)) return num;
+    const abs = Math.abs(num);
+    return (abs >= 1000 ? (abs / 1000).toFixed(0) + 'k' : abs)
+      .toString()
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
 
-    <!-- HISTORY TEASER -->
-    <section class="section">
-        <h2 style="text-align: center; font-size: 1.6rem; margin-bottom: 1rem;">Our Journey</h2>
-        <p style="text-align: center; max-width: 700px; margin: 0 auto 1.5rem;">
-            Founded in 1998 as a medical aid cooperative, we’ve evolved into a trusted financial partner for many in the Kenyan Coast.
-        </p>
-        <div style="text-align: center;">
-            <a href="About.html" class="products-button" style="display: inline-block; padding: 0.75rem 2rem;">Read Full History</a>
-        </div>
-    </section>
-
-    <!-- MISSION / VISION / CORE VALUES -->
-    <div class="mission-vision-container">
-        <img src="./assets/0065564ad0f92baf9be886b031073979.jpg" alt="Mission" class="round">
-        <div>
-            <h2>Our Mission</h2>
-            <p>Empower members with accessible, affordable credit for healthcare, education, agriculture, growth and development.</p>
-        </div>
-    </div>
-
-    <div class="mission-vision-container">
-        <img src="./assets/d8c3d49708ed9831ff753b3548c717aa.jpg" alt="Vision" class="round">
-        <div>
-            <h2>Our Vision</h2>
-            <p>To lead financial transformation and sustainable prosperity across Kenya.</p>
-        </div>
-    </div>
-
-    <div class="core-values-container">
-        <img src="./assets/8119c4ebd64ccbe641d0563d23444c34.jpg" alt="Core Values" class="round">
-        <div>
-            <h2>Core Values</h2>
-            <ul>
-                <li>Empowerment</li>
-                <li>Integrity</li>
-                <li>Community</li>
-                <li>Accessibility</li>
-                <li>Growth</li>
-            </ul>
-        </div>
-    </div>
-
-    <!-- LEADERSHIP -->
-    <section class="section">
-        <h2 style="text-align: center;">Leadership</h2>
-        <div class="leadership-grid">
-            <div class="leader-profile">
-                <img src="./assets/judi.jpg" alt="Judith Malombo Mramba" class="round">
-                <h3>Judith Malombo Mramba</h3>
-                <p>Chairperson</p>
-            </div>
-            <div class="leader-profile">
-                <img src="./assets/jere.jpg" alt="Jeremiah Kalama Lewa" class="round">
-                <h3>Jeremiah Kalama Lewa</h3>
-                <p>Vice-Chairperson</p>
-            </div>
-            <div class="leader-profile">
-                <img src="./assets/sidi.jpg" alt="Sidi Saro Ngowa" class="round">
-                <h3>Sidi Saro Ngowa</h3>
-                <p>Secretary</p>
-            </div>
-            <div class="leader-profile">
-                <img src="./assets/thoya.jpg" alt="Thomas Thoya Kitsao" class="round">
-                <h3>Thomas Thoya Kitsao</h3>
-                <p>Treasurer</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- PRODUCTS PREVIEW -->
-    <section class="section">
-        <h2 style="text-align: center;">Featured Product</h2>
-        <div class="products-grid">
-            <div class="product-card">
-                <img src="./assets/ba04cd4377b3746fc0750dcf2ff3d935.jpg" alt="Education Loan" class="round">
-                <h2 style="text-align: center;">Education Loan</h2>
-                <p>Cover tuition, books, and living costs. Up to 12 months at 4% per annum.</p>
-                <a href="Products.html" class="products-button">Explore All Products</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- FINANCIAL HIGHLIGHTS CAROUSEL -->
-    <section class="section">
-        <h2 style="text-align: center;">Financial Highlights</h2>
-        <p style="text-align: center; margin-bottom: 1.5rem;">Our impact in numbers.</p>
-        <div class="carousel-wrapper">
-            <div class="carousel" aria-label="Financial Metrics Carousel"></div>
-        </div>
-    </section>
-
-    <!-- GROWTH CHARTS -->
-    <section class="section">
-        <h2 style="text-align: center; margin-bottom: 1.5rem;">Growth Since January 2025</h2>
-        <div class="growth-charts-grid">
-            <div class="chart-card">
-                <canvas id="chartMembers"></canvas>
-                <p>Total Members</p>
-                <div id="growthMembers" class="growth-indicator"></div>
-            </div>
-            <div class="chart-card">
-                <canvas id="chartLoans"></canvas>
-                <p>Loans Disbursed</p>
-                <div id="growthLoans" class="growth-indicator"></div>
-            </div>
-            <div class="chart-card">
-                <canvas id="chartContributions"></canvas>
-                <p>Contributions</p>
-                <div id="growthContributions" class="growth-indicator"></div>
-            </div>
-            <div class="chart-card">
-                <canvas id="chartProfit"></canvas>
-                <p>Profit</p>
-                <div id="growthProfit" class="growth-indicator"></div>
-            </div>
-            <div class="chart-card">
-                <canvas id="chartROA"></canvas>
-                <p>Return on Assets (ROA)</p>
-                <div id="growthROA" class="growth-indicator"></div>
-            </div>
-            <div class="chart-card">
-                <canvas id="chartLiquidity"></canvas>
-                <p>Liquidity Ratio</p>
-                <div id="growthLiquidity" class="growth-indicator"></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- LOAN CALCULATOR -->
-    <section class="tool-section" id="loan-calculator">
-        <h2 style="text-align: center;">Loan Calculator</h2>
-        <div class="calculator-wrapper">
-            <div class="calculator">
-                <h2><span class="soyo-logo">SOYOSOYO</span> SACCO Loan Calculator</h2>
-                <div class="form-group">
-                    <label for="loanType">Loan Type:</label>
-                    <select id="loanType" onchange="updateFields()">
-                        <option value="">Select Loan Type</option>
-                        <option value="emergency">Emergency Loan</option>
-                        <option value="medicare">Medicare Loan</option>
-                        <option value="education">Education Loan</option>
-                        <option value="development">Development Loan</option>
-                        <option value="apiCulture">Api Culture Loan</option>
-                    </select>
-                </div>
-                <div class="form-group interest-rate">
-                    <label for="rate">Annual Interest Rate (%):</label>
-                    <input type="text" id="rate" readonly placeholder="Select a loan type">
-                </div>
-                <div class="form-group tenure">
-                    <label for="tenure">Tenure (Months):</label>
-                    <input type="text" id="tenure" readonly placeholder="Select a loan type">
-                </div>
-                <div class="form-group slider-container">
-                    <label for="principalSlider">Loan Amount (KES):</label>
-                    <input type="range" id="principalSlider" min="1000" max="1000000" step="1000" value="10000" oninput="updateSliderValue('principal')">
-                    <div class="slider-value" id="principalValue">KES 10,000</div>
-                </div>
-                <button onclick="calculateLoan()">Calculate Loan</button>
-                <div class="result" id="result"></div>
-
-                <!-- Amortization Table -->
-                <button onclick="toggleAmortizationTable()" id="amortizationButton" style="display: none; margin-top: 1rem;">View Amortization Table</button>
-                <div class="amortization-table" id="amortizationTable" style="display: none; margin-top: 1rem;">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Month</th>
-                                <th>Payment (KES)</th>
-                                <th>Principal (KES)</th>
-                                <th>Interest (KES)</th>
-                                <th>Balance (KES)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="amortizationBody"></tbody>
-                    </table>
-                </div>
-
-                <!-- Fines Section -->
-                <button onclick="showFinesSection()" id="finesPromptButton" style="display: none; margin-top: 1rem;">Calculate Fines for Missed Payments</button>
-                <div class="fines-section" id="finesSection" style="display: none; margin-top: 1rem;">
-                    <h3>Calculate Late Repayment Fines</h3>
-                    <div class="form-group">
-                        <label for="lateMonth">Month of First Missed Payment:</label>
-                        <input type="number" id="lateMonth" placeholder="e.g., 1" min="1">
-                    </div>
-                    <div class="form-group">
-                        <label for="monthsLate">Number of Consecutive Missed Payments:</label>
-                        <input type="number" id="monthsLate" placeholder="e.g., 3" min="0">
-                    </div>
-                    <div class="form-group" id="paymentGroup" style="display: none;">
-                        <label for="paymentMonth">Month to Add Payment:</label>
-                        <input type="number" id="paymentMonth" placeholder="e.g., 4" min="1">
-                        <label for="paymentAmount">Amount Paid (KES):</label>
-                        <input type="number" id="paymentAmount" placeholder="e.g., 500" min="0">
-                        <button onclick="addPayment()">Add Payment</button>
-                    </div>
-                    <button onclick="calculateFines()">Calculate Fines</button>
-                    <div class="result" id="finesResult"></div>
-                    <button onclick="toggleFinesAmortizationTable()" id="finesAmortizationButton" style="display: none; margin-top: 1rem;">View Amortization Table with Fines</button>
-                    <div class="fines-amortization-table" id="finesAmortizationTable" style="display: none; margin-top: 1rem;">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Month</th>
-                                    <th>Payment (KES)</th>
-                                    <th>Principal (KES)</th>
-                                    <th>Interest (KES)</th>
-                                    <th>Installment Fine (KES)</th>
-                                    <th>Outstanding Fine (KES)</th>
-                                    <th>Balance (KES)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="finesAmortizationBody"></tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Chart -->
-                <button onclick="toggleChart()" id="chartButton" style="display: none; margin-top: 1rem;">View Chart</button>
-                <div class="loan-chart" id="loanChart" style="display: none; margin-top: 1rem; height: 300px;"></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- DIVIDENDS CALCULATOR -->
-    <section class="tool-section" id="dividends-calculator">
-        <h2 style="text-align: center;">Dividends Calculator</h2>
-        <div class="calculator">
-            <div class="form-group">
-                <label for="dividendRate">Dividend Rate (%):</label>
-                <input type="number" id="dividendRate" placeholder="e.g., 12.5" step="0.01">
-            </div>
-            <div class="month-inputs">
-                <input type="number" pname="jan" placeholder="Jan">
-                <input type="number" pname="feb" placeholder="Feb">
-                <input type="number" pname="mar" placeholder="Mar">
-                <input type="number" pname="apr" placeholder="Apr">
-                <input type="number" pname="may" placeholder="May">
-                <input type="number" pname="jun" placeholder="Jun">
-                <input type="number" pname="jul" placeholder="Jul">
-                <input type="number" pname="aug" placeholder="Aug">
-                <input type="number" pname="sep" placeholder="Sep">
-                <input type="number" pname="oct" placeholder="Oct">
-                <input type="number" pname="nov" placeholder="Nov">
-                <input type="number" pname="dec" placeholder="Dec">
-            </div>
-            <button onclick="calculateDividend()">Calculate Dividend</button>
-            <div class="result" id="dividendResult"></div>
-        </div>
-    </section>
-
-</main>
-
-<!-- ==================== FOOTER ==================== -->
-<footer>
-    <p>© 2025 SOYOSOYO SACCO. All rights reserved. | <a href="mailto:info@soyosoyosacco.com">info@soyosoyosacco.com</a></p>
-    <div class="social-icons">
-        <a href="https://www.facebook.com/people/Soyosoyo-Sacco/61565783836766/" target="_blank">Facebook</a>
-        <a href="https://x.com/SoyosoyoSACCO" target="_blank">Twitter</a>
-        <a href="https://www.instagram.com/soyosoyosacco" target="_blank">Instagram</a>
-    </div>
-</footer>
-
-<!-- ==================== SCRIPTS ==================== -->
-<script src="./scripts/main.js"></script>
-<script src="./scripts/calculator.js"></script>
-<script src="./scripts/dividendscalculator.js"></script>
-<script src="./scripts/chatbot.js"></script>
-<script src="./scripts/carousel.js"></script>
-<script src="./scripts/seo.js"></script>
-
-<!-- CHART.JS + DATALABELS -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
-
-<!-- CLEAN GROWTH ARROW + CHART RENDERING -->
-<script>
-    const cleanGrowthArrowPlugin = {
-        id: 'cleanGrowthArrow',
-        afterDraw: function(chart) {
-            const { ctx, scales, data } = chart;
-            const dataset = data.datasets[0];
-            const janVal = dataset.data[0];
-            const todayVal = dataset.data[1];
-            const growthPercent = janVal === 0 ? 0 : ((todayVal - janVal) / Math.abs(janVal)) * 100;
-            const isPositive = growthPercent > 0;
-
-            const xScale = scales.x;
-            const yScale = scales.y;
-
-            const x1 = xScale.getPixelForValue(0);
-            const x2 = xScale.getPixelForValue(1);
-            const y1 = yScale.getPixelForValue(janVal);
-            const y2 = yScale.getPixelForValue(todayVal);
-
-            const headLength = 14;
-            const angle = Math.atan2(y2 - y1, x2 - x1);
-
-            const color = isPositive ? '#10B981' : '#EF4444';
-
-            ctx.save();
-            ctx.strokeStyle = color;
-            ctx.lineWidth = 3;
-            ctx.lineCap = 'round';
-            ctx.beginPath();
-            ctx.moveTo(x1, y1);
-            ctx.lineTo(x2, y2);
-            ctx.stroke();
-
-            ctx.beginPath();
-            ctx.moveTo(x2, y2);
-            ctx.lineTo(x2 - headLength * Math.cos(angle - Math.PI / 6), y2 - headLength * Math.sin(angle - Math.PI / 6));
-            ctx.lineTo(x2 - headLength * Math.cos(angle + Math.PI / 6), y2 - headLength * Math.sin(angle + Math.PI / 6));
-            ctx.closePath();
-            ctx.fillStyle = color;
-            ctx.fill();
-
-            if (growthPercent !== 0) {
-                const midX = (x1 + x2) / 2;
-                const midY = (y1 + y2) / 2 - 15;
-                ctx.font = 'bold 13px Lato';
-                ctx.fillStyle = color;
-                ctx.textAlign = 'center';
-                ctx.fillText(`${isPositive ? '+' : ''}${growthPercent.toFixed(1)}%`, midX, midY);
-            }
-            ctx.restore();
-        }
+  const animateCounter = (el, target) => {
+    const end = +target;
+    let start = 0, id = null;
+    const duration = 600;
+    const step = (now) => {
+      if (!id) id = now;
+      const progress = Math.min((now - id) / duration, 1);
+      const value = Math.round(start + progress * (end - start));
+      el.textContent = formatNumber(value);
+      if (progress < 1) requestAnimationFrame(step);
     };
+    requestAnimationFrame(step);
+  };
 
-    Chart.register(cleanGrowthArrowPlugin);
-
-    document.addEventListener('DOMContentLoaded', () => {
-        const waitForData = setInterval(() => {
-            if (window.saccoData) {
-                clearInterval(waitForData);
-                renderCharts();
-            }
-        }, 50);
-
-        function renderCharts() {
-            const { jan, today } = window.saccoData;
-            const colors = {
-                members: { jan: '#8B5CF6', today: '#C4B5FD' },
-                loans: { jan: '#F59E0B', today: '#FBBF24' },
-                contributions: { jan: '#10B981', today: '#34D399' },
-                profit: { jan: '#EF4444', today: '#F87171' },
-                roa: { jan: '#0EA5E9', today: '#7DD3FC' },
-                liquidity: { jan: '#6366F1', today: '#A5B4FC' }
-            };
-
-            const format = (v, money = false) => money ? 'KES ' + v.toLocaleString() : v.toLocaleString();
-            const growth = (j, t) => j === 0 ? (t === 0 ? 0 : 100) : ((t - j) / Math.abs(j)) * 100;
-
-            const updateIndicator = (id, g) => {
-                const el = document.getElementById(id);
-                const arrow = g > 0 ? 'up' : g < 0 ? 'down' : 'right';
-                const cls = g > 0 ? 'positive' : g < 0 ? 'negative' : '';
-                el.innerHTML = `<i class="fas fa-arrow-${arrow}"></i> ${Math.abs(g).toFixed(1)}%`;
-                el.className = `growth-indicator ${cls}`;
-            };
-
-            const createChart = (id, j, t, label, color, gid, isPercent = false, isMoney = false) => {
-                const g = growth(j, t);
-                updateIndicator(gid, g);
-
-                new Chart(document.getElementById(id).getContext('2d'), {
-                    type: 'bar',
-                    data: {
-                        labels: ['Jan 2025', 'Today'],
-                        datasets: [{
-                            data: [j, t],
-                            backgroundColor: [color.jan, color.today],
-                            borderRadius: 10,
-                            maxBarThickness: 60
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                callbacks: { 
-                                    label: ctx => {
-                                        const val = ctx.raw;
-                                        if (isPercent) return (val * 100).toFixed(2) + '%';
-                                        if (isMoney) return 'KES ' + val.toLocaleString();
-                                        return val.toLocaleString();
-                                    }
-                                }
-                            },
-                            datalabels: {
-                                anchor: 'end',
-                                align: 'top',
-                                color: '#1a1a1a',
-                                font: { weight: '900', size: 14 },
-                                formatter: v => {
-                                    if (isPercent) return (v * 100).toFixed(2) + '%';
-                                    if (isMoney) return 'KES ' + v.toLocaleString();
-                                    return v.toLocaleString();
-                                },
-                                backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                                borderRadius: 6,
-                                padding: 7,
-                                shadowBlur: 6,
-                                shadowColor: 'rgba(0,0,0,0.15)'
-                            }
-                        },
-                        scales: {
-                            x: { grid: { display: false }, ticks: { color: '#1a1a1a', font: { weight: 'bold', size: 13 } } },
-                            y: { display: false, beginAtZero: true }
-                        },
-                        layout: { padding: { top: 50, left: 8, right: 8 } }
-                    },
-                    plugins: [ChartDataLabels]
-                });
-            };
-
-            // ROA = Profit / Contributions × 100 → SIMPLE
-            const janROA = jan.contributions > 0 ? (jan.profit / jan.contributions) * 100 : 0;
-            const todayROA = today.contributions > 0 ? (today.profit / today.contributions) * 100 : 0;
-
-            // Liquidity = Bank Balance / Contributions → shown as %
-            const janLiquidity = jan.contributions > 0 ? (jan.bankBalance / jan.contributions) : 0;
-            const todayLiquidity = today.contributions > 0 ? (today.bankBalance / today.contributions) : 0;
-
-            createChart('chartMembers', jan.members, today.members, 'Members', colors.members, 'growthMembers');
-            createChart('chartLoans', jan.loans, today.loans, 'Loans (KES)', colors.loans, 'growthLoans', false, true);
-            createChart('chartContributions', jan.contributions, today.contributions, 'Contributions (KES)', colors.contributions, 'growthContributions', false, true);
-            createChart('chartProfit', jan.profit, today.profit, 'Profit (KES)', colors.profit, 'growthProfit', false, true);
-            createChart('chartROA', janROA, todayROA, 'ROA (%)', colors.roa, 'growthROA', true);
-            createChart('chartLiquidity', janLiquidity, todayLiquidity, 'Liquidity Ratio (%)', colors.liquidity, 'growthLiquidity', true);
-        }
-
-        if (typeof updateFields === 'function') updateFields();
-        if (typeof updateSliderValue === 'function') updateSliderValue('principal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const btn = entry.target.querySelector('.carousel-button');
+      if (entry.isIntersecting && btn) {
+        animateCounter(btn, btn.dataset.target);
+      } else if (btn) {
+        btn.textContent = '0';
+      }
     });
-</script>
+  }, { threshold: 0.3 });
 
-<!-- SCHEMA.ORG -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "FinancialService",
-  "name": "SOYOSOYO SACCO",
-  "url": "https://soyosoyosacco.com",
-  "logo": "https://soyosoyosacco.com/assets/141dd3faa98da9737b591161deac509a.jpg",
-  "description": "Affordable 1% monthly loans and high dividends in Coastal Kenya.",
-  "address": { "@type": "PostalAddress", "addressLocality": "Kilifi", "addressRegion": "Coast", "addressCountry": "KE" },
-  "email": "info@soyosoyosacco.com",
-  "areaServed": ["Kilifi", "Mombasa", "Kwale"]
-}
-</script>
+  document.querySelectorAll('.carousel-item').forEach(item => {
+    const btn = item.querySelector('.carousel-button');
+    if (btn) observer.observe(item);
+  });
 
-</body>
-</html>
+  const update = () => {
+    const w = window.innerWidth;
+    const iw = w <= 768 ? 220 : 300;
+    const m = w <= 768 ? 20 : 40;
+    const total = carouselData.length * (iw + 2 * m);
+
+    document.documentElement.style.setProperty('--item-width', iw + 'px');
+    document.documentElement.style.setProperty('--item-margin', m + 'px');
+    document.documentElement.style.setProperty('--carousel-translate', `-${total}px`);
+    document.documentElement.style.setProperty('--carousel-duration', `${carouselData.length * 8}s`);
+  };
+
+  window.addEventListener('resize', update);
+  update();
+});
