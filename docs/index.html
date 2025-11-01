@@ -21,8 +21,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
     
-    <!-- CSS v52 -->
-    <link rel="stylesheet" href="./style.css?v=52">
+    <!-- CSS v54 -->
+    <link rel="stylesheet" href="./style.css?v=54">
 
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-05M38MYK0G"></script>
@@ -342,15 +342,13 @@
     </div>
 </footer>
 
-<!-- ==================== SCRIPTS – ORDER FIXED ==================== -->
-<!-- 1. carousel.js → loads saccoData -->
+<!-- ==================== SCRIPTS – ORDER MATTERS ==================== -->
 <script src="./scripts/carousel.js"></script>
-
-<!-- 2. CHART.JS + DATALABELS + CHARTS LOGIC -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 
 <script>
+    // CLEAN GROWTH ARROW PLUGIN
     const cleanGrowthArrowPlugin = {
         id: 'cleanGrowthArrow',
         afterDraw: function(chart) {
@@ -402,120 +400,119 @@
             ctx.restore();
         }
     };
-
     Chart.register(cleanGrowthArrowPlugin);
 
-    document.addEventListener('DOMContentLoaded', () => {
-        // Wait for carousel.js to populate window.saccoData
-        const waitForData = setInterval(() => {
-            if (window.saccoData) {
-                clearInterval(waitForData);
-                renderCharts();
-            }
-        }, 50);
-
-        function renderCharts() {
-            const { jan, today } = window.saccoData;
-            const colors = {
-                members: { jan: '#8B5CF6', today: '#C4B5FD' },
-                loans: { jan: '#F59E0B', today: '#FBBF24' },
-                contributions: { jan: '#10B981', today: '#34D399' },
-                profit: { jan: '#EF4444', today: '#F87171' },
-                roa: { jan: '#0EA5E9', today: '#7DD3FC' },
-                liquidity: { jan: '#6366F1', today: '#A5B4FC' }
-            };
-
-            const format = (v, money = false) => money ? 'KES ' + v.toLocaleString() : v.toLocaleString();
-            const growth = (j, t) => j === 0 ? (t === 0 ? 0 : 100) : ((t - j) / Math.abs(j)) * 100;
-
-            const updateIndicator = (id, g) => {
-                const el = document.getElementById(id);
-                const arrow = g > 0 ? 'up' : g < 0 ? 'down' : 'right';
-                const cls = g > 0 ? 'positive' : g < 0 ? 'negative' : '';
-                el.innerHTML = `<i class="fas fa-arrow-${arrow}"></i> ${Math.abs(g).toFixed(1)}%`;
-                el.className = `growth-indicator ${cls}`;
-            };
-
-            const createChart = (id, j, t, label, color, gid, isPercent = false, isMoney = false) => {
-                const g = growth(j, t);
-                updateIndicator(gid, g);
-
-                new Chart(document.getElementById(id).getContext('2d'), {
-                    type: 'bar',
-                    data: {
-                        labels: ['Jan 2025', 'Today'],
-                        datasets: [{
-                            data: [j, t],
-                            backgroundColor: [color.jan, color.today],
-                            borderRadius: 10,
-                            maxBarThickness: 60
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                callbacks: { 
-                                    label: ctx => {
-                                        const val = ctx.raw;
-                                        if (isPercent) return (val * 100).toFixed(2) + '%';
-                                        if (isMoney) return 'KES ' + val.toLocaleString();
-                                        return val.toLocaleString();
-                                    }
-                                }
-                            },
-                            datalabels: {
-                                anchor: 'end',
-                                align: 'top',
-                                color: '#1a1a1a',
-                                font: { weight: '900', size: 14 },
-                                formatter: v => {
-                                    if (isPercent) return (v * 100).toFixed(2) + '%';
-                                    if (isMoney) return 'KES ' + v.toLocaleString();
-                                    return v.toLocaleString();
-                                },
-                                backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                                borderRadius: 6,
-                                padding: 7,
-                                shadowBlur: 6,
-                                shadowColor: 'rgba(0,0,0,0.15)'
-                            }
-                        },
-                        scales: {
-                            x: { grid: { display: false }, ticks: { color: '#1a1a1a', font: { weight: 'bold', size: 13 } } },
-                            y: { display: false, beginAtZero: true }
-                        },
-                        layout: { padding: { top: 50, left: 8, right: 8 } }
-                    },
-                    plugins: [ChartDataLabels]
-                });
-            };
-
-            // ROA = (Profit / Contributions) × 100 → CORRECT
-            const janROA = jan.contributions > 0 ? (jan.profit / jan.contributions) * 100 : 0;
-            const todayROA = today.contributions > 0 ? (today.profit / today.contributions) * 100 : 0;
-
-            // Liquidity = Bank Balance / Contributions
-            const janLiquidity = jan.contributions > 0 ? (jan.bankBalance / jan.contributions) : 0;
-            const todayLiquidity = today.contributions > 0 ? (today.bankBalance / today.contributions) : 0;
-
-            createChart('chartMembers', jan.members, today.members, 'Members', colors.members, 'growthMembers');
-            createChart('chartLoans', jan.loans, today.loans, 'Loans (KES)', colors.loans, 'growthLoans', false, true);
-            createChart('chartContributions', jan.contributions, today.contributions, 'Contributions (KES)', colors.contributions, 'growthContributions', false, true);
-            createChart('chartProfit', jan.profit, today.profit, 'Profit (KES)', colors.profit, 'growthProfit', false, true);
-            createChart('chartROA', janROA, todayROA, 'ROA (%)', colors.roa, 'growthROA', true);
-            createChart('chartLiquidity', janLiquidity, todayLiquidity, 'Liquidity Ratio (%)', colors.liquidity, 'growthLiquidity', true);
+    // CHART RENDERER – WAITS FOR carousel.js
+    function renderGrowthCharts() {
+        if (!window.saccoData) {
+            console.warn('saccoData not ready. Retrying...');
+            setTimeout(renderGrowthCharts, 100);
+            return;
         }
 
-        // Initialize other tools
+        console.log('SACCO DATA LOADED:', window.saccoData);
+
+        const { jan, today } = window.saccoData;
+        const colors = {
+            members: { jan: '#8B5CF6', today: '#C4B5FD' },
+            loans: { jan: '#F59E0B', today: '#FBBF24' },
+            contributions: { jan: '#10B981', today: '#34D399' },
+            profit: { jan: '#EF4444', today: '#F87171' },
+            roa: { jan: '#0EA5E9', today: '#7DD3FC' },
+            liquidity: { jan: '#6366F1', today: '#A5B4FC' }
+        };
+
+        const growth = (j, t) => j === 0 ? (t === 0 ? 0 : 100) : ((t - j) / Math.abs(j)) * 100;
+
+        const updateIndicator = (id, g) => {
+            const el = document.getElementById(id);
+            const arrow = g > 0 ? 'up' : g < 0 ? 'down' : 'right';
+            const cls = g > 0 ? 'positive' : g < 0 ? 'negative' : '';
+            el.innerHTML = `<i class="fas fa-arrow-${arrow}"></i> ${Math.abs(g).toFixed(1)}%`;
+            el.className = `growth-indicator ${cls}`;
+        };
+
+        const createChart = (id, j, t, label, color, gid, isPercent = false, isMoney = false) => {
+            const g = growth(j, t);
+            updateIndicator(gid, g);
+
+            new Chart(document.getElementById(id).getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['Jan 2025', 'Today'],
+                    datasets: [{
+                        data: [j, t],
+                        backgroundColor: [color.jan, color.today],
+                        borderRadius: 10,
+                        maxBarThickness: 60
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: { 
+                                label: ctx => {
+                                    const val = ctx.raw;
+                                    if (isPercent) return (val * 100).toFixed(2) + '%';
+                                    if (isMoney) return 'KES ' + val.toLocaleString();
+                                    return val.toLocaleString();
+                                }
+                            }
+                        },
+                        datalabels: {
+                            anchor: 'end',
+                            align: 'top',
+                            color: '#1a1a1a',
+                            font: { weight: '900', size: 14 },
+                            formatter: v => {
+                                if (isPercent) return (v * 100).toFixed(2) + '%';
+                                if (isMoney) return 'KES ' + v.toLocaleString();
+                                return v.toLocaleString();
+                            },
+                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                            borderRadius: 6,
+                            padding: 7,
+                            shadowBlur: 6,
+                            shadowColor: 'rgba(0,0,0,0.15)'
+                        }
+                    },
+                    scales: {
+                        x: { grid: { display: false }, ticks: { color: '#1a1a1a', font: { weight: 'bold', size: 13 } } },
+                        y: { display: false, beginAtZero: true }
+                    },
+                    layout: { padding: { top: 50, left: 8, right: 8 } }
+                },
+                plugins: [ChartDataLabels]
+            });
+        };
+
+        // ROA = (Profit / Contributions) × 100
+        const janROA = jan.contributions > 0 ? (jan.profit / jan.contributions) * 100 : 0;
+        const todayROA = today.contributions > 0 ? (today.profit / today.contributions) * 100 : 0;
+
+        const janLiquidity = jan.contributions > 0 ? (jan.bankBalance / jan.contributions) : 0;
+        const todayLiquidity = today.contributions > 0 ? (today.bankBalance / today.contributions) : 0;
+
+        createChart('chartMembers', jan.members, today.members, 'Members', colors.members, 'growthMembers');
+        createChart('chartLoans', jan.loans, today.loans, 'Loans (KES)', colors.loans, 'growthLoans', false, true);
+        createChart('chartContributions', jan.contributions, today.contributions, 'Contributions (KES)', colors.contributions, 'growthContributions', false, true);
+        createChart('chartProfit', jan.profit, today.profit, 'Profit (KES)', colors.profit, 'growthProfit', false, true);
+        createChart('chartROA', janROA, todayROA, 'ROA (%)', colors.roa, 'growthROA', true);
+        createChart('chartLiquidity', janLiquidity, todayLiquidity, 'Liquidity Ratio (%)', colors.liquidity, 'growthLiquidity', true);
+    }
+
+    // Start rendering when DOM + data ready
+    document.addEventListener('DOMContentLoaded', () => {
+        renderGrowthCharts();
         if (typeof updateFields === 'function') updateFields();
         if (typeof updateSliderValue === 'function') updateSliderValue('principal');
     });
 </script>
 
-<!-- 3. Other scripts AFTER data & charts -->
+<!-- OTHER SCRIPTS -->
 <script src="./scripts/main.js"></script>
 <script src="./scripts/calculator.js"></script>
 <script src="./scripts/dividendscalculator.js"></script>
