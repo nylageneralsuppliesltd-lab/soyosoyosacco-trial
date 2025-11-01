@@ -1,4 +1,4 @@
-// scripts/carousel.js – AUTO-SYNC 4 METRICS TO INDEX
+// scripts/carousel.js – AUTO-SYNC 4 METRICS + LIQUIDITY USING BANK BALANCE
 document.addEventListener('DOMContentLoaded', () => {
   document.body.classList.add('js-enabled');
 
@@ -13,19 +13,21 @@ document.addEventListener('DOMContentLoaded', () => {
     { number: 69, description: "Active Members" }
   ];
 
-  // === AUTO-SYNC: Push 4 key values to window.saccoData ===
+  // === AUTO-SYNC: Push 4 key values + Jan 2025 bank balance to window.saccoData ===
   window.saccoData = {
     jan: {
       members: 101,
       loans: 283500,
       contributions: 331263,
-      profit: -60056
+      profit: -60056,
+      bankBalance: 113742  // ← JAN 2025 BANK BALANCE (AS PROVIDED)
     },
     today: {
       members: carouselData[0].number,           // Total Members
       loans: carouselData[4].number,             // Value of Loans Given
       contributions: carouselData[1].number,     // Member Savings
-      profit: carouselData[5].number             // Profit
+      profit: carouselData[5].number,            // Profit
+      bankBalance: carouselData[2].number        // Bank Balance (Today)
     }
   };
 
@@ -86,12 +88,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const w = window.innerWidth;
     const iw = w <= 768 ? 220 : 300;
     const m = w <= 768 ? 20 : 40;
-    // FIXED: total = width of ONE set (7 items) for seamless loop translate
     const total = carouselData.length * (iw + 2 * m);
 
     document.documentElement.style.setProperty('--item-width', iw + 'px');
     document.documentElement.style.setProperty('--item-margin', m + 'px');
-    // FIXED: Translate by -ONE set width (not full 14), so second set aligns perfectly
     document.documentElement.style.setProperty('--carousel-translate', `-${total}px`);
     document.documentElement.style.setProperty('--carousel-duration', `${carouselData.length * 8}s`);
   };
