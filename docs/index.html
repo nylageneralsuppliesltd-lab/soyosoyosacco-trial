@@ -198,7 +198,6 @@
                 <p>Return on Assets (ROA)</p>
                 <div id="growthROA" class="growth-indicator"></div>
             </div>
-            <!-- NEW: Liquidity Ratio Chart -->
             <div class="chart-card">
                 <canvas id="chartLiquidity"></canvas>
                 <p>Liquidity Ratio</p>
@@ -355,9 +354,8 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 
-<!-- CLEAN GROWTH ARROW: NO SHADOWS, GREEN/RED -->
+<!-- CLEAN GROWTH ARROW + CHART RENDERING -->
 <script>
-    // Clean Arrow Plugin – No shadows, crisp lines
     const cleanGrowthArrowPlugin = {
         id: 'cleanGrowthArrow',
         afterDraw: function(chart) {
@@ -379,9 +377,8 @@
             const headLength = 14;
             const angle = Math.atan2(y2 - y1, x2 - x1);
 
-            const color = isPositive ? '#10B981' : '#EF4444'; // GREEN / RED
+            const color = isPositive ? '#10B981' : '#EF4444';
 
-            // Line
             ctx.save();
             ctx.strokeStyle = color;
             ctx.lineWidth = 3;
@@ -391,7 +388,6 @@
             ctx.lineTo(x2, y2);
             ctx.stroke();
 
-            // Arrowhead
             ctx.beginPath();
             ctx.moveTo(x2, y2);
             ctx.lineTo(x2 - headLength * Math.cos(angle - Math.PI / 6), y2 - headLength * Math.sin(angle - Math.PI / 6));
@@ -400,7 +396,6 @@
             ctx.fillStyle = color;
             ctx.fill();
 
-            // % Label
             if (growthPercent !== 0) {
                 const midX = (x1 + x2) / 2;
                 const midY = (y1 + y2) / 2 - 15;
@@ -409,12 +404,10 @@
                 ctx.textAlign = 'center';
                 ctx.fillText(`${isPositive ? '+' : ''}${growthPercent.toFixed(1)}%`, midX, midY);
             }
-
             ctx.restore();
         }
     };
 
-    // Register once
     Chart.register(cleanGrowthArrowPlugin);
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -433,7 +426,7 @@
                 contributions: { jan: '#10B981', today: '#34D399' },
                 profit: { jan: '#EF4444', today: '#F87171' },
                 roa: { jan: '#0EA5E9', today: '#7DD3FC' },
-                liquidity: { jan: '#6366F1', today: '#A5B4FC' } // NEW: Indigo
+                liquidity: { jan: '#6366F1', today: '#A5B4FC' }
             };
 
             const format = (v, money = false) => money ? 'KES ' + v.toLocaleString() : v.toLocaleString();
@@ -475,7 +468,7 @@
                                 align: 'top',
                                 color: '#1a1a1a',
                                 font: { weight: '900', size: 14 },
-                                formatter: v => label.includes('Ratio') || label.includes('%') ? v.toFixed(2) + (label.includes('%') ? '%' : '') : format(v, label.includes('KES')),
+                                formatter: v => label.includes('Ratio') ? (v * 100).toFixed(2) + '%' : format(v, label.includes('KES')),
                                 backgroundColor: 'rgba(255, 255, 255, 0.95)',
                                 borderRadius: 6,
                                 padding: 7,
@@ -497,9 +490,9 @@
             const janROA = jan.contributions > 0 ? (jan.profit / jan.contributions) * 100 : 0;
             const todayROA = today.contributions > 0 ? (today.profit / today.contributions) * 100 : 0;
 
-            // Liquidity Ratio = Loans / Contributions (proxy for asset/liability ratio)
-            const janLiquidity = jan.contributions > 0 ? (jan.loans / jan.contributions) : 0;
-            const todayLiquidity = today.contributions > 0 ? (today.loans / today.contributions) : 0;
+            // ACCURATE LIQUIDITY RATIO = Bank Balance / Contributions
+            const janLiquidity = jan.contributions > 0 ? (jan.bankBalance / jan.contributions) : 0;
+            const todayLiquidity = today.contributions > 0 ? (today.bankBalance / today.contributions) : 0;
 
             createChart('chartMembers', jan.members, today.members, 'Members', colors.members, 'growthMembers');
             createChart('chartLoans', jan.loans, today.loans, 'Loans (KES)', colors.loans, 'growthLoans');
@@ -509,7 +502,6 @@
             createChart('chartLiquidity', janLiquidity, todayLiquidity, 'Liquidity Ratio', colors.liquidity, 'growthLiquidity');
         }
 
-        // Initialize calculators
         if (typeof updateFields === 'function') updateFields();
         if (typeof updateSliderValue === 'function') updateSliderValue('principal');
     });
