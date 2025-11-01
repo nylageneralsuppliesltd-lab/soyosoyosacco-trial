@@ -342,19 +342,14 @@
     </div>
 </footer>
 
-<!-- ==================== SCRIPTS ==================== -->
-<script src="./scripts/main.js"></script>
-<script src="./scripts/calculator.js"></script>
-<script src="./scripts/dividendscalculator.js"></script>
-<script src="./scripts/chatbot.js"></script>
+<!-- ==================== SCRIPTS – ORDER FIXED ==================== -->
+<!-- 1. carousel.js → loads saccoData -->
 <script src="./scripts/carousel.js"></script>
-<script src="./scripts/seo.js"></script>
 
-<!-- CHART.JS + DATALABELS -->
+<!-- 2. CHART.JS + DATALABELS + CHARTS LOGIC -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 
-<!-- CLEAN GROWTH ARROW + CHART RENDERING -->
 <script>
     const cleanGrowthArrowPlugin = {
         id: 'cleanGrowthArrow',
@@ -411,6 +406,7 @@
     Chart.register(cleanGrowthArrowPlugin);
 
     document.addEventListener('DOMContentLoaded', () => {
+        // Wait for carousel.js to populate window.saccoData
         const waitForData = setInterval(() => {
             if (window.saccoData) {
                 clearInterval(waitForData);
@@ -497,11 +493,11 @@
                 });
             };
 
-            // ROA = (Profit / Contributions) × 100 → CONFIRMED & FORCED
+            // ROA = (Profit / Contributions) × 100 → CORRECT
             const janROA = jan.contributions > 0 ? (jan.profit / jan.contributions) * 100 : 0;
             const todayROA = today.contributions > 0 ? (today.profit / today.contributions) * 100 : 0;
 
-            // Liquidity = Bank Balance / Contributions → shown as %
+            // Liquidity = Bank Balance / Contributions
             const janLiquidity = jan.contributions > 0 ? (jan.bankBalance / jan.contributions) : 0;
             const todayLiquidity = today.contributions > 0 ? (today.bankBalance / today.contributions) : 0;
 
@@ -513,10 +509,18 @@
             createChart('chartLiquidity', janLiquidity, todayLiquidity, 'Liquidity Ratio (%)', colors.liquidity, 'growthLiquidity', true);
         }
 
+        // Initialize other tools
         if (typeof updateFields === 'function') updateFields();
         if (typeof updateSliderValue === 'function') updateSliderValue('principal');
     });
 </script>
+
+<!-- 3. Other scripts AFTER data & charts -->
+<script src="./scripts/main.js"></script>
+<script src="./scripts/calculator.js"></script>
+<script src="./scripts/dividendscalculator.js"></script>
+<script src="./scripts/chatbot.js"></script>
+<script src="./scripts/seo.js"></script>
 
 <!-- SCHEMA.ORG -->
 <script type="application/ld+json">
