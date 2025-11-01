@@ -21,8 +21,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
     
-    <!-- CSS v54 -->
-    <link rel="stylesheet" href="./style.css?v=54">
+    <!-- CSS v55 -->
+    <link rel="stylesheet" href="./style.css?v=55">
 
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-05M38MYK0G"></script>
@@ -77,7 +77,97 @@
 
 <!-- ==================== MAIN ==================== -->
 <main class="container">
-    <!-- (Your other content remains unchanged) -->
+
+    <!-- HISTORY TEASER -->
+    <section class="section">
+        <h2 style="text-align: center; font-size: 1.6rem; margin-bottom: 1rem;">Our Journey</h2>
+        <p style="text-align: center; max-width: 700px; margin: 0 auto 1.5rem;">
+            Founded in 1998 as a medical aid cooperative, we’ve evolved into a trusted financial partner for many in the Kenyan Coast.
+        </p>
+        <div style="text-align: center;">
+            <a href="About.html" class="products-button" style="display: inline-block; padding: 0.75rem 2rem;">Read Full History</a>
+        </div>
+    </section>
+
+    <!-- MISSION / VISION / CORE VALUES -->
+    <div class="mission-vision-container">
+        <img src="./assets/0065564ad0f92baf9be886b031073979.jpg" alt="Mission" class="round">
+        <div>
+            <h2>Our Mission</h2>
+            <p>Empower members with accessible, affordable credit for healthcare, education, agriculture, growth and development.</p>
+        </div>
+    </div>
+
+    <div class="mission-vision-container">
+        <img src="./assets/d8c3d49708ed9831ff753b3548c717aa.jpg" alt="Vision" class="round">
+        <div>
+            <h2>Our Vision</h2>
+            <p>To lead financial transformation and sustainable prosperity across Kenya.</p>
+        </div>
+    </div>
+
+    <div class="core-values-container">
+        <img src="./assets/8119c4ebd64ccbe641d0563d23444c34.jpg" alt="Core Values" class="round">
+        <div>
+            <h2>Core Values</h2>
+            <ul>
+                <li>Empowerment</li>
+                <li>Integrity</li>
+                <li>Community</li>
+                <li>Accessibility</li>
+                <li>Growth</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- LEADERSHIP -->
+    <section class="section">
+        <h2 style="text-align: center;">Leadership</h2>
+        <div class="leadership-grid">
+            <div class="leader-profile">
+                <img src="./assets/judi.jpg" alt="Judith Malombo Mramba" class="round">
+                <h3>Judith Malombo Mramba</h3>
+                <p>Chairperson</p>
+            </div>
+            <div class="leader-profile">
+                <img src="./assets/jere.jpg" alt="Jeremiah Kalama Lewa" class="round">
+                <h3>Jeremiah Kalama Lewa</h3>
+                <p>Vice-Chairperson</p>
+            </div>
+            <div class="leader-profile">
+                <img src="./assets/sidi.jpg" alt="Sidi Saro Ngowa" class="round">
+                <h3>Sidi Saro Ngowa</h3>
+                <p>Secretary</p>
+            </div>
+            <div class="leader-profile">
+                <img src="./assets/thoya.jpg" alt="Thomas Thoya Kitsao" class="round">
+                <h3>Thomas Thoya Kitsao</h3>
+                <p>Treasurer</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRODUCTS PREVIEW -->
+    <section class="section">
+        <h2 style="text-align: center;">Featured Product</h2>
+        <div class="products-grid">
+            <div class="product-card">
+                <img src="./assets/ba04cd4377b3746fc0750dcf2ff3d935.jpg" alt="Education Loan" class="round">
+                <h2 style="text-align: center;">Education Loan</h2>
+                <p>Cover tuition, books, and living costs. Up to 12 months at 4% per annum.</p>
+                <a href="Products.html" class="products-button">Explore All Products</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FINANCIAL HIGHLIGHTS CAROUSEL -->
+    <section class="section">
+        <h2 style="text-align: center;">Financial Highlights</h2>
+        <p style="text-align: center; margin-bottom: 1.5rem;">Our impact in numbers.</p>
+        <div class="carousel-wrapper">
+            <div class="carousel" aria-label="Financial Metrics Carousel"></div>
+        </div>
+    </section>
 
     <!-- GROWTH CHARTS -->
     <section class="section">
@@ -115,6 +205,131 @@
             </div>
         </div>
     </section>
+
+    <!-- LOAN CALCULATOR -->
+    <section class="tool-section" id="loan-calculator">
+        <h2 style="text-align: center;">Loan Calculator</h2>
+        <div class="calculator-wrapper">
+            <div class="calculator">
+                <h2><span class="soyo-logo">SOYOSOYO</span> SACCO Loan Calculator</h2>
+                <div class="form-group">
+                    <label for="loanType">Loan Type:</label>
+                    <select id="loanType" onchange="updateFields()">
+                        <option value="">Select Loan Type</option>
+                        <option value="emergency">Emergency Loan</option>
+                        <option value="medicare">Medicare Loan</option>
+                        <option value="education">Education Loan</option>
+                        <option value="development">Development Loan</option>
+                        <option value="apiCulture">Api Culture Loan</option>
+                    </select>
+                </div>
+                <div class="form-group interest-rate">
+                    <label for="rate">Annual Interest Rate (%):</label>
+                    <input type="text" id="rate" readonly placeholder="Select a loan type">
+                </div>
+                <div class="form-group tenure">
+                    <label for="tenure">Tenure (Months):</label>
+                    <input type="text" id="tenure" readonly placeholder="Select a loan type">
+                </div>
+                <div class="form-group slider-container">
+                    <label for="principalSlider">Loan Amount (KES):</label>
+                    <input type="range" id="principalSlider" min="1000" max="1000000" step="1000" value="10000" oninput="updateSliderValue('principal')">
+                    <div class="slider-value" id="principalValue">KES 10,000</div>
+                </div>
+                <button onclick="calculateLoan()">Calculate Loan</button>
+                <div class="result" id="result"></div>
+
+                <!-- Amortization Table -->
+                <button onclick="toggleAmortizationTable()" id="amortizationButton" style="display: none; margin-top: 1rem;">View Amortization Table</button>
+                <div class="amortization-table" id="amortizationTable" style="display: none; margin-top: 1rem;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Month</th>
+                                <th>Payment (KES)</th>
+                                <th>Principal (KES)</th>
+                                <th>Interest (KES)</th>
+                                <th>Balance (KES)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="amortizationBody"></tbody>
+                    </table>
+                </div>
+
+                <!-- Fines Section -->
+                <button onclick="showFinesSection()" id="finesPromptButton" style="display: none; margin-top: 1rem;">Calculate Fines for Missed Payments</button>
+                <div class="fines-section" id="finesSection" style="display: none; margin-top: 1rem;">
+                    <h3>Calculate Late Repayment Fines</h3>
+                    <div class="form-group">
+                        <label for="lateMonth">Month of First Missed Payment:</label>
+                        <input type="number" id="lateMonth" placeholder="e.g., 1" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="monthsLate">Number of Consecutive Missed Payments:</label>
+                        <input type="number" id="monthsLate" placeholder="e.g., 3" min="0">
+                    </div>
+                    <div class="form-group" id="paymentGroup" style="display: none;">
+                        <label for="paymentMonth">Month to Add Payment:</label>
+                        <input type="number" id="paymentMonth" placeholder="e.g., 4" min="1">
+                        <label for="paymentAmount">Amount Paid (KES):</label>
+                        <input type="number" id="paymentAmount" placeholder="e.g., 500" min="0">
+                        <button onclick="addPayment()">Add Payment</button>
+                    </div>
+                    <button onclick="calculateFines()">Calculate Fines</button>
+                    <div class="result" id="finesResult"></div>
+                    <button onclick="toggleFinesAmortizationTable()" id="finesAmortizationButton" style="display: none; margin-top: 1rem;">View Amortization Table with Fines</button>
+                    <div class="fines-amortization-table" id="finesAmortizationTable" style="display: none; margin-top: 1rem;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Month</th>
+                                    <th>Payment (KES)</th>
+                                    <th>Principal (KES)</th>
+                                    <th>Interest (KES)</th>
+                                    <th>Installment Fine (KES)</th>
+                                    <th>Outstanding Fine (KES)</th>
+                                    <th>Balance (KES)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="finesAmortizationBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Chart -->
+                <button onclick="toggleChart()" id="chartButton" style="display: none; margin-top: 1rem;">View Chart</button>
+                <div class="loan-chart" id="loanChart" style="display: none; margin-top: 1rem; height: 300px;"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DIVIDENDS CALCULATOR -->
+    <section class="tool-section" id="dividends-calculator">
+        <h2 style="text-align: center;">Dividends Calculator</h2>
+        <div class="calculator">
+            <div class="form-group">
+                <label for="dividendRate">Dividend Rate (%):</label>
+                <input type="number" id="dividendRate" placeholder="e.g., 12.5" step="0.01">
+            </div>
+            <div class="month-inputs">
+                <input type="number" pname="jan" placeholder="Jan">
+                <input type="number" pname="feb" placeholder="Feb">
+                <input type="number" pname="mar" placeholder="Mar">
+                <input type="number" pname="apr" placeholder="Apr">
+                <input type="number" pname="may" placeholder="May">
+                <input type="number" pname="jun" placeholder="Jun">
+                <input type="number" pname="jul" placeholder="Jul">
+                <input type="number" pname="aug" placeholder="Aug">
+                <input type="number" pname="sep" placeholder="Sep">
+                <input type="number" pname="oct" placeholder="Oct">
+                <input type="number" pname="nov" placeholder="Nov">
+                <input type="number" pname="dec" placeholder="Dec">
+            </div>
+            <button onclick="calculateDividend()">Calculate Dividend</button>
+            <div class="result" id="dividendResult"></div>
+        </div>
+    </section>
+
 </main>
 
 <!-- ==================== FOOTER ==================== -->
@@ -195,6 +410,8 @@
             return;
         }
 
+        console.log('SACCO DATA LOADED:', window.saccoData);
+
         const { jan, today } = window.saccoData;
         const colors = {
             members: { jan: '#8B5CF6', today: '#C4B5FD' },
@@ -239,7 +456,7 @@
                             callbacks: { 
                                 label: ctx => {
                                     const val = ctx.raw;
-                                    if (isPercent) return val.toFixed(2) + '%'; // ✅ fixed
+                                    if (isPercent) return val.toFixed(2) + '%';
                                     if (isMoney) return 'KES ' + val.toLocaleString();
                                     return val.toLocaleString();
                                 }
@@ -251,7 +468,7 @@
                             color: '#1a1a1a',
                             font: { weight: '900', size: 14 },
                             formatter: v => {
-                                if (isPercent) return v.toFixed(2) + '%'; // ✅ fixed
+                                if (isPercent) return v.toFixed(2) + '%';
                                 if (isMoney) return 'KES ' + v.toLocaleString();
                                 return v.toLocaleString();
                             },
@@ -270,14 +487,15 @@
             });
         };
 
-        // ROA and Liquidity calculations
+        // ROA & Liquidity: ×100 once here
         const janROA = jan.contributions > 0 ? (jan.profit / jan.contributions) * 100 : 0;
         const todayROA = today.contributions > 0 ? (today.profit / today.contributions) * 100 : 0;
 
         const janLiquidity = jan.contributions > 0 ? (jan.bankBalance / jan.contributions) * 100 : 0;
         const todayLiquidity = today.contributions > 0 ? (today.bankBalance / today.contributions) * 100 : 0;
 
-        // Create charts
+        console.log('ROA:', janROA.toFixed(2) + '% →', todayROA.toFixed(2) + '%');
+
         createChart('chartMembers', jan.members, today.members, 'Members', colors.members, 'growthMembers');
         createChart('chartLoans', jan.loans, today.loans, 'Loans (KES)', colors.loans, 'growthLoans', false, true);
         createChart('chartContributions', jan.contributions, today.contributions, 'Contributions (KES)', colors.contributions, 'growthContributions', false, true);
@@ -313,5 +531,6 @@
   "areaServed": ["Kilifi", "Mombasa", "Kwale"]
 }
 </script>
+
 </body>
 </html>
