@@ -80,7 +80,6 @@ function updateFields() {
         }
 
         resetUI();
-        updateSliderValue('principal');
         calculateLoan(); // Trigger initial calculation
     } catch (error) {
         console.error('Error in updateFields:', error);
@@ -104,7 +103,7 @@ function resetUI() {
             loanChart: document.getElementById('loanChart'),
             finesAmortizationButton: document.getElementById('finesAmortizationButton'),
             finesAmortizationTable: document.getElementById('finesAmortizationTable'),
-            principalSlider: document.getElementById('principalSlider'),
+            principalAmount: document.getElementById('principalAmount'),
             lateMonth: document.getElementById('lateMonth'),
             monthsLate: document.getElementById('monthsLate'),
             paymentGroup: document.getElementById('paymentGroup'),
@@ -127,13 +126,12 @@ function resetUI() {
         elements.loanChart.style.display = 'none';
         elements.finesAmortizationButton.style.display = 'none';
         elements.finesAmortizationTable.style.display = 'none';
-        elements.principalSlider.value = '1000';
+        if (elements.principalAmount) elements.principalAmount.value = '1000';
         elements.lateMonth.value = '';
         elements.monthsLate.value = '';
         elements.paymentGroup.style.display = 'none';
         elements.paymentMonth.value = '';
         elements.paymentAmount.value = '';
-        updateSliderValue('principal');
         loanData = null;
         finesData = null;
         paymentData = {};
@@ -142,20 +140,10 @@ function resetUI() {
     }
 }
 
-function updateSliderValue(sliderId) {
-    const slider = document.getElementById(`${sliderId}Slider`);
-    const valueDisplay = document.getElementById(`${sliderId}Value`);
-    if (slider && valueDisplay) {
-        valueDisplay.textContent = `KES ${parseFloat(slider.value).toFixed(0)}`;
-    } else {
-        console.error('Slider elements missing:', { slider: !!slider, valueDisplay: !!valueDisplay });
-    }
-}
-
 function calculateLoan() {
     try {
         const loanType = document.getElementById('loanType')?.value;
-        const principal = parseFloat(document.getElementById('principalSlider')?.value);
+        const principal = parseFloat(document.getElementById('principalAmount')?.value);
         const config = loanConfigurations[loanType];
         const resultDiv = document.getElementById('result');
 
@@ -169,7 +157,7 @@ function calculateLoan() {
             return;
         }
         if (isNaN(principal) || principal <= 0) {
-            resultDiv.innerHTML = '<span class="error-message">Please select a valid positive loan amount.</span>';
+            resultDiv.innerHTML = '<span class="error-message">Please enter a valid positive loan amount.</span>';
             return;
         }
 
@@ -631,9 +619,8 @@ function toggleChart() {
     }
 }
 
-// Real-time slider update for principal
-document.getElementById('principalSlider')?.addEventListener('input', () => {
-    updateSliderValue('principal');
+// Real-time update for principal amount input
+document.getElementById('principalAmount')?.addEventListener('input', () => {
     calculateLoan();
 });
 
