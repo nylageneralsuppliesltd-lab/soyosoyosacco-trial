@@ -1,11 +1,12 @@
 /* ========================================
-   SOYOSOYO SACCO – FINAL v52
-   Cache-busted: ?v=52
+   SOYOSOYO SACCO – FINAL v53
+   Cache-busted: ?v=53
    TWO CAROUSELS: INDEX + JOIN-US – NO CONFLICTS
    % GROWTH + GREEN/RED ARROWS + NUMBERS ON BARS
    MOBILE BARS: CENTERED, NO EDGE OVERFLOW
    DESIGN RESTORED – NO FULL-SCREEN STRETCH
    LOAN CALC: SLIDER -> NUMBER INPUT (MOBILE-FRIENDLY)
+   DIVIDENDS MOBILE: 2-COL FIT (REDUCED GAP/PADDING, OVERFLOW PREVENTED)
    ======================================== */
 
 /* ----------------- RESET & BASE ----------------- */
@@ -324,15 +325,25 @@ header.site-header #menu-toggle {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 0.8rem;
+    width: 100%; /* Ensure full width to prevent overflow */
 }
 .month-inputs input {
     padding: 0.75rem;
     border: 1px solid #ddd;
     border-radius: 8px;
     font-size: 0.95rem;
+    width: 100%; /* Explicit width for grid items */
+    box-sizing: border-box;
 }
 @media (max-width: 768px) {
-    .month-inputs { grid-template-columns: repeat(2, 1fr); }
+    .month-inputs { 
+        grid-template-columns: repeat(2, 1fr); 
+        gap: 0.5rem; /* Reduced gap to fit better on mobile */
+    }
+    .month-inputs input {
+        padding: 0.6rem; /* Slightly reduced padding to save space */
+        font-size: 0.9rem; /* Minor font reduction for compactness */
+    }
     /* LOAN CALC: ENHANCE NUMBER INPUT FOR MOBILE (TOUCH-FRIENDLY, NO ZOOM) */
     .form-group input[type="number"] {
         font-size: 1.05rem; /* Slight bump for easier typing on mobile */
