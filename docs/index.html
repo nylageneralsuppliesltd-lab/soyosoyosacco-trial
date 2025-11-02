@@ -298,10 +298,9 @@
                     <label for="tenure">Tenure (Months):</label>
                     <input type="text" id="tenure" readonly placeholder="Select a loan type">
                 </div>
-                <div class="form-group slider-container">
-                    <label for="principalSlider">Loan Amount (KES):</label>
-                    <input type="range" id="principalSlider" min="1000" max="1000000" step="1000" value="10000" oninput="updateSliderValue('principal')">
-                    <div class="slider-value" id="principalValue">KES 10,000</div>
+                <div class="form-group">
+                    <label for="principalAmount">Loan Amount (KES):</label>
+                    <input type="number" id="principalAmount" min="0" max="1000000" step="0.01" value="10000" placeholder="e.g., 1250.50">
                 </div>
                 <button onclick="calculateLoan()">Calculate Loan</button>
                 <div class="result" id="result"></div>
@@ -378,19 +377,20 @@
                 <label for="dividendRate">Dividend Rate (%):</label>
                 <input type="number" id="dividendRate" placeholder="e.g., 12.5" step="0.01">
             </div>
+            <div class="month-subheader">Enter your monthly savings contributions in the spaces below:</div>
             <div class="month-inputs">
-                <input type="number" pname="jan" placeholder="Jan">
-                <input type="number" pname="feb" placeholder="Feb">
-                <input type="number" pname="mar" placeholder="Mar">
-                <input type="number" pname="apr" placeholder="Apr">
-                <input type="number" pname="may" placeholder="May">
-                <input type="number" pname="jun" placeholder="Jun">
-                <input type="number" pname="jul" placeholder="Jul">
-                <input type="number" pname="aug" placeholder="Aug">
-                <input type="number" pname="sep" placeholder="Sep">
-                <input type="number" pname="oct" placeholder="Oct">
-                <input type="number" pname="nov" placeholder="Nov">
-                <input type="number" pname="dec" placeholder="Dec">
+                <input type="number" id="jan" placeholder="Jan" min="0" step="0.01">
+                <input type="number" id="feb" placeholder="Feb" min="0" step="0.01">
+                <input type="number" id="mar" placeholder="Mar" min="0" step="0.01">
+                <input type="number" id="apr" placeholder="Apr" min="0" step="0.01">
+                <input type="number" id="may" placeholder="May" min="0" step="0.01">
+                <input type="number" id="jun" placeholder="Jun" min="0" step="0.01">
+                <input type="number" id="jul" placeholder="Jul" min="0" step="0.01">
+                <input type="number" id="aug" placeholder="Aug" min="0" step="0.01">
+                <input type="number" id="sep" placeholder="Sep" min="0" step="0.01">
+                <input type="number" id="oct" placeholder="Oct" min="0" step="0.01">
+                <input type="number" id="nov" placeholder="Nov" min="0" step="0.01">
+                <input type="number" id="dec" placeholder="Dec" min="0" step="0.01">
             </div>
             <button onclick="calculateDividend()">Calculate Dividend</button>
             <div class="result" id="dividendResult"></div>
