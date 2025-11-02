@@ -1,10 +1,11 @@
 /* ========================================
-   SOYOSOYO SACCO – FINAL v51
-   Cache-busted: ?v=51
+   SOYOSOYO SACCO – FINAL v52
+   Cache-busted: ?v=52
    TWO CAROUSELS: INDEX + JOIN-US – NO CONFLICTS
    % GROWTH + GREEN/RED ARROWS + NUMBERS ON BARS
    MOBILE BARS: CENTERED, NO EDGE OVERFLOW
    DESIGN RESTORED – NO FULL-SCREEN STRETCH
+   LOAN CALC: SLIDER -> NUMBER INPUT (MOBILE-FRIENDLY)
    ======================================== */
 
 /* ----------------- RESET & BASE ----------------- */
@@ -332,6 +333,15 @@ header.site-header #menu-toggle {
 }
 @media (max-width: 768px) {
     .month-inputs { grid-template-columns: repeat(2, 1fr); }
+    /* LOAN CALC: ENHANCE NUMBER INPUT FOR MOBILE (TOUCH-FRIENDLY, NO ZOOM) */
+    .form-group input[type="number"] {
+        font-size: 1.05rem; /* Slight bump for easier typing on mobile */
+        padding: 1rem; /* Extra padding for thumb taps */
+    }
+    .form-group input[type="number"]::-webkit-outer-spin-button,
+    .form-group input[type="number"]::-webkit-inner-spin-button {
+        opacity: 1; /* Show spinner arrows if desired; hide with 0 if not */
+    }
 }
 
 /* ----------------- INDEX CAROUSEL (FINANCIAL HIGHLIGHTS) – WORKING ----------------- */
