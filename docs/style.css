@@ -311,6 +311,14 @@ header.site-header #menu-toggle {
     display: grid;
     gap: 1.2rem;
 }
+.month-subheader {
+    grid-column: 1 / -1;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #006400;
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
 .month-inputs {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -323,7 +331,7 @@ header.site-header #menu-toggle {
     font-size: 0.95rem;
 }
 @media (max-width: 768px) {
-    .month-inputs { grid-template-columns: 1fr; }
+    .month-inputs { grid-template-columns: repeat(2, 1fr); }
 }
 
 /* ----------------- INDEX CAROUSEL (FINANCIAL HIGHLIGHTS) – WORKING ----------------- */
