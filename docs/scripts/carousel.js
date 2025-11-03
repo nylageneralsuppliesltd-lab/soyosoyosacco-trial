@@ -7,8 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
     { number: 144, description: "Total Members" },
     { number: 901665, description: "Member Savings" },
     { number: 317460, description: "Bank Balance" },
-    { number: 103, description: "Number of Loans Given" },
-    { number: 1907900, description: "Value of Loans Given" },
+    { number: 104, description: "Number of Loans Given" },
+    { number: 1977900, description: "Value of Loans Given" },
     { number: 52898, description: "Profit" },
     { number: 71, description: "Active Members" }
   ];
