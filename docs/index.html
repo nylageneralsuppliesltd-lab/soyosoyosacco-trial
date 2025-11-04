@@ -270,6 +270,11 @@
                 <p>Liquidity Ratio</p>
                 <div id="growthLiquidity" class="growth-indicator"></div>
             </div>
+            <!-- NEW: Loan Types Distribution Chart (Pie Chart Variant for Percentages) - Inserted right above Loans Disbursed -->
+            <div class="chart-card">
+                <canvas id="chartLoanTypes"></canvas>
+                <p>Loan Types Distribution (%)</p>
+            </div>
         </div>
     </section>
 
@@ -648,6 +653,65 @@
         createChart('chartProfit', jan.profit, today.profit, 'Profit (KES)', colors.profit, 'growthProfit', false, true);
         createChart('chartROA', janROA, todayROA, 'ROA (%)', colors.roa, 'growthROA', true);
         createChart('chartLiquidity', janLiquidity, todayLiquidity, 'Liquidity Ratio (%)', colors.liquidity, 'growthLiquidity', true);
+
+        // NEW: Render Loan Types Distribution Pie Chart (Pie Variant for Percentages)
+        if (window.loanTypes && window.loanTypes.length > 0) {
+            const totalLoans = window.loanTypes.reduce((sum, loan) => sum + loan.value, 0);
+            if (totalLoans > 0) {
+                const labels = window.loanTypes.map(loan => loan.name);
+                const data = window.loanTypes.map(loan => (loan.value / totalLoans) * 100);
+                const loanColors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0']; // Colors for Emergency, Medicare, Development, Education
+
+                new Chart(document.getElementById('chartLoanTypes').getContext('2d'), {
+                    type: 'pie',  // Changed to pie chart
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: data,
+                            backgroundColor: loanColors,
+                            borderWidth: 2,
+                            borderColor: '#fff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'bottom',
+                                labels: {
+                                    font: { size: 12, weight: 'bold' },
+                                    padding: 20,
+                                    usePointStyle: true
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: ctx => `${ctx.label}: ${ctx.parsed.toFixed(1)}%`
+                                }
+                            },
+                            datalabels: {
+                                formatter: (value, ctx) => {
+                                    const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = (value / total * 100).toFixed(1);
+                                    return percentage > 5 ? percentage + '%' : '';  // Only show if >5%
+                                },
+                                color: '#fff',
+                                font: { weight: 'bold', size: 12 },
+                                anchor: 'center',
+                                align: 'center'
+                            }
+                        }
+                    },
+                    plugins: [ChartDataLabels]
+                });
+            } else {
+                console.warn('Total loans is 0; skipping loan types chart.');
+            }
+        } else {
+            console.warn('loanTypes data not available; skipping loan types chart.');
+        }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
