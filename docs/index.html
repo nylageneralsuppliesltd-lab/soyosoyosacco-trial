@@ -46,20 +46,6 @@
         .growth-indicator i { margin-right: 4px; font-size: 0.9em; }
     </style>
 
-    <!-- LOANS SECTION LAYOUT: Side-by-side on desktop, stacked on mobile -->
-    <style>
-        .loans-section {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-        @media (max-width: 768px) {
-            .loans-section {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
-
     <!-- MEMBER ACTIVITIES CAROUSEL STYLES -->
     <style>
         .member-activities-section {
@@ -68,7 +54,7 @@
             background-color: #f8f9fa;
         }
         .member-activities-carousel {
-            position: relative;
+            position: responsive;
             max-width: 1000px;
             margin: 0 auto;
             overflow: hidden;
@@ -259,17 +245,14 @@
                 <p>Total Members</p>
                 <div id="growthMembers" class="growth-indicator"></div>
             </div>
-            <!-- WRAPPED LOANS SECTION: Loans Disbursed + Loan Types Pie Chart side-by-side -->
-            <div class="loans-section">
-                <div class="chart-card">
-                    <canvas id="chartLoans"></canvas>
-                    <p>Loans Disbursed</p>
-                    <div id="growthLoans" class="growth-indicator"></div>
-                </div>
-                <div class="chart-card">
-                    <canvas id="chartLoanTypes"></canvas>
-                    <p>Loan Types Distribution (%)</p>
-                </div>
+            <div class="chart-card">
+                <canvas id="chartLoans"></canvas>
+                <p>Loans Disbursed</p>
+                <div id="growthLoans" class="growth-indicator"></div>
+            </div>
+            <div class="chart-card">
+                <canvas id="chartLoanTypes"></canvas>
+                <p>Loan Types Distribution (%)</p>
             </div>
             <div class="chart-card">
                 <canvas id="chartContributions"></canvas>
