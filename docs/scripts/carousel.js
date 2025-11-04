@@ -19,30 +19,41 @@ document.addEventListener('DOMContentLoaded', () => {
   const externalLoansToday = 66784;  // Today external loan figure
 
   // === UPDATE THESE VALUES DAILY (ADJUSTED FOR LOANS AND ROA) ===
-  const carouselData = [
+  const carouselDataWithoutROA = [
     { number: 144, description: "Total Members" },
     { number: 902915, description: "Member Savings" },
     { number: 233299, description: "Bank Balance" },
     { number: 105, description: "Number of Loans Given" },
     { number: totalLoansToday, description: "Value of Loans Given" },  // Dynamically generated from loan types sum
     { number: 51803, description: "Profit" },
-    { number: 71, description: "Active Members" },
-    { number: ((51803 / (902915 + externalLoansToday)) * 100).toFixed(2), description: "ROA (%)" }  // New: ROA = (Profit / (Member Contributions + External Loans)) * 100
+    { number: 71, description: "Active Members" }
   ];
+
+  // Dynamically calculate ROA using profit and member savings from carouselDataWithoutROA
+  const roaToday = ((carouselDataWithoutROA[5].number / (carouselDataWithoutROA[1].number + externalLoansToday)) * 100).toFixed(2);
+  carouselDataWithoutROA.push({ number: roaToday, description: "ROA (%)" });  // ROA = (Profit / (Member Contributions + External Loans)) * 100
+  const carouselData = carouselDataWithoutROA;
 
   // Expose loan types globally for use in HTML graph (e.g., for percentages)
   window.loanTypes = loanTypesToday;
 
   // === AUTO-SYNC: Push 4 key values + Jan 2025 bank balance + external loans + ROA to window.saccoData ===
+  // Jan 2025 data without ROA
+  const janDataWithoutROA = {
+    members: 101,
+    loans: 283500,
+    contributions: 331263,
+    profit: -60056,
+    bankBalance: 113742,  // ← JAN 2025 BANK BALANCE (AS PROVIDED)
+    externalLoans: externalLoansJan
+  };
+  // Dynamically calculate ROA for Jan using profit and contributions from janDataWithoutROA
+  const roaJan = ((janDataWithoutROA.profit / (janDataWithoutROA.contributions + janDataWithoutROA.externalLoans)) * 100).toFixed(2);
+
   window.saccoData = {
     jan: {
-      members: 101,
-      loans: 283500,
-      contributions: 331263,
-      profit: -60056,
-      bankBalance: 113742,  // ← JAN 2025 BANK BALANCE (AS PROVIDED)
-      externalLoans: externalLoansJan,
-      roa: ((-60056 / (331263 + externalLoansJan)) * 100).toFixed(2)  // ROA for Jan
+      ...janDataWithoutROA,
+      roa: roaJan  // ROA for Jan
     },
     today: {
       members: carouselData[0].number,           // Total Members
