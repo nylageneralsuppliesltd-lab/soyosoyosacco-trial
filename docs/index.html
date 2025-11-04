@@ -46,6 +46,41 @@
         .growth-indicator i { margin-right: 4px; font-size: 0.9em; }
     </style>
 
+    <!-- GROWTH CHARTS GRID STYLES -->
+    <style>
+        .growth-charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .chart-card {
+            position: relative;
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+        }
+        .chart-card canvas {
+            flex-grow: 1;
+            max-height: 250px;
+        }
+        .chart-card p {
+            margin: 0.5rem 0 0 0;
+            text-align: center;
+            font-weight: bold;
+        }
+        @media (max-width: 768px) {
+            .growth-charts-grid {
+                grid-template-columns: 1fr;
+            }
+            .chart-card {
+                height: 350px;
+            }
+            .chart-card canvas {
+                max-height: 280px;
+            }
+        }
+    </style>
+
     <!-- MEMBER ACTIVITIES CAROUSEL STYLES -->
     <style>
         .member-activities-section {
@@ -54,7 +89,7 @@
             background-color: #f8f9fa;
         }
         .member-activities-carousel {
-            position: responsive;
+            position: relative;
             max-width: 1000px;
             margin: 0 auto;
             overflow: hidden;
@@ -637,10 +672,11 @@
             });
         };
 
-        // ROA & Liquidity: ×100 once here
-        const janROA = jan.contributions > 0 ? (jan.profit / jan.contributions) * 100 : 0;
-        const todayROA = today.contributions > 0 ? (today.profit / today.contributions) * 100 : 0;
+        // Use pre-calculated ROA from saccoData (includes external loans)
+        const janROA = parseFloat(jan.roa);
+        const todayROA = parseFloat(today.roa);
 
+        // Liquidity: ×100 (as before)
         const janLiquidity = jan.contributions > 0 ? (jan.bankBalance / jan.contributions) * 100 : 0;
         const todayLiquidity = today.contributions > 0 ? (today.bankBalance / today.contributions) * 100 : 0;
 
@@ -653,7 +689,7 @@
         createChart('chartROA', janROA, todayROA, 'ROA (%)', colors.roa, 'growthROA', true);
         createChart('chartLiquidity', janLiquidity, todayLiquidity, 'Liquidity Ratio (%)', colors.liquidity, 'growthLiquidity', true);
 
-        // NEW: Render Loan Types Distribution Pie Chart (Pie Variant for Percentages)
+        // Render Loan Types Distribution Pie Chart (with custom legend including percentages)
         if (window.loanTypes && window.loanTypes.length > 0) {
             const totalLoans = window.loanTypes.reduce((sum, loan) => sum + loan.value, 0);
             if (totalLoans > 0) {
@@ -662,7 +698,7 @@
                 const loanColors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0']; // Colors for Emergency, Medicare, Development, Education
 
                 new Chart(document.getElementById('chartLoanTypes').getContext('2d'), {
-                    type: 'pie',  // Changed to pie chart
+                    type: 'pie',
                     data: {
                         labels: labels,
                         datasets: [{
@@ -680,6 +716,24 @@
                                 display: true,
                                 position: 'bottom',
                                 labels: {
+                                    generateLabels: function(chart) {
+                                        const data = chart.data;
+                                        if (data.labels.length && data.datasets.length) {
+                                            return data.labels.map((label, i) => {
+                                                const value = data.datasets[0].data[i];
+                                                const percentage = value.toFixed(1) + '%';
+                                                return {
+                                                    text: `${label}: ${percentage}`,
+                                                    fillStyle: data.datasets[0].backgroundColor[i],
+                                                    strokeStyle: data.datasets[0].borderColor ? data.datasets[0].borderColor[i] : data.datasets[0].backgroundColor[i],
+                                                    lineWidth: data.datasets[0].borderWidth,
+                                                    hidden: false,
+                                                    index: i
+                                                };
+                                            });
+                                        }
+                                        return [];
+                                    },
                                     font: { size: 12, weight: 'bold' },
                                     padding: 20,
                                     usePointStyle: true
@@ -691,11 +745,7 @@
                                 }
                             },
                             datalabels: {
-                                formatter: (value, ctx) => {
-                                    const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
-                                    const percentage = (value / total * 100).toFixed(1);
-                                    return percentage > 5 ? percentage + '%' : '';  // Only show if >5%
-                                },
+                                formatter: (value) => value > 5 ? value.toFixed(1) + '%' : '',  // Only show if >5%
                                 color: '#fff',
                                 font: { weight: 'bold', size: 12 },
                                 anchor: 'center',
