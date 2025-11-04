@@ -5,10 +5,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // === LOAN TYPES FOR TODAY (FILL IN ACTUAL FIGURES FOR EACH TYPE) ===
   // Provide the amounts for each loan type; their sum will be used for "Value of Loans Given"
   const loanTypesToday = [
-    { name: 'Emergency', value: 0 },   // ← Replace with actual Emergency loan figure
-    { name: 'Medicare', value: 0 },    // ← Replace with actual Medicare loan figure
-    { name: 'Development', value: 0 }, // ← Replace with actual Development loan figure
-    { name: 'Education', value: 0 }    // ← Replace with actual Education loan figure
+    { name: 'Emergency', value: 1214900 },   // ← Replace with actual Emergency loan figure
+    { name: 'Medicare', value: 15000 },    // ← Replace with actual Medicare loan figure
+    { name: 'Development', value: 553000 }, // ← Replace with actual Development loan figure
+    { name: 'Education', value: 275000 }    // ← Replace with actual Education loan figure
   ];
 
   // Calculate total loans given from sum of loan types
@@ -21,13 +21,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // === UPDATE THESE VALUES DAILY (ADJUSTED FOR LOANS AND ROA) ===
   const carouselData = [
     { number: 144, description: "Total Members" },
-    { number: 901665, description: "Member Savings" },
-    { number: 247160, description: "Bank Balance" },
-    { number: 104, description: "Number of Loans Given" },
+    { number: 902915, description: "Member Savings" },
+    { number: 233299, description: "Bank Balance" },
+    { number: 105, description: "Number of Loans Given" },
     { number: totalLoansToday, description: "Value of Loans Given" },  // Dynamically generated from loan types sum
-    { number: 52898, description: "Profit" },
+    { number: 51803, description: "Profit" },
     { number: 71, description: "Active Members" },
-    { number: ((52898 / (901665 + externalLoansToday)) * 100).toFixed(2), description: "ROA (%)" }  // New: ROA = (Profit / (Member Contributions + External Loans)) * 100
+    { number: ((51803 / (902915 + externalLoansToday)) * 100).toFixed(2), description: "ROA (%)" }  // New: ROA = (Profit / (Member Contributions + External Loans)) * 100
   ];
 
   // Expose loan types globally for use in HTML graph (e.g., for percentages)
