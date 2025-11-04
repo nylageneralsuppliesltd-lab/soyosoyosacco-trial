@@ -46,6 +46,20 @@
         .growth-indicator i { margin-right: 4px; font-size: 0.9em; }
     </style>
 
+    <!-- LOANS SECTION LAYOUT: Side-by-side on desktop, stacked on mobile -->
+    <style>
+        .loans-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        @media (max-width: 768px) {
+            .loans-section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
     <!-- MEMBER ACTIVITIES CAROUSEL STYLES -->
     <style>
         .member-activities-section {
@@ -245,10 +259,17 @@
                 <p>Total Members</p>
                 <div id="growthMembers" class="growth-indicator"></div>
             </div>
-            <div class="chart-card">
-                <canvas id="chartLoans"></canvas>
-                <p>Loans Disbursed</p>
-                <div id="growthLoans" class="growth-indicator"></div>
+            <!-- WRAPPED LOANS SECTION: Loans Disbursed + Loan Types Pie Chart side-by-side -->
+            <div class="loans-section">
+                <div class="chart-card">
+                    <canvas id="chartLoans"></canvas>
+                    <p>Loans Disbursed</p>
+                    <div id="growthLoans" class="growth-indicator"></div>
+                </div>
+                <div class="chart-card">
+                    <canvas id="chartLoanTypes"></canvas>
+                    <p>Loan Types Distribution (%)</p>
+                </div>
             </div>
             <div class="chart-card">
                 <canvas id="chartContributions"></canvas>
@@ -269,11 +290,6 @@
                 <canvas id="chartLiquidity"></canvas>
                 <p>Liquidity Ratio</p>
                 <div id="growthLiquidity" class="growth-indicator"></div>
-            </div>
-            <!-- NEW: Loan Types Distribution Chart (Pie Chart Variant for Percentages) - Inserted right above Loans Disbursed -->
-            <div class="chart-card">
-                <canvas id="chartLoanTypes"></canvas>
-                <p>Loan Types Distribution (%)</p>
             </div>
         </div>
     </section>
