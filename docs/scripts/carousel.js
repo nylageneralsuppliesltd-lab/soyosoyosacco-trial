@@ -21,8 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // === UPDATE THESE VALUES DAILY (ADJUSTED FOR LOANS AND ROA) ===
   const carouselDataWithoutROA = [
     { number: 144, description: "Total Members" },
-    { number: 906815, description: "Member Savings" },
-    { number: 242999, description: "Bank Balance" },
+    { number: 907015, description: "Member Savings" },
+    { number: 243199, description: "Bank Balance" },
     { number: 105, description: "Number of Loans Given" },
     { number: totalLoansToday, description: "Value of Loans Given" },  // Dynamically generated from loan types sum
     { number: 51803, description: "Profit" },
