@@ -20,7 +20,11 @@
     <link rel="icon" href="./assets/141dd3faa98da9737b591161deac509a.jpg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./style.css?v=60">
+    
+    <!-- CSS v56 -->
+    <link rel="stylesheet" href="./style.css?v=56">
+
+    <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-05M38MYK0G"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -28,6 +32,166 @@
       gtag('js', new Date());
       gtag('config', 'G-05M38MYK0G');
     </script>
+    
+    <!-- ✅ Cone Projection Styles -->
+    <style>
+        .cone-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 380px;
+            margin-top: 1rem;
+            perspective: 1000px;
+        }
+        .cone {
+            width: 220px;
+            height: 220px;
+            background: conic-gradient(#10B981, #F59E0B, #3B82F6, #10B981);
+            border-radius: 50%;
+            transform: rotateX(70deg);
+            animation: spin 8s linear infinite;
+            position: relative;
+        }
+        @keyframes spin {
+            0% { transform: rotateX(70deg) rotateZ(0deg); }
+            100% { transform: rotateX(70deg) rotateZ(360deg); }
+        }
+        .cone-data {
+            position: absolute;
+            bottom: -50px;
+            width: 100%;
+            text-align: center;
+            font-weight: bold;
+            color: #1a1a1a;
+        }
+        .cone-metric {
+            font-size: 1.2rem;
+            margin-top: 0.3rem;
+        }
+        @media (max-width: 768px) {
+            .cone {
+                width: 180px;
+                height: 180px;
+            }
+            .cone-metric {
+                font-size: 1rem;
+            }
+        }
+    </style>
+    <!-- GROWTH INDICATOR STYLES -->
+    <style>
+        .growth-indicator {
+            text-align: center;
+            margin-top: 0.5rem;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        .growth-indicator.positive { color: #10B981; }
+        .growth-indicator.negative { color: #EF4444; }
+        .growth-indicator i { margin-right: 4px; font-size: 0.9em; }
+    </style>
+
+    <!-- GROWTH CHARTS GRID STYLES -->
+    <style>
+        .growth-charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .chart-card {
+            position: relative;
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+        }
+        .chart-card canvas {
+            flex-grow: 1;
+            max-height: 250px;
+        }
+        .chart-card p {
+            margin: 0.5rem 0 0 0;
+            text-align: center;
+            font-weight: bold;
+        }
+        @media (max-width: 768px) {
+            .growth-charts-grid {
+                grid-template-columns: 1fr;
+            }
+            .chart-card {
+                height: 350px;
+            }
+            .chart-card canvas {
+                max-height: 280px;
+            }
+        }
+    </style>
+
+    <!-- MEMBER ACTIVITIES CAROUSEL STYLES -->
+    <style>
+        .member-activities-section {
+            margin-top: 3rem;
+            padding: 2rem 0;
+            background-color: #f8f9fa;
+        }
+        .member-activities-carousel {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 12px;
+        }
+        .member-activities-carousel .slides {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+            height: 400px; /* Increased height to better show faces */
+        }
+        .member-activities-carousel .slide {
+            min-width: 100%;
+            height: 400px; /* Increased height to better show faces */
+            flex-shrink: 0;
+        }
+        .member-activities-carousel .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .member-activities-carousel .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            z-index: 10;
+        }
+        .member-activities-carousel .prev { left: 10px; }
+        .member-activities-carousel .next { right: 10px; }
+        .member-activities-carousel .dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 1rem;
+        }
+        .member-activities-carousel .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #ccc;
+            cursor: pointer;
+        }
+        .member-activities-carousel .dot.active {
+            background: #10B981;
+        }
+        @media (max-width: 768px) {
+            .member-activities-carousel .slides,
+            .member-activities-carousel .slide {
+                height: 250px; /* Increased from 200px for mobile */
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -48,6 +212,8 @@
             <a href="Join-Us.html">Join Us</a>
         </nav>
     </div>
+
+    <!-- HERO -->
     <div class="hero">
         <div class="banner-text">
             <h1>Soyosoyo SACCO</h1>
@@ -190,28 +356,25 @@
             </div>
         </div>
     </section>
+    <!-- FINANCIAL HIGHLIGHTS WITH CONE PROJECTION -->
+    <section class="section">
+        <h2 style="text-align: center;">Financial Highlights</h2>
+        <p style="text-align: center; margin-bottom: 1rem;">Our impact in numbers and future projection.</p>
 
-    <!-- GROWTH CONE v60 PREMIUM -->
-    <section class="projections-section">
-        <div id="growth-cone-container"></div>
+        <!-- ✅ CAROUSEL as before -->
+        <div class="carousel-wrapper">
+            <div class="carousel" aria-label="Financial Metrics Carousel"></div>
+        </div>
 
-        <div id="projections-table" style="margin-top: 2rem;">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Year</th>
-                        <th>Members</th>
-                        <th>Loans (KES)</th>
-                        <th>Contributions (KES)</th>
-                        <th>Bank (KES)</th>
-                        <th>Profit (KES)</th>
-                    </tr>
-                </thead>
-                <tbody id="projections-body"></tbody>
-            </table>
+        <!-- ✅ CONE PROJECTION VISUAL -->
+        <div class="cone-visual">
+            <div class="cone" id="financialCone"></div>
+            <div class="cone-data" id="coneData">
+                <div>2025 Projection</div>
+                <div class="cone-metric" id="coneMetric">Loading...</div>
+            </div>
         </div>
     </section>
-
     <!-- LOAN CALCULATOR -->
     <section class="tool-section" id="loan-calculator">
         <h2 style="text-align: center;">Loan Calculator</h2>
@@ -244,6 +407,7 @@
                 <button onclick="calculateLoan()">Calculate Loan</button>
                 <div class="result" id="result"></div>
 
+                <!-- Amortization Table -->
                 <button onclick="toggleAmortizationTable()" id="amortizationButton" style="display: none; margin-top: 1rem;">View Amortization Table</button>
                 <div class="amortization-table" id="amortizationTable" style="display: none; margin-top: 1rem;">
                     <table>
@@ -260,6 +424,7 @@
                     </table>
                 </div>
 
+                <!-- Fines Section -->
                 <button onclick="showFinesSection()" id="finesPromptButton" style="display: none; margin-top: 1rem;">Calculate Fines for Missed Payments</button>
                 <div class="fines-section" id="finesSection" style="display: none; margin-top: 1rem;">
                     <h3>Calculate Late Repayment Fines</h3>
@@ -299,6 +464,7 @@
                     </div>
                 </div>
 
+                <!-- Chart -->
                 <button onclick="toggleChart()" id="chartButton" style="display: none; margin-top: 1rem;">View Chart</button>
                 <div class="loan-chart" id="loanChart" style="display: none; margin-top: 1rem; height: 300px;"></div>
             </div>
@@ -339,15 +505,15 @@
         <p style="text-align: center; margin-bottom: 1.5rem;">See what our members are up to.</p>
         <div class="member-activities-carousel">
             <div class="slides" id="memberSlides"></div>
-            <button class="nav-btn prev" onclick="changeSlide(-1)">Previous</button>
-            <button class="nav-btn next" onclick="changeSlide(1)">Next</button>
+            <button class="nav-btn prev" onclick="changeSlide(-1)">&#10094;</button>
+            <button class="nav-btn next" onclick="changeSlide(1)">&#10095;</button>
             <div class="dots" id="memberDots"></div>
         </div>
     </section>
 
 </main>
 
-<!-- FOOTER -->
+<!-- =================: FOOTER – ICONS ONLY (LIKE OTHER PAGES) -->
 <footer>
     <p>© 2025 SOYOSOYO SACCO. All rights reserved. | <a href="mailto:info@soyosoyosacco.com">info@soyosoyosacco.com</a></p>
     <div class="social-icons">
@@ -363,13 +529,25 @@
     </div>
 </footer>
 
-<!-- SCRIPTS -->
-<script src="./scripts/carousel.js?v=60"></script>
+<!-- ==================== SCRIPTS ==================== -->
+<script src="./scripts/carousel.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
-
 <script>
-    // MEMBER ACTIVITIES CAROUSEL
+/* ✅ Cone Data Loader (executed after carousel.js runs) */
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.saccoData && window.saccoData.today) {
+        const { today } = window.saccoData;
+        const profit = today.profit.toLocaleString();
+        const metricEl = document.getElementById('coneMetric');
+        metricEl.textContent = `Profit: KES ${profit}`;
+    } else {
+        document.getElementById('coneMetric').textContent = 'Profit data unavailable';
+    }
+});
+</script>
+<script>
+    // MEMBER ACTIVITIES CAROUSEL SCRIPT
     const memberImages = [
         './assets/01acb621480e99c389cea4973abe4896.jpg',
         './assets/3161c755955816487a8b0cd796d43c29.jpg',
@@ -386,12 +564,14 @@
         const slidesContainer = document.getElementById('memberSlides');
         const dotsContainer = document.getElementById('memberDots');
 
+        // Create slides
         memberImages.forEach((imgSrc, index) => {
             const slide = document.createElement('div');
             slide.className = 'slide';
             slide.innerHTML = `<img src="${imgSrc}" alt="Member Activity ${index + 1}" loading="lazy">`;
             slidesContainer.appendChild(slide);
 
+            // Create dots
             const dot = document.createElement('span');
             dot.className = 'dot';
             dot.onclick = () => goToSlide(index);
@@ -425,36 +605,242 @@
         showSlide(index);
     }
 
+    // Auto-advance (optional: every 5 seconds)
     setInterval(() => changeSlide(1), 5000);
 
-    // CHARTS & PROJECTIONS (unchanged from your version)
-    const cleanGrowthArrowPlugin = { /* ... your full plugin ... */ };
+    // CLEAN GROWTH ARROW PLUGIN
+    const cleanGrowthArrowPlugin = {
+        id: 'cleanGrowthArrow',
+        afterDraw: function(chart) {
+            const { ctx, scales, data } = chart;
+            const dataset = data.datasets[0];
+            const janVal = dataset.data[0];
+            const todayVal = dataset.data[1];
+            const growthPercent = janVal === 0 ? 0 : ((todayVal - janVal) / Math.abs(janVal)) * 100;
+            const isPositive = growthPercent > 0;
+
+            const xScale = scales.x;
+            const yScale = scales.y;
+
+            const x1 = xScale.getPixelForValue(0);
+            const x2 = xScale.getPixelForValue(1);
+            const y1 = yScale.getPixelForValue(janVal);
+            const y2 = yScale.getPixelForValue(todayVal);
+
+            const headLength = 14;
+            const angle = Math.atan2(y2 - y1, x2 - x1);
+
+            const color = isPositive ? '#10B981' : '#EF4444';
+
+            ctx.save();
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(x2, y2);
+            ctx.lineTo(x2 - headLength * Math.cos(angle - Math.PI / 6), y2 - headLength * Math.sin(angle - Math.PI / 6));
+            ctx.lineTo(x2 - headLength * Math.cos(angle + Math.PI / 6), y2 - headLength * Math.sin(angle + Math.PI / 6));
+            ctx.closePath();
+            ctx.fillStyle = color;
+            ctx.fill();
+
+            if (growthPercent !== 0) {
+                const midX = (x1 + x2) / 2;
+                const midY = (y1 + y2) / 2 - 15;
+                ctx.font = 'bold 13px Lato';
+                ctx.fillStyle = color;
+                ctx.textAlign = 'center';
+                ctx.fillText(`${isPositive ? '+' : ''}${growthPercent.toFixed(1)}%`, midX, midY);
+            }
+            ctx.restore();
+        }
+    };
     Chart.register(cleanGrowthArrowPlugin);
 
-    function renderGrowthCharts() { /* ... your full chart code ... */ }
-    function renderProjectionsTable() {
-        if (!window.projections || window.projections.length === 0) {
-            setTimeout(renderProjectionsTable, 100);
+    // CHART RENDERER
+    function renderGrowthCharts() {
+        if (!window.saccoData) {
+            console.warn('saccoData not ready. Retrying...');
+            setTimeout(renderGrowthCharts, 100);
             return;
         }
-        const tbody = document.getElementById('projections-body');
-        if (!tbody) return;
-        tbody.innerHTML = window.projections.map(proj => `
-            <tr>
-                <td style="font-weight: bold;">${proj.year}</td>
-                <td>${proj.members.toLocaleString()}</td>
-                <td>KES ${proj.loans.toLocaleString()}</td>
-                <td>KES ${proj.contributions.toLocaleString()}</td>
-                <td>KES ${proj.bankBalance.toLocaleString()}</td>
-                <td>KES ${proj.profit.toLocaleString()}</td>
-            </tr>
-        `).join('');
+
+        console.log('SACCO DATA LOADED:', window.saccoData);
+
+        const { jan, today } = window.saccoData;
+        const colors = {
+            members: { jan: '#8B5CF6', today: '#C4B5FD' },
+            loans: { jan: '#F59E0B', today: '#FBBF24' },
+            contributions: { jan: '#10B981', today: '#34D399' },
+            profit: { jan: '#EF4444', today: '#F87171' },
+            roa: { jan: '#0EA5E9', today: '#7DD3FC' },
+            liquidity: { jan: '#6366F1', today: '#A5B4FC' }
+        };
+
+        const growth = (j, t) => j === 0 ? (t === 0 ? 0 : 100) : ((t - j) / Math.abs(j)) * 100;
+
+        const updateIndicator = (id, g) => {
+            const el = document.getElementById(id);
+            const arrow = g > 0 ? 'up' : g < 0 ? 'down' : 'right';
+            const cls = g > 0 ? 'positive' : g < 0 ? 'negative' : '';
+            el.innerHTML = `<i class="fas fa-arrow-${arrow}"></i> ${Math.abs(g).toFixed(1)}%`;
+            el.className = `growth-indicator ${cls}`;
+        };
+
+        const createChart = (id, j, t, label, color, gid, isPercent = false, isMoney = false) => {
+            const g = growth(j, t);
+            updateIndicator(gid, g);
+
+            new Chart(document.getElementById(id).getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['Jan 2025', 'Today'],
+                    datasets: [{
+                        data: [j, t],
+                        backgroundColor: [color.jan, color.today],
+                        borderRadius: 10,
+                        maxBarThickness: 60
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: { 
+                                label: ctx => {
+                                    const val = ctx.raw;
+                                    if (isPercent) return val.toFixed(2) + '%';
+                                    if (isMoney) return 'KES ' + val.toLocaleString();
+                                    return val.toLocaleString();
+                                }
+                            }
+                        },
+                        datalabels: {
+                            anchor: 'end',
+                            align: 'top',
+                            color: '#1a1a1a',
+                            font: { weight: '900', size: 14 },
+                            formatter: v => {
+                                if (isPercent) return v.toFixed(2) + '%';
+                                if (isMoney) return 'KES ' + v.toLocaleString();
+                                return v.toLocaleString();
+                            },
+                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                            borderRadius: 6,
+                            padding: 7
+                        }
+                    },
+                    scales: {
+                        x: { grid: { display: false }, ticks: { color: '#1a1a1a', font: { weight: 'bold', size: 13 } } },
+                        y: { display: false, beginAtZero: true }
+                    },
+                    layout: { padding: { top: 50, left: 8, right: 8 } }
+                },
+                plugins: [ChartDataLabels]
+            });
+        };
+
+        // Use pre-calculated ROA from saccoData (includes external loans)
+        const janROA = parseFloat(jan.roa);
+        const todayROA = parseFloat(today.roa);
+
+        // Liquidity: ×100 (as before)
+        const janLiquidity = jan.contributions > 0 ? (jan.bankBalance / jan.contributions) * 100 : 0;
+        const todayLiquidity = today.contributions > 0 ? (today.bankBalance / today.contributions) * 100 : 0;
+
+        console.log('ROA:', janROA.toFixed(2) + '% →', todayROA.toFixed(2) + '%');
+
+        createChart('chartMembers', jan.members, today.members, 'Members', colors.members, 'growthMembers');
+        createChart('chartLoans', jan.loans, today.loans, 'Loans (KES)', colors.loans, 'growthLoans', false, true);
+        createChart('chartContributions', jan.contributions, today.contributions, 'Contributions (KES)', colors.contributions, 'growthContributions', false, true);
+        createChart('chartProfit', jan.profit, today.profit, 'Profit (KES)', colors.profit, 'growthProfit', false, true);
+        createChart('chartROA', janROA, todayROA, 'ROA (%)', colors.roa, 'growthROA', true);
+        createChart('chartLiquidity', janLiquidity, todayLiquidity, 'Liquidity Ratio (%)', colors.liquidity, 'growthLiquidity', true);
+
+        // Render Loan Types Distribution Pie Chart (with custom legend including percentages)
+        if (window.loanTypes && window.loanTypes.length > 0) {
+            const totalLoans = window.loanTypes.reduce((sum, loan) => sum + loan.value, 0);
+            if (totalLoans > 0) {
+                const labels = window.loanTypes.map(loan => loan.name);
+                const data = window.loanTypes.map(loan => (loan.value / totalLoans) * 100);
+                const loanColors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0']; // Colors for Emergency, Medicare, Development, Education
+
+                new Chart(document.getElementById('chartLoanTypes').getContext('2d'), {
+                    type: 'pie',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: data,
+                            backgroundColor: loanColors,
+                            borderWidth: 2,
+                            borderColor: '#fff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'bottom',
+                                labels: {
+                                    generateLabels: function(chart) {
+                                        const data = chart.data;
+                                        if (data.labels.length && data.datasets.length) {
+                                            return data.labels.map((label, i) => {
+                                                const value = data.datasets[0].data[i];
+                                                const percentage = value.toFixed(1) + '%';
+                                                return {
+                                                    text: `${label}: ${percentage}`,
+                                                    fillStyle: data.datasets[0].backgroundColor[i],
+                                                    strokeStyle: data.datasets[0].borderColor ? data.datasets[0].borderColor[i] : data.datasets[0].backgroundColor[i],
+                                                    lineWidth: data.datasets[0].borderWidth,
+                                                    hidden: false,
+                                                    index: i
+                                                };
+                                            });
+                                        }
+                                        return [];
+                                    },
+                                    font: { size: 12, weight: 'bold' },
+                                    padding: 20,
+                                    usePointStyle: true
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: ctx => `${ctx.label}: ${ctx.parsed.toFixed(1)}%`
+                                }
+                            },
+                            datalabels: {
+                                formatter: (value) => value > 5 ? value.toFixed(1) + '%' : '',  // Only show if >5%
+                                color: '#fff',
+                                font: { weight: 'bold', size: 12 },
+                                anchor: 'center',
+                                align: 'center'
+                            }
+                        }
+                    },
+                    plugins: [ChartDataLabels]
+                });
+            } else {
+                console.warn('Total loans is 0; skipping loan types chart.');
+            }
+        } else {
+            console.warn('loanTypes data not available; skipping loan types chart.');
+        }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
         renderGrowthCharts();
-        renderProjectionsTable();
-        initMemberCarousel();
+        initMemberCarousel();  // Initialize member carousel
         if (typeof updateFields === 'function') updateFields();
         if (typeof updateSliderValue === 'function') updateSliderValue('principal');
     });
@@ -466,6 +852,7 @@
 <script src="./scripts/chatbot.js"></script>
 <script src="./scripts/seo.js"></script>
 
+<!-- SCHEMA.ORG -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
