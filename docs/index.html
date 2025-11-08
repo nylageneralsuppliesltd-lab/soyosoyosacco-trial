@@ -21,8 +21,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
     
-    <!-- CSS v54 (Updated for Projections Eye) -->
-    <link rel="stylesheet" href="./style.css?v=54">
+    <!-- CSS v56 (Growth Cone) -->
+    <link rel="stylesheet" href="./style.css?v=56">
 
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-05M38MYK0G"></script>
@@ -197,14 +197,12 @@
         </div>
     </section>
 
-    <!-- STRATEGIC PROJECTIONS EYE (Dynamic via JS) -->
+    <!-- GROWTH CONE (REPLACES EYE) -->
     <section class="projections-section">
-        <h2>Strategic Projections (2025–2029)</h2>
-        <p>Our AI-driven "Eye of Growth" visualizes compounded projections based on real-time metrics. If growth slows, the focus narrows—adapting dynamically to your SACCO's performance.</p>
+        <h2>Strategic Growth Cone: 2025–2029</h2>
+        <p>Where we are today → Where we’re going. Every number is real and dynamic.</p>
 
-        <div id="eye-visual" class="eye-container"></div>
-
-        <div class="kpi-legend" id="kpi-legend"></div>
+        <div id="growth-cone-container"></div>
 
         <div id="projections-table">
             <table>
@@ -378,7 +376,7 @@
 </footer>
 
 <!-- ==================== SCRIPTS ==================== -->
-<script src="./scripts/carousel.js"></script>
+<script src="./scripts/carousel.js?v=56"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 
@@ -471,7 +469,9 @@
             ctx.lineCap = 'round';
             ctx.beginPath();
             ctx.moveTo(x1, y1);
-            ctx.lineTo(x2, y2);
+            ctx.lineTo(x
+
+2, y2);
             ctx.stroke();
 
             ctx.beginPath();
@@ -680,29 +680,9 @@
         `).join('');
     }
 
-    // KPI LEGEND
-    function initKPILegend() {
-        const legendContainer = document.getElementById('kpi-legend');
-        if (!legendContainer) return;
-        const kpis = [
-            { color: '#1f77b4', label: 'Members' },
-            { color: '#ff7f0e', label: 'Loans' },
-            { color: '#2ca02c', label: 'Contributions' },
-            { color: '#d62728', label: 'Bank Balance' },
-            { color: '#9467bd', label: 'Profit' }
-        ];
-        legendContainer.innerHTML = kpis.map(kpi => `
-            <div class="legend-item">
-                <div class="swatch" style="background: ${kpi.color};"></div>
-                <span>${kpi.label}</span>
-            </div>
-        `).join('');
-    }
-
     document.addEventListener('DOMContentLoaded', () => {
         renderGrowthCharts();
         renderProjectionsTable();
-        initKPILegend();
         initMemberCarousel();
         if (typeof updateFields === 'function') updateFields();
         if (typeof updateSliderValue === 'function') updateSliderValue('principal');
