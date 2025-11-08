@@ -21,8 +21,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
     
-    <!-- CSS v56 -->
-    <link rel="stylesheet" href="./style.css?v=56">
+    <!-- CSS v54 (Updated for Projections Eye) -->
+    <link rel="stylesheet" href="./style.css?v=54">
 
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-05M38MYK0G"></script>
@@ -32,204 +32,6 @@
       gtag('js', new Date());
       gtag('config', 'G-05M38MYK0G');
     </script>
-
-    <!-- GROWTH INDICATOR STYLES -->
-    <style>
-        .growth-indicator {
-            text-align: center;
-            margin-top: 0.5rem;
-            font-weight: bold;
-            font-size: 1rem;
-        }
-        .growth-indicator.positive { color: #10B981; }
-        .growth-indicator.negative { color: #EF4444; }
-        .growth-indicator i { margin-right: 4px; font-size: 0.9em; }
-    </style>
-
-    <!-- GROWTH CHARTS GRID STYLES -->
-    <style>
-        .growth-charts-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1rem;
-        }
-        .chart-card {
-            position: relative;
-            height: 300px;
-            display: flex;
-            flex-direction: column;
-        }
-        .chart-card canvas {
-            flex-grow: 1;
-            max-height: 250px;
-        }
-        .chart-card p {
-            margin: 0.5rem 0 0 0;
-            text-align: center;
-            font-weight: bold;
-        }
-        @media (max-width: 768px) {
-            .growth-charts-grid {
-                grid-template-columns: 1fr;
-            }
-            .chart-card {
-                height: 350px;
-            }
-            .chart-card canvas {
-                max-height: 280px;
-            }
-        }
-    </style>
-
-    <!-- PROJECTION EYE STYLES (Pro Tool Enhancements) -->
-    <style>
-        .projections-section {
-            margin-top: 3rem;
-            text-align: center;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        }
-        .projections-section h2 {
-            margin-bottom: 1rem;
-            color: #1a1a1a;
-        }
-        .projections-section p {
-            max-width: 600px;
-            margin: 0 auto 2rem;
-            color: #6b7280;
-        }
-        #eye-visual {
-            position: relative;
-            display: inline-block;
-            margin: 1rem auto;
-            min-height: 600px; /* Ensure space for dynamic SVG */
-        }
-        #eye-visual svg {
-            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
-            transition: transform 0.3s ease;
-        }
-        #eye-visual:hover svg {
-            transform: scale(1.05);
-        }
-        .kpi-legend {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-top: 1rem;
-            font-size: 0.9rem;
-        }
-        .kpi-legend .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: rgba(255,255,255,0.8);
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .kpi-legend .legend-item .swatch {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-        .tooltip {
-            position: absolute;
-            background: rgba(0,0,0,0.8);
-            color: white;
-            padding: 0.5rem;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.2s;
-            z-index: 100;
-        }
-        .tooltip.show {
-            opacity: 1;
-        }
-        @media (max-width: 768px) {
-            .projections-section {
-                padding: 1rem;
-            }
-            .kpi-legend {
-                flex-direction: column;
-                align-items: center;
-            }
-            #eye-visual {
-                min-height: 400px;
-            }
-        }
-    </style>
-
-    <!-- MEMBER ACTIVITIES CAROUSEL STYLES -->
-    <style>
-        .member-activities-section {
-            margin-top: 3rem;
-            padding: 2rem 0;
-            background-color: #f8f9fa;
-        }
-        .member-activities-carousel {
-            position: relative;
-            max-width: 1000px;
-            margin: 0 auto;
-            overflow: hidden;
-            border-radius: 12px;
-        }
-        .member-activities-carousel .slides {
-            display: flex;
-            transition: transform 0.5s ease-in-out;
-            height: 400px; /* Increased height to better show faces */
-        }
-        .member-activities-carousel .slide {
-            min-width: 100%;
-            height: 400px; /* Increased height to better show faces */
-            flex-shrink: 0;
-        }
-        .member-activities-carousel .slide img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .member-activities-carousel .nav-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(0,0,0,0.5);
-            color: white;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-            font-size: 18px;
-            z-index: 10;
-        }
-        .member-activities-carousel .prev { left: 10px; }
-        .member-activities-carousel .next { right: 10px; }
-        .member-activities-carousel .dots {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 1rem;
-        }
-        .member-activities-carousel .dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #ccc;
-            cursor: pointer;
-        }
-        .member-activities-carousel .dot.active {
-            background: #10B981;
-        }
-        @media (max-width: 768px) {
-            .member-activities-carousel .slides,
-            .member-activities-carousel .slide {
-                height: 250px; /* Increased from 200px for mobile */
-            }
-        }
-    </style>
 </head>
 <body>
 
@@ -395,24 +197,22 @@
         </div>
     </section>
 
-    <!-- STRATEGIC PROJECTIONS EYE (Dynamic Generation via JS) -->
+    <!-- STRATEGIC PROJECTIONS EYE (Dynamic via JS) -->
     <section class="projections-section">
         <h2>Strategic Projections (2025–2029)</h2>
         <p>Our AI-driven "Eye of Growth" visualizes compounded projections based on real-time metrics. If growth slows, the focus narrows—adapting dynamically to your SACCO's performance.</p>
         <div id="eye-visual"></div>
-        <div class="kpi-legend" id="kpi-legend">
-            <!-- Legend populated dynamically if needed -->
-        </div>
-        <div id="projections-table" style="margin-top: 1rem; overflow-x: auto;">
-            <table style="margin: 0 auto; border-collapse: collapse; font-size: 0.9rem;">
+        <div class="kpi-legend" id="kpi-legend"></div>
+        <div id="projections-table">
+            <table>
                 <thead>
-                    <tr style="background: #f8f9fa;">
-                        <th style="padding: 0.5rem; border: 1px solid #ddd;">Year</th>
-                        <th style="padding: 0.5rem; border: 1px solid #ddd;">Members</th>
-                        <th style="padding: 0.5rem; border: 1px solid #ddd;">Loans (KES)</th>
-                        <th style="padding: 0.5rem; border: 1px solid #ddd;">Contributions (KES)</th>
-                        <th style="padding: 0.5rem; border: 1px solid #ddd;">Bank (KES)</th>
-                        <th style="padding: 0.5rem; border: 1px solid #ddd;">Profit (KES)</th>
+                    <tr>
+                        <th>Year</th>
+                        <th>Members</th>
+                        <th>Loans (KES)</th>
+                        <th>Contributions (KES)</th>
+                        <th>Bank (KES)</th>
+                        <th>Profit (KES)</th>
                     </tr>
                 </thead>
                 <tbody id="projections-body"></tbody>
@@ -884,12 +684,12 @@
 
         tbody.innerHTML = window.projections.map(proj => `
             <tr>
-                <td style="padding: 0.5rem; border: 1px solid #ddd; font-weight: bold;">${proj.year}</td>
-                <td style="padding: 0.5rem; border: 1px solid #ddd;">${proj.members.toLocaleString()}</td>
-                <td style="padding: 0.5rem; border: 1px solid #ddd;">KES ${proj.loans.toLocaleString()}</td>
-                <td style="padding: 0.5rem; border: 1px solid #ddd;">KES ${proj.contributions.toLocaleString()}</td>
-                <td style="padding: 0.5rem; border: 1px solid #ddd;">KES ${proj.bankBalance.toLocaleString()}</td>
-                <td style="padding: 0.5rem; border: 1px solid #ddd;">KES ${proj.profit.toLocaleString()}</td>
+                <td style="font-weight: bold;">${proj.year}</td>
+                <td>${proj.members.toLocaleString()}</td>
+                <td>KES ${proj.loans.toLocaleString()}</td>
+                <td>KES ${proj.contributions.toLocaleString()}</td>
+                <td>KES ${proj.bankBalance.toLocaleString()}</td>
+                <td>KES ${proj.profit.toLocaleString()}</td>
             </tr>
         `).join('');
 
