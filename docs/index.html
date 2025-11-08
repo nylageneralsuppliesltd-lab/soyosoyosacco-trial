@@ -201,8 +201,11 @@
     <section class="projections-section">
         <h2>Strategic Projections (2025–2029)</h2>
         <p>Our AI-driven "Eye of Growth" visualizes compounded projections based on real-time metrics. If growth slows, the focus narrows—adapting dynamically to your SACCO's performance.</p>
-        <div id="eye-visual"></div>
+
+        <div id="eye-visual" class="eye-container"></div>
+
         <div class="kpi-legend" id="kpi-legend"></div>
+
         <div id="projections-table">
             <table>
                 <thead>
@@ -350,8 +353,8 @@
         <p style="text-align: center; margin-bottom: 1.5rem;">See what our members are up to.</p>
         <div class="member-activities-carousel">
             <div class="slides" id="memberSlides"></div>
-            <button class="nav-btn prev" onclick="changeSlide(-1)">&#10094;</button>
-            <button class="nav-btn next" onclick="changeSlide(1)">&#10095;</button>
+            <button class="nav-btn prev" onclick="changeSlide(-1)">Previous</button>
+            <button class="nav-btn next" onclick="changeSlide(1)">Next</button>
             <div class="dots" id="memberDots"></div>
         </div>
     </section>
@@ -380,7 +383,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 
 <script>
-    // MEMBER ACTIVITIES CAROUSEL SCRIPT
+    // MEMBER ACTIVITIES CAROUSEL SCRIPT (unchanged)
     const memberImages = [
         './assets/01acb621480e99c389cea4973abe4896.jpg',
         './assets/3161c755955816487a8b0cd796d43c29.jpg',
@@ -397,14 +400,12 @@
         const slidesContainer = document.getElementById('memberSlides');
         const dotsContainer = document.getElementById('memberDots');
 
-        // Create slides
         memberImages.forEach((imgSrc, index) => {
             const slide = document.createElement('div');
             slide.className = 'slide';
             slide.innerHTML = `<img src="${imgSrc}" alt="Member Activity ${index + 1}" loading="lazy">`;
             slidesContainer.appendChild(slide);
 
-            // Create dots
             const dot = document.createElement('span');
             dot.className = 'dot';
             dot.onclick = () => goToSlide(index);
@@ -438,7 +439,6 @@
         showSlide(index);
     }
 
-    // Auto-advance (optional: every 5 seconds)
     setInterval(() => changeSlide(1), 5000);
 
     // CLEAN GROWTH ARROW PLUGIN
@@ -502,8 +502,6 @@
             setTimeout(renderGrowthCharts, 100);
             return;
         }
-
-        console.log('SACCO DATA LOADED:', window.saccoData);
 
         const { jan, today } = window.saccoData;
         const colors = {
@@ -580,15 +578,11 @@
             });
         };
 
-        // Use pre-calculated ROA from saccoData (includes external loans)
         const janROA = parseFloat(jan.roa);
         const todayROA = parseFloat(today.roa);
 
-        // Liquidity: ×100 (as before)
         const janLiquidity = jan.contributions > 0 ? (jan.bankBalance / jan.contributions) * 100 : 0;
         const todayLiquidity = today.contributions > 0 ? (today.bankBalance / today.contributions) * 100 : 0;
-
-        console.log('ROA:', janROA.toFixed(2) + '% →', todayROA.toFixed(2) + '%');
 
         createChart('chartMembers', jan.members, today.members, 'Members', colors.members, 'growthMembers');
         createChart('chartLoans', jan.loans, today.loans, 'Loans (KES)', colors.loans, 'growthLoans', false, true);
@@ -597,13 +591,12 @@
         createChart('chartROA', janROA, todayROA, 'ROA (%)', colors.roa, 'growthROA', true);
         createChart('chartLiquidity', janLiquidity, todayLiquidity, 'Liquidity Ratio (%)', colors.liquidity, 'growthLiquidity', true);
 
-        // Render Loan Types Distribution Pie Chart (with custom legend including percentages)
         if (window.loanTypes && window.loanTypes.length > 0) {
             const totalLoans = window.loanTypes.reduce((sum, loan) => sum + loan.value, 0);
             if (totalLoans > 0) {
                 const labels = window.loanTypes.map(loan => loan.name);
                 const data = window.loanTypes.map(loan => (loan.value / totalLoans) * 100);
-                const loanColors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0']; // Colors for Emergency, Medicare, Development, Education
+                const loanColors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'];
 
                 new Chart(document.getElementById('chartLoanTypes').getContext('2d'), {
                     type: 'pie',
@@ -653,7 +646,7 @@
                                 }
                             },
                             datalabels: {
-                                formatter: (value) => value > 5 ? value.toFixed(1) + '%' : '',  // Only show if >5%
+                                formatter: (value) => value > 5 ? value.toFixed(1) + '%' : '',
                                 color: '#fff',
                                 font: { weight: 'bold', size: 12 },
                                 anchor: 'center',
@@ -663,25 +656,18 @@
                     },
                     plugins: [ChartDataLabels]
                 });
-            } else {
-                console.warn('Total loans is 0; skipping loan types chart.');
             }
-        } else {
-            console.warn('loanTypes data not available; skipping loan types chart.');
         }
     }
 
-    // PROJECTIONS TABLE RENDERER (Dynamic based on window.projections)
+    // PROJECTIONS TABLE RENDERER
     function renderProjectionsTable() {
         if (!window.projections || window.projections.length === 0) {
-            console.warn('Projections not ready. Retrying...');
             setTimeout(renderProjectionsTable, 100);
             return;
         }
-
         const tbody = document.getElementById('projections-body');
         if (!tbody) return;
-
         tbody.innerHTML = window.projections.map(proj => `
             <tr>
                 <td style="font-weight: bold;">${proj.year}</td>
@@ -692,15 +678,12 @@
                 <td>KES ${proj.profit.toLocaleString()}</td>
             </tr>
         `).join('');
-
-        console.log('Projections table rendered with data:', window.projections);
     }
 
-    // Populate KPI Legend (Static for now, as colors are fixed)
+    // KPI LEGEND
     function initKPILegend() {
         const legendContainer = document.getElementById('kpi-legend');
         if (!legendContainer) return;
-
         const kpis = [
             { color: '#1f77b4', label: 'Members' },
             { color: '#ff7f0e', label: 'Loans' },
@@ -708,7 +691,6 @@
             { color: '#d62728', label: 'Bank Balance' },
             { color: '#9467bd', label: 'Profit' }
         ];
-
         legendContainer.innerHTML = kpis.map(kpi => `
             <div class="legend-item">
                 <div class="swatch" style="background: ${kpi.color};"></div>
@@ -721,7 +703,7 @@
         renderGrowthCharts();
         renderProjectionsTable();
         initKPILegend();
-        initMemberCarousel();  // Initialize member carousel
+        initMemberCarousel();
         if (typeof updateFields === 'function') updateFields();
         if (typeof updateSliderValue === 'function') updateSliderValue('principal');
     });
