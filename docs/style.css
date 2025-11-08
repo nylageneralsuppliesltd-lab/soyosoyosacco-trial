@@ -1,12 +1,13 @@
 /* ========================================
-   SOYOSOYO SACCO – FINAL v53
-   Cache-busted: ?v=53
+   SOYOSOYO SACCO – FINAL v54 (EYE INTEGRATION)
+   Cache-busted: ?v=54
    TWO CAROUSELS: INDEX + JOIN-US – NO CONFLICTS
    % GROWTH + GREEN/RED ARROWS + NUMBERS ON BARS
    MOBILE BARS: CENTERED, NO EDGE OVERFLOW
    DESIGN RESTORED – NO FULL-SCREEN STRETCH
    LOAN CALC: SLIDER -> NUMBER INPUT (MOBILE-FRIENDLY)
    DIVIDENDS MOBILE: 2-COL FIT (REDUCED GAP/PADDING, OVERFLOW PREVENTED)
+   NEW: Projections Eye – Dynamic SVG Focus Visual
    ======================================== */
 
 /* ----------------- RESET & BASE ----------------- */
@@ -613,6 +614,113 @@ footer a:hover { color:#ffffff; }
     }
     .growth-indicator {
         font-size: 0.95rem;
+    }
+}
+
+/* NEW: Projections Eye – Dynamic SVG Focus Visual (Integrates with .section hover/shadow) */
+.projections-section {
+    margin-top: 3rem;
+    text-align: center;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease;
+}
+.projections-section:hover { transform: translateY(-6px); }
+.projections-section h2 { 
+    margin-bottom: 1rem; 
+    color: #006400; /* Matches SACCO green theme */
+}
+.projections-section p { 
+    max-width: 600px; 
+    margin: 0 auto 2rem; 
+    color: #6b7280; 
+    font-style: italic;
+}
+#eye-visual {
+    position: relative;
+    display: inline-block;
+    margin: 1rem auto;
+    min-height: 600px;
+}
+#eye-visual svg {
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
+    transition: transform 0.3s ease;
+}
+#eye-visual:hover svg { transform: scale(1.05); }
+.kpi-legend {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
+.kpi-legend .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255,255,255,0.8);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: background 0.2s;
+}
+.kpi-legend .legend-item:hover { background: rgba(144,238,144,0.8); /* Light green hover for theme tie-in */ }
+.kpi-legend .legend-item .swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+.tooltip {
+    position: absolute;
+    background: rgba(0,0,0,0.8);
+    color: white;
+    padding: 0.5rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+    z-index: 100;
+}
+.tooltip.show { opacity: 1; }
+/* Projections Table – Matches existing table styles but compact */
+#projections-table table {
+    margin: 0 auto;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+#projections-table th,
+#projections-table td {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+#projections-table thead tr { background: #f8f9fa; }
+#projections-table tbody tr:nth-child(even) { background: rgba(144,238,144,0.1); /* Subtle green stripe for theme */ }
+
+/* MOBILE: Projections Eye – Compact & Stacked */
+@media (max-width: 768px) {
+    .projections-section { padding: 1.5rem; }
+    #eye-visual { min-height: 400px; }
+    .kpi-legend { 
+        flex-direction: column; 
+        align-items: center; 
+        gap: 0.5rem;
+    }
+    .kpi-legend .legend-item { 
+        padding: 0.4rem 0.8rem; 
+        font-size: 0.85rem;
+    }
+    #projections-table { 
+        font-size: 0.8rem; 
+        overflow-x: auto; /* Horizontal scroll for table on small screens */
+    }
+    #projections-table th,
+    #projections-table td { 
+        padding: 0.4rem 0.3rem; 
     }
 }
 
