@@ -1,4 +1,4 @@
-/* scripts/carousel.js – EYE OF GROWTH ONLY (NO CAROUSEL CHANGES) */
+/* scripts/carousel.js – EYE OF GROWTH → GROWTH CONE (v56) */
 document.addEventListener('DOMContentLoaded', () => {
   // === DAILY DATA (UPDATE HERE ONLY) ===
   const loanTypesToday = [
@@ -76,76 +76,97 @@ document.addEventListener('DOMContentLoaded', () => {
     return proj;
   }
 
-  // === RENDER EYE (FIXED) ===
+  // === RENDER GROWTH CONE (REPLACES OLD EYE) ===
   function renderEye(projections) {
-    const container = document.getElementById('eye-visual');
-    if (!container) return;
+    const container = document.getElementById('growth-cone-container');
+    if (!container) {
+      console.warn('growth-cone-container not found');
+      return;
+    }
 
-    container.innerHTML = '<div style="height:100%;display:flex;align-items:center;justify-content:center;color:#999;"><i class="fas fa-spinner fa-spin" style="margin-right:8px;"></i>Loading...</div>';
+    container.innerHTML = `
+      <div class="growth-cone" id="cone-svg-wrapper">
+        <svg viewBox="0 0 600 500" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+    `;
 
-    if (!projections || projections.length === 0) return;
+    const svg = container.querySelector('svg');
+    const maxWidth = 500;
+    const baseY = 450;
+    const topY = 50;
+    const centerX = 300;
 
-    setTimeout(() => {
-      container.innerHTML = '';
-      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      svg.setAttribute('viewBox', '0 0 600 600');
-      svg.setAttribute('role', 'img');
-      svg.setAttribute('aria-label', 'Eye of Growth');
-      svg.style.width = '100%';
-      svg.style.height = '100%';
-      container.appendChild(svg);
+    projections.forEach((p, i) => {
+      const width = (i / (projections.length - 1)) * maxWidth;
+      const x1 = centerX - width / 2;
+      const x2 = centerX + width / 2;
+      const y = baseY - (i * (baseY - topY) / (projections.length - 1));
 
-      const cx = 300, cy = 300, maxR = 250;
-      const maxVals = {};
-      const kpis = ['members','loans','contributions','bankBalance','profit'];
-      kpis.forEach(k => maxVals[k] = Math.max(...projections.map(p => p[k] || 0)));
-      const colors = { members:'#1f77b4', loans:'#ff7f0e', contributions:'#2ca02c', bankBalance:'#d62728', profit:'#9467bd' };
-      const norm = (v,m) => m && v > 0 ? (Math.log(v+1)/Math.log(m+1)) * maxR : 0;
+      if (i > 0) {
+        const prev = projections[i - 1];
+        const prevWidth = ((i - 1) / (projections.length - 1)) * maxWidth;
+        const prevX1 = centerX - prevWidth / 2;
+        const prevX2 = centerX + prevWidth / 2;
+        const prevY = baseY - ((i - 1) * (baseY - topY) / (projections.length - 1));
 
-      kpis.forEach((k,i) => {
-        const r = norm(projections[projections.length-1][k], maxVals[k]);
-        const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        c.setAttribute('cx',cx); c.setAttribute('cy',cy); c.setAttribute('r',0);
-        c.setAttribute('fill','none'); c.setAttribute('stroke',colors[k]);
-        c.setAttribute('stroke-width','10'); c.setAttribute('stroke-linecap','round');
-        svg.appendChild(c);
-        const a = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
-        a.setAttribute('attributeName','r'); a.setAttribute('from','0'); a.setAttribute('to',r);
-        a.setAttribute('dur','2s'); a.setAttribute('fill','freeze');
-        c.appendChild(a); setTimeout(() => a.beginElement(), i*150);
+        ['x1', 'x2'].forEach((side, si) => {
+          const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+          line.setAttribute('x1', si === 0 ? prevX1 : prevX2);
+          line.setAttribute('y1', prevY);
+          line.setAttribute('x2', si === 0 ? x1 : x2);
+          line.setAttribute('y2', y);
+          line.setAttribute('class', 'cone-line');
+          svg.appendChild(line);
+        });
+      }
+
+      // Year Label
+      const yearText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      yearText.setAttribute('x', centerX);
+      yearText.setAttribute('y', y - 25);
+      yearText.setAttribute('class', 'cone-year');
+      yearText.textContent = p.year;
+      yearText.onclick = () => {
+        alert(`${p.year}\nMembers: ${p.members}\nLoans: KES ${p.loans.toLocaleString()}\nContributions: KES ${p.contributions.toLocaleString()}\nProfit: KES ${p.profit.toLocaleString()}`);
+      };
+      svg.appendChild(yearText);
+
+      // KPIs
+      const kpis = [
+        `${p.members} Members`,
+        `KES ${(p.loans / 1000).toFixed(0)}k Loans`,
+        `KES ${(p.contributions / 1000).toFixed(0)}k Contrib`
+      ];
+      kpis.forEach((kpi, ki) => {
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', centerX);
+        text.setAttribute('y', y + 20 + ki * 22);
+        text.setAttribute('class', 'cone-kpi');
+        text.textContent = kpi;
+        svg.appendChild(text);
       });
+    });
 
-      const pupil = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-      pupil.setAttribute('cx',cx); pupil.setAttribute('cy',cy); pupil.setAttribute('r',0); pupil.setAttribute('fill','#000');
-      svg.appendChild(pupil);
-      const pa = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
-      pa.setAttribute('attributeName','r'); pa.setAttribute('from','0'); pa.setAttribute('to','22');
-      pa.setAttribute('dur','1.5s'); pa.setAttribute('fill','freeze');
-      pupil.appendChild(pa); setTimeout(() => pa.beginElement(), 300);
+    // Highlight TODAY
+    const highlight = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    highlight.setAttribute('cx', centerX);
+    highlight.setAttribute('cy', baseY);
+    highlight.setAttribute('r', 85);
+    highlight.setAttribute('class', 'cone-highlight');
+    svg.appendChild(highlight);
 
-      projections.forEach((p,i) => {
-        const txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        txt.setAttribute('x',cx); txt.setAttribute('y',cy-maxR-30-i*25);
-        txt.setAttribute('text-anchor','middle'); txt.setAttribute('font-size','15');
-        txt.setAttribute('font-weight','bold'); txt.setAttribute('fill','#003087');
-        txt.textContent = p.year;
-        txt.style.cursor = 'pointer';
-        txt.onclick = () => {
-          kpis.forEach((k,ki) => {
-            const c = svg.children[ki];
-            const r = norm(projections[i][k], maxVals[k]);
-            c.setAttribute('stroke-width','14');
-            setTimeout(() => c.setAttribute('stroke-width','10'), 800);
-          });
-        };
-        svg.appendChild(txt);
-      });
-
-      window.projections = projections;
-    }, 100);
+    const todayLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    todayLabel.setAttribute('x', centerX);
+    todayLabel.setAttribute('y', baseY + 5);
+    todayLabel.setAttribute('text-anchor', 'middle');
+    todayLabel.setAttribute('font-weight', 'bold');
+    todayLabel.setAttribute('font-size', '14');
+    todayLabel.setAttribute('fill', '#006400');
+    todayLabel.textContent = 'TODAY';
+    svg.appendChild(todayLabel);
   }
 
-  // === RENDER WITH FALLBACK ===
+  // === RENDER WITH FALLBACK (UNCHANGED) ===
   let tries = 0;
   function tryRender() {
     const p = generateProjections();
