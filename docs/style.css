@@ -1,9 +1,12 @@
 /* ========================================
-   SOYOSOYO SACCO – FINAL v55 (GROWTH CONE)
-   Cache-busted: ?v=55
-   GROWTH CONE: DYNAMIC, DATA-DRIVEN, MOBILE-FRIENDLY
-   PIE CHART: FULLY VISIBLE ON MOBILE
-   ALL ORIGINAL STYLES PRESERVED
+   SOYOSOYO SACCO – FINAL v53
+   Cache-busted: ?v=53
+   TWO CAROUSELS: INDEX + JOIN-US – NO CONFLICTS
+   % GROWTH + GREEN/RED ARROWS + NUMBERS ON BARS
+   MOBILE BARS: CENTERED, NO EDGE OVERFLOW
+   DESIGN RESTORED – NO FULL-SCREEN STRETCH
+   LOAN CALC: SLIDER -> NUMBER INPUT (MOBILE-FRIENDLY)
+   DIVIDENDS MOBILE: 2-COL FIT (REDUCED GAP/PADDING, OVERFLOW PREVENTED)
    ======================================== */
 
 /* ----------------- RESET & BASE ----------------- */
@@ -144,7 +147,7 @@ header.site-header #menu-toggle {
     align-items: flex-start;
     gap: 2rem;
 }
-.join-instructions img.round { 
+.join-instructions img.round { /* Specifically targets the phone-image with .round class */
     width: 280px;
     height: 280px;
     flex-shrink: 0;
@@ -322,32 +325,33 @@ header.site-header #menu-toggle {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 0.8rem;
-    width: 100%;
+    width: 100%; /* Ensure full width to prevent overflow */
 }
 .month-inputs input {
     padding: 0.75rem;
     border: 1px solid #ddd;
     border-radius: 8px;
     font-size: 0.95rem;
-    width: 100%;
+    width: 100%; /* Explicit width for grid items */
     box-sizing: border-box;
 }
 @media (max-width: 768px) {
     .month-inputs { 
         grid-template-columns: repeat(2, 1fr); 
-        gap: 0.5rem;
+        gap: 0.5rem; /* Reduced gap to fit better on mobile */
     }
     .month-inputs input {
-        padding: 0.6rem;
-        font-size: 0.9rem;
+        padding: 0.6rem; /* Slightly reduced padding to save space */
+        font-size: 0.9rem; /* Minor font reduction for compactness */
     }
+    /* LOAN CALC: ENHANCE NUMBER INPUT FOR MOBILE (TOUCH-FRIENDLY, NO ZOOM) */
     .form-group input[type="number"] {
-        font-size: 1.05rem;
-        padding: 1rem;
+        font-size: 1.05rem; /* Slight bump for easier typing on mobile */
+        padding: 1rem; /* Extra padding for thumb taps */
     }
     .form-group input[type="number"]::-webkit-outer-spin-button,
     .form-group input[type="number"]::-webkit-inner-spin-button {
-        opacity: 1;
+        opacity: 1; /* Show spinner arrows if desired; hide with 0 if not */
     }
 }
 
@@ -483,17 +487,18 @@ header.site-header #menu-toggle {
     .section, .tool-section { padding: 1.6rem; margin-bottom: 1.5rem; }
     .carousel-wrapper, .carousel-join-wrapper { padding: 1.5rem 0; }
     .carousel-item, .carousel-join-item { 
-        flex: 0 0 42vw;
-        margin: 0 8px;
-        padding: 1.2rem;
+        flex: 0 0 42vw; /* Reduced from 80vw to ~42vw to fit at least two items side-by-side */
+        margin: 0 8px; /* Slightly reduced margins for better fit without overflow */
+        padding: 1.2rem; /* Reduced internal padding to keep contents compact */
     }
     .carousel-button, .carousel-join-button { 
-        font-size: 1.3rem;
+        font-size: 1.3rem; /* Slightly reduced button font size for mobile */
         padding: 0.8rem 1.2rem; 
     }
     .carousel-description, .carousel-join-description { 
-        font-size: 0.85rem;
+        font-size: 0.85rem; /* Reduced description font size */
     }
+    /* MOBILE FIX FOR JOIN-INSTRUCTIONS: STACK VERTICALLY, KEEP IMAGE AS-IS (FINE ON MOBILE) */
     .join-instructions {
         flex-direction: column;
         text-align: center;
@@ -512,21 +517,22 @@ header.site-header #menu-toggle {
 /* ----------------- DESKTOP FULL-WIDTH ENLARGEMENT – SAFE, SYMMETRIC SCALE ----------------- */
 @media (min-width: 769px) {
     .container { 
-        max-width: 1400px;
+        max-width: 1400px; /* Increased from 1200px for fuller desktop use without overflow */
         margin: 2rem auto; 
-        padding: 0 1.5rem;
+        padding: 0 1.5rem; /* Slight padding increase for symmetry on wider screens */
     }
-    .section, .tool-section { padding: 2.2rem; }
-    h1 { font-size: 2.5rem; }
-    h2 { font-size: 1.95rem; }
-    .products-grid { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
-    .product-card img { height: 200px; }
-    .leadership-grid { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
-    .leader-profile img { width: 130px; height: 130px; }
-    .carousel-item { --item-width: 340px; --item-margin: 45px; }
-    .carousel-join-item { --item-width: 320px; --item-margin: 35px; }
-    .mission-vision-container, .core-values-container { padding: 2rem; }
-    .mission-vision-container img, .core-values-container img { width: 100px; height: 100px; }
+    /* Symmetric scale for key elements to match enlarged container */
+    .section, .tool-section { padding: 2.2rem; } /* Minor padding bump for breathing room */
+    h1 { font-size: 2.5rem; } /* Slight h1 enlargement for balance */
+    h2 { font-size: 1.95rem; } /* Proportional h2 scaling */
+    .products-grid { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); } /* Wider product cards */
+    .product-card img { height: 200px; } /* Scaled image height for symmetry */
+    .leadership-grid { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); } /* Wider leader profiles */
+    .leader-profile img { width: 130px; height: 130px; } /* Symmetric profile image scale */
+    .carousel-item { --item-width: 340px; --item-margin: 45px; } /* Wider carousel items for desktop */
+    .carousel-join-item { --item-width: 320px; --item-margin: 35px; } /* Adjusted join carousel */
+    .mission-vision-container, .core-values-container { padding: 2rem; } /* Scaled containers */
+    .mission-vision-container img, .core-values-container img { width: 100px; height: 100px; } /* Larger icons */
 }
 
 /* ----------------- FOOTER ----------------- */
@@ -551,7 +557,7 @@ footer a:hover { color:#ffffff; }
     transform:scale(1.15); 
 }
 
-/* ----------------- GROWTH CHARTS – MOBILE: STRETCHED FOR PIE ----------------- */
+/* ----------------- GROWTH CHARTS – SMALL, CENTERED, NO STRETCH ----------------- */
 .growth-charts-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -565,23 +571,24 @@ footer a:hover { color:#ffffff; }
     box-shadow: 0 8px 25px rgba(0,0,0,0.08);
     text-align: center;
     transition: transform 0.3s ease;
-    overflow: visible;
+    overflow: hidden;
     position: relative;
-    min-height: 300px;
 }
 .chart-card:hover { transform: translateY(-6px); }
 .chart-card canvas {
-    height: 200px !important;
+    height: 180px !important;
     margin: 0 auto;
     max-width: 100%;
     display: block;
 }
 .chart-card p {
-    margin-top: 1rem;
+    margin-top: 0.8rem;
     font-weight: 600;
     color: #1f2937;
     font-size: 0.95rem;
 }
+
+/* % GROWTH INDICATOR – 100% MATHEMATICAL */
 .growth-indicator {
     text-align: center;
     margin-top: 0.5rem;
@@ -592,86 +599,112 @@ footer a:hover { color:#ffffff; }
 .growth-indicator.negative { color: #EF4444; }
 .growth-indicator i { margin-right: 4px; font-size: 0.9em; }
 
-/* MOBILE: FULL PIE CHART */
+/* MOBILE: CENTERED, NO EDGE OVERFLOW */
 @media (max-width: 768px) {
     .growth-charts-grid { 
         grid-template-columns: 1fr; 
-        gap: 1.4rem;
+        gap: 1.2rem;
     }
     .chart-card {
-        padding: 1.6rem 1rem;
-        min-height: 320px;
+        padding: 1.4rem 1rem;
     }
     .chart-card canvas { 
-        height: 220px !important; 
+        height: 160px !important; 
     }
     .growth-indicator {
-        font-size: 1rem;
+        font-size: 0.95rem;
     }
 }
-
-/* ----------------- GROWTH CONE – NEW, DYNAMIC, MOBILE-FRIENDLY ----------------- */
-.projections-section {
-    margin-top: 3rem;
-    text-align: center;
-    background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
-    padding: 2.5rem 2rem;
-    border-radius: 16px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-    transition: transform 0.3s ease;
-}
-.projections-section:hover { transform: translateY(-6px); }
-.projections-section h2 { 
-    margin-bottom: 1rem; 
-    color: #006400;
-    font-size: 1.9rem;
-}
-.projections-section p { 
-    max-width: 700px; 
-    margin: 0 auto 2rem; 
-    color: #374151; 
-    font-style: italic;
-}
-
-.growth-cone {
-    width: 100%;
-    max-width: 600px;
-    margin: 2rem auto;
+/* =========================================================
+   PREMIUM “EYE CONE” VISUALIZATION SECTION
+   – 5YR / 10YR STRATEGY PROJECTION VISUAL
+   ========================================================= */
+.premium-cone-wrapper {
     position: relative;
-    font-family: 'Lato', sans-serif;
-}
-.cone-line {
-    stroke: #006400;
-    stroke-width: 3;
-    fill: none;
-}
-.cone-year {
-    font-size: 1.1rem;
-    font-weight: 900;
-    fill: #003087;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-.cone-year:hover {
-    fill: #006400;
-    font-size: 1.3rem;
-}
-.cone-kpi {
-    font-size: 0.9rem;
-    fill: #1f2937;
-    text-anchor: middle;
-}
-.cone-highlight {
-    fill: #90EE90;
-    opacity: 0.2;
+    width: 100%;
+    max-width: 1200px;
+    margin: 4rem auto;
+    padding: 3rem 1.5rem;
+    background: radial-gradient(ellipse at center, #e6f9ef 0%, #ffffff 100%);
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    overflow: hidden;
 }
 
-/* MOBILE CONE */
+.premium-cone {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at center, #d1fae5 10%, #a7f3d0 40%, transparent 80%);
+    border-radius: 50%;
+    box-shadow: inset 0 0 40px rgba(0,100,0,0.25);
+    transition: all 0.3s ease-in-out;
+}
+
+.premium-cone:hover {
+    transform: scale(1.02);
+}
+
+.cone-ray {
+    position: absolute;
+    width: 100px;
+    height: 2px;
+    background: linear-gradient(90deg, #006400, transparent);
+    opacity: 0.3;
+    transform-origin: left center;
+    animation: rotate-rays 8s linear infinite;
+}
+@keyframes rotate-rays {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.cone-data-point {
+    position: absolute;
+    text-align: center;
+    background: #ffffff;
+    border-radius: 50%;
+    padding: 0.6rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    font-weight: bold;
+    color: #006400;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+.cone-data-point:hover {
+    background: #90EE90;
+    transform: scale(1.2);
+}
+
+.cone-year-label {
+    position: absolute;
+    bottom: -1.5rem;
+    width: 100%;
+    text-align: center;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #004d00;
+}
+
+/* RESPONSIVE – PREMIUM CONE */
 @media (max-width: 768px) {
-    .growth-cone { max-width: 100%; }
-    .cone-year { font-size: 1rem; }
-    .cone-year:hover { font-size: 1.1rem; }
-    .cone-kpi { font-size: 0.8rem; }
+    .premium-cone-wrapper {
+        padding: 2rem 1rem;
+    }
+    .premium-cone {
+        height: 220px;
+    }
+    .cone-data-point {
+        font-size: 0.8rem;
+        padding: 0.4rem;
+    }
+    .cone-year-label {
+        bottom: -1rem;
+        font-size: 0.75rem;
+    }
 }
 
 /* ----------------- END OF FILE ----------------- */
