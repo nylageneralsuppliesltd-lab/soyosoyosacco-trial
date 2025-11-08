@@ -21,8 +21,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
     
-    <!-- CSS v56 -->
-    <link rel="stylesheet" href="./style.css?v=56">
+    <!-- CSS v54 (Updated to include cone, growth, and member carousel styles) -->
+    <link rel="stylesheet" href="./style.css?v=54">
 
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-05M38MYK0G"></script>
@@ -32,166 +32,6 @@
       gtag('js', new Date());
       gtag('config', 'G-05M38MYK0G');
     </script>
-    
-    <!-- ✅ Cone Projection Styles -->
-    <style>
-        .cone-visual {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 380px;
-            margin-top: 1rem;
-            perspective: 1000px;
-        }
-        .cone {
-            width: 220px;
-            height: 220px;
-            background: conic-gradient(#10B981, #F59E0B, #3B82F6, #10B981);
-            border-radius: 50%;
-            transform: rotateX(70deg);
-            animation: spin 8s linear infinite;
-            position: relative;
-        }
-        @keyframes spin {
-            0% { transform: rotateX(70deg) rotateZ(0deg); }
-            100% { transform: rotateX(70deg) rotateZ(360deg); }
-        }
-        .cone-data {
-            position: absolute;
-            bottom: -50px;
-            width: 100%;
-            text-align: center;
-            font-weight: bold;
-            color: #1a1a1a;
-        }
-        .cone-metric {
-            font-size: 1.2rem;
-            margin-top: 0.3rem;
-        }
-        @media (max-width: 768px) {
-            .cone {
-                width: 180px;
-                height: 180px;
-            }
-            .cone-metric {
-                font-size: 1rem;
-            }
-        }
-    </style>
-    <!-- GROWTH INDICATOR STYLES -->
-    <style>
-        .growth-indicator {
-            text-align: center;
-            margin-top: 0.5rem;
-            font-weight: bold;
-            font-size: 1rem;
-        }
-        .growth-indicator.positive { color: #10B981; }
-        .growth-indicator.negative { color: #EF4444; }
-        .growth-indicator i { margin-right: 4px; font-size: 0.9em; }
-    </style>
-
-    <!-- GROWTH CHARTS GRID STYLES -->
-    <style>
-        .growth-charts-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1rem;
-        }
-        .chart-card {
-            position: relative;
-            height: 300px;
-            display: flex;
-            flex-direction: column;
-        }
-        .chart-card canvas {
-            flex-grow: 1;
-            max-height: 250px;
-        }
-        .chart-card p {
-            margin: 0.5rem 0 0 0;
-            text-align: center;
-            font-weight: bold;
-        }
-        @media (max-width: 768px) {
-            .growth-charts-grid {
-                grid-template-columns: 1fr;
-            }
-            .chart-card {
-                height: 350px;
-            }
-            .chart-card canvas {
-                max-height: 280px;
-            }
-        }
-    </style>
-
-    <!-- MEMBER ACTIVITIES CAROUSEL STYLES -->
-    <style>
-        .member-activities-section {
-            margin-top: 3rem;
-            padding: 2rem 0;
-            background-color: #f8f9fa;
-        }
-        .member-activities-carousel {
-            position: relative;
-            max-width: 1000px;
-            margin: 0 auto;
-            overflow: hidden;
-            border-radius: 12px;
-        }
-        .member-activities-carousel .slides {
-            display: flex;
-            transition: transform 0.5s ease-in-out;
-            height: 400px; /* Increased height to better show faces */
-        }
-        .member-activities-carousel .slide {
-            min-width: 100%;
-            height: 400px; /* Increased height to better show faces */
-            flex-shrink: 0;
-        }
-        .member-activities-carousel .slide img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .member-activities-carousel .nav-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(0,0,0,0.5);
-            color: white;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-            font-size: 18px;
-            z-index: 10;
-        }
-        .member-activities-carousel .prev { left: 10px; }
-        .member-activities-carousel .next { right: 10px; }
-        .member-activities-carousel .dots {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 1rem;
-        }
-        .member-activities-carousel .dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #ccc;
-            cursor: pointer;
-        }
-        .member-activities-carousel .dot.active {
-            background: #10B981;
-        }
-        @media (max-width: 768px) {
-            .member-activities-carousel .slides,
-            .member-activities-carousel .slide {
-                height: 250px; /* Increased from 200px for mobile */
-            }
-        }
-    </style>
 </head>
 <body>
 
@@ -238,7 +78,7 @@
 
     <!-- MISSION / VISION / CORE VALUES -->
     <div class="mission-vision-container">
-        <img src="./assets/0065564ad0f92baf9be886b031073979.jpg" alt="Mission" class="round">
+        <img src="./assets/0065564ad0f92baf9be886b031073979.jpg" alt="Mission Icon" class="round">
         <div>
             <h2>Our Mission</h2>
             <p>Empower members with accessible, affordable credit for healthcare, education, agriculture, growth and development.</p>
@@ -246,7 +86,7 @@
     </div>
 
     <div class="mission-vision-container">
-        <img src="./assets/d8c3d49708ed9831ff753b3548c717aa.jpg" alt="Vision" class="round">
+        <img src="./assets/d8c3d49708ed9831ff753b3548c717aa.jpg" alt="Vision Icon" class="round">
         <div>
             <h2>Our Vision</h2>
             <p>To lead financial transformation and sustainable prosperity across Kenya.</p>
@@ -254,7 +94,7 @@
     </div>
 
     <div class="core-values-container">
-        <img src="./assets/8119c4ebd64ccbe641d0563d23444c34.jpg" alt="Core Values" class="round">
+        <img src="./assets/8119c4ebd64ccbe641d0563d23444c34.jpg" alt="Core Values Icon" class="round">
         <div>
             <h2>Core Values</h2>
             <ul>
@@ -272,22 +112,22 @@
         <h2 style="text-align: center;">Leadership</h2>
         <div class="leadership-grid">
             <div class="leader-profile">
-                <img src="./assets/judi.jpg" alt="Judith Malombo Mramba" class="round">
+                <img src="./assets/judi.jpg" alt="Judith Malombo Mramba, Chairperson" class="round">
                 <h3>Judith Malombo Mramba</h3>
                 <p>Chairperson</p>
             </div>
             <div class="leader-profile">
-                <img src="./assets/jere.jpg" alt="Jeremiah Kalama Lewa" class="round">
+                <img src="./assets/jere.jpg" alt="Jeremiah Kalama Lewa, Vice-Chairperson" class="round">
                 <h3>Jeremiah Kalama Lewa</h3>
                 <p>Vice-Chairperson</p>
             </div>
             <div class="leader-profile">
-                <img src="./assets/sidi.jpg" alt="Sidi Saro Ngowa" class="round">
+                <img src="./assets/sidi.jpg" alt="Sidi Saro Ngowa, Secretary" class="round">
                 <h3>Sidi Saro Ngowa</h3>
                 <p>Secretary</p>
             </div>
             <div class="leader-profile">
-                <img src="./assets/thoya.jpg" alt="Thomas Thoya Kitsao" class="round">
+                <img src="./assets/thoya.jpg" alt="Thomas Thoya Kitsao, Treasurer" class="round">
                 <h3>Thomas Thoya Kitsao</h3>
                 <p>Treasurer</p>
             </div>
@@ -299,7 +139,7 @@
         <h2 style="text-align: center;">Featured Product</h2>
         <div class="products-grid">
             <div class="product-card">
-                <img src="./assets/ba04cd4377b3746fc0750dcf2ff3d935.jpg" alt="Education Loan" class="round">
+                <img src="./assets/ba04cd4377b3746fc0750dcf2ff3d935.jpg" alt="Education Loan Product Image" class="round">
                 <h2 style="text-align: center;">Education Loan</h2>
                 <p>Cover tuition, books, and living costs. Up to 12 months at 4% per annum.</p>
                 <a href="Products.html" class="products-button">Explore All Products</a>
@@ -321,47 +161,47 @@
         <h2 style="text-align: center; margin-bottom: 1.5rem;">Growth Since January 2025</h2>
         <div class="growth-charts-grid">
             <div class="chart-card">
-                <canvas id="chartMembers"></canvas>
+                <canvas id="chartMembers" aria-label="Total Members Growth Chart"></canvas>
                 <p>Total Members</p>
                 <div id="growthMembers" class="growth-indicator"></div>
             </div>
             <div class="chart-card">
-                <canvas id="chartLoans"></canvas>
+                <canvas id="chartLoans" aria-label="Loans Disbursed Growth Chart"></canvas>
                 <p>Loans Disbursed</p>
                 <div id="growthLoans" class="growth-indicator"></div>
             </div>
             <div class="chart-card">
-                <canvas id="chartLoanTypes"></canvas>
+                <canvas id="chartLoanTypes" aria-label="Loan Types Distribution Pie Chart"></canvas>
                 <p>Loan Types Distribution (%)</p>
             </div>
             <div class="chart-card">
-                <canvas id="chartContributions"></canvas>
+                <canvas id="chartContributions" aria-label="Contributions Growth Chart"></canvas>
                 <p>Contributions</p>
                 <div id="growthContributions" class="growth-indicator"></div>
             </div>
             <div class="chart-card">
-                <canvas id="chartProfit"></canvas>
+                <canvas id="chartProfit" aria-label="Profit Growth Chart"></canvas>
                 <p>Profit</p>
                 <div id="growthProfit" class="growth-indicator"></div>
             </div>
             <div class="chart-card">
-                <canvas id="chartROA"></canvas>
+                <canvas id="chartROA" aria-label="Return on Assets Growth Chart"></canvas>
                 <p>Return on Assets (ROA)</p>
                 <div id="growthROA" class="growth-indicator"></div>
             </div>
             <div class="chart-card">
-                <canvas id="chartLiquidity"></canvas>
+                <canvas id="chartLiquidity" aria-label="Liquidity Ratio Growth Chart"></canvas>
                 <p>Liquidity Ratio</p>
                 <div id="growthLiquidity" class="growth-indicator"></div>
             </div>
         </div>
     </section>
-    <!-- FINANCIAL HIGHLIGHTS WITH CONE PROJECTION -->
-    <section class="section">
-        <h2 style="text-align: center;">Financial Highlights</h2>
-        <p style="text-align: center; margin-bottom: 1rem;">Our impact in numbers and future projection.</p>
 
-          <!-- ✅ CONE PROJECTION VISUAL -->
+    <!-- FINANCIAL PROJECTION WITH CONE -->
+    <section class="section">
+        <h2 style="text-align: center;">2025 Financial Projection</h2>
+        <p style="text-align: center; margin-bottom: 1rem;">Our projected growth and impact.</p>
+        <!-- ✅ CONE PROJECTION VISUAL -->
         <div class="cone-visual">
             <div class="cone" id="financialCone"></div>
             <div class="cone-data" id="coneData">
@@ -370,6 +210,7 @@
             </div>
         </div>
     </section>
+
     <!-- LOAN CALCULATOR -->
     <section class="tool-section" id="loan-calculator">
         <h2 style="text-align: center;">Loan Calculator</h2>
@@ -498,11 +339,11 @@
     <section class="member-activities-section">
         <h2 style="text-align: center;">Member Activities</h2>
         <p style="text-align: center; margin-bottom: 1.5rem;">See what our members are up to.</p>
-        <div class="member-activities-carousel">
+        <div class="member-activities-carousel" role="region" aria-label="Member Activities Carousel">
             <div class="slides" id="memberSlides"></div>
-            <button class="nav-btn prev" onclick="changeSlide(-1)">&#10094;</button>
-            <button class="nav-btn next" onclick="changeSlide(1)">&#10095;</button>
-            <div class="dots" id="memberDots"></div>
+            <button class="nav-btn prev" onclick="changeSlide(-1)" aria-label="Previous Slide">&#10094;</button>
+            <button class="nav-btn next" onclick="changeSlide(1)" aria-label="Next Slide">&#10095;</button>
+            <div class="dots" id="memberDots" role="tablist"></div>
         </div>
     </section>
 
@@ -512,13 +353,13 @@
 <footer>
     <p>© 2025 SOYOSOYO SACCO. All rights reserved. | <a href="mailto:info@soyosoyosacco.com">info@soyosoyosacco.com</a></p>
     <div class="social-icons">
-        <a href="https://www.facebook.com/people/Soyosoyo-Sacco/61565783836766/" target="_blank" aria-label="Facebook">
+        <a href="https://www.facebook.com/people/Soyosoyo-Sacco/61565783836766/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
             <i class="fab fa-facebook-f"></i>
         </a>
-        <a href="https://x.com/SoyosoyoSACCO" target="_blank" aria-label="Twitter">
+        <a href="https://x.com/SoyosoyoSACCO" target="_blank" rel="noopener noreferrer" aria-label="X (formerly Twitter)">
             <i class="fab fa-twitter"></i>
         </a>
-        <a href="https://www.instagram.com/soyosoyosacco" target="_blank" aria-label="Instagram">
+        <a href="https://www.instagram.com/soyosoyosacco" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
             <i class="fab fa-instagram"></i>
         </a>
     </div>
@@ -529,20 +370,47 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 <script>
-/* ✅ Cone Data Loader (executed after carousel.js runs) */
+/* ✅ MOCK SACCO DATA FOR SMOOTH DEMO (Replace with real data from main.js) */
+if (typeof window.saccoData === 'undefined') {
+    window.saccoData = {
+        jan: {
+            members: 1200,
+            loans: 5000000,
+            contributions: 2000000,
+            profit: 150000,
+            roa: '5.2',
+            bankBalance: 1000000
+        },
+        today: {
+            members: 1450,
+            loans: 7500000,
+            contributions: 2800000,
+            profit: 350000,
+            roa: '7.8',
+            bankBalance: 1500000
+        }
+    };
+    console.log('Mock saccoData loaded for demo.');
+}
+window.loanTypes = [
+    { name: 'Emergency', value: 40 },
+    { name: 'Medicare', value: 25 },
+    { name: 'Education', value: 20 },
+    { name: 'Development', value: 15 }
+];
+
+/* ✅ Cone Data Loader (executed after DOM ready) */
 document.addEventListener('DOMContentLoaded', () => {
-    if (window.saccoData && window.saccoData.today) {
-        const { today } = window.saccoData;
-        const profit = today.profit.toLocaleString();
-        const metricEl = document.getElementById('coneMetric');
+    const { today } = window.saccoData;
+    const profit = today.profit.toLocaleString();
+    const metricEl = document.getElementById('coneMetric');
+    if (metricEl) {
         metricEl.textContent = `Profit: KES ${profit}`;
-    } else {
-        document.getElementById('coneMetric').textContent = 'Profit data unavailable';
     }
 });
 </script>
 <script>
-    // MEMBER ACTIVITIES CAROUSEL SCRIPT
+    // MEMBER ACTIVITIES CAROUSEL SCRIPT (With image error handling for smoothness)
     const memberImages = [
         './assets/01acb621480e99c389cea4973abe4896.jpg',
         './assets/3161c755955816487a8b0cd796d43c29.jpg',
@@ -559,16 +427,28 @@ document.addEventListener('DOMContentLoaded', () => {
         const slidesContainer = document.getElementById('memberSlides');
         const dotsContainer = document.getElementById('memberDots');
 
-        // Create slides
+        if (!slidesContainer || !dotsContainer) return;
+
+        // Create slides with error handling
         memberImages.forEach((imgSrc, index) => {
             const slide = document.createElement('div');
             slide.className = 'slide';
-            slide.innerHTML = `<img src="${imgSrc}" alt="Member Activity ${index + 1}" loading="lazy">`;
+            const img = document.createElement('img');
+            img.src = imgSrc;
+            img.alt = `Member Activity ${index + 1}`;
+            img.loading = 'lazy';
+            img.onerror = () => {
+                img.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmMGYwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzY2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlIG5vdCBmb3VuZDwvdGV4dD48L3N2Zz4='; // Inline SVG fallback
+                console.warn(`Image failed to load: ${imgSrc}`);
+            };
+            slide.appendChild(img);
             slidesContainer.appendChild(slide);
 
             // Create dots
             const dot = document.createElement('span');
             dot.className = 'dot';
+            dot.setAttribute('role', 'tab');
+            dot.setAttribute('aria-label', `Go to slide ${index + 1}`);
             dot.onclick = () => goToSlide(index);
             dotsContainer.appendChild(dot);
         });
@@ -585,10 +465,14 @@ document.addEventListener('DOMContentLoaded', () => {
         else if (index < 0) currentSlide = totalSlides - 1;
         else currentSlide = index;
 
-        document.getElementById('memberSlides').style.transform = `translateX(-${currentSlide * 100}%)`;
+        const slidesEl = document.getElementById('memberSlides');
+        if (slidesEl) {
+            slidesEl.style.transform = `translateX(-${currentSlide * 100}%)`;
+        }
 
         dots.forEach((dot, i) => {
             dot.className = i === currentSlide ? 'dot active' : 'dot';
+            dot.setAttribute('aria-selected', i === currentSlide ? 'true' : 'false');
         });
     }
 
@@ -600,7 +484,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showSlide(index);
     }
 
-    // Auto-advance (optional: every 5 seconds)
+    // Auto-advance every 5 seconds
     setInterval(() => changeSlide(1), 5000);
 
     // CLEAN GROWTH ARROW PLUGIN
@@ -657,7 +541,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     Chart.register(cleanGrowthArrowPlugin);
 
-    // CHART RENDERER
+    // CHART RENDERER (With retry logic for smoothness)
     function renderGrowthCharts() {
         if (!window.saccoData) {
             console.warn('saccoData not ready. Retrying...');
@@ -681,6 +565,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const updateIndicator = (id, g) => {
             const el = document.getElementById(id);
+            if (!el) return;
             const arrow = g > 0 ? 'up' : g < 0 ? 'down' : 'right';
             const cls = g > 0 ? 'positive' : g < 0 ? 'negative' : '';
             el.innerHTML = `<i class="fas fa-arrow-${arrow}"></i> ${Math.abs(g).toFixed(1)}%`;
@@ -688,10 +573,12 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         const createChart = (id, j, t, label, color, gid, isPercent = false, isMoney = false) => {
+            const canvasEl = document.getElementById(id);
+            if (!canvasEl) return;
             const g = growth(j, t);
             updateIndicator(gid, g);
 
-            new Chart(document.getElementById(id).getContext('2d'), {
+            new Chart(canvasEl.getContext('2d'), {
                 type: 'bar',
                 data: {
                     labels: ['Jan 2025', 'Today'],
@@ -738,7 +625,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     },
                     layout: { padding: { top: 50, left: 8, right: 8 } }
                 },
-                plugins: [ChartDataLabels]
+                plugins: [window.ChartDataLabels]  // Use global reference for plugin
             });
         };
 
@@ -760,14 +647,15 @@ document.addEventListener('DOMContentLoaded', () => {
         createChart('chartLiquidity', janLiquidity, todayLiquidity, 'Liquidity Ratio (%)', colors.liquidity, 'growthLiquidity', true);
 
         // Render Loan Types Distribution Pie Chart (with custom legend including percentages)
-        if (window.loanTypes && window.loanTypes.length > 0) {
+        const loanTypesCanvas = document.getElementById('chartLoanTypes');
+        if (window.loanTypes && window.loanTypes.length > 0 && loanTypesCanvas) {
             const totalLoans = window.loanTypes.reduce((sum, loan) => sum + loan.value, 0);
             if (totalLoans > 0) {
                 const labels = window.loanTypes.map(loan => loan.name);
                 const data = window.loanTypes.map(loan => (loan.value / totalLoans) * 100);
                 const loanColors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0']; // Colors for Emergency, Medicare, Development, Education
 
-                new Chart(document.getElementById('chartLoanTypes').getContext('2d'), {
+                new Chart(loanTypesCanvas.getContext('2d'), {
                     type: 'pie',
                     data: {
                         labels: labels,
@@ -823,7 +711,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             }
                         }
                     },
-                    plugins: [ChartDataLabels]
+                    plugins: [window.ChartDataLabels]  // Use global reference
                 });
             } else {
                 console.warn('Total loans is 0; skipping loan types chart.');
@@ -832,6 +720,9 @@ document.addEventListener('DOMContentLoaded', () => {
             console.warn('loanTypes data not available; skipping loan types chart.');
         }
     }
+
+    // Global reference for ChartDataLabels
+    window.ChartDataLabels = window.ChartDataLabels || ChartDataLabels;
 
     document.addEventListener('DOMContentLoaded', () => {
         renderGrowthCharts();
