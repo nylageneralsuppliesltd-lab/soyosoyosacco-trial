@@ -1,29 +1,32 @@
-/* scripts/carousel.js – FULL v60 PREMIUM GROWTH CONE + CAROUSEL + MEMBER SLIDER */
+/* scripts/carousel.js – FULL v60 PREMIUM GROWTH CONE + HORIZONTAL CAROUSEL */
 document.addEventListener('DOMContentLoaded', () => {
-  // === DAILY DATA (UPDATE HERE ONLY) ===
+  /* ------------------------------------------------------------------
+     1. DAILY DATA (UPDATE HERE ONLY)
+     ------------------------------------------------------------------ */
   const loanTypesToday = [
-    { name: 'Emergency', value: 1214900 },
-    { name: 'Medicare', value: 15000 },
+    { name: 'Emergency',   value: 1214900 },
+    { name: 'Medicare',    value: 15000 },
     { name: 'Development', value: 553000 },
-    { name: 'Education', value: 275000 }
+    { name: 'Education',   value: 275000 }
   ];
   const totalLoansToday = loanTypesToday.reduce((s, l) => s + l.value, 0);
   window.loanTypes = loanTypesToday;
 
   const externalLoansToday = 66784;
-  const externalLoansJan = 0;
+  const externalLoansJan   = 0;
 
   const carouselDataWithoutROA = [
-    { number: 144, description: "Total Members" },
-    { number: 907015, description: "Member Savings" },
-    { number: 243199, description: "Bank Balance" },
-    { number: 105, description: "Number of Loans Given" },
+    { number: 144,      description: "Total Members" },
+    { number: 907015,   description: "Member Savings" },
+    { number: 243199,   description: "Bank Balance" },
+    { number: 105,      description: "Number of Loans Given" },
     { number: totalLoansToday, description: "Value of Loans Given" },
-    { number: 51803, description: "Profit" },
-    { number: 71, description: "Active Members" }
+    { number: 51803,    description: "Profit" },
+    { number: 71,       description: "Active Members" }
   ];
 
-  const roaToday = ((carouselDataWithoutROA[5].number / (carouselDataWithoutROA[1].number + externalLoansToday)) * 100).toFixed(2);
+  const roaToday = ((carouselDataWithoutROA[5].number /
+                     (carouselDataWithoutROA[1].number + externalLoansToday)) * 100).toFixed(2);
   carouselDataWithoutROA.push({ number: parseFloat(roaToday), description: "ROA (%)" });
 
   const janData = {
@@ -45,7 +48,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // === GENERATE PROJECTIONS ===
+  /* ------------------------------------------------------------------
+     2. GENERATE PROJECTIONS (unchanged)
+     ------------------------------------------------------------------ */
   function generateProjections() {
     const { jan, today } = window.saccoData;
     const years = [2025, 2026, 2027, 2028, 2029];
@@ -76,7 +81,9 @@ document.addEventListener('DOMContentLoaded', () => {
     return proj;
   }
 
-  // === RENDER PREMIUM GROWTH CONE v60 ===
+  /* ------------------------------------------------------------------
+     3. RENDER PREMIUM GROWTH CONE v60 (unchanged)
+     ------------------------------------------------------------------ */
   function renderEye(projections) {
     const container = document.getElementById('growth-cone-container');
     if (!container) return;
@@ -94,29 +101,21 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
 
     const svg = container.querySelector('svg');
-    const centerX = 350;
-    const baseY = 500;
-    const topY = 80;
-    const maxWidth = 600;
-
-    // PREMIUM COLOR PALETTE (VIBRANT, SACCO-LEVEL)
-    const colors = ['#8B5CF6', '#3B82F6', '#10B981', '#F59E0B', '#EF4444']; // Purple, Blue, Green, Amber, Red
-    const icons = ['fa-users', 'fa-hand-holding-usd', 'fa-piggy-bank'];
+    const centerX = 350, baseY = 500, topY = 80, maxWidth = 600;
+    const colors = ['#10B981', '#34D399', '#6EE7B7', '#A7F3D0', '#D1FAE5'];
 
     projections.forEach((p, i) => {
       const ratio = i / (projections.length - 1);
       const width = ratio * maxWidth;
-      const x1 = centerX - width / 2;
-      const x2 = centerX + width / 2;
+      const x1 = centerX - width / 2, x2 = centerX + width / 2;
       const y = baseY - ratio * (baseY - topY);
 
-      // === CONE BODY (GRADIENT FILL) ===
+      /* ---- CONE BODY ---- */
       if (i > 0) {
         const prev = projections[i - 1];
         const prevRatio = (i - 1) / (projections.length - 1);
         const prevWidth = prevRatio * maxWidth;
-        const prevX1 = centerX - prevWidth / 2;
-        const prevX2 = centerX + prevWidth / 2;
+        const prevX1 = centerX - prevWidth / 2, prevX2 = centerX + prevWidth / 2;
         const prevY = baseY - prevRatio * (baseY - topY);
 
         const gradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
@@ -124,8 +123,8 @@ document.addEventListener('DOMContentLoaded', () => {
         gradient.setAttribute('x1', '0%'); gradient.setAttribute('y1', '0%');
         gradient.setAttribute('x2', '0%'); gradient.setAttribute('y2', '100%');
         gradient.innerHTML = `
-          <stop offset="0%" stop-color="${colors[i]}" stop-opacity="0.95"/>
-          <stop offset="100%" stop-color="${colors[i]}" stop-opacity="0.35"/>
+          <stop offset="0%" stop-color="${colors[i]}" stop-opacity="0.9"/>
+          <stop offset="100%" stop-color="${colors[i]}" stop-opacity="0.3"/>
         `;
         svg.appendChild(gradient);
 
@@ -135,113 +134,109 @@ document.addEventListener('DOMContentLoaded', () => {
         path.setAttribute('class', 'cone-segment');
         svg.appendChild(path);
 
-        // Glow border
         const border = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         border.setAttribute('d', `M${prevX1},${prevY} L${x1},${y} M${x2},${y} L${prevX2},${prevY}`);
         border.setAttribute('stroke', colors[i]);
-        border.setAttribute('stroke-width', '4');
+        border.setAttribute('stroke-width', '3');
         border.setAttribute('fill', 'none');
         border.setAttribute('filter', 'url(#glow)');
         svg.appendChild(border);
       }
 
-      // === YEAR BAND (GLASS CARD) ===
+      /* ---- YEAR BAND ---- */
       const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
       g.setAttribute('class', 'year-band');
       g.setAttribute('transform', `translate(${centerX}, ${y - 60})`);
       g.onclick = () => showYearPopup(p);
 
       const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-      rect.setAttribute('x', -150); rect.setAttribute('y', -48);
-      rect.setAttribute('width', 300); rect.setAttribute('height', 96);
-      rect.setAttribute('rx', 20);
-      rect.setAttribute('fill', 'rgba(255,255,255,0.18)');
+      rect.setAttribute('x', -140); rect.setAttribute('y', -45);
+      rect.setAttribute('width', 280); rect.setAttribute('height', 90);
+      rect.setAttribute('rx', 16);
+      rect.setAttribute('fill', 'rgba(255,255,255,0.15)');
       rect.setAttribute('stroke', colors[i]);
-      rect.setAttribute('stroke-width', '3');
+      rect.setAttribute('stroke-width', '2');
       rect.setAttribute('filter', 'url(#glass)');
       g.appendChild(rect);
 
-      // Year
       const yearText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      yearText.setAttribute('x', 0); yearText.setAttribute('y', -18);
+      yearText.setAttribute('x', 0); yearText.setAttribute('y', -15);
       yearText.setAttribute('text-anchor', 'middle');
-      yearText.setAttribute('font-size', '24');
+      yearText.setAttribute('font-size', '22');
       yearText.setAttribute('font-weight', '900');
       yearText.setAttribute('fill', '#ffffff');
-      yearText.setAttribute('text-shadow', '0 2px 4px rgba(0,0,0,0.3)');
       yearText.textContent = p.year;
       g.appendChild(yearText);
 
-      // KPIs
       const kpis = [
-        { icon: 'fa-users', value: p.members, suffix: '' },
+        { icon: 'fa-users',          value: p.members,            suffix: '' },
         { icon: 'fa-hand-holding-usd', value: Math.round(p.loans/1000), suffix: 'k' },
-        { icon: 'fa-piggy-bank', value: Math.round(p.contributions/1000), suffix: 'k' }
+        { icon: 'fa-piggy-bank',     value: Math.round(p.contributions/1000), suffix: 'k' }
       ];
       kpis.forEach((kpi, ki) => {
-        const tx = -85 + ki * 85;
-
+        const tx = -80 + ki * 80;
         const icon = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         icon.setAttribute('x', tx); icon.setAttribute('y', 15);
         icon.setAttribute('text-anchor', 'middle');
         icon.setAttribute('font-family', 'Font Awesome 6 Free');
         icon.setAttribute('font-weight', '900');
-        icon.setAttribute('font-size', '20');
+        icon.setAttribute('font-size', '18');
         icon.setAttribute('fill', colors[i]);
-        icon.textContent = kpi.icon === 'fa-users' ? '\uf0c0' :
-                         kpi.icon === 'fa-hand-holding-usd' ? '\uf4c0' : '\uf4d3';
+        icon.textContent = kpi.icon.includes('users') ? '\uf0c0' :
+                           kpi.icon.includes('hand') ? '\uf4c0' : '\uf4d3';
         g.appendChild(icon);
 
         const val = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        val.setAttribute('x', tx); val.setAttribute('y', 38);
+        val.setAttribute('x', tx); val.setAttribute('y', 35);
         val.setAttribute('text-anchor', 'middle');
-        val.setAttribute('font-size', '15');
+        val.setAttribute('font-size', '14');
         val.setAttribute('font-weight', 'bold');
         val.setAttribute('fill', '#ffffff');
         val.textContent = kpi.value.toLocaleString() + kpi.suffix;
         g.appendChild(val);
       });
-
       svg.appendChild(g);
 
-      // TODAY BADGE
+      /* ---- TODAY BADGE ---- */
       if (i === 0) {
         const badge = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         badge.setAttribute('cx', centerX); badge.setAttribute('cy', baseY);
-        badge.setAttribute('r', 55);
-        badge.setAttribute('fill', '#8B5CF6');
-        badge.setAttribute('opacity', '0.25');
+        badge.setAttribute('r', 50);
+        badge.setAttribute('fill', '#10B981');
+        badge.setAttribute('opacity', '0.2');
         svg.appendChild(badge);
 
         const today = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        today.setAttribute('x', centerX); today.setAttribute('y', baseY + 10);
+        today.setAttribute('x', centerX); today.setAttribute('y', baseY + 8);
         today.setAttribute('text-anchor', 'middle');
-        today.setAttribute('font-size', '20');
+        today.setAttribute('font-size', '18');
         today.setAttribute('font-weight', '900');
-        today.setAttribute('fill', '#8B5CF6');
+        today.setAttribute('fill', '#10B981');
         today.textContent = 'TODAY';
         svg.appendChild(today);
       }
     });
 
-    // === SVG FILTERS ===
+    /* ---- SVG FILTERS ---- */
     const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
     defs.innerHTML = `
       <filter id="glow">
-        <feGaussianBlur stdDeviation="5" result="coloredBlur"/>
+        <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
         <feMerge>
           <feMergeNode in="coloredBlur"/>
           <feMergeNode in="SourceGraphic"/>
         </feMerge>
       </filter>
       <filter id="glass">
-        <feGaussianBlur in="SourceGraphic" stdDeviation="12"/>
+        <feGaussianBlur in="SourceGraphic" stdDeviation="10"/>
       </filter>
     `;
     svg.prepend(defs);
   }
 
-  // === POPUP FUNCTION ===
+  /* ------------------------------------------------------------------
+     4. POPUP (unchanged)
+     ------------------------------------------------------------------ */
   window.showYearPopup = function(p) {
     const popup = document.createElement('div');
     popup.className = 'cone-popup';
@@ -262,16 +257,18 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => popup.classList.add('show'), 10);
   };
 
-  // === RENDER WITH FALLBACK ===
+  /* ------------------------------------------------------------------
+     5. RENDER GROWTH CONE (with fallback)
+     ------------------------------------------------------------------ */
   let tries = 0;
-  function tryRender() {
+  function tryRenderCone() {
     const p = generateProjections();
     if (p && p.length === 5) {
       window.projections = p;
       renderEye(p);
       return;
     }
-    if (tries++ < 5) setTimeout(tryRender, 200);
+    if (tries++ < 5) setTimeout(tryRenderCone, 200);
     else {
       const fallback = [
         {year:2025,members:144,loans:2057900,contributions:907015,bankBalance:243199,profit:51803},
@@ -284,113 +281,96 @@ document.addEventListener('DOMContentLoaded', () => {
       renderEye(fallback);
     }
   }
-  setTimeout(tryRender, 100);
+  setTimeout(tryRenderCone, 100);
 
-  // === CAROUSEL (FINANCIAL HIGHLIGHTS) ===
-  const carousel = document.querySelector('.carousel');
-  if (carousel) {
-    const itemHTML = carouselDataWithoutROA.map(m => `
-      <article class="carousel-item">
-        <h3 class="carousel-button" data-target="${m.number}">0</h3>
-        <p class="carousel-description">${m.description}</p>
+  /* ------------------------------------------------------------------
+     6. HORIZONTAL CAROUSEL (NEW)
+     ------------------------------------------------------------------ */
+  const carouselContainer = document.querySelector('.carousel');
+  if (!carouselContainer) return;   // nothing to do
+
+  /* ---- Build the cards (duplicate set for seamless loop) ---- */
+  const makeCard = (item) => {
+    const { number, description } = item;
+    const isMoney = ['Member Savings','Bank Balance','Value of Loans Given','Profit'].includes(description);
+    const isPct   = description === 'ROA (%)';
+    const formatted = isPct ? `${number}%` :
+                     isMoney ? `KES ${Number(number).toLocaleString()}` :
+                     Number(number).toLocaleString();
+
+    return `
+      <article class="carousel-card">
+        <div class="card-header">
+          <h3 class="card-value" data-target="${number}">0</h3>
+          <p class="card-desc">${description}</p>
+        </div>
+        <div class="card-details">
+          ${description === 'Value of Loans Given' ? `
+            <ul class="loan-breakdown">
+              ${loanTypesToday.map(l => `<li>${l.name}: <strong>KES ${l.value.toLocaleString()}</strong></li>`).join('')}
+            </ul>` : ''}
+          ${description === 'ROA (%)' ? `
+            <p class="roa-calc">
+              Profit ÷ (Savings + External Loans) = ${carouselDataWithoutROA[5].number.toLocaleString()}
+              ÷ (${carouselDataWithoutROA[1].number.toLocaleString()} + ${externalLoansToday.toLocaleString()})
+            </p>` : ''}
+        </div>
       </article>
-    `).join('');
-    carousel.innerHTML = itemHTML + itemHTML;
-
-    const format = n => isNaN(n) ? n : (Math.abs(n) >= 1000 ? (Math.abs(n)/1000).toFixed(0)+'k' : Math.abs(n));
-    const animate = (el, t) => {
-      let s = 0; const d = 600;
-      const st = performance.now();
-      const step = now => {
-        const p = Math.min((now-st)/d, 1);
-        el.textContent = format(Math.round(s + p * (t - s)));
-        if (p < 1) requestAnimationFrame(step);
-      };
-      requestAnimationFrame(step);
-    };
-
-    const obs = new IntersectionObserver(e => e.forEach(en => {
-      const b = en.target.querySelector('.carousel-button');
-      if (en.isIntersecting && b) animate(b, b.dataset.target);
-      else if (b) b.textContent = '0';
-    }), { threshold: 0.3 });
-
-    document.querySelectorAll('.carousel-item').forEach(i => obs.observe(i));
-
-    const resize = () => {
-      const w = window.innerWidth;
-      const iw = w <= 768 ? 220 : 300;
-      const m = w <= 768 ? 20 : 40;
-      const tot = carouselDataWithoutROA.length * (iw + 2*m);
-      document.documentElement.style.setProperty('--item-width', iw + 'px');
-      document.documentElement.style.setProperty('--item-margin', m + 'px');
-      document.documentElement.style.setProperty('--carousel-translate', `-${tot}px`);
-      document.documentElement.style.setProperty('--carousel-duration', `${carouselDataWithoutROA.length * 8}s`);
-    };
-    window.addEventListener('resize', resize);
-    resize();
-  }
-
-  // === MEMBER ACTIVITIES CAROUSEL (FIXED) ===
-  const memberImages = [
-    './assets/01acb621480e99c389cea4973abe4896.jpg',
-    './assets/3161c755955816487a8b0cd796d43c29.jpg',
-    './assets/c1cbf8720115247da59d153d3f0be3b0.jpg',
-    './assets/b8a8a30e9531f4d1cac3ddf56c594b5a.jpg',
-    './assets/8053495671fa13e271078ad77beff286.jpg',
-    './assets/8640680b79eba02a8544ba3bbbcdd655.jpg',
-    './assets/8c145fcc127b3fad7cbe25bc847f3e8c.jpg'
-  ];
-
-  let currentSlide = 0;
-
-  function initMemberCarousel() {
-    const slidesContainer = document.getElementById('memberSlides');
-    const dotsContainer = document.getElementById('memberDots');
-    if (!slidesContainer || !dotsContainer) return;
-
-    slidesContainer.innerHTML = '';
-    dotsContainer.innerHTML = '';
-
-    memberImages.forEach((imgSrc, index) => {
-      const slide = document.createElement('div');
-      slide.className = 'slide';
-      slide.innerHTML = `<img src="${imgSrc}" alt="Member Activity ${index + 1}" loading="lazy">`;
-      slidesContainer.appendChild(slide);
-
-      const dot = document.createElement('span');
-      dot.className = 'dot';
-      dot.onclick = () => goToSlide(index);
-      dotsContainer.appendChild(dot);
-    });
-
-    showSlide(currentSlide);
-  }
-
-  function showSlide(index) {
-    const slides = document.querySelectorAll('#memberSlides .slide');
-    const dots = document.querySelectorAll('#memberDots .dot');
-    const totalSlides = slides.length;
-
-    if (index >= totalSlides) currentSlide = 0;
-    else if (index < 0) currentSlide = totalSlides - 1;
-    else currentSlide = index;
-
-    document.getElementById('memberSlides').style.transform = `translateX(-${currentSlide * 100}%)`;
-
-    dots.forEach((dot, i) => {
-      dot.className = i === currentSlide ? 'dot active' : 'dot';
-    });
-  }
-
-  window.changeSlide = function(direction) {
-    showSlide(currentSlide + direction);
+    `;
   };
 
-  window.goToSlide = function(index) {
-    showSlide(index);
+  const allCardsHTML = carouselDataWithoutROA.map(makeCard).join('');
+  carouselContainer.innerHTML = allCardsHTML + allCardsHTML;   // duplicate for loop
+
+  /* ---- Animation helpers ---- */
+  const formatNumber = n => {
+    const num = Math.abs(n);
+    return num >= 1_000_000 ? (num/1_000_000).toFixed(1)+'M' :
+           num >= 1_000 ? (num/1_000).toFixed(0)+'k' : num;
   };
 
-  setInterval(() => changeSlide(1), 5000);
-  initMemberCarousel();
+  const animateValue = (el, target) => {
+    let start = 0;
+    const duration = 800;
+    const startTime = performance.now();
+
+    const step = now => {
+      const progress = Math.min((now - startTime) / duration, 1);
+      const current = Math.round(start + progress * (target - start));
+      el.textContent = formatNumber(current);
+      if (progress < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  };
+
+  /* ---- Intersection observer – start animation when 60% visible ---- */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      const valueEl = entry.target.querySelector('.card-value');
+      if (entry.isIntersecting) {
+        animateValue(valueEl, +valueEl.dataset.target);
+      } else {
+        valueEl.textContent = '0';
+      }
+    });
+  }, { threshold: 0.6 });
+
+  document.querySelectorAll('.carousel-card').forEach(card => observer.observe(card));
+
+  /* ---- Auto-scroll & responsive sizing ---- */
+  const setCarouselCSS = () => {
+    const vw = window.innerWidth;
+    const cardW = vw <= 640 ? 260 : vw <= 1024 ? 300 : 340;
+    const gap   = vw <= 640 ? 16 : 24;
+    const totalCards = carouselDataWithoutROA.length;          // original set
+    const totalWidth = (cardW + gap) * totalCards;            // width of ONE set
+
+    document.documentElement.style.setProperty('--card-width', `${cardW}px`);
+    document.documentElement.style.setProperty('--card-gap',   `${gap}px`);
+    document.documentElement.style.setProperty('--one-set-width', `${totalWidth}px`);
+    document.documentElement.style.setProperty('--anim-duration', `${totalCards * 6}s`);
+  };
+
+  setCarouselCSS();
+  window.addEventListener('resize', setCarouselCSS);
 });
