@@ -5,6 +5,8 @@
 document.addEventListener('DOMContentLoaded', () => {
   document.body.classList.add('js-enabled');
 
+  console.log('carousel.js started'); // Debug
+
   // === LOAN TYPES (Update actuals here) ===
   const loanTypesToday = [
     { name: 'Emergency', value: 1214900 },
@@ -59,6 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
       roa: carouselData[7].number
     }
   };
+  console.log('window.saccoData:', window.saccoData);
 
   // -------------------------------------------------------------
   //  FINANCIAL KPI CAROUSEL
@@ -109,8 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { threshold: 0.3 });
 
     document.querySelectorAll('.carousel-item').forEach(item => {
-      const btn = item.querySelector('.carousel-button');
-      if (btn) observer.observe(item);
+      observer.observe(item);
     });
 
     const update = () => {
@@ -128,17 +130,24 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // -------------------------------------------------------------
-  //  3D CONE VISUALIZATION (Independent)
+  //  3D CONE VISUALIZATION
   // -------------------------------------------------------------
   const container = document.getElementById('coneContainer');
-  if (!container) return;
+  if (!container) {
+    console.warn('No #coneContainer found; skipping cone.');
+    return;
+  }
 
-  // Load Three.js dynamically if not already available
+  // Ensure container has size
+  container.style.width = container.style.width || '100%';
+  container.style.height = container.style.height || '400px';
+
+  // Load Three.js dynamically if needed
   if (typeof THREE === 'undefined') {
     const script = document.createElement('script');
     script.src = "https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js";
     script.onload = () => {
-      console.log('Three.js loaded');  // Debug
+      console.log('Three.js loaded');
       initCone();
     };
     script.onerror = () => {
@@ -151,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function initCone() {
-    console.log('Initializing cone...');  // Debug
+    console.log('Initializing cone...');
     if (!container || container.clientWidth === 0) {
       console.warn('Cone container has no size; skipping render.');
       return;
@@ -161,10 +170,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(container.clientWidth, container.clientHeight);
-    container.innerHTML = '';  // Clear any prior content
+    container.innerHTML = '';
     container.appendChild(renderer.domElement);
 
-    // Lighting setup
+    // Lights
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
     const pointLight = new THREE.PointLight(0xffffff, 0.9);
     pointLight.position.set(10, 10, 10);
@@ -172,11 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Cone and base
     const geometry = new THREE.ConeGeometry(1, 2, 64);
-    const material = new THREE.MeshPhongMaterial({
-      color: 0x10B981,
-      shininess: 100,
-      specular: 0xffffff
-    });
+    const material = new THREE.MeshPhongMaterial({ color: 0x10B981, shininess: 100, specular: 0xffffff });
     const cone = new THREE.Mesh(geometry, material);
     scene.add(cone);
 
@@ -189,7 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     camera.position.set(3, 2, 3);
 
-    // Text Labels (live data)
+    // Text labels
     const d = window.saccoData.today;
     const data = {
       Members: d.members,
@@ -200,21 +205,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const createTextSprite = (text, color = '#111') => {
       const canvas = document.createElement('canvas');
-      canvas.width = 512;   // Explicit size: wide enough for long text
-      canvas.height = 64;   // Tall for font
+      canvas.width = 512;
+      canvas.height = 64;
       const ctx = canvas.getContext('2d');
-      ctx.font = 'bold 28px Lato, Arial';  // Fallback font
+      ctx.font = 'bold 28px Lato, Arial';
       ctx.fillStyle = color;
-      ctx.textBaseline = 'top';  // Align properly
-      ctx.fillText(text, 10, 10);  // Start at (10,10) for padding
+      ctx.textBaseline = 'top';
+      ctx.fillText(text, 10, 10);
       const texture = new THREE.CanvasTexture(canvas);
-      const spriteMaterial = new THREE.SpriteMaterial({ 
-        map: texture, 
-        transparent: true,
-        depthWrite: false  // Prevent Z-fighting with cone
-      });
+      const spriteMaterial = new THREE.SpriteMaterial({ map: texture, transparent: true, depthWrite: false });
       const sprite = new THREE.Sprite(spriteMaterial);
-      sprite.scale.set(4, 1.5, 1);  // Scale up for visibility
+      sprite.scale.set(4, 1.5, 1);
       return sprite;
     };
 
@@ -231,9 +232,8 @@ document.addEventListener('DOMContentLoaded', () => {
       scene.add(sprite);
     });
 
-    // Responsive (throttled to avoid spam)
+    // Responsive resize
     let resizeTimeout;
-    window.removeEventListener('resize', handleResize);  // Prevent duplicates
     function handleResize() {
       clearTimeout(resizeTimeout);
       resizeTimeout = setTimeout(() => {
@@ -246,12 +246,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     window.addEventListener('resize', handleResize);
 
-    // Animate Cone Rotation
+    // Animate cone rotation
     function animate() {
       requestAnimationFrame(animate);
       cone.rotation.y += 0.01;
       renderer.render(scene, camera);
     }
     animate();
+
+    console.log('Cone initialized successfully.');
   }
+
+  console.log('carousel.js finished execution');
 });
