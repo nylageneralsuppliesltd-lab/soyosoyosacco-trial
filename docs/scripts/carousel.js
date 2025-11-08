@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // -------------------------------------------------------------
-  //  CAROUSEL DISPLAY + COUNTERS
+  //  FINANCIAL KPI CAROUSEL
   // -------------------------------------------------------------
   const carousel = document.querySelector('.carousel');
   if (carousel) {
@@ -126,12 +126,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // -------------------------------------------------------------
-  //  3D CONE VISUALIZATION SECTION (AUTO-USES TODAY’S DATA)
+  //  3D CONE VISUALIZATION (Independent)
   // -------------------------------------------------------------
   const container = document.getElementById('coneContainer');
   if (!container) return;
 
-  // Load Three.js dynamically (works if not yet in index.html)
+  // Load Three.js dynamically if not already available
   if (typeof THREE === 'undefined') {
     const script = document.createElement('script');
     script.src = "https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js";
@@ -148,11 +148,13 @@ document.addEventListener('DOMContentLoaded', () => {
     renderer.setSize(container.clientWidth, container.clientHeight);
     container.appendChild(renderer.domElement);
 
+    // Lighting setup
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
     const pointLight = new THREE.PointLight(0xffffff, 0.9);
     pointLight.position.set(10, 10, 10);
     scene.add(ambientLight, pointLight);
 
+    // Cone and base
     const geometry = new THREE.ConeGeometry(1, 2, 64);
     const material = new THREE.MeshPhongMaterial({
       color: 0x10B981,
@@ -171,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     camera.position.set(3, 2, 3);
 
-    // Text Labels (uses live data from window.saccoData.today)
+    // Text Labels (live data)
     const d = window.saccoData.today;
     const data = {
       Members: d.members,
@@ -180,7 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
       Profit: d.profit
     };
 
-    const createTextSprite = (text, color = '#000000') => {
+    const createTextSprite = (text, color = '#111') => {
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
       ctx.font = 'bold 28px Lato';
@@ -201,17 +203,19 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     labels.forEach(lbl => {
-      const sprite = createTextSprite(lbl.text, '#222');
+      const sprite = createTextSprite(lbl.text);
       sprite.position.set(...lbl.pos);
       scene.add(sprite);
     });
 
+    // Responsive
     window.addEventListener('resize', () => {
       camera.aspect = container.clientWidth / container.clientHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(container.clientWidth, container.clientHeight);
     });
 
+    // Animate Cone Rotation
     function animate() {
       requestAnimationFrame(animate);
       cone.rotation.y += 0.01;
