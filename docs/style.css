@@ -1,12 +1,10 @@
 /* ========================================
-   SOYOSOYO SACCO – FINAL v53
-   Cache-busted: ?v=53
-   TWO CAROUSELS: INDEX + JOIN-US – NO CONFLICTS
-   % GROWTH + GREEN/RED ARROWS + NUMBERS ON BARS
-   MOBILE BARS: CENTERED, NO EDGE OVERFLOW
-   DESIGN RESTORED – NO FULL-SCREEN STRETCH
-   LOAN CALC: SLIDER -> NUMBER INPUT (MOBILE-FRIENDLY)
-   DIVIDENDS MOBILE: 2-COL FIT (REDUCED GAP/PADDING, OVERFLOW PREVENTED)
+   SOYOSOYO SACCO – FINAL v54
+   Cache-busted: ?v=54
+   INTEGRATED: CONE PROJECTION + MEMBER ACTIVITIES CAROUSEL
+   NO CONFLICTS WITH EXISTING CAROUSELS (INDEX/JOIN-US)
+   GROWTH INDICATORS & CHARTS FULLY SUPPORTED
+   MOBILE-OPTIMIZED, NO OVERFLOW/BREAKS
    ======================================== */
 
 /* ----------------- RESET & BASE ----------------- */
@@ -615,95 +613,121 @@ footer a:hover { color:#ffffff; }
         font-size: 0.95rem;
     }
 }
-/* =========================================================
-   PREMIUM “EYE CONE” VISUALIZATION SECTION
-   – 5YR / 10YR STRATEGY PROJECTION VISUAL
-   ========================================================= */
-.premium-cone-wrapper {
-    position: relative;
-    width: 100%;
-    max-width: 1200px;
-    margin: 4rem auto;
-    padding: 3rem 1.5rem;
-    background: radial-gradient(ellipse at center, #e6f9ef 0%, #ffffff 100%);
-    border-radius: 20px;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
-    overflow: hidden;
-}
 
-.premium-cone {
-    position: relative;
-    width: 100%;
-    height: 300px;
+/* ----------------- CONE PROJECTION VISUAL (INTEGRATED – NO CONFLICTS) ----------------- */
+.cone-visual {
     display: flex;
-    align-items: center;
     justify-content: center;
-    background: radial-gradient(circle at center, #d1fae5 10%, #a7f3d0 40%, transparent 80%);
+    align-items: center;
+    height: 380px;
+    margin-top: 1rem;
+    perspective: 1000px;
+}
+.cone {
+    width: 220px;
+    height: 220px;
+    background: conic-gradient(#10B981, #F59E0B, #3B82F6, #10B981);
     border-radius: 50%;
-    box-shadow: inset 0 0 40px rgba(0,100,0,0.25);
-    transition: all 0.3s ease-in-out;
+    transform: rotateX(70deg);
+    animation: spin 8s linear infinite;
+    position: relative;
 }
-
-.premium-cone:hover {
-    transform: scale(1.02);
+@keyframes spin {
+    0% { transform: rotateX(70deg) rotateZ(0deg); }
+    100% { transform: rotateX(70deg) rotateZ(360deg); }
 }
-
-.cone-ray {
+.cone-data {
     position: absolute;
-    width: 100px;
-    height: 2px;
-    background: linear-gradient(90deg, #006400, transparent);
-    opacity: 0.3;
-    transform-origin: left center;
-    animation: rotate-rays 8s linear infinite;
-}
-@keyframes rotate-rays {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-.cone-data-point {
-    position: absolute;
-    text-align: center;
-    background: #ffffff;
-    border-radius: 50%;
-    padding: 0.6rem;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    font-weight: bold;
-    color: #006400;
-    font-size: 0.9rem;
-    transition: all 0.3s ease;
-}
-.cone-data-point:hover {
-    background: #90EE90;
-    transform: scale(1.2);
-}
-
-.cone-year-label {
-    position: absolute;
-    bottom: -1.5rem;
+    bottom: -50px;
     width: 100%;
     text-align: center;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #004d00;
+    font-weight: bold;
+    color: #1a1a1a;
+}
+.cone-metric {
+    font-size: 1.2rem;
+    margin-top: 0.3rem;
+}
+@media (max-width: 768px) {
+    .cone {
+        width: 180px;
+        height: 180px;
+    }
+    .cone-metric {
+        font-size: 1rem;
+    }
 }
 
-/* RESPONSIVE – PREMIUM CONE */
+/* ----------------- MEMBER ACTIVITIES CAROUSEL (INTEGRATED – NO CONFLICTS WITH OTHER CAROUSELS) ----------------- */
+.member-activities-section {
+    margin-top: 3rem;
+    padding: 2rem 0;
+    background-color: #f8f9fa;
+}
+.member-activities-carousel {
+    position: relative;
+    max-width: 1000px;
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 12px;
+}
+.member-activities-carousel .slides {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    height: 400px; /* Increased height to better show faces */
+}
+.member-activities-carousel .slide {
+    min-width: 100%;
+    height: 400px; /* Increased height to better show faces */
+    flex-shrink: 0;
+}
+.member-activities-carousel .slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.member-activities-carousel .nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    z-index: 10;
+}
+.member-activities-carousel .prev { left: 10px; }
+.member-activities-carousel .next { right: 10px; }
+.member-activities-carousel .dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 1rem;
+}
+.member-activities-carousel .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #ccc;
+    cursor: pointer;
+}
+.member-activities-carousel .dot.active {
+    background: #10B981;
+}
 @media (max-width: 768px) {
-    .premium-cone-wrapper {
-        padding: 2rem 1rem;
+    .member-activities-carousel .slides,
+    .member-activities-carousel .slide {
+        height: 250px; /* Increased from 200px for mobile */
     }
-    .premium-cone {
-        height: 220px;
+    .member-activities-carousel .nav-btn {
+        padding: 8px;
+        font-size: 16px;
     }
-    .cone-data-point {
-        font-size: 0.8rem;
-        padding: 0.4rem;
-    }
-    .cone-year-label {
-        bottom: -1rem;
-        font-size: 0.75rem;
+    .member-activities-carousel .dot {
+        width: 8px;
+        height: 8px;
     }
 }
 
