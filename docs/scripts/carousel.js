@@ -77,10 +77,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const formatNumber = (num) => {
       if (isNaN(num)) return num;
+      const sign = num < 0 ? '-' : '';
       const abs = Math.abs(num);
-      return (abs >= 1000 ? (abs / 1000).toFixed(0) + 'k' : abs)
+      let formatted = (abs >= 1000 ? (abs / 1000).toFixed(0) + 'k' : abs)
         .toString()
         .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      return sign + formatted;
     };
 
     const animateCounter = (el, target) => {
@@ -135,17 +137,31 @@ document.addEventListener('DOMContentLoaded', () => {
   if (typeof THREE === 'undefined') {
     const script = document.createElement('script');
     script.src = "https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js";
-    script.onload = initCone;
+    script.onload = () => {
+      console.log('Three.js loaded');  // Debug
+      initCone();
+    };
+    script.onerror = () => {
+      console.error('Three.js load failed; fallback to static.');
+      container.innerHTML = '<div style="text-align:center; color:#666; padding:20px;">Projection loading unavailable.</div>';
+    };
     document.head.appendChild(script);
   } else {
     initCone();
   }
 
   function initCone() {
+    console.log('Initializing cone...');  // Debug
+    if (!container || container.clientWidth === 0) {
+      console.warn('Cone container has no size; skipping render.');
+      return;
+    }
+
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(container.clientWidth, container.clientHeight);
+    container.innerHTML = '';  // Clear any prior content
     container.appendChild(renderer.domElement);
 
     // Lighting setup
@@ -184,14 +200,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const createTextSprite = (text, color = '#111') => {
       const canvas = document.createElement('canvas');
+      canvas.width = 512;   // Explicit size: wide enough for long text
+      canvas.height = 64;   // Tall for font
       const ctx = canvas.getContext('2d');
-      ctx.font = 'bold 28px Lato';
+      ctx.font = 'bold 28px Lato, Arial';  // Fallback font
       ctx.fillStyle = color;
-      ctx.fillText(text, 10, 40);
+      ctx.textBaseline = 'top';  // Align properly
+      ctx.fillText(text, 10, 10);  // Start at (10,10) for padding
       const texture = new THREE.CanvasTexture(canvas);
-      const spriteMaterial = new THREE.SpriteMaterial({ map: texture, transparent: true });
+      const spriteMaterial = new THREE.SpriteMaterial({ 
+        map: texture, 
+        transparent: true,
+        depthWrite: false  // Prevent Z-fighting with cone
+      });
       const sprite = new THREE.Sprite(spriteMaterial);
-      sprite.scale.set(2, 1, 1);
+      sprite.scale.set(4, 1.5, 1);  // Scale up for visibility
       return sprite;
     };
 
@@ -208,12 +231,20 @@ document.addEventListener('DOMContentLoaded', () => {
       scene.add(sprite);
     });
 
-    // Responsive
-    window.addEventListener('resize', () => {
-      camera.aspect = container.clientWidth / container.clientHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(container.clientWidth, container.clientHeight);
-    });
+    // Responsive (throttled to avoid spam)
+    let resizeTimeout;
+    window.removeEventListener('resize', handleResize);  // Prevent duplicates
+    function handleResize() {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        if (container.clientWidth > 0) {
+          camera.aspect = container.clientWidth / container.clientHeight;
+          camera.updateProjectionMatrix();
+          renderer.setSize(container.clientWidth, container.clientHeight);
+        }
+      }, 250);
+    }
+    window.addEventListener('resize', handleResize);
 
     // Animate Cone Rotation
     function animate() {
