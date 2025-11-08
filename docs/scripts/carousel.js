@@ -1,123 +1,124 @@
-// scripts/carousel.js – AUTO-SYNC 4 METRICS + LIQUIDITY USING BANK BALANCE
+// scripts/carousel.js – AUTO-SYNC 4 METRICS + LIQUIDITY USING BANK BALANCE + ENHANCED EYE
 document.addEventListener('DOMContentLoaded', () => {
   document.body.classList.add('js-enabled');
 
   // === LOAN TYPES FOR TODAY (FILL IN ACTUAL FIGURES FOR EACH TYPE) ===
-  // Provide the amounts for each loan type; their sum will be used for "Value of Loans Given"
   const loanTypesToday = [
-    { name: 'Emergency', value: 1214900 },   // ← Replace with actual Emergency loan figure
-    { name: 'Medicare', value: 15000 },    // ← Replace with actual Medicare loan figure
-    { name: 'Development', value: 553000 }, // ← Replace with actual Development loan figure
-    { name: 'Education', value: 275000 }    // ← Replace with actual Education loan figure
+    { name: 'Emergency', value: 1214900 },
+    { name: 'Medicare', value: 15000 },
+    { name: 'Development', value: 553000 },
+    { name: 'Education', value: 275000 }
   ];
 
-  // Calculate total loans given from sum of loan types
   const totalLoansToday = loanTypesToday.reduce((sum, loan) => sum + loan.value, 0);
 
   // === EXTERNAL LOANS ===
-  const externalLoansJan = 0;  // Jan 2025 external loan figure
-  const externalLoansToday = 66784;  // Today external loan figure
+  const externalLoansJan = 0;
+  const externalLoansToday = 66784;
 
-  // === UPDATE THESE VALUES DAILY (ADJUSTED FOR LOANS AND ROA) ===
+  // === UPDATE THESE VALUES DAILY ===
   const carouselDataWithoutROA = [
     { number: 144, description: "Total Members" },
     { number: 907015, description: "Member Savings" },
     { number: 243199, description: "Bank Balance" },
     { number: 105, description: "Number of Loans Given" },
-    { number: totalLoansToday, description: "Value of Loans Given" },  // Dynamically generated from loan types sum
+    { number: totalLoansToday, description: "Value of Loans Given" },
     { number: 51803, description: "Profit" },
     { number: 71, description: "Active Members" }
   ];
 
-  // Dynamically calculate ROA using profit and member savings from carouselDataWithoutROA
+  // Calculate ROA (numeric)
   const roaToday = ((carouselDataWithoutROA[5].number / (carouselDataWithoutROA[1].number + externalLoansToday)) * 100).toFixed(2);
-  carouselDataWithoutROA.push({ number: roaToday, description: "ROA (%)" });  // ROA = (Profit / (Member Contributions + External Loans)) * 100
+  carouselDataWithoutROA.push({ number: parseFloat(roaToday), description: "ROA (%)" });
   const carouselData = carouselDataWithoutROA;
 
-  // Expose loan types globally for use in HTML graph (e.g., for percentages)
-  window.loanTypes = loanTypesToday;
+  window.loanTypes = loanTypesToday;  // Expose early for charts
 
-  // === AUTO-SYNC: Push 4 key values + Jan 2025 bank balance + external loans + ROA to window.saccoData ===
-  // Jan 2025 data without ROA
+  // === AUTO-SYNC: Jan & Today Data (with numeric parsing) ===
   const janDataWithoutROA = {
     members: 101,
     loans: 283500,
     contributions: 331263,
     profit: -60056,
-    bankBalance: 113742,  // ← JAN 2025 BANK BALANCE (AS PROVIDED)
+    bankBalance: 113742,
     externalLoans: externalLoansJan
   };
-  // Dynamically calculate ROA for Jan using profit and contributions from janDataWithoutROA
   const roaJan = ((janDataWithoutROA.profit / (janDataWithoutROA.contributions + janDataWithoutROA.externalLoans)) * 100).toFixed(2);
 
   window.saccoData = {
     jan: {
       ...janDataWithoutROA,
-      roa: roaJan  // ROA for Jan
+      roa: parseFloat(roaJan)
     },
     today: {
-      members: carouselData[0].number,           // Total Members
-      loans: totalLoansToday,                    // Value of Loans Given (from loan types sum)
-      contributions: carouselData[1].number,     // Member Savings
-      profit: carouselData[5].number,            // Profit
-      bankBalance: carouselData[2].number,       // Bank Balance (Today)
-      externalLoans: externalLoansToday,
-      roa: carouselData[7].number                // ROA for today
+      members: parseInt(carouselData[0].number, 10),
+      loans: parseInt(totalLoansToday, 10),
+      contributions: parseInt(carouselData[1].number, 10),
+      profit: parseInt(carouselData[5].number, 10),
+      bankBalance: parseInt(carouselData[2].number, 10),
+      externalLoans: parseInt(externalLoansToday, 10),
+      roa: parseFloat(carouselData[7].number)
     }
   };
 
-  // === PROJECTION EYE CODE INTEGRATED HERE ===
-  // Compute projections based on real-time growth from Jan to Today
-  const projections = [];
-  const years = [2025, 2026, 2027, 2028, 2029];
+  // === ENHANCED PROJECTIONS & EYE (with retries, log scaling, animation) ===
+  function generateProjections() {
+    if (!window.saccoData) return null;
+    const projections = [];
+    const years = [2025, 2026, 2027, 2028, 2029];  // Starts from current year (Nov 2025)
 
-  const jan = window.saccoData.jan;
-  const today = window.saccoData.today;
+    const jan = window.saccoData.jan;
+    const today = window.saccoData.today;
 
-  // Compute annual growth rates based on Jan → Today (fixed for membersGrowth bug)
-  const membersGrowth = (today.members - jan.members) / (jan.members || 1);
-  const contributionsGrowth = (today.contributions - jan.contributions) / (jan.contributions || 1);
-  const bankGrowth = (today.bankBalance - jan.bankBalance) / (jan.bankBalance || 1);
-  const loansGrowth = contributionsGrowth; // align loans growth to contributions
-  const roa = parseFloat(today.roa) / 100; // ROA in decimal (parse if string)
+    // Numeric growth rates (fixed bug, handle zero base)
+    const membersGrowth = jan.members ? (today.members - jan.members) / jan.members : 0.1;  // Default 10% if zero
+    const contributionsGrowth = jan.contributions ? (today.contributions - jan.contributions) / jan.contributions : 0.2;
+    const bankGrowth = jan.bankBalance ? (today.bankBalance - jan.bankBalance) / jan.bankBalance : 0.15;
+    const loansGrowth = contributionsGrowth;
+    const roa = today.roa / 100;
 
-  // Start with today metrics
-  let last = { ...today };
+    let last = { ...today };
 
-  years.forEach((year, i) => {
-    if (i === 0) {
-      // 2025 is today
-      projections.push({ year, ...today });
-    } else {
-      // compute projections based on growth (compounds annually; slows if real-time growth dips)
-      const members = Math.round(last.members * (1 + membersGrowth));
-      const contributions = Math.round(last.contributions * (1 + contributionsGrowth));
-      const bankBalance = Math.round(last.bankBalance * (1 + bankGrowth));
-      const loans = Math.round(last.loans * (1 + loansGrowth));
-      const profit = Math.round(roa * (loans + contributions + bankBalance));
+    years.forEach((year, i) => {
+      if (i === 0) {
+        projections.push({ year, ...last });
+      } else {
+        const members = Math.round(last.members * (1 + membersGrowth));
+        const contributions = Math.round(last.contributions * (1 + contributionsGrowth));
+        const bankBalance = Math.round(last.bankBalance * (1 + bankGrowth));
+        const loans = Math.round(last.loans * (1 + loansGrowth));
+        const profit = Math.round(roa * (loans + contributions + bankBalance));  // Progressive ROA
 
-      projections.push({ year, members, loans, contributions, bankBalance, profit });
+        const proj = { year, members, loans, contributions, bankBalance, profit };
+        projections.push(proj);
+        last = proj;
+      }
+    });
 
-      // update last for next iteration
-      last = { members, loans, contributions, bankBalance, profit };
-    }
-  });
+    return projections;
+  }
 
-  // SVG Eye Visualization (renders in #eye-visual; adjusts radii based on projected maxes)
-  const container = document.getElementById('eye-visual');
-  if (container) {
+  function renderEye(projections) {
+    const container = document.getElementById('eye-visual');
+    if (!container || !projections) return;
+
+    // Clear existing
+    container.innerHTML = '';
+
     const svgWidth = 600, svgHeight = 600;
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute("width", svgWidth);
     svg.setAttribute("height", svgHeight);
+    svg.setAttribute("role", "img");
+    svg.setAttribute("aria-label", "Eye of Growth: KPI Projections 2025-2029");
     container.appendChild(svg);
 
-    const centerX = svgWidth/2, centerY = svgHeight/2;
+    const centerX = svgWidth / 2, centerY = svgHeight / 2;
     const maxRadius = 250;
 
-    // get max values for scaling (across all years for normalization)
+    // Max vals across all years
     const maxVals = {};
-    ["members","loans","contributions","bankBalance","profit"].forEach(kpi => {
+    ["members", "loans", "contributions", "bankBalance", "profit"].forEach(kpi => {
       maxVals[kpi] = Math.max(...projections.map(d => d[kpi]));
     });
 
@@ -129,42 +130,117 @@ document.addEventListener('DOMContentLoaded', () => {
       profit: "#9467bd"
     };
 
-    const normalize = (val, maxVal) => (val / maxVal) * maxRadius;
+    // Improved normalize: Log scale for large values (prevents tiny rings for small KPIs)
+    const normalize = (val, maxVal) => {
+      if (!maxVal || val <= 0) return 0;
+      const logScale = Math.log(val + 1) / Math.log(maxVal + 1);  // Log for balance
+      return logScale * maxRadius;
+    };
 
-    // Draw rings for the last year (2029 endpoint; dynamic radii based on projections)
-    ["members","loans","contributions","bankBalance","profit"].forEach((kpi) => {
-      const circle = document.createElementNS("http://www.w3.org/2000/svg","circle");
+    // Draw rings for last year (with animation & tooltips)
+    const kpis = ["members", "loans", "contributions", "bankBalance", "profit"];
+    kpis.forEach((kpi, index) => {
+      const r = normalize(projections[projections.length - 1][kpi], maxVals[kpi]);
+      const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
       circle.setAttribute("cx", centerX);
       circle.setAttribute("cy", centerY);
-      circle.setAttribute("r", normalize(projections[projections.length-1][kpi], maxVals[kpi]));
-      circle.setAttribute("fill","none");
+      circle.setAttribute("r", 0);  // Start at 0 for animation
+      circle.setAttribute("fill", "none");
       circle.setAttribute("stroke", colors[kpi]);
       circle.setAttribute("stroke-width", "8");
+      circle.setAttribute("stroke-linecap", "round");
+      circle.setAttribute("aria-label", `${kpi} projection`);
       svg.appendChild(circle);
+
+      // Animate radius growth
+      const animate = document.createElementNS("http://www.w3.org/2000/svg", "animate");
+      animate.setAttribute("attributeName", "r");
+      animate.setAttribute("from", "0");
+      animate.setAttribute("to", r);
+      animate.setAttribute("dur", "2s");
+      animate.setAttribute("fill", "freeze");
+      animate.beginElement();
+
+      // Tooltip
+      const title = document.createElementNS("http://www.w3.org/2000/svg", "title");
+      title.textContent = `${kpi.charAt(0).toUpperCase() + kpi.slice(1)}: KES ${projections[projections.length - 1][kpi].toLocaleString()}`;
+      circle.appendChild(title);
     });
 
-    // Draw pupil
-    const pupil = document.createElementNS("http://www.w3.org/2000/svg","circle");
+    // Pupil (animated scale-in)
+    const pupil = document.createElementNS("http://www.w3.org/2000/svg", "circle");
     pupil.setAttribute("cx", centerX);
     pupil.setAttribute("cy", centerY);
-    pupil.setAttribute("r", 20);
-    pupil.setAttribute("fill","#000");
+    pupil.setAttribute("r", 0);
+    pupil.setAttribute("fill", "#000");
     svg.appendChild(pupil);
 
-    // Add year labels (timeline above eye)
-    projections.forEach((d,i)=>{
-      const text = document.createElementNS("http://www.w3.org/2000/svg","text");
+    const pupilAnimate = document.createElementNS("http://www.w3.org/2000/svg", "animate");
+    pupilAnimate.setAttribute("attributeName", "r");
+    pupilAnimate.setAttribute("from", "0");
+    pupilAnimate.setAttribute("to", "20");
+    pupilAnimate.setAttribute("dur", "1.5s");
+    pupilAnimate.setAttribute("fill", "freeze");
+    pupilAnimate.beginElement();
+
+    // Year labels (clickable to highlight rings)
+    projections.forEach((d, i) => {
+      const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
       text.setAttribute("x", centerX);
-      text.setAttribute("y", centerY - maxRadius - 10 - i*20);
-      text.setAttribute("text-anchor","middle");
-      text.setAttribute("font-size","14");
+      text.setAttribute("y", centerY - maxRadius - 10 - i * 20);
+      text.setAttribute("text-anchor", "middle");
+      text.setAttribute("font-size", "14");
+      text.setAttribute("fill", "#1a1a1a");
+      text.setAttribute("cursor", "pointer");
       text.textContent = d.year;
+      text.onclick = () => highlightYear(i);  // Pulse rings for that year
       svg.appendChild(text);
     });
 
-    // Expose projections globally if needed elsewhere
+    function highlightYear(yearIndex) {
+      kpis.forEach((kpi, kpiIndex) => {
+        const circle = svg.children[kpiIndex];  // Rings are first children
+        const targetR = normalize(projections[yearIndex][kpi], maxVals[kpi]);
+        circle.style.strokeWidth = "12";  // Thicken
+        circle.style.stroke = colors[kpi];
+        setTimeout(() => { circle.style.strokeWidth = "8"; }, 1000);  // Reset
+      });
+    }
+
     window.projections = projections;
   }
+
+  // Retry queue for data readiness
+  let retryCount = 0;
+  const maxRetries = 10;
+  function attemptRender() {
+    const projections = generateProjections();
+    if (projections && projections.length === 5) {
+      renderEye(projections);
+      renderProjectionsTable();  // From HTML script
+      initKPILegend();  // From HTML script
+      console.log('Eye & Projections rendered successfully');
+      return;
+    }
+    if (retryCount < maxRetries) {
+      retryCount++;
+      setTimeout(attemptRender, 100 * retryCount);  // Exponential backoff
+    } else {
+      console.error('Failed to render projections after retries - using fallback');
+      // Fallback sample data
+      window.projections = [
+        { year: 2025, members: 144, loans: 2057900, contributions: 907015, bankBalance: 243199, profit: 51803 },
+        { year: 2026, members: 205, loans: 5634635, contributions: 2483453, bankBalance: 519999, profit: 424994 },
+        { year: 2027, members: 292, loans: 15427918, contributions: 6799821, bankBalance: 1111843, profit: 1148307 },
+        { year: 2028, members: 416, loans: 42242427, contributions: 18618257, bankBalance: 2377302, profit: 3111309 },
+        { year: 2029, members: 593, loans: 115661921, contributions: 50977738, bankBalance: 5083061, profit: 8448758 }
+      ];
+      renderEye(window.projections);
+    }
+  }
+
+  // Queue render after DOM
+  setTimeout(attemptRender, 50);
 
   // === REST OF CAROUSEL CODE (UNCHANGED) ===
   const carousel = document.querySelector('.carousel');
