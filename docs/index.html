@@ -21,8 +21,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
     
-    <!-- CSS v54 (Updated to include cone, growth, and member carousel styles) -->
-    <link rel="stylesheet" href="./style.css?v=54">
+    <!-- CSS v56 -->
+    <link rel="stylesheet" href="./style.css?v=56">
 
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-05M38MYK0G"></script>
@@ -32,6 +32,144 @@
       gtag('js', new Date());
       gtag('config', 'G-05M38MYK0G');
     </script>
+
+    <!-- GROWTH INDICATOR STYLES -->
+    <style>
+        .growth-indicator {
+            text-align: center;
+            margin-top: 0.5rem;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        .growth-indicator.positive { color: #10B981; }
+        .growth-indicator.negative { color: #EF4444; }
+        .growth-indicator i { margin-right: 4px; font-size: 0.9em; }
+    </style>
+
+    <!-- GROWTH CHARTS GRID STYLES -->
+    <style>
+        .growth-charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .chart-card {
+            position: relative;
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+        }
+        .chart-card canvas {
+            flex-grow: 1;
+            max-height: 250px;
+        }
+        .chart-card p {
+            margin: 0.5rem 0 0 0;
+            text-align: center;
+            font-weight: bold;
+        }
+        @media (max-width: 768px) {
+            .growth-charts-grid {
+                grid-template-columns: 1fr;
+            }
+            .chart-card {
+                height: 350px;
+            }
+            .chart-card canvas {
+                max-height: 280px;
+            }
+        }
+    </style>
+
+    <!-- MEMBER ACTIVITIES CAROUSEL STYLES (with fallback BG) -->
+    <style>
+        .member-activities-section {
+            margin-top: 3rem;
+            padding: 2rem 0;
+            background-color: #f8f9fa;
+        }
+        .member-activities-carousel {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 12px;
+        }
+        .member-activities-carousel .slides {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+            height: 400px; /* Increased height to better show faces */
+        }
+        .member-activities-carousel .slide {
+            min-width: 100%;
+            height: 400px; /* Increased height to better show faces */
+            flex-shrink: 0;
+            background: #f0f0f0;  /* Fallback gray BG for unloaded images */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .member-activities-carousel .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .member-activities-carousel .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            z-index: 10;
+        }
+        .member-activities-carousel .prev { left: 10px; }
+        .member-activities-carousel .next { right: 10px; }
+        .member-activities-carousel .dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 1rem;
+        }
+        .member-activities-carousel .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #ccc;
+            cursor: pointer;
+        }
+        .member-activities-carousel .dot.active {
+            background: #10B981;
+        }
+        @media (max-width: 768px) {
+            .member-activities-carousel .slides,
+            .member-activities-carousel .slide {
+                height: 250px; /* Increased from 200px for mobile */
+            }
+        }
+    </style>
+
+    <!-- EYE VISUALIZATION STYLES (for projections) -->
+    <style>
+        .eye-visual {
+            text-align: center;
+            padding: 2rem;
+        }
+        #eye-visual {
+            width: 600px;
+            height: 600px;
+            margin: 0 auto;
+        }
+        @media (max-width: 768px) {
+            #eye-visual {
+                width: 400px;
+                height: 400px;
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -41,7 +179,7 @@
         <a href="index.html">
             <img class="brand-logo round" src="./assets/141dd3faa98da9737b591161deac509a.jpg" alt="Soyosoyo Sacco Logo">
         </a>
-        <a href="https://chamasoft.com/login" class="member-portal">Member Portal</a>
+        <a href="https://chamasoft.com/login" class="calculator-wrapper">Member Portal</a>
         <button id="menu-toggle" aria-label="Toggle Menu"></button>
         <nav class="nav-links">
             <a href="index.html">Home</a>
@@ -69,7 +207,7 @@
     <section class="section">
         <h2 style="text-align: center; font-size: 1.6rem; margin-bottom: 1rem;">Our Journey</h2>
         <p style="text-align: center; max-width: 700px; margin: 0 auto 1.5rem;">
-            Founded in 1998 as a medical aid cooperative, we’ve evolved into a trusted financial partner for many in the Kenyan Coast.
+            Founded in 1998 as a medical aid cooperative, we've evolved into a trusted financial partner for many in the Kenyan Coast.
         </p>
         <div style="text-align: center;">
             <a href="About.html" class="products-button" style="display: inline-block; padding: 0.75rem 2rem;">Read Full History</a>
@@ -140,7 +278,7 @@
         <div class="products-grid">
             <div class="product-card">
                 <img src="./assets/ba04cd4377b3746fc0750dcf2ff3d935.jpg" alt="Education Loan Product Image" class="round">
-                <h2 style="text-align: center;">Education Loan</h2>
+                <h2 style="text-align: 100%;">Education Loan</h2>
                 <p>Cover tuition, books, and living costs. Up to 12 months at 4% per annum.</p>
                 <a href="Products.html" class="products-button">Explore All Products</a>
             </div>
@@ -197,14 +335,11 @@
         </div>
     </section>
 
-    <!-- FINANCIAL PROJECTION WITH CONE (Independent from Carousel) -->
-    <section class="section">
-        <h2 style="text-align: center;">2025 Financial Projection</h2>
-        <p style="text-align: center; margin-bottom: 1rem;">Our projected growth and impact.</p>
-        <!-- ✅ CONE PROJECTION VISUAL (3D via Three.js, data from carousel.js) -->
-        <div class="cone-visual">
-            <div id="coneContainer"></div>
-        </div>
+    <!-- PROJECTION EYE VISUALIZATION (5-Year Spread) -->
+    <section class="section eye-visual">
+        <h2 style="text-align: center;">5-Year Growth Projection</h2>
+        <p style="text-align: center; margin-bottom: 1rem;">Projected metrics based on current growth rates (2025-2029).</p>
+        <div id="eye-visual"></div>  <!-- SVG renders here via JS -->
     </section>
 
     <!-- LOAN CALCULATOR -->
@@ -366,28 +501,10 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 <script>
-    // Wait for carousel.js to load data before initializing charts and member carousel
-    document.addEventListener('DOMContentLoaded', () => {
-        const initWhenReady = () => {
-            if (window.saccoData && window.loanTypes) {
-                // Render charts
-                renderGrowthCharts();
+    // Assign ChartDataLabels to global for Chart.js
+    window.ChartDataLabels = ChartDataLabels;
 
-                // Initialize member carousel
-                initMemberCarousel();
-
-                // Initialize other functions if available
-                if (typeof updateFields === 'function') updateFields();
-                if (typeof updateSliderValue === 'function') updateSliderValue('principal');
-            } else {
-                // Retry after short delay if data not yet available
-                setTimeout(initWhenReady, 100);
-            }
-        };
-        initWhenReady();
-    });
-
-    // MEMBER ACTIVITIES CAROUSEL SCRIPT (With image error handling for smoothness)
+    // MEMBER ACTIVITIES CAROUSEL SCRIPT (with error handling & logs)
     const memberImages = [
         './assets/01acb621480e99c389cea4973abe4896.jpg',
         './assets/3161c755955816487a8b0cd796d43c29.jpg',
@@ -401,10 +518,14 @@
     let currentSlide = 0;
 
     function initMemberCarousel() {
+        console.log('Initializing member carousel...');  // Debug log
         const slidesContainer = document.getElementById('memberSlides');
         const dotsContainer = document.getElementById('memberDots');
 
-        if (!slidesContainer || !dotsContainer) return;
+        if (!slidesContainer || !dotsContainer) {
+            console.warn('Carousel containers not found');  // Debug
+            return;
+        }
 
         // Create slides with error handling
         memberImages.forEach((imgSrc, index) => {
@@ -415,8 +536,8 @@
             img.alt = `Member Activity ${index + 1}`;
             img.loading = 'lazy';
             img.onerror = () => {
-                img.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmMGYwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzY2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlIG5vdCBmb3VuZDwvdGV4dD48L3N2Zz4='; // Inline SVG fallback
-                console.warn(`Image failed to load: ${imgSrc}`);
+                img.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmMGYwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzY2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlIG5vdCBmb3VuZDwvdGV4dD48L3N2Zz4=';  // SVG fallback
+                console.warn(`Image failed: ${imgSrc}`);  // Debug
             };
             slide.appendChild(img);
             slidesContainer.appendChild(slide);
@@ -424,12 +545,11 @@
             // Create dots
             const dot = document.createElement('span');
             dot.className = 'dot';
-            dot.setAttribute('role', 'tab');
-            dot.setAttribute('aria-label', `Go to slide ${index + 1}`);
             dot.onclick = () => goToSlide(index);
             dotsContainer.appendChild(dot);
         });
 
+        console.log(`Created ${memberImages.length} slides`);  // Debug
         showSlide(currentSlide);
     }
 
@@ -443,14 +563,12 @@
         else currentSlide = index;
 
         const slidesEl = document.getElementById('memberSlides');
-        if (slidesEl) {
-            slidesEl.style.transform = `translateX(-${currentSlide * 100}%)`;
-        }
+        if (slidesEl) slidesEl.style.transform = `translateX(-${currentSlide * 100}%)`;
 
         dots.forEach((dot, i) => {
             dot.className = i === currentSlide ? 'dot active' : 'dot';
-            dot.setAttribute('aria-selected', i === currentSlide ? 'true' : 'false');
         });
+        console.log('Showing slide:', currentSlide);  // Debug
     }
 
     function changeSlide(direction) {
@@ -461,10 +579,9 @@
         showSlide(index);
     }
 
-    // Auto-advance every 5 seconds
     setInterval(() => changeSlide(1), 5000);
 
-    // CLEAN GROWTH ARROW PLUGIN
+    // CLEAN GROWTH ARROW PLUGIN (renamed for consistency)
     const cleanGrowthArrowPlugin = {
         id: 'cleanGrowthArrow',
         afterDraw: function(chart) {
@@ -518,7 +635,7 @@
     };
     Chart.register(cleanGrowthArrowPlugin);
 
-    // CHART RENDERER (With retry logic for smoothness)
+    // CHART RENDERER (with global ChartDataLabels & error handling)
     function renderGrowthCharts() {
         if (!window.saccoData) {
             console.warn('saccoData not ready. Retrying...');
@@ -526,7 +643,7 @@
             return;
         }
 
-        console.log('SACCO DATA LOADED:', window.saccoData);
+        console.log('SACCO DATA LOADED:', window.saccoData);  // Debug
 
         const { jan, today } = window.saccoData;
         const colors = {
@@ -551,7 +668,10 @@
 
         const createChart = (id, j, t, label, color, gid, isPercent = false, isMoney = false) => {
             const canvasEl = document.getElementById(id);
-            if (!canvasEl) return;
+            if (!canvasEl) {
+                console.warn(`Canvas ${id} not found`);  // Debug
+                return;
+            }
             const g = growth(j, t);
             updateIndicator(gid, g);
 
@@ -602,19 +722,17 @@
                     },
                     layout: { padding: { top: 50, left: 8, right: 8 } }
                 },
-                plugins: [window.ChartDataLabels]  // Use global reference for plugin
+                plugins: [ChartDataLabels]  // Global reference
             });
         };
 
-        // Use pre-calculated ROA from saccoData (includes external loans)
         const janROA = parseFloat(jan.roa);
         const todayROA = parseFloat(today.roa);
 
-        // Liquidity: ×100 (as before)
         const janLiquidity = jan.contributions > 0 ? (jan.bankBalance / jan.contributions) * 100 : 0;
         const todayLiquidity = today.contributions > 0 ? (today.bankBalance / today.contributions) * 100 : 0;
 
-        console.log('ROA:', janROA.toFixed(2) + '% →', todayROA.toFixed(2) + '%');
+        console.log('ROA:', janROA.toFixed(2) + '% →', todayROA.toFixed(2) + '%');  // Debug
 
         createChart('chartMembers', jan.members, today.members, 'Members', colors.members, 'growthMembers');
         createChart('chartLoans', jan.loans, today.loans, 'Loans (KES)', colors.loans, 'growthLoans', false, true);
@@ -623,16 +741,15 @@
         createChart('chartROA', janROA, todayROA, 'ROA (%)', colors.roa, 'growthROA', true);
         createChart('chartLiquidity', janLiquidity, todayLiquidity, 'Liquidity Ratio (%)', colors.liquidity, 'growthLiquidity', true);
 
-        // Render Loan Types Distribution Pie Chart (with custom legend including percentages)
-        const loanTypesCanvas = document.getElementById('chartLoanTypes');
-        if (window.loanTypes && window.loanTypes.length > 0 && loanTypesCanvas) {
+        // Loan Types Pie Chart
+        if (window.loanTypes && window.loanTypes.length > 0) {
             const totalLoans = window.loanTypes.reduce((sum, loan) => sum + loan.value, 0);
             if (totalLoans > 0) {
                 const labels = window.loanTypes.map(loan => loan.name);
                 const data = window.loanTypes.map(loan => (loan.value / totalLoans) * 100);
-                const loanColors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0']; // Colors for Emergency, Medicare, Development, Education
+                const loanColors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'];
 
-                new Chart(loanTypesCanvas.getContext('2d'), {
+                new Chart(document.getElementById('chartLoanTypes').getContext('2d'), {
                     type: 'pie',
                     data: {
                         labels: labels,
@@ -680,7 +797,7 @@
                                 }
                             },
                             datalabels: {
-                                formatter: (value) => value > 5 ? value.toFixed(1) + '%' : '',  // Only show if >5%
+                                formatter: (value) => value > 5 ? value.toFixed(1) + '%' : '',
                                 color: '#fff',
                                 font: { weight: 'bold', size: 12 },
                                 anchor: 'center',
@@ -688,7 +805,7 @@
                             }
                         }
                     },
-                    plugins: [window.ChartDataLabels]  // Use global reference
+                    plugins: [ChartDataLabels]
                 });
             } else {
                 console.warn('Total loans is 0; skipping loan types chart.');
@@ -698,8 +815,12 @@
         }
     }
 
-    // Global reference for ChartDataLabels
-    window.ChartDataLabels = window.ChartDataLabels || ChartDataLabels;
+    document.addEventListener('DOMContentLoaded', () => {
+        renderGrowthCharts();
+        initMemberCarousel();  // Initialize member carousel
+        if (typeof updateFields === 'function') updateFields();
+        if (typeof updateSliderValue === 'function') updateSliderValue('principal');
+    });
 </script>
 
 <script src="./scripts/main.js"></script>
