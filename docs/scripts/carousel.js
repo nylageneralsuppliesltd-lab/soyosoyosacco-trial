@@ -1,4 +1,4 @@
-/* scripts/carousel.js – FULL v60 PREMIUM GROWTH CONE + CAROUSEL */
+/* scripts/carousel.js – FULL v60 PREMIUM GROWTH CONE + CAROUSEL + MEMBER SLIDER */
 document.addEventListener('DOMContentLoaded', () => {
   // === DAILY DATA (UPDATE HERE ONLY) ===
   const loanTypesToday = [
@@ -99,7 +99,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const topY = 80;
     const maxWidth = 600;
 
-    const colors = ['#10B981', '#34D399', '#6EE7B7', '#A7F3D0', '#D1FAE5'];
+    // PREMIUM COLOR PALETTE (VIBRANT, SACCO-LEVEL)
+    const colors = ['#8B5CF6', '#3B82F6', '#10B981', '#F59E0B', '#EF4444']; // Purple, Blue, Green, Amber, Red
+    const icons = ['fa-users', 'fa-hand-holding-usd', 'fa-piggy-bank'];
 
     projections.forEach((p, i) => {
       const ratio = i / (projections.length - 1);
@@ -122,8 +124,8 @@ document.addEventListener('DOMContentLoaded', () => {
         gradient.setAttribute('x1', '0%'); gradient.setAttribute('y1', '0%');
         gradient.setAttribute('x2', '0%'); gradient.setAttribute('y2', '100%');
         gradient.innerHTML = `
-          <stop offset="0%" stop-color="${colors[i]}" stop-opacity="0.9"/>
-          <stop offset="100%" stop-color="${colors[i]}" stop-opacity="0.3"/>
+          <stop offset="0%" stop-color="${colors[i]}" stop-opacity="0.95"/>
+          <stop offset="100%" stop-color="${colors[i]}" stop-opacity="0.35"/>
         `;
         svg.appendChild(gradient);
 
@@ -137,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const border = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         border.setAttribute('d', `M${prevX1},${prevY} L${x1},${y} M${x2},${y} L${prevX2},${prevY}`);
         border.setAttribute('stroke', colors[i]);
-        border.setAttribute('stroke-width', '3');
+        border.setAttribute('stroke-width', '4');
         border.setAttribute('fill', 'none');
         border.setAttribute('filter', 'url(#glow)');
         svg.appendChild(border);
@@ -150,22 +152,23 @@ document.addEventListener('DOMContentLoaded', () => {
       g.onclick = () => showYearPopup(p);
 
       const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-      rect.setAttribute('x', -140); rect.setAttribute('y', -45);
-      rect.setAttribute('width', 280); rect.setAttribute('height', 90);
-      rect.setAttribute('rx', 16);
-      rect.setAttribute('fill', 'rgba(255,255,255,0.15)');
+      rect.setAttribute('x', -150); rect.setAttribute('y', -48);
+      rect.setAttribute('width', 300); rect.setAttribute('height', 96);
+      rect.setAttribute('rx', 20);
+      rect.setAttribute('fill', 'rgba(255,255,255,0.18)');
       rect.setAttribute('stroke', colors[i]);
-      rect.setAttribute('stroke-width', '2');
+      rect.setAttribute('stroke-width', '3');
       rect.setAttribute('filter', 'url(#glass)');
       g.appendChild(rect);
 
       // Year
       const yearText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      yearText.setAttribute('x', 0); yearText.setAttribute('y', -15);
+      yearText.setAttribute('x', 0); yearText.setAttribute('y', -18);
       yearText.setAttribute('text-anchor', 'middle');
-      yearText.setAttribute('font-size', '22');
+      yearText.setAttribute('font-size', '24');
       yearText.setAttribute('font-weight', '900');
       yearText.setAttribute('fill', '#ffffff');
+      yearText.setAttribute('text-shadow', '0 2px 4px rgba(0,0,0,0.3)');
       yearText.textContent = p.year;
       g.appendChild(yearText);
 
@@ -176,23 +179,23 @@ document.addEventListener('DOMContentLoaded', () => {
         { icon: 'fa-piggy-bank', value: Math.round(p.contributions/1000), suffix: 'k' }
       ];
       kpis.forEach((kpi, ki) => {
-        const tx = -80 + ki * 80;
+        const tx = -85 + ki * 85;
 
         const icon = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         icon.setAttribute('x', tx); icon.setAttribute('y', 15);
         icon.setAttribute('text-anchor', 'middle');
         icon.setAttribute('font-family', 'Font Awesome 6 Free');
         icon.setAttribute('font-weight', '900');
-        icon.setAttribute('font-size', '18');
+        icon.setAttribute('font-size', '20');
         icon.setAttribute('fill', colors[i]);
-        icon.textContent = kpi.icon.includes('users') ? '\uf0c0' :
-                         kpi.icon.includes('hand') ? '\uf4c0' : '\uf4d3';
+        icon.textContent = kpi.icon === 'fa-users' ? '\uf0c0' :
+                         kpi.icon === 'fa-hand-holding-usd' ? '\uf4c0' : '\uf4d3';
         g.appendChild(icon);
 
         const val = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        val.setAttribute('x', tx); val.setAttribute('y', 35);
+        val.setAttribute('x', tx); val.setAttribute('y', 38);
         val.setAttribute('text-anchor', 'middle');
-        val.setAttribute('font-size', '14');
+        val.setAttribute('font-size', '15');
         val.setAttribute('font-weight', 'bold');
         val.setAttribute('fill', '#ffffff');
         val.textContent = kpi.value.toLocaleString() + kpi.suffix;
@@ -205,17 +208,17 @@ document.addEventListener('DOMContentLoaded', () => {
       if (i === 0) {
         const badge = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         badge.setAttribute('cx', centerX); badge.setAttribute('cy', baseY);
-        badge.setAttribute('r', 50);
-        badge.setAttribute('fill', '#10B981');
-        badge.setAttribute('opacity', '0.2');
+        badge.setAttribute('r', 55);
+        badge.setAttribute('fill', '#8B5CF6');
+        badge.setAttribute('opacity', '0.25');
         svg.appendChild(badge);
 
         const today = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        today.setAttribute('x', centerX); today.setAttribute('y', baseY + 8);
+        today.setAttribute('x', centerX); today.setAttribute('y', baseY + 10);
         today.setAttribute('text-anchor', 'middle');
-        today.setAttribute('font-size', '18');
+        today.setAttribute('font-size', '20');
         today.setAttribute('font-weight', '900');
-        today.setAttribute('fill', '#10B981');
+        today.setAttribute('fill', '#8B5CF6');
         today.textContent = 'TODAY';
         svg.appendChild(today);
       }
@@ -225,14 +228,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
     defs.innerHTML = `
       <filter id="glow">
-        <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+        <feGaussianBlur stdDeviation="5" result="coloredBlur"/>
         <feMerge>
           <feMergeNode in="coloredBlur"/>
           <feMergeNode in="SourceGraphic"/>
         </feMerge>
       </filter>
       <filter id="glass">
-        <feGaussianBlur in="SourceGraphic" stdDeviation="10"/>
+        <feGaussianBlur in="SourceGraphic" stdDeviation="12"/>
       </filter>
     `;
     svg.prepend(defs);
@@ -283,7 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   setTimeout(tryRender, 100);
 
-  // === CAROUSEL (UNCHANGED) ===
+  // === CAROUSEL (FINANCIAL HIGHLIGHTS) ===
   const carousel = document.querySelector('.carousel');
   if (carousel) {
     const itemHTML = carouselDataWithoutROA.map(m => `
@@ -327,4 +330,67 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('resize', resize);
     resize();
   }
+
+  // === MEMBER ACTIVITIES CAROUSEL (FIXED) ===
+  const memberImages = [
+    './assets/01acb621480e99c389cea4973abe4896.jpg',
+    './assets/3161c755955816487a8b0cd796d43c29.jpg',
+    './assets/c1cbf8720115247da59d153d3f0be3b0.jpg',
+    './assets/b8a8a30e9531f4d1cac3ddf56c594b5a.jpg',
+    './assets/8053495671fa13e271078ad77beff286.jpg',
+    './assets/8640680b79eba02a8544ba3bbbcdd655.jpg',
+    './assets/8c145fcc127b3fad7cbe25bc847f3e8c.jpg'
+  ];
+
+  let currentSlide = 0;
+
+  function initMemberCarousel() {
+    const slidesContainer = document.getElementById('memberSlides');
+    const dotsContainer = document.getElementById('memberDots');
+    if (!slidesContainer || !dotsContainer) return;
+
+    slidesContainer.innerHTML = '';
+    dotsContainer.innerHTML = '';
+
+    memberImages.forEach((imgSrc, index) => {
+      const slide = document.createElement('div');
+      slide.className = 'slide';
+      slide.innerHTML = `<img src="${imgSrc}" alt="Member Activity ${index + 1}" loading="lazy">`;
+      slidesContainer.appendChild(slide);
+
+      const dot = document.createElement('span');
+      dot.className = 'dot';
+      dot.onclick = () => goToSlide(index);
+      dotsContainer.appendChild(dot);
+    });
+
+    showSlide(currentSlide);
+  }
+
+  function showSlide(index) {
+    const slides = document.querySelectorAll('#memberSlides .slide');
+    const dots = document.querySelectorAll('#memberDots .dot');
+    const totalSlides = slides.length;
+
+    if (index >= totalSlides) currentSlide = 0;
+    else if (index < 0) currentSlide = totalSlides - 1;
+    else currentSlide = index;
+
+    document.getElementById('memberSlides').style.transform = `translateX(-${currentSlide * 100}%)`;
+
+    dots.forEach((dot, i) => {
+      dot.className = i === currentSlide ? 'dot active' : 'dot';
+    });
+  }
+
+  window.changeSlide = function(direction) {
+    showSlide(currentSlide + direction);
+  };
+
+  window.goToSlide = function(index) {
+    showSlide(index);
+  };
+
+  setInterval(() => changeSlide(1), 5000);
+  initMemberCarousel();
 });
