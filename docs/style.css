@@ -1,13 +1,9 @@
 /* ========================================
-   SOYOSOYO SACCO – FINAL v54 (EYE INTEGRATION)
-   Cache-busted: ?v=54
-   TWO CAROUSELS: INDEX + JOIN-US – NO CONFLICTS
-   % GROWTH + GREEN/RED ARROWS + NUMBERS ON BARS
-   MOBILE BARS: CENTERED, NO EDGE OVERFLOW
-   DESIGN RESTORED – NO FULL-SCREEN STRETCH
-   LOAN CALC: SLIDER -> NUMBER INPUT (MOBILE-FRIENDLY)
-   DIVIDENDS MOBILE: 2-COL FIT (REDUCED GAP/PADDING, OVERFLOW PREVENTED)
-   EYE OF GROWTH: ADDED ONLY – NO OTHER CHANGES
+   SOYOSOYO SACCO – FINAL v55 (GROWTH CONE)
+   Cache-busted: ?v=55
+   GROWTH CONE: DYNAMIC, DATA-DRIVEN, MOBILE-FRIENDLY
+   PIE CHART: FULLY VISIBLE ON MOBILE
+   ALL ORIGINAL STYLES PRESERVED
    ======================================== */
 
 /* ----------------- RESET & BASE ----------------- */
@@ -555,7 +551,7 @@ footer a:hover { color:#ffffff; }
     transform:scale(1.15); 
 }
 
-/* ----------------- GROWTH CHARTS – SMALL, CENTERED, NO STRETCH ----------------- */
+/* ----------------- GROWTH CHARTS – MOBILE: STRETCHED FOR PIE ----------------- */
 .growth-charts-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -569,18 +565,19 @@ footer a:hover { color:#ffffff; }
     box-shadow: 0 8px 25px rgba(0,0,0,0.08);
     text-align: center;
     transition: transform 0.3s ease;
-    overflow: hidden;
+    overflow: visible;
     position: relative;
+    min-height: 300px;
 }
 .chart-card:hover { transform: translateY(-6px); }
 .chart-card canvas {
-    height: 180px !important;
+    height: 200px !important;
     margin: 0 auto;
     max-width: 100%;
     display: block;
 }
 .chart-card p {
-    margin-top: 0.8rem;
+    margin-top: 1rem;
     font-weight: 600;
     color: #1f2937;
     font-size: 0.95rem;
@@ -594,130 +591,87 @@ footer a:hover { color:#ffffff; }
 .growth-indicator.positive { color: #10B981; }
 .growth-indicator.negative { color: #EF4444; }
 .growth-indicator i { margin-right: 4px; font-size: 0.9em; }
+
+/* MOBILE: FULL PIE CHART */
 @media (max-width: 768px) {
     .growth-charts-grid { 
         grid-template-columns: 1fr; 
-        gap: 1.2rem;
+        gap: 1.4rem;
     }
     .chart-card {
-        padding: 1.4rem 1rem;
+        padding: 1.6rem 1rem;
+        min-height: 320px;
     }
     .chart-card canvas { 
-        height: 160px !important; 
+        height: 220px !important; 
     }
     .growth-indicator {
-        font-size: 0.95rem;
+        font-size: 1rem;
     }
 }
 
-/* ----------------- EYE OF GROWTH – ADDED ONLY (NO OTHER CHANGES) ----------------- */
+/* ----------------- GROWTH CONE – NEW, DYNAMIC, MOBILE-FRIENDLY ----------------- */
 .projections-section {
     margin-top: 3rem;
     text-align: center;
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    padding: 2rem;
+    background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+    padding: 2.5rem 2rem;
     border-radius: 16px;
     box-shadow: 0 8px 24px rgba(0,0,0,0.08);
     transition: transform 0.3s ease;
 }
-.projections-section:hover { 
-    transform: translateY(-6px); 
-}
+.projections-section:hover { transform: translateY(-6px); }
 .projections-section h2 { 
     margin-bottom: 1rem; 
     color: #006400;
+    font-size: 1.9rem;
 }
 .projections-section p { 
-    max-width: 600px; 
+    max-width: 700px; 
     margin: 0 auto 2rem; 
-    color: #6b7280; 
+    color: #374151; 
     font-style: italic;
 }
-#eye-visual {
+
+.growth-cone {
     width: 100%;
     max-width: 600px;
     margin: 2rem auto;
-    height: 600px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-    border: 1px solid rgba(0,100,0,0.08);
+    position: relative;
+    font-family: 'Lato', sans-serif;
 }
-#eye-visual svg {
-    width: 100%;
-    height: 100%;
-    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
-    transition: transform 0.3s ease;
+.cone-line {
+    stroke: #006400;
+    stroke-width: 3;
+    fill: none;
 }
-#eye-visual:hover svg { 
-    transform: scale(1.05); 
+.cone-year {
+    font-size: 1.1rem;
+    font-weight: 900;
+    fill: #003087;
+    cursor: pointer;
+    transition: all 0.3s;
 }
-.kpi-legend {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin-top: 1.5rem;
+.cone-year:hover {
+    fill: #006400;
+    font-size: 1.3rem;
+}
+.cone-kpi {
     font-size: 0.9rem;
+    fill: #1f2937;
+    text-anchor: middle;
 }
-.kpi-legend .legend-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: rgba(255,255,255,0.9);
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    transition: background 0.2s;
+.cone-highlight {
+    fill: #90EE90;
+    opacity: 0.2;
 }
-.kpi-legend .legend-item:hover { 
-    background: rgba(144,238,144,0.8); 
-}
-.kpi-legend .legend-item .swatch {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-}
-#projections-table {
-    margin-top: 1.5rem;
-    overflow-x: auto;
-}
-#projections-table table {
-    margin: 0 auto;
-    border-collapse: collapse;
-    font-size: 0.9rem;
-    min-width: 600px;
-}
-#projections-table th,
-#projections-table td {
-    padding: 0.6rem 0.8rem;
-    border: 1px solid #ddd;
-    text-align: center;
-}
-#projections-table thead tr { 
-    background: #f8f9fa; 
-}
-#projections-table tbody tr:nth-child(even) { 
-    background: rgba(144,238,144,0.1); 
-}
+
+/* MOBILE CONE */
 @media (max-width: 768px) {
-    #eye-visual { 
-        height: 400px; 
-        max-width: 100%;
-    }
-    .kpi-legend { 
-        flex-direction: column; 
-        align-items: center; 
-        gap: 0.6rem;
-    }
-    #projections-table table { 
-        font-size: 0.8rem; 
-        min-width: 100%;
-    }
+    .growth-cone { max-width: 100%; }
+    .cone-year { font-size: 1rem; }
+    .cone-year:hover { font-size: 1.1rem; }
+    .cone-kpi { font-size: 0.8rem; }
 }
 
 /* ----------------- END OF FILE ----------------- */
