@@ -1,4 +1,4 @@
-// projections.js — SOYOSOYO SACCO — PROPORTIONAL BARS + CLEAN SMALL CARDS
+// projections.js — SOYOSOYO SACCO — FINAL MOBILE & DESKTOP PERFECTION
 (function () {
   'use strict';
 
@@ -63,28 +63,15 @@
 
     const yearColors = { 2025: '#FF4081', 2026: '#00BCD4', 2027: '#4CAF50', 2028: '#FFC107', 2029: '#9C27B0' };
 
-    // KPI CARDS — SMALL, CLEAN, PROPORTIONAL BARS
+    // KPI CARDS
     kpis.forEach((kpi, i) => {
       const values = projections.map(p => p[kpi.key]);
-      const maxVal = Math.max(...values);
 
       const card = document.createElement('div');
-      card.style.cssText = `
-        margin: 12px 8px;
-        background: white;
-        border-radius: 20px;
-        overflow: hidden;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
-        border: 1px solid #f0fdf4;
-      `;
-
+      card.className = 'kpi-card';
       card.innerHTML = `
-        <div style="padding: 14px 18px; background: #f8fdfa; text-align:center;">
-          <h4 style="margin:0; font-size:16px; font-weight:900; color:#004d1a;">
-            ${kpi.name} Growth
-          </h4>
-        </div>
-        <div id="chart-${i}" style="width:100%; height:300px;"></div>
+        <div class="kpi-title">${kpi.name} Growth</div>
+        <div id="chart-${i}" class="kpi-chart"></div>
       `;
 
       container.appendChild(card);
@@ -93,18 +80,19 @@
         type: 'bar',
         orientation: 'h',
         y: projections.map(p => p.year),
-        x: values,  // REAL VALUES — PROPORTIONAL GROWTH
+        x: values,
         text: values.map(v => kpi.currency ? `KES ${fmt(v)}` : fmt(v)),
         textposition: 'inside',
         insidetextanchor: 'end',
-        textfont: { size: 15, color: 'white', weight: 'bold' },
+        textfont: { size: 16, color: 'white', weight: 'bold' },
         marker: { 
           color: projections.map(p => yearColors[p.year]),
-          line: { width: 3, color: 'white' }
-        }
+          line: { width: 4, color: 'white' }
+        },
+        hovertemplate: `<b>%{y}</b><br>KES %{text}<extra></extra>`
       }], {
-        bargap: 0.35,
-        margin: { l: 85, r: 50, t: 20, b: 50 },
+        bargap: 0.4,
+        margin: { l: 80, r: 20, t: 10, b: 40 },
         paper_bgcolor: 'rgba(0,0,0,0)',
         plot_bgcolor: 'rgba(0,0,0,0)',
         xaxis: { visible: false },
@@ -113,63 +101,143 @@
           autorange: 'reversed',
           tickfont: { size: 15, color: '#004d1a', weight: 'bold' }
         }
-      }, { responsive: true, displayModeBar: false });
+      }, { 
+        responsive: true, 
+        displayModeBar: false,
+        hoverlabel: { bgcolor: '#004d1a', font: { color: 'white' } }
+      });
     });
 
-    // SUMMARY CARD — SMALL, CLEAN
+    // SUMMARY CARD — TIGHT ON MOBILE, 4 IN ONE ROW ON DESKTOP
     const first = projections[0];
     const last = projections[projections.length - 1];
     const growth = (a, b) => a > 0 ? ((b - a) / a * 100).toFixed(0) : '∞';
 
     const summary = document.createElement('div');
-    summary.style.cssText = `
-      margin: 12px 8px;
-      background: white;
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
-      border: 1px solid #f0fdf4;
-    `;
-
-    let html = `
-      <div style="background:linear-gradient(90deg,#004d1a,#10B981);padding:16px;text-align:center;">
-        <h3 style="margin:0;font-size:17px;color:white;font-weight:900;">5-Year Growth Strategy</h3>
+    summary.className = 'summary-card';
+    summary.innerHTML = `
+      <div class="summary-header">5-Year Growth Strategy</div>
+      <div class="summary-grid">
+        ${['Members', 'Contributions', 'Loans', 'Bank Balance'].map(label => {
+          const key = label.toLowerCase().replace(' ', '').replace('bankbalance', 'bankBalance');
+          const curr = first[key];
+          const proj = last[key];
+          const g = growth(curr, proj);
+          return `
+            <div class="summary-item">
+              <div class="summary-label">${label}</div>
+              <div class="summary-values">
+                <div><span>2025</span><strong>${fmt(curr)}</strong></div>
+                <div><span>2029</span><strong>${fmt(proj)}</strong></div>
+              </div>
+              <div class="summary-growth">+${g}%</div>
+            </div>
+          `;
+        }).join('')}
       </div>
-      <div style="padding:18px;display:grid;grid-template-columns:1fr;gap:14px;">
     `;
-
-    ['Members', 'Contributions', 'Loans', 'Bank Balance'].forEach(label => {
-      const key = label.toLowerCase().replace(' ', '').replace('bankbalance', 'bankBalance');
-      const curr = first[key];
-      const proj = last[key];
-      const g = growth(curr, proj);
-      html += `
-        <div style="background:#f0fdf4;border-radius:14px;padding:14px;border:1px solid #86efac;">
-          <div style="font-size:14.5px;font-weight:900;color:#166534;margin-bottom:6px;">${label}</div>
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div><div style="font-size:12px;color:#6b7280;">2025</div><div style="font-size:16px;color:#166534;font-weight:900;">${fmt(curr)}</div></div>
-            <div style="text-align:right;"><div style="font-size:12px;color:#6b7280;">2029</div><div style="font-size:18px;color:#004d1a;font-weight:900;">${fmt(proj)}</div></div>
-          </div>
-          <div style="text-align:center;margin-top:10px;">
-            <span style="background:#10B981;color:white;padding:6px 14px;border-radius:50px;font-weight:900;font-size:13px;">+${g}%</span>
-          </div>
-        </div>
-      `;
-    });
-
-    html += `</div>`;
-    summary.innerHTML = html;
     container.appendChild(summary);
 
-    // RESPONSIVE: 1 col mobile → 2 col tablet → 4 col desktop
+    // RESPONSIVE STYLES INJECTED ONCE
     const style = document.createElement('style');
     style.textContent = `
-      @media (min-width: 640px) { 
-        #projectionsChart > div { display: inline-block; width: calc(50% - 16px); vertical-align: top; }
+      .kpi-card, .summary-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        border: 1px solid #f0fdf4;
+        margin: 12px 0;
       }
-      @media (min-width: 1024px) { 
-        #projectionsChart > div { width: calc(25% - 16px); }
-        #projectionsChart > div:last-child { width: calc(100% - 16px); display: block; }
+      .kpi-title {
+        padding: 14px 18px;
+        background: #f8fdfa;
+        text-align: center;
+        font-size: 16px;
+        font-weight: 900;
+        color: #004d1a;
+      }
+      .kpi-chart { height: 300px; }
+      .summary-header {
+        background: linear-gradient(90deg,#004d1a,#10B981);
+        color: white;
+        padding: 14px;
+        text-align: center;
+        font-size: 17px;
+        font-weight: 900;
+      }
+      .summary-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+        padding: 16px;
+      }
+      .summary-item {
+        background: #f0fdf4;
+        border-radius: 12px;
+        padding: 10px;
+        border: 1px solid #86efac;
+        text-align: center;
+      }
+      .summary-label {
+        font-size: 13px;
+        font-weight: 900;
+        color: #166534;
+        margin-bottom: 4px;
+      }
+      .summary-values {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+        margin: 4px 0;
+      }
+      .summary-values span { color: #6b7280; font-size: 11px; display: block; }
+      .summary-values strong { font-size: 15px; color: #004d1a; }
+      .summary-growth {
+        background: #10B981;
+        color: white;
+        padding: 4px 10px;
+        border-radius: 50px;
+        font-size: 12px;
+        font-weight: 900;
+        margin-top: 6px;
+      }
+
+      /* MOBILE: FULL WIDTH, TIGHT */
+      @media (max-width: 768px) {
+        .kpi-card, .summary-card { margin: 16px 8px; border-radius: 16px; }
+        .kpi-chart { height: 340px !important; }
+        .summary-grid { gap: 10px; padding: 12px; }
+        .summary-values { font-size: 12px; }
+        .summary-values strong { font-size: 14px; }
+      }
+
+      /* TABLET: 2 PER ROW */
+      @media (min-width: 769px) and (max-width: 1023px) {
+        .kpi-card { display: inline-block; width: calc(50% - 16px); vertical-align: top; margin: 12px 8px; }
+        .summary-card { display: block; width: calc(100% - 16px); margin: 20px 8px; }
+      }
+
+      /* DESKTOP: 2 KPI CARDS PER ROW, SUMMARY FULL WIDTH */
+      @media (min-width: 1024px) {
+        .kpi-card { 
+          display: inline-block; 
+          width: calc(50% - 16px); 
+          vertical-align: top; 
+          margin: 12px 8px; 
+        }
+        .summary-card { 
+          display: block; 
+          width: calc(100% - 16px); 
+          margin: 20px 8px; 
+        }
+        .summary-grid { 
+          grid-template-columns: repeat(4, 1fr); 
+          gap: 16px; 
+        }
+        .summary-item { padding: 14px; }
+        .summary-values strong { font-size: 17px; }
+        .summary-growth { font-size: 13px; padding: 6px 14px; }
       }
     `;
     document.head.appendChild(style);
