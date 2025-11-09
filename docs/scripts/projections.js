@@ -1,10 +1,10 @@
-// SOYOSOYO SACCO — FINAL: MOBILE-PERFECT, 2 CONTAINERS, FLAWLESS
+// SOYOSOYO SACCO — FINAL: CLEAN, SIMPLE, MOBILE-PERFECT (5 BOXES ONLY)
 (function () {
   'use strict';
 
   function waitForData(cb) {
     if (window.saccoData?.jan && window.saccoData?.today) cb();
-    else setTimeout(() => waitForData(cb), 80);
+    else setTimeout(() => waitForData(cb), 100);
   }
 
   function normalize(data) {
@@ -29,16 +29,14 @@
     let last = { ...end };
 
     years.forEach((year, i) => {
-      if (i === 0) {
-        projections.push({ year, ...end });
-      } else {
+      if (i === 0) projections.push({ year, ...end });
+      else {
         const members = Math.round(last.members * (1 + rates.members * 0.45));
         const contributions = Math.round(last.contributions * (1 + rates.contributions * 0.45));
         const loans = Math.round(last.loans * (1 + rates.loans));
         const bankBalance = Math.round(last.bankBalance * (1 + rates.bank * 0.45));
         const totalAssets = loans + contributions + bankBalance;
         const profit = Math.round((last.roa / 100) * totalAssets);
-
         projections.push({ year, members, contributions, loans, bankBalance, profit, roa: +last.roa.toFixed(2) });
         last = { members, contributions, loans, bankBalance, profit, roa: last.roa };
       }
@@ -47,67 +45,36 @@
     return projections;
   }
 
-  function fmt(num) {
-    return Number(num).toLocaleString();
-  }
+  function fmt(num) { return Number(num).toLocaleString(); }
 
   function createCharts(projections) {
     const container = document.getElementById('projectionsChart');
-    if (!container || typeof Plotly === 'undefined') return;
+    if (!container || typeof Plotly === 'undefined') {
+      if (container) container.innerHTML = '<p style="color:red;padding:20px;">Error: Plotly not loaded</p>';
+      return;
+    }
 
     container.innerHTML = `
-      <div style="
-        background: white;
-        border-radius: 20px;
-        padding: 18px;
-        box-shadow: 0 12px 40px rgba(0,0,0,0.09);
-        border: 1px solid #f0fdf4;
-        margin: 12px 8px;
-        max-width: 100%;
-        box-sizing: border-box;
-      ">
-        <h3 style="
-          margin: 0 0 12px;
-          text-align: center;
-          font-size: 19px;
-          font-weight: 900;
-          color: #004d1a;
-          line-height: 1.3;
-        ">
-          5-Year Growth Projections
-        </h3>
-        <p style="
-          text-align: center;
-          color: #6b7280;
-          font-size: 13.5px;
-          margin: 0 0 24px;
-          line-height: 1.4;
-        ">
-          Smart forecasting based on our current performance trajectory (2025-2029)
-        </p>
-
-        <!-- KPI CONTAINER -->
-        <div style="
-          background: #f8fdfa;
-          border-radius: 16px;
-          padding: 16px;
-          border: 1px solid #dcfce7;
-          margin-bottom: 20px;
-        ">
-          <div style="
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 18px;
-          " id="kpiGrid"></div>
+      <div style="padding:16px 12px;max-width:100%;box-sizing:border-box;">
+        
+        <!-- TITLE -->
+        <div style="text-align:center;margin-bottom:24px;">
+          <h3 style="margin:0;font-size:21px;font-weight:900;color:#004d1a;">5-Year Growth Projections</h3>
+          <p style="margin:8px 0 0;font-size:14px;color:#6b7280;">
+            Smart forecasting based on our current performance trajectory (2025-2029)
+          </p>
         </div>
 
-        <!-- SUMMARY CONTAINER -->
-        <div id="summaryContainer"></div>
+        <!-- 4 KPI BOXES -->
+        <div id="kpiContainer" style="display:grid;grid-template-columns:1fr;gap:18px;margin-bottom:24px;"></div>
+
+        <!-- SUMMARY BOX -->
+        <div id="summaryBox"></div>
       </div>
     `;
 
-    const kpiGrid = document.getElementById('kpiGrid');
-    const summaryContainer = document.getElementById('summaryContainer');
+    const kpiContainer = document.getElementById('kpiContainer');
+    const summaryBox = document.getElementById('summaryBox');
 
     const kpis = [
       { name: 'Members', key: 'members', currency: false },
@@ -116,44 +83,32 @@
       { name: 'Bank Balance', key: 'bankBalance', currency: true }
     ];
 
-    const yearColors = {
-      2025: '#FF4081',
-      2026: '#00BCD4',
-      2027: '#4CAF50',
-      2028: '#FFC107',
-      2029: '#9C27B0'
-    };
+    const yearColors = { 2025: '#FF4081', 2026: '#00BCD4', 2027: '#4CAF50', 2028: '#FFC107', 2029: '#9C27B0' };
 
     kpis.forEach((kpi, i) => {
       const values = projections.map(p => p[kpi.key]);
       const maxVal = Math.max(...values, 1);
-      const minVisible = maxVal * 0.22;
+      const minVisible = maxVal * 0.25;
       const stretched = values.map(v => v < minVisible ? minVisible : v);
 
-      const card = document.createElement('div');
-      card.style.cssText = `
-        background: white;
-        border-radius: 16px;
-        padding: 14px;
-        box-shadow: 0 6px 20px rgba(0,0,0,0.05);
-        border: 1px solid #f0fdf4;
-        overflow: hidden;
+      const box = document.createElement('div');
+      box.style.cssText = `
+        background:white;
+        border-radius:18px;
+        padding:16px;
+        box-shadow:0 8px 25px rgba(0,0,0,0.07);
+        border:1px solid #f0fdf4;
+        overflow:hidden;
       `;
 
-      card.innerHTML = `
-        <h4 style="
-          margin: 0 0 10px;
-          color: #004d1a;
-          font-size: 15.5px;
-          text-align: center;
-          font-weight: 900;
-        ">
+      box.innerHTML = `
+        <h4 style="margin:0 0 12px;text-align:center;font-size:16px;font-weight:900;color:#004d1a;">
           ${kpi.name} Growth
         </h4>
-        <div id="chart-${i}" style="width:100%; height:300px;"></div>
+        <div id="chart-${i}" style="width:100%;height:320px;"></div>
       `;
 
-      kpiGrid.appendChild(card);
+      kpiContainer.appendChild(box);
 
       const colors = projections.map(p => yearColors[p.year]);
 
@@ -164,30 +119,47 @@
         x: stretched,
         text: projections.map(p => kpi.currency ? `KES ${fmt(p[kpi.key])}` : fmt(p[kpi.key])),
         textposition: 'inside',
-        textfont: { size: 15, color: 'white', family: 'Inter, sans-serif', weight: 'bold' },
+        textfont: { size: 16, color: 'white', weight: 'bold' },
         insidetextanchor: 'middle',
-        marker: {
-          color: colors,
-          line: { width: 3.5, color: 'white' }
-        }
+        marker: { color: colors, line: { width: 4, color: 'white' } }
       }], {
-        bargap: 0.38,
-        margin: { l: 65, r: 20, t: 15, b: 35 },
+        bargap: 0.4,
+        margin: { l: 70, r: 20, t: 20, b: 40 },
         paper_bgcolor: 'rgba(0,0,0,0)',
         plot_bgcolor: 'rgba(0,0,0,0)',
         xaxis: { visible: false },
-        yaxis: {
-          automargin: true,
+        yaxis: { 
+          automargin: true, 
           autorange: 'reversed',
-          tickfont: { size: 14, color: '#004d1a', family: 'Inter', weight: 'bold' }
+          tickfont: { size: 15, color: '#004d1a', weight: 'bold' }
         }
       }, { responsive: true, displayModeBar: false });
     });
 
-    // SUMMARY — MOBILE-FRIENDLY
+    // SUMMARY BOX
     const first = projections[0];
     const last = projections[projections.length - 1];
     const growth = (a, b) => a > 0 ? ((b - a) / a * 100).toFixed(0) : '∞';
+
+    let summaryHTML = `
+      <div style="
+        background:white;
+        border-radius:18px;
+        padding:18px;
+        box-shadow:0 8px 25px rgba(0,0,0,0.07);
+        border:1px solid #f0fdf4;
+      ">
+        <div style="
+          background:linear-gradient(90deg,#004d1a,#10B981);
+          padding:14px;
+          border-radius:14px;
+          text-align:center;
+          margin-bottom:18px;
+        ">
+          <h3 style="margin:0;font-size:17px;color:white;font-weight:900;">5-Year Growth Strategy</h3>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr;gap:14px;">
+    `;
 
     const rows = [
       { label: 'Members', curr: first.members, proj: last.members },
@@ -196,74 +168,30 @@
       { label: 'Bank Balance', curr: first.bankBalance, proj: last.bankBalance }
     ];
 
-    let summaryHTML = `
-      <div style="
-        background: white;
-        border-radius: 16px;
-        padding: 16px;
-        box-shadow: 0 6px 20px rgba(0,0,0,0.05);
-        border: 1px solid #f0fdf4;
-      ">
-        <div style="
-          background: linear-gradient(90deg, #004d1a, #10B981);
-          padding: 14px;
-          border-radius: 14px;
-          text-align: center;
-          margin-bottom: 16px;
-        ">
-          <h3 style="
-            margin: 0;
-            font-size: 16.5px;
-            color: white;
-            font-weight: 900;
-          ">5-Year Growth Strategy</h3>
-        </div>
-
-        <div style="
-          display: grid;
-          grid-template-columns: 1fr;
-          gap: 14px;
-        ">
-    `;
-
     rows.forEach(r => {
       const g = growth(r.curr, r.proj);
       summaryHTML += `
-        <div style="
-          background: #f0fdf4;
-          border-radius: 14px;
-          padding: 14px;
-          border: 1px solid #86efac;
-        ">
-          <div style="font-size: 14px; font-weight: 900; color: #166534; margin-bottom: 6px;">
-            ${r.label}
-          </div>
-          <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div style="background:#f0fdf4;border-radius:14px;padding:14px;border:1px solid #86efac;">
+          <div style="font-size:14.5px;font-weight:900;color:#166534;margin-bottom:6px;">${r.label}</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
             <div>
-              <div style="font-size: 12px; color: #6b7280;">2025</div>
-              <div style="font-size: 15px; color: #166534; font-weight: 900;">${fmt(r.curr)}</div>
+              <div style="font-size:12px;color:#6b7280;">2025</div>
+              <div style="font-size:16px;color:#166534;font-weight:900;">${fmt(r.curr)}</div>
             </div>
-            <div style="text-align: right;">
-              <div style="font-size: 12px; color: #6b7280;">2029</div>
-              <div style="font-size: 17px; color: #004d1a; font-weight: 900;">${fmt(r.proj)}</div>
+            <div style="text-align:right;">
+              <div style="font-size:12px;color:#6b7280;">2029</div>
+              <div style="font-size:18px;color:#004d1a;font-weight:900;">${fmt(r.proj)}</div>
             </div>
           </div>
-          <div style="text-align: center; margin-top: 10px;">
-            <span style="
-              background: #10B981;
-              color: white;
-              padding: 5px 12px;
-              border-radius: 50px;
-              font-weight: 900;
-              font-size: 12.5px;
-            ">+${g}%</span>
+          <div style="text-align:center;margin-top:10px;">
+            <span style="background:#10B981;color:white;padding:6px 14px;border-radius:50px;font-weight:900;font-size:13px;">+${g}%</span>
           </div>
         </div>
       `;
     });
 
     summaryHTML += `</div></div>`;
-    summaryContainer.innerHTML = summaryHTML;
+    summaryBox.innerHTML = summaryHTML;
   }
 
   function init() {
@@ -273,18 +201,12 @@
         if (!jan || !today) return;
         const projections = generateProjections(jan, today);
         createCharts(projections);
-        console.log('SOYOSOYO SACCO — MOBILE-PERFECT PROJECTIONS LOADED');
-      } catch (e) {
-        console.error(e);
-      }
+      } catch (e) { console.error(e); }
     });
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
 
   window.refreshProjections = init;
   window.addEventListener('saccoDataUpdated', init);
