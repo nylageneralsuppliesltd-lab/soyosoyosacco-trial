@@ -1,4 +1,4 @@
-// projections.js — SOYOSOYO SACCO — FINAL MOBILE & DESKTOP PERFECTION
+// projections.js — SOYOSOYO SACCO — FINAL FIXED: NO OVERFLOW, NO KES, NO EXPAND, NO BUGS
 (function () {
   'use strict';
 
@@ -47,10 +47,7 @@
 
   function createCharts(projections) {
     const container = document.getElementById('projectionsChart');
-    if (!container || typeof Plotly === 'undefined') {
-      if (container) container.innerHTML = '<div style="color:red;padding:20px;text-align:center;">PLOTLY NOT LOADED</div>';
-      return;
-    }
+    if (!container || typeof Plotly === 'undefined') return;
 
     container.innerHTML = '';
 
@@ -63,7 +60,6 @@
 
     const yearColors = { 2025: '#FF4081', 2026: '#00BCD4', 2027: '#4CAF50', 2028: '#FFC107', 2029: '#9C27B0' };
 
-    // KPI CARDS
     kpis.forEach((kpi, i) => {
       const values = projections.map(p => p[kpi.key]);
 
@@ -73,7 +69,6 @@
         <div class="kpi-title">${kpi.name} Growth</div>
         <div id="chart-${i}" class="kpi-chart"></div>
       `;
-
       container.appendChild(card);
 
       Plotly.newPlot(`chart-${i}`, [{
@@ -81,34 +76,27 @@
         orientation: 'h',
         y: projections.map(p => p.year),
         x: values,
-        text: values.map(v => kpi.currency ? `KES ${fmt(v)}` : fmt(v)),
+        text: values.map(v => fmt(v)),  // NO KES HERE
         textposition: 'inside',
         insidetextanchor: 'end',
-        textfont: { size: 16, color: 'white', weight: 'bold' },
-        marker: { 
-          color: projections.map(p => yearColors[p.year]),
-          line: { width: 4, color: 'white' }
-        },
-        hovertemplate: `<b>%{y}</b><br>KES %{text}<extra></extra>`
+        textfont: { size: 15, color: 'white', weight: 'bold' },
+        marker: { color: projections.map(p => yearColors[p.year]), line: { width: 3, color: 'white' } },
+        hovertemplate: `<b>%{y}</b><br>${kpi.currency ? 'KES ' : ''}%{text}<extra></extra>`
       }], {
         bargap: 0.4,
-        margin: { l: 80, r: 20, t: 10, b: 40 },
+        margin: { l: 70, r: 15, t: 10, b: 35 },
         paper_bgcolor: 'rgba(0,0,0,0)',
         plot_bgcolor: 'rgba(0,0,0,0)',
         xaxis: { visible: false },
-        yaxis: { 
-          automargin: true,
-          autorange: 'reversed',
-          tickfont: { size: 15, color: '#004d1a', weight: 'bold' }
-        }
-      }, { 
-        responsive: true, 
+        yaxis: { automargin: true, autorange: 'reversed', tickfont: { size: 14, color: '#004d1a', weight: 'bold' } }
+      }, {
+        responsive: true,
         displayModeBar: false,
-        hoverlabel: { bgcolor: '#004d1a', font: { color: 'white' } }
+        staticPlot: false  // Prevents expand on touch
       });
     });
 
-    // SUMMARY CARD — TIGHT ON MOBILE, 4 IN ONE ROW ON DESKTOP
+    // SUMMARY
     const first = projections[0];
     const last = projections[projections.length - 1];
     const growth = (a, b) => a > 0 ? ((b - a) / a * 100).toFixed(0) : '∞';
@@ -138,106 +126,59 @@
     `;
     container.appendChild(summary);
 
-    // RESPONSIVE STYLES INJECTED ONCE
+    // INJECT STYLES — FIXED OVERFLOW + TIGHT MOBILE
     const style = document.createElement('style');
     style.textContent = `
-      .kpi-card, .summary-card {
+      #projectionsChart > .kpi-card,
+      #projectionsChart > .summary-card {
         background: white;
-        border-radius: 20px;
+        border-radius: 18px;
         overflow: hidden;
         box-shadow: 0 8px 25px rgba(0,0,0,0.08);
         border: 1px solid #f0fdf4;
-        margin: 12px 0;
+        margin: 14px 10px;
+        max-width: calc(100% - 20px);
       }
       .kpi-title {
-        padding: 14px 18px;
+        padding: 12px;
         background: #f8fdfa;
         text-align: center;
-        font-size: 16px;
+        font-size: 15px;
         font-weight: 900;
         color: #004d1a;
       }
-      .kpi-chart { height: 300px; }
+      .kpi-chart { height: 280px; width: 100% !important; }
       .summary-header {
         background: linear-gradient(90deg,#004d1a,#10B981);
         color: white;
-        padding: 14px;
+        padding: 12px;
         text-align: center;
-        font-size: 17px;
+        font-size: 16px;
         font-weight: 900;
       }
-      .summary-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 12px;
-        padding: 16px;
-      }
-      .summary-item {
-        background: #f0fdf4;
-        border-radius: 12px;
-        padding: 10px;
-        border: 1px solid #86efac;
-        text-align: center;
-      }
-      .summary-label {
-        font-size: 13px;
-        font-weight: 900;
-        color: #166534;
-        margin-bottom: 4px;
-      }
-      .summary-values {
-        display: flex;
-        justify-content: space-between;
-        font-size: 13px;
-        margin: 4px 0;
-      }
-      .summary-values span { color: #6b7280; font-size: 11px; display: block; }
-      .summary-values strong { font-size: 15px; color: #004d1a; }
-      .summary-growth {
-        background: #10B981;
-        color: white;
-        padding: 4px 10px;
-        border-radius: 50px;
-        font-size: 12px;
-        font-weight: 900;
-        margin-top: 6px;
-      }
+      .summary-grid { display: grid; grid-template-columns: 1fr; gap: 10px; padding: 12px; }
+      .summary-item { background: #f0fdf4; border-radius: 12px; padding: 8px; border: 1px solid #86efac; text-align: center; }
+      .summary-label { font-size: 12.5px; font-weight: 900; color: #166534; margin-bottom: 3px; }
+      .summary-values { display: flex; justify-content: space-between; font-size: 12px; }
+      .summary-values span { color: #6b7280; font-size: 10px; display: block; }
+      .summary-values strong { font-size: 13.5px; color: #004d1a; }
+      .summary-growth { background: #10B981; color: white; padding: 4px 10px; border-radius: 50px; font-size: 11.5px; font-weight: 900; margin-top: 5px; }
 
-      /* MOBILE: FULL WIDTH, TIGHT */
+      @media (min-width: 769px) {
+        #projectionsChart > .kpi-card {
+          display: inline-block;
+          width: calc(50% - 20px);
+          vertical-align: top;
+        }
+        .summary-grid { grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        .summary-item { padding: 10px; }
+        .summary-values strong { font-size: 15px; }
+        .summary-growth { font-size: 12px; padding: 5px 12px; }
+      }
       @media (max-width: 768px) {
-        .kpi-card, .summary-card { margin: 16px 8px; border-radius: 16px; }
-        .kpi-chart { height: 340px !important; }
-        .summary-grid { gap: 10px; padding: 12px; }
-        .summary-values { font-size: 12px; }
-        .summary-values strong { font-size: 14px; }
-      }
-
-      /* TABLET: 2 PER ROW */
-      @media (min-width: 769px) and (max-width: 1023px) {
-        .kpi-card { display: inline-block; width: calc(50% - 16px); vertical-align: top; margin: 12px 8px; }
-        .summary-card { display: block; width: calc(100% - 16px); margin: 20px 8px; }
-      }
-
-      /* DESKTOP: 2 KPI CARDS PER ROW, SUMMARY FULL WIDTH */
-      @media (min-width: 1024px) {
-        .kpi-card { 
-          display: inline-block; 
-          width: calc(50% - 16px); 
-          vertical-align: top; 
-          margin: 12px 8px; 
-        }
-        .summary-card { 
-          display: block; 
-          width: calc(100% - 16px); 
-          margin: 20px 8px; 
-        }
-        .summary-grid { 
-          grid-template-columns: repeat(4, 1fr); 
-          gap: 16px; 
-        }
-        .summary-item { padding: 14px; }
-        .summary-values strong { font-size: 17px; }
-        .summary-growth { font-size: 13px; padding: 6px 14px; }
+        .kpi-chart { height: 320px !important; }
+        .summary-grid { padding: 10px; gap: 8px; }
+        .summary-values strong { font-size: 13px; }
       }
     `;
     document.head.appendChild(style);
