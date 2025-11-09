@@ -1,4 +1,5 @@
-// projections.js — FINAL: SHOWS FULL HISTORY + CURRENT + FUTURE (2025–2030+)
+// projections.js — FINAL: FULL HISTORY + CURRENT + FUTURE (2025–2030+)
+// ONLY AFFECTS #projectionsChart — ZERO IMPACT ON FINANCIAL CHARTS
 (function () {
   'use strict';
 
@@ -8,7 +9,7 @@
   }
 
   function normalize(data) {
-    const num = v => Number(String(v).replace(/[^0-9.]/g, '')) || 0;
+    const num = v => Number&rdquo;String(v).replace(/[^0-9.]/g, '')) || 0;
     const roa = typeof data.roa === 'string' ? parseFloat(data.roa.replace('%', '')) || 0 : data.roa;
     return { members: num(data.members), contributions: num(data.contributions), loans: num(data.loans), bankBalance: num(data.bankBalance), roa };
   }
@@ -16,17 +17,14 @@
   function generateProjections() {
     const currentYear = new Date().getFullYear();
 
-    // Get all saved years from history
     const savedYears = Object.keys(window.saccoHistory || {}).map(Number).sort((a, b) => a - b);
     const oldestYear = savedYears.length > 0 ? savedYears[0] : currentYear - 1;
 
-    // Always show: oldest saved → current → +4 years ahead
     const years = [];
     for (let y = oldestYear; y <= currentYear + 4; y++) {
       years.push(y);
     }
 
-    // Use oldest saved year as baseline, fallback to jan
     const baseline = window.saccoHistory?.[oldestYear] || window.saccoData.jan;
     const start = normalize(baseline);
     const end = normalize(window.saccoData.today);
@@ -89,7 +87,6 @@
       container.appendChild(card);
 
       const chartId = `chart-${i}`;
-      const chartDiv = document.getElementById(chartId);
 
       const layout = {
         autosize: true,
@@ -114,9 +111,10 @@
         cliponaxis: true
       }], layout, { responsive: true, displayModeBar: false, staticPlot: false, scrollZoom: false });
 
-      setTimeout(() => Plotly.Plots.resize(chartDiv), 100);
-      const resizeObserver = new ResizeObserver(() => Plotly.Plots.resize(chartDiv));
-      resizeObserver.observe(chartDiv);
+      // Resize handling
+      setTimeout(() => Plotly.Plots.resize(chartId), 100);
+      const resizeObserver = new ResizeObserver(() => Plotly.Plots.resize(chartId));
+      resizeObserver.observe(document.getElementById(chartId));
     });
 
     // SUMMARY CARD
@@ -147,34 +145,136 @@
     `;
     container.appendChild(summary);
 
-    // STYLES (same as before — perfect desktop + mobile)
+    // === INJECT STYLES — FULLY SCOPED TO #projectionsChart ONLY ===
+    const existingStyle = document.getElementById('projections-styles');
+    if (existingStyle) existingStyle.remove();
+
     const style = document.createElement('style');
+    style.id = 'projections-styles';
     style.textContent = `
-      /* [ALL YOUR ORIGINAL STYLES FROM LAST VERSION] */
-      #projectionsChart > .kpi-card, #projectionsChart > .summary-card {
-        background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        border: 1px solid #f0fdf4; margin: 16px 8px; max-width: calc(100% - 16px); padding: 0 !important;
+      /* ISOLATE ALL PROJECTION STYLES — NO LEAK TO FINANCIAL CHARTS */
+      #projectionsChart { 
+        isolation: isolate; 
+        font-family: 'Lato', sans-serif;
+        padding: 0 10px;
       }
-      .kpi-title { padding: 16px; background: #f8fdfa; text-align: center; font-size: 16px; font-weight: 900; color: #004d1a; }
-      .kpi-chart { height: 420px !important; width: 100% !important; padding: 0 !important; margin: 0 auto !important; }
-      .summary-header { background: linear-gradient(90deg,#004d1a,#10B981); color: white; padding: 16px; text-align: center; font-size: 17px; font-weight: 900; }
-      .summary-grid { display: grid; grid-template-columns: 1fr; gap: 14px; padding: 16px; }
-      .summary-item { background: #f0fdf4; border-radius: 14px; padding: 12px; border: 1px solid #86efac; text-align: center; }
-      .summary-label { font-size: 13.5px; font-weight: 900; color: #166534; }
-      .summary-values { display: flex; justify-content: space-between; font-size: 13px; margin: 8px 0; }
-      .summary-values span { color: #6b7280; font-size: 11.5px; display: block; }
-      .summary-values strong { font-size: 15px; color: #004d1a; }
-      .summary-growth { background: #10B981; color: white; padding: 6px 14px; border-radius: 50px; font-size: 12.5px; font-weight: 900; }
+
+      #projectionsChart > .kpi-card,
+      #projectionsChart > .summary-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        border: 1px solid #f0fdf4;
+        margin: 16px 8px;
+        max-width: calc(100% - 16px);
+      }
+
+      #projectionsChart .kpi-title {
+        padding: 16px;
+        background: #f8fdfa;
+        text-align: center;
+        font-size: 16px;
+        font-weight: 900;
+        color: #004d1a;
+      }
+
+      #projectionsChart .kpi-chart {
+        height: 420px !important;
+        width: 100% !important;
+      }
+
+      #projectionsChart .summary-header {
+        background: linear-gradient(90deg,#004d1a,#10B981);
+        color: white;
+        padding: 16px;
+        text-align: center;
+        font-size: 17px;
+        font-weight: 900;
+      }
+
+      #projectionsChart .summary-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 14px;
+        padding: 16px;
+      }
+
+      #projectionsChart .summary-item {
+        background: #f0fdf4;
+        border-radius: 14px;
+        padding: 12px;
+        border: 1px solid #86efac;
+        text-align: center;
+      }
+
+      #projectionsChart .summary-label {
+        font-size: 13.5px;
+        font-weight: 900;
+        color: #166534;
+      }
+
+      #projectionsChart .summary-values {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+        margin: 8px 0;
+      }
+
+      #projectionsChart .summary-values span {
+        color: #6b7280;
+        font-size: 11.5px;
+        display: block;
+      }
+
+      #projectionsChart .summary-values strong {
+        font-size: 15px;
+        color: #004d1a;
+      }
+
+      #projectionsChart .summary-growth {
+        background: #10B981;
+        color: white;
+        padding: 6px 14px;
+        border-radius: 50px;
+        font-size: 12.5px;
+        font-weight: 900;
+      }
+
       @media (min-width: 769px) {
-        #projectionsChart { display: flex; flex-wrap: wrap; justify-content: space-between; }
-        #projectionsChart > .kpi-card { flex: 1 1 calc(50% - 20px); max-width: 48%; }
-        .kpi-chart { height: 440px !important; max-width: 95% !important; }
-        #projectionsChart > .summary-card { flex: 1 1 100%; max-width: 100%; margin: 30px 8px 10px; }
-        .summary-grid { grid-template-columns: repeat(4, 1fr); gap: 20px; padding: 20px; }
-        .summary-values strong { font-size: 17px; }
-        .summary-growth { padding: 8px 16px; font-size: 13px; }
+        #projectionsChart {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: space-between;
+        }
+        #projectionsChart > .kpi-card {
+          flex: 1 1 calc(50% - 20px);
+          max-width: 48%;
+        }
+        #projectionsChart .kpi-chart {
+          height: 440px !important;
+        }
+        #projectionsChart > .summary-card {
+          flex: 1 1 100%;
+          max-width: 100%;
+          margin: 30px 8px 10px;
+        }
+        #projectionsChart .summary-grid {
+          grid-template-columns: repeat(4, 1fr);
+          gap: 20px;
+          padding: 20px;
+        }
+        #projectionsChart .summary-values strong { font-size: 17px; }
+        #projectionsChart .summary-growth { padding: 8px 16px; font-size: 13px; }
       }
-      @media (max-width: 768px) { .kpi-chart { height: 460px !important; width: 100% !important; } }
+
+      @media (max-width: 768px) {
+        #projectionsChart .kpi-chart {
+          height: 460px !important;
+        }
+      }
+
+      /* NO CANVAS, NO .chart-card, NO GLOBAL RULES — 100% SAFE */
     `;
     document.head.appendChild(style);
   }
@@ -183,12 +283,15 @@
     waitForData(() => {
       try {
         createCharts();
-      } catch (e) { console.error(e); }
+      } catch (e) { console.error('Projections error:', e); }
     });
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
-  else init();
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 
   window.refreshProjections = init;
   window.addEventListener('saccoDataUpdated', init);
