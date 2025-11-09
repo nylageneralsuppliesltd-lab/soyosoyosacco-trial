@@ -499,6 +499,7 @@
         }
     };
     Chart.register(cleanGrowthArrowPlugin);
+    Chart.register(ChartDataLabels);
 
     function renderGrowthCharts() {
         if (!window.saccoData) { setTimeout(renderGrowthCharts, 100); return; }
