@@ -1,4 +1,4 @@
-// projections.js — FINAL VERSION WITH YOUR INSIDE-TEXT FIX + 2029 FULLY VISIBLE
+// projections.js — FINAL VERSION WITH YOUR LATEST CONFIG + 2029 PERFECTLY FIT
 (function () {
   'use strict';
 
@@ -70,7 +70,7 @@
       `;
       container.appendChild(card);
 
-      // YOUR EXACT FIX — NUMBERS INSIDE, CLEAN SPACING
+      // YOUR EXACT FINAL CONFIG — PERFECT FIT
       Plotly.newPlot(`chart-${i}`, [{
         type: 'bar',
         orientation: 'h',
@@ -87,13 +87,13 @@
         hovertemplate: `<b>%{y}</b><br>%{text}<extra></extra>`,
         cliponaxis: true
       }], {
-        bargap: 0.18,
-        margin: { l: 80, r: 20, t: 30, b: 60 },
+        bargap: 0.16,
+        margin: { l: 60, r: 30, t: 30, b: 60 },
         paper_bgcolor: 'rgba(0,0,0,0)',
         plot_bgcolor: 'rgba(0,0,0,0)',
         xaxis: { 
           visible: false,
-          range: [0, maxVal * 1.1],
+          range: [0, maxVal * 1.08],
           fixedrange: true
         },
         yaxis: { 
@@ -105,7 +105,7 @@
       }, {
         responsive: true,
         displayModeBar: false,
-        staticPlot: true,
+        staticPlot: false,     // Hover enabled
         scrollZoom: false
       });
     });
@@ -140,7 +140,7 @@
     `;
     container.appendChild(summary);
 
-    // FINAL CLEAN STYLES — TALL ENOUGH FOR 2029
+    // FINAL STYLES — OPTIMAL HEIGHT
     const style = document.createElement('style');
     style.textContent = `
       #projectionsChart > .kpi-card,
@@ -162,7 +162,7 @@
         color: #004d1a;
       }
       .kpi-chart { 
-        height: 420px !important;   /* TALL ENOUGH FOR 5 BARS + INSIDE TEXT */
+        height: 430px !important;
         width: 100% !important; 
       }
       .summary-header {
@@ -187,12 +187,12 @@
           width: calc(50% - 24px);
           vertical-align: top;
         }
-        .kpi-chart { height: 440px !important; }
+        .kpi-chart { height: 450px !important; }
         .summary-grid { grid-template-columns: repeat(4, 1fr); gap: 16px; }
         .summary-values strong { font-size: 17px; }
       }
       @media (max-width: 768px) {
-        .kpi-chart { height: 460px !important; }
+        .kpi-chart { height: 470px !important; }
       }
     `;
     document.head.appendChild(style);
