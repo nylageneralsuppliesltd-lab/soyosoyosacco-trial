@@ -36,7 +36,7 @@
       gtag('config', 'G-05M38MYK0G');
     </script>
 
-    <!-- GROWTH INDICATOR STYLES -->
+   <!-- GROWTH INDICATOR STYLES -->
     <style>
         .growth-indicator {
             text-align: center;
@@ -49,22 +49,22 @@
         .growth-indicator i { margin-right: 4px; font-size: 0.9em; }
     </style>
 
-    <!-- GROWTH CHARTS GRID STYLES -->
+    <!-- GROWTH CHARTS GRID STYLES — FIXED FOR WIDER BARS -->
     <style>
         .growth-charts-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); /* Bumped min-width for better bar space */
             gap: 1rem;
         }
         .chart-card {
             position: relative;
-            height: 300px;
+            height: 320px; /* Slight height bump for proportion */
             display: flex;
             flex-direction: column;
         }
         .chart-card canvas {
             flex-grow: 1;
-            max-height: 250px;
+            max-height: 270px; /* Adjusted for new card height */
         }
         .chart-card p {
             margin: 0.5rem 0 0 0;
@@ -73,11 +73,11 @@
         }
         @media (max-width: 768px) {
             .growth-charts-grid { grid-template-columns: 1fr; }
-            .chart-card { height: 350px; }
-            .chart-card canvas { max-height: 280px; }
+            .chart-card { height: 360px; } /* Taller on mobile for visibility */
+            .chart-card canvas { max-height: 290px; }
         }
     </style>
-
+    
     <!-- MEMBER ACTIVITIES CAROUSEL STYLES -->
     <style>
         .member-activities-section {
