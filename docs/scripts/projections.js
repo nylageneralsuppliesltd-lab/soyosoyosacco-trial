@@ -1,4 +1,4 @@
-// SOYOSOYO SACCO — FINAL: NUMBERS ALWAYS VISIBLE (READABILITY > PROPORTIONALITY)
+// SOYOSOYO SACCO — FINAL: PREMIUM VISUALS (CURVED + COLORFUL + READABLE)
 (function () {
   'use strict';
 
@@ -22,7 +22,7 @@
     const rates = {
       members: start.members ? (end.members - start.members) / start.members : 0,
       contributions: start.contributions ? (end.contributions - start.contributions) / start.contributions : 0,
-      loans: 1.00,
+      loans: 1.0,
       bank: start.bankBalance ? (end.bankBalance - start.bankBalance) / start.bankBalance : 0
     };
 
@@ -38,7 +38,6 @@
         const bankBalance = Math.round(last.bankBalance * (1 + rates.bank * 0.45));
         const totalAssets = loans + contributions + bankBalance;
         const profit = Math.round((last.roa / 100) * totalAssets);
-
         projections.push({ year, members, contributions, loans, bankBalance, profit, roa: +last.roa.toFixed(2) });
         last = { members, contributions, loans, bankBalance, profit, roa: last.roa };
       }
@@ -51,12 +50,11 @@
     return Number(num).toLocaleString();
   }
 
-  // ——————————————————— READABILITY > PROPORTIONALITY ———————————————————
+  // ——————————————————— PREMIUM CHART VISUALS ———————————————————
   function createCharts(projections) {
     const container = document.getElementById('projectionsChart');
     if (!container || typeof Plotly === 'undefined') return;
 
-    // replace old HTML with a grid
     container.innerHTML = `
       <div style="
         display: grid;
@@ -76,37 +74,39 @@
       { name: 'Bank Balance', key: 'bankBalance', currency: true }
     ];
 
-    const colors = ['#FF6B9D', '#4FACFE', '#43E97B', '#FFA726', '#9C27B0'];
+    // Vibrant and catchy colors for KPIs
+    const colors = [
+      'rgba(255, 99, 71, 0.9)',   // Tomato Red
+      'rgba(0, 191, 255, 0.9)',   // Electric Blue
+      'rgba(50, 205, 50, 0.9)',   // Lime Green
+      'rgba(255, 215, 0, 0.9)',   // Gold
+      'rgba(218, 112, 214, 0.9)'  // Orchid
+    ];
 
     kpis.forEach((kpi, i) => {
       const values = projections.map(p => p[kpi.key]);
-      const maxVal = Math.max(...values, 1); // avoid zero
-      const minVal = Math.min(...values);
-
-      // STRETCH SMALL BARS — ensure even smallest bar is at least 15% of max
-      // but keep a mapping to the actual value (we'll display actual via hover/customdata)
-      const stretchedValues = values.map(v => {
-        const minVisible = maxVal * 0.15;
-        return v < minVisible ? minVisible : v;
-      });
+      const maxVal = Math.max(...values, 1);
+      const stretchedValues = values.map(v => Math.max(v, maxVal * 0.15));
+      const formattedText = projections.map(p => fmt(p[kpi.key]));
+      const actualValues = projections.map(p => p[kpi.key]);
 
       const card = document.createElement('div');
       card.style.cssText = `
-        background: white;
-        border-radius: 18px;
-        padding: 14px;
+        background: linear-gradient(145deg, #ffffff, #f8fdf8);
+        border-radius: 20px;
+        padding: 16px;
         box-shadow: 0 10px 30px rgba(0,0,0,0.06);
-        border: 1px solid #f0fdf4;
+        border: 1px solid #e6f4ea;
         display: flex;
         flex-direction: column;
         overflow: hidden;
+        position: relative;
       `;
 
-      // Slightly reduced height for better mobile fit
       card.innerHTML = `
         <h4 style="
           margin: 0 0 12px;
-          color: #006400;
+          color: #004d00;
           font-size: 17px;
           text-align: center;
           font-weight: 800;
@@ -119,74 +119,54 @@
 
       grid.appendChild(card);
 
-      // TEXT: only show comma-formatted numbers (no KES), inside bar for readability.
-      // Use customdata for true values (so hover shows actual)
-      const formattedText = projections.map(p => fmt(p[kpi.key]));
-      const actualValues = projections.map(p => p[kpi.key]);
-
-      // Create Plotly horizontal bar chart (clean, readable, mobile-friendly)
       const trace = {
         type: 'bar',
         orientation: 'h',
         y: projections.map(p => String(p.year)),
         x: stretchedValues,
-        text: formattedText,             // displayed inside/near bars
+        text: formattedText,
         textposition: 'inside',
         textfont: {
-          size: 14,
-          color: 'white',
-          family: 'Lato, sans-serif'
+          size: 15,
+          color: '#000', // bold black for readability
+          family: 'Poppins, sans-serif',
+          weight: 'bold'
         },
         marker: {
           color: colors[i % colors.length],
-          line: { width: 0 }
+          line: { color: 'rgba(0,0,0,0.1)', width: 1.5 },
+          // Use rounded edges visually
+          pattern: { shape: '', fillmode: 'overlay' }
         },
-        customdata: actualValues.map(v => fmt(v)), // actual formatted numbers for hover/touch
         hovertemplate: '<b>%{y}</b><br><b>%{customdata}</b><extra></extra>',
+        customdata: actualValues.map(v => fmt(v)),
         cliponaxis: false
       };
 
-      // Layout: small left margin so bars touch the left edge visually.
-      // xaxis visible false to avoid currency labels; show full width by setting range to 0..max*1.05
       const layout = {
-        margin: { l: 70, r: 20, t: 10, b: 30 }, // l small so bars start near left container edge
+        margin: { l: 70, r: 20, t: 10, b: 30 },
         paper_bgcolor: 'rgba(0,0,0,0)',
         plot_bgcolor: 'rgba(0,0,0,0)',
-        xaxis: {
-          showgrid: false,
-          zeroline: false,
-          visible: false,
-          range: [0, maxVal * 1.07] // ensure bars can expand to the right edge; stretch is visual only
-        },
-        yaxis: {
-          automargin: true,
-          autorange: 'reversed', // keep 2025 at the top (same ordering as your projection array)
-          tickfont: { size: 13 }
-        },
-        height: 320
+        xaxis: { showgrid: false, zeroline: false, visible: false, range: [0, maxVal * 1.07] },
+        yaxis: { automargin: true, autorange: 'reversed', tickfont: { size: 13, color: '#333' } },
+        height: 320,
+        bargap: 0.4,
+        barmode: 'overlay'
       };
 
-      const config = {
-        responsive: true,
-        displayModeBar: false
-      };
+      const config = { responsive: true, displayModeBar: false };
 
-      // Render
       Plotly.newPlot(`funnel-${i}`, [trace], layout, config);
 
-      // Improve mobile touch: when user taps a bar, show a small non-scrolling tooltip inside the card.
-      // We'll add a simple Plotly 'plotly_click' handler to show a small absolute positioned badge inside the card.
+      // Add touch badge
       const plotEl = document.getElementById(`funnel-${i}`);
-      // Remove previous handler (if any) to avoid duplicates
       plotEl.removeEventListener && plotEl.removeEventListener('plotly_click', () => {});
       plotEl.on('plotly_click', function (ev) {
         try {
           const point = ev.points && ev.points[0];
           if (!point) return;
-          // Remove any existing badge
           const existing = card.querySelector('.bar-badge');
           if (existing) existing.remove();
-
           const badge = document.createElement('div');
           badge.className = 'bar-badge';
           badge.style.cssText = `
@@ -203,17 +183,15 @@
             font-size:14px;
             pointer-events:none;
           `;
-          // point.customdata is formatted string
           badge.innerText = point.customdata || fmt(point.x || 0);
           card.appendChild(badge);
-          // auto-remove after 2.6s
           setTimeout(() => badge.remove(), 2600);
-        } catch (err) { /* silent */ }
+        } catch (err) {}
       });
     });
   }
 
-  // ——————————————————— PERFECT MOBILE SUMMARY (cards, no horizontal glide) ———————————————————
+  // ——————————————————— MOBILE SUMMARY ———————————————————
   function createSummaryTable(projections) {
     const container = document.getElementById('projectionSummary');
     if (!container) return;
@@ -223,16 +201,14 @@
     const growth = (a, b) => a > 0 ? ((b - a) / a * 100).toFixed(0) : '∞';
 
     const rows = [
-      { label: 'Members', curr: first.members, proj: last.members, fmt: 'num' },
-      { label: 'Contributions', curr: first.contributions, proj: last.contributions, fmt: 'num' },
-      { label: 'Loans', curr: first.loans, proj: last.loans, fmt: 'num' },
-      { label: 'Bank Balance', curr: first.bankBalance, proj: last.bankBalance, fmt: 'num' }
+      { label: 'Members', curr: first.members, proj: last.members },
+      { label: 'Contributions', curr: first.contributions, proj: last.contributions },
+      { label: 'Loans', curr: first.loans, proj: last.loans },
+      { label: 'Bank Balance', curr: first.bankBalance, proj: last.bankBalance }
     ];
 
-    // Build responsive card grid that fits mobile screens without scrolling horizontally
     let html = `
       <style>
-        /* summary card grid */
         .ss-card-grid {
           display: grid;
           grid-template-columns: repeat(2, 1fr);
@@ -256,16 +232,12 @@
         .ss-val { font-size:13px; color:#6b7280; font-weight:700; }
         .ss-proj { font-size:15px; color:#006400; font-weight:900; }
         .ss-growth { background:#10B981; color:white; padding:6px 8px; border-radius:999px; font-weight:900; font-size:12px; }
-        @media (max-width:420px) {
-          .ss-card-grid { grid-template-columns: 1fr; }
-        }
+        @media (max-width:420px) { .ss-card-grid { grid-template-columns: 1fr; } }
       </style>
-
       <div style="margin:12px 12px 24px 12px;">
         <div style="background:linear-gradient(90deg,#006400,#10B981); padding:12px 14px; border-radius:12px; color:white; font-weight:900; text-align:center;">
           5-Year Growth (2025 → 2029)
         </div>
-
         <div class="ss-card-grid" style="margin-top:12px;">
     `;
 
@@ -293,11 +265,7 @@
       `;
     });
 
-    html += `
-        </div> <!-- grid -->
-      </div>
-    `;
-
+    html += `</div></div>`;
     container.innerHTML = html;
   }
 
@@ -306,21 +274,17 @@
       try {
         const { jan, today } = window.saccoData;
         if (!jan || !today) return;
-
         const projections = generateProjections(jan, today);
         window.projections = projections;
-
         createCharts(projections);
         createSummaryTable(projections);
-
-        console.log('SOYOSOYO FINAL — ALL NUMBERS VISIBLE, NO BLANK BARS, LIVE');
+        console.log('SOYOSOYO FINAL — COLORFUL PREMIUM VISUALS READY');
       } catch (e) { console.error(e); }
     });
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else init();
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
 
   window.refreshProjections = init;
   window.addEventListener('saccoDataUpdated', init);
