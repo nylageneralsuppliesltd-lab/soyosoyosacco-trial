@@ -1,10 +1,11 @@
-// SOYOSOYO SACCO — PREMIUM 5-YEAR PROJECTIONS (CONSERVATIVE + INDIVIDUAL CONTAINERS)
-// Live, glowing, ultra-classy, and perfectly balanced
+// SOYOSOYO SACCO — PREMIUM 5-YEAR PROJECTIONS (FINAL VERSION)
+// +100% annual loan growth → doubles every year
+// Clean white cards, polite elegance, live updates
 (function () {
   'use strict';
 
   // ——————————————————————————————————————
-  // 1. WAIT FOR CAROUSEL DATA (LIVE UPDATES)
+  // 1. WAIT FOR CAROUSEL DATA (LIVE)
   // ——————————————————————————————————————
   function waitForData(cb) {
     if (window.saccoData?.jan && window.saccoData?.today) cb();
@@ -12,7 +13,7 @@
   }
 
   // ——————————————————————————————————————
-  // 2. NORMALIZE RAW NUMBERS
+  // 2. NORMALIZE NUMBERS
   // ——————————————————————————————————————
   function normalize(data) {
     const num = v => Number(String(v).replace(/[^0-9.]/g, '')) || 0;
@@ -28,9 +29,7 @@
   }
 
   // ——————————————————————————————————————
-  // 3. CONSERVATIVE 5-YEAR PROJECTIONS
-  //    • Loan growth capped → ends ~+620% (realistic & safe)
-  //    • Smoothing = 0.42 for smooth, believable curve
+  // 3. PROJECTIONS — LOANS DOUBLE EVERY YEAR (+100%)
   // ——————————————————————————————————————
   function generateProjections(startRaw, endRaw) {
     const start = normalize(startRaw);
@@ -41,8 +40,8 @@
     const rates = {
       members: start.members ? (end.members - start.members) / start.members : 0,
       contributions: start.contributions ? (end.contributions - start.contributions) / start.contributions : 0,
-      // CONSERVATIVE LOAN GROWTH — max 14% per year → ~620% over 5 years
-      loans: Math.min((start.loans ? (end.loans - start.loans) / start.loans : 0) * 0.15, 0.14),
+      // LOANS: +100% PER YEAR (DOUBLES)
+      loans: 1.00,
       bank: start.bankBalance ? (end.bankBalance - start.bankBalance) / start.bankBalance : 0
     };
 
@@ -52,10 +51,10 @@
       if (i === 0) {
         projections.push({ year, ...end });
       } else {
-        const members = Math.round(last.members * (1 + rates.members * 0.42));
-        const contributions = Math.round(last.contributions * (1 + rates.contributions * 0.42));
-        const loans = Math.round(last.loans * (1 + rates.loans * 0.42));
-        const bankBalance = Math.round(last.bankBalance * (1 + rates.bank * 0.42));
+        const members = Math.round(last.members * (1 + rates.members * 0.45));
+        const contributions = Math.round(last.contributions * (1 + rates.contributions * 0.45));
+        const loans = Math.round(last.loans * (1 + rates.loans)); // +100%
+        const bankBalance = Math.round(last.bankBalance * (1 + rates.bank * 0.45));
         const totalAssets = loans + contributions + bankBalance;
         const profit = Math.round((last.roa / 100) * totalAssets);
 
@@ -76,56 +75,61 @@
   }
 
   // ——————————————————————————————————————
-  // 4. FORMAT CURRENCY (K/M)
+  // 4. FORMAT CURRENCY
   // ——————————————————————————————————————
   function fmt(num) {
+    if (num >= 1e9) return (num / 1e9).toFixed(1) + 'B';
     if (num >= 1e6) return (num / 1e6).toFixed(1) + 'M';
     if (num >= 1e3) return (num / 1e3).toFixed(0) + 'K';
     return num.toLocaleString();
   }
 
   // ——————————————————————————————————————
-  // 5. EACH KPI IN ITS OWN GLOWING CONTAINER
+  // 5. EACH KPI IN ITS OWN CLEAN WHITE CONTAINER
   // ——————————————————————————————————————
   function createIndividualKpiCharts(projections) {
     const container = document.getElementById('projectionsChart');
     if (!container || typeof Plotly === 'undefined') return;
 
-    container.innerHTML = ''; // Clear
+    container.innerHTML = '';
 
     const kpis = [
-      { name: 'Members', key: 'members', currency: false, glow: '#00D4FF' },
-      { name: 'Contributions', key: 'contributions', currency: true, glow: '#8B5CF6' },
-      { name: 'Loans Disbursed', key: 'loans', currency: true, glow: '#10B981' },
-      { name: 'Bank Balance', key: 'bankBalance', currency: true, glow: '#FFA726' }
+      { name: 'Members', key: 'members', currency: false, accent: '#006400' },
+      { name: 'Contributions', key: 'contributions', currency: true, accent: '#10B981' },
+      { name: 'Loans Disbursed', key: 'loans', currency: true, accent: '#059669' },
+      { name: 'Bank Balance', key: 'bankBalance', currency: true, accent: '#0D9488' }
     ];
 
-    const colors = ['#FF6B9D', '#4FACFE', '#43E97B', '#FFA726', '#9C27B0'];
+    const colors = ['#10B981', '#34D399', '#6EE7B7', '#A7F3D0', '#ECFDF5'];
 
     kpis.forEach((kpi, i) => {
       const card = document.createElement('div');
       card.className = 'chart-card';
       card.style.cssText = `
-        background: linear-gradient(135deg, #0f172a, #1e293b);
+        background: white;
         border-radius: 20px;
-        padding: 20px;
-        box-shadow: 
-          0 10px 30px rgba(0,0,0,0.5),
-          0 0 40px ${kpi.glow}40;
-        border: 1px solid rgba(255,255,255,0.1);
-        backdrop-filter: blur(10px);
-        position: relative;
-        overflow: hidden;
+        padding: 24px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+        border: 1px solid #f0fdf4;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
       `;
+      card.onmouseover = () => {
+        card.style.transform = 'translateY(-4px)';
+        card.style.boxShadow = `0 16px 40px ${kpi.accent}30`;
+      };
+      card.onmouseout = () => {
+        card.style.transform = 'translateY(0)';
+        card.style.boxShadow = '0 8px 32px rgba(0,0,0,0.08)';
+      };
 
       const title = document.createElement('h4');
       title.textContent = kpi.name + ' Growth';
       title.style.cssText = `
         margin: 0 0 16px 0;
-        color: white;
+        color: ${kpi.accent};
         font-size: 18px;
         text-align: center;
-        text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+        font-weight: 800;
       `;
       card.appendChild(title);
 
@@ -136,14 +140,13 @@
 
       container.appendChild(card);
 
-      // Plotly Cone
       Plotly.newPlot(plotDiv.id, [{
         type: 'funnel',
         y: projections.map(p => p.year),
         x: projections.map(p => p[kpi.key]),
         textposition: "inside",
         texttemplate: kpi.currency ? "%{x:,.0f}" : "%{x}",
-        textfont: { size: 14, color: 'white', family: 'Lato' },
+        textfont: { size: 14, color: '#1f2937', family: 'Lato' },
         marker: { color: colors, line: { width: 2.5, color: 'white' } },
         connector: { line: { color: 'transparent' } },
         hovertemplate: `<b>%{y}</b><br>${kpi.currency ? 'KES ' : ''}%{x:,.0f}<extra></extra>`
@@ -157,7 +160,7 @@
   }
 
   // ——————————————————————————————————————
-  // 6. ONE MASTER GLOWING SUMMARY TABLE
+  // 6. ONE ELEGANT SUMMARY TABLE
   // ——————————————————————————————————————
   function createMasterSummaryTable(projections) {
     const container = document.getElementById('projectionSummary');
@@ -176,49 +179,44 @@
 
     let html = `
       <div style="
-        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        background: white;
         border-radius: 24px;
         overflow: hidden;
-        box-shadow: 
-          0 20px 50px rgba(0,0,0,0.6),
-          0 0 80px rgba(16,185,129,0.3),
-          0 0 120px rgba(139,92,246,0.2);
-        border: 1px solid rgba(255,255,255,0.12);
-        backdrop-filter: blur(14px);
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        border: 1px solid #f0fdf4;
       ">
         <div style="
           background: linear-gradient(90deg, #006400, #10B981);
-          padding: 22px;
+          padding: 24px;
           text-align: center;
         ">
           <h3 style="
             margin:0; 
-            font-size:23px; 
+            font-size:24px; 
             color:white; 
             font-weight:900; 
-            letter-spacing:1.2px;
-            text-shadow: 0 3px 12px rgba(0,0,0,0.6);
+            letter-spacing:1px;
           ">
             5-YEAR GROWTH MASTERPLAN
           </h3>
-          <p style="margin:8px 0 0; font-size:14px; opacity:0.9;">Conservative & Sustainable (2025 → 2029)</p>
+          <p style="margin:8px 0 0; font-size:15px; opacity:0.95;">Loans Double Every Year (2025 → 2029)</p>
         </div>
 
-        <table style="width:100%; border-collapse:separate; border-spacing:0 10px; padding:20px;">
+        <table style="width:100%; border-collapse:separate; border-spacing:0 12px; padding:24px;">
           <thead>
             <tr>
-              <th style="text-align:left; color:#94a3b8; font-weight:600; padding-bottom:8px;">Metric</th>
-              <th style="text-align:center; color:#94a3b8;">2025</th>
-              <th style="text-align:center; color:#94a3b8;">2029</th>
-              <th style="text-align:center; color:#94a3b8;">Growth</th>
+              <th style="text-align:left; color:#374151; font-weight:700;">Metric</th>
+              <th style="text-align:center; color:#374151;">2025</th>
+              <th style="text-align:center; color:#374151;">2029</th>
+              <th style="text-align:center; color:#374151;">Growth</th>
             </tr>
           </thead>
           <tbody>
     `;
 
-    const glows = ['#00D4FF', '#8B5CF6', '#10B981', '#FFA726'];
-    rows.forEach((r, i) => {
-      const g = glows[i];
+    rows.forEach((r) => {
+      const isLoans = r.label.includes('Loans');
+      const accent = isLoans ? '#059669' : '#10B981';
       const curr = r.fmt === 'kes' ? `KES ${fmt(r.curr)}` : r.curr.toLocaleString();
       const proj = r.fmt === 'kes' ? `KES ${fmt(r.proj)}` : r.proj.toLocaleString();
       const growthVal = growth(r.curr, r.proj);
@@ -227,34 +225,32 @@
         <tr>
           <td style="
             padding:16px 20px; 
-            background: ${g}22; 
+            background: ${accent}08; 
             border-radius:16px 0 0 16px; 
-            color:white; 
-            font-weight:700;
-            box-shadow: 0 4px 15px ${g}40;
+            font-weight:700; 
+            color:#1f2937;
           ">${r.label}</td>
-          <td style="padding:16px; text-align:center; color:#cbd5e1;">${curr}</td>
+          <td style="padding:16px; text-align:center; color:#6b7280;">${curr}</td>
           <td style="
             padding:16px; 
             text-align:center; 
-            background:${g}33; 
-            color:white; 
-            font-weight:900;
-            box-shadow: 0 4px 20px ${g}60;
+            background:${accent}12; 
+            font-weight:900; 
+            color:#006400;
           ">${proj}</td>
           <td style="
             padding:16px; 
             text-align:center; 
-            background: linear-gradient(90deg, #10B981, #34D399);
+            background: ${isLoans ? '#059669' : '#10B981'};
             border-radius:0 16px 16px 0;
           ">
             <span style="
-              background:rgba(255,255,255,0.25); 
-              padding:8px 18px; 
+              background:white; 
+              color:${isLoans ? '#059669' : '#10B981'}; 
+              padding:8px 20px; 
               border-radius:50px; 
               font-weight:900; 
               font-size:16px;
-              backdrop-filter:blur(8px);
             ">+${growthVal}%</span>
           </td>
         </tr>
@@ -280,17 +276,15 @@
         createIndividualKpiCharts(projections);
         createMasterSummaryTable(projections);
 
-        console.log('SOYOSOYO PREMIUM PROJECTIONS LIVE — Conservative & Classy');
+        console.log('SOYOSOYO PROJECTIONS LIVE — Loans Double Every Year');
       } catch (e) { console.error(e); }
     });
   }
 
-  // Auto-run
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else init();
 
-  // Live refresh
   window.refreshProjections = init;
   window.addEventListener('saccoDataUpdated', init);
 })();
