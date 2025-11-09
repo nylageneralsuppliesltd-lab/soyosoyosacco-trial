@@ -1,4 +1,4 @@
-// projections.js — SOYOSOYO SACCO — ULTRA MINIMAL (NO WRAPPERS, NO TEXT)
+// projections.js — SOYOSOYO SACCO — PROPORTIONAL BARS + CLEAN SMALL CARDS
 (function () {
   'use strict';
 
@@ -27,7 +27,6 @@
     };
 
     let last = { ...end };
-
     years.forEach((year, i) => {
       if (i === 0) projections.push({ year, ...end });
       else {
@@ -41,7 +40,6 @@
         last = { members, contributions, loans, bankBalance, profit, roa: last.roa };
       }
     });
-
     return projections;
   }
 
@@ -50,11 +48,11 @@
   function createCharts(projections) {
     const container = document.getElementById('projectionsChart');
     if (!container || typeof Plotly === 'undefined') {
-      if (container) container.innerHTML = '<div style="color:red;padding:20px;text-align:center;">Plotly not loaded</div>';
+      if (container) container.innerHTML = '<div style="color:red;padding:20px;text-align:center;">PLOTLY NOT LOADED</div>';
       return;
     }
 
-    container.innerHTML = ''; // CLEAN START
+    container.innerHTML = '';
 
     const kpis = [
       { name: 'Members', key: 'members', currency: false },
@@ -65,49 +63,48 @@
 
     const yearColors = { 2025: '#FF4081', 2026: '#00BCD4', 2027: '#4CAF50', 2028: '#FFC107', 2029: '#9C27B0' };
 
-    // 4 KPI BOXES — NO WRAPPER
+    // KPI CARDS — SMALL, CLEAN, PROPORTIONAL BARS
     kpis.forEach((kpi, i) => {
       const values = projections.map(p => p[kpi.key]);
-      const maxVal = Math.max(...values, 1);
-      const minVisible = maxVal * 0.3;
-      const stretched = values.map(v => v < minVisible ? minVisible : v);
+      const maxVal = Math.max(...values);
 
-      const box = document.createElement('div');
-      box.style.cssText = `
-        background:white;
-        border-radius:20px;
-        padding:16px;
-        margin:16px 8px;
-        box-shadow:0 8px 28px rgba(0,0,0,0.08);
-        border:1px solid #f0fdf4;
-        overflow:hidden;
+      const card = document.createElement('div');
+      card.style.cssText = `
+        margin: 12px 8px;
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        border: 1px solid #f0fdf4;
       `;
 
-      box.innerHTML = `
-        <h4 style="margin:0 0 12px;text-align:center;font-size:16.5px;font-weight:900;color:#004d1a;">
-          ${kpi.name} Growth
-        </h4>
-        <div id="chart-${i}" style="width:100%;height:300px;"></div>
+      card.innerHTML = `
+        <div style="padding: 14px 18px; background: #f8fdfa; text-align:center;">
+          <h4 style="margin:0; font-size:16px; font-weight:900; color:#004d1a;">
+            ${kpi.name} Growth
+          </h4>
+        </div>
+        <div id="chart-${i}" style="width:100%; height:300px;"></div>
       `;
 
-      container.appendChild(box);
+      container.appendChild(card);
 
       Plotly.newPlot(`chart-${i}`, [{
         type: 'bar',
         orientation: 'h',
         y: projections.map(p => p.year),
-        x: stretched,
-        text: projections.map(p => kpi.currency ? `KES ${fmt(p[kpi.key])}` : fmt(p[kpi.key])),
+        x: values,  // REAL VALUES — PROPORTIONAL GROWTH
+        text: values.map(v => kpi.currency ? `KES ${fmt(v)}` : fmt(v)),
         textposition: 'inside',
-        insidetextanchor: 'middle',
-        textfont: { size: 16, color: 'white', weight: 'bold' },
+        insidetextanchor: 'end',
+        textfont: { size: 15, color: 'white', weight: 'bold' },
         marker: { 
           color: projections.map(p => yearColors[p.year]),
-          line: { width: 4, color: 'white' }
+          line: { width: 3, color: 'white' }
         }
       }], {
-        bargap: 0.4,
-        margin: { l: 80, r: 30, t: 30, b: 50 },
+        bargap: 0.35,
+        margin: { l: 85, r: 50, t: 20, b: 50 },
         paper_bgcolor: 'rgba(0,0,0,0)',
         plot_bgcolor: 'rgba(0,0,0,0)',
         xaxis: { visible: false },
@@ -119,61 +116,61 @@
       }, { responsive: true, displayModeBar: false });
     });
 
-    // SUMMARY BOX — NO WRAPPER, NO TITLE TEXT
+    // SUMMARY CARD — SMALL, CLEAN
     const first = projections[0];
     const last = projections[projections.length - 1];
     const growth = (a, b) => a > 0 ? ((b - a) / a * 100).toFixed(0) : '∞';
 
-    const summaryBox = document.createElement('div');
-    summaryBox.style.cssText = `
-      background:white;
-      border-radius:20px;
-      padding:20px;
-      margin:16px 8px;
-      box-shadow:0 8px 28px rgba(0,0,0,0.08);
-      border:1px solid #f0fdf4;
+    const summary = document.createElement('div');
+    summary.style.cssText = `
+      margin: 12px 8px;
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+      border: 1px solid #f0fdf4;
     `;
 
     let html = `
-      <div style="background:linear-gradient(90deg,#004d1a,#10B981);padding:16px;border-radius:16px;text-align:center;margin-bottom:20px;">
-        <h3 style="margin:0;font-size:18px;color:white;font-weight:900;">5-Year Growth Strategy</h3>
+      <div style="background:linear-gradient(90deg,#004d1a,#10B981);padding:16px;text-align:center;">
+        <h3 style="margin:0;font-size:17px;color:white;font-weight:900;">5-Year Growth Strategy</h3>
       </div>
-      <div style="display:grid;grid-template-columns:1fr;gap:16px;">
+      <div style="padding:18px;display:grid;grid-template-columns:1fr;gap:14px;">
     `;
 
-    const rows = [
-      { label: 'Members', curr: first.members, proj: last.members },
-      { label: 'Contributions', curr: first.contributions, proj: last.contributions },
-      { label: 'Loans', curr: first.loans, proj: last.loans },
-      { label: 'Bank Balance', curr: first.bankBalance, proj: last.bankBalance }
-    ];
-
-    rows.forEach(r => {
-      const g = growth(r.curr, r.proj);
+    ['Members', 'Contributions', 'Loans', 'Bank Balance'].forEach(label => {
+      const key = label.toLowerCase().replace(' ', '').replace('bankbalance', 'bankBalance');
+      const curr = first[key];
+      const proj = last[key];
+      const g = growth(curr, proj);
       html += `
-        <div style="background:#f0fdf4;border-radius:16px;padding:16px;border:1px solid #86efac;">
-          <div style="font-size:15px;font-weight:900;color:#166534;margin-bottom:8px;">${r.label}</div>
-          <div style="display:flex;justify-content:space-between;">
-            <div><div style="font-size:12.5px;color:#6b7280;">2025</div><div style="font-size:17px;color:#166534;font-weight:900;">${fmt(r.curr)}</div></div>
-            <div style="text-align:right;"><div style="font-size:12.5px;color:#6b7280;">2029</div><div style="font-size:19px;color:#004d1a;font-weight:900;">${fmt(r.proj)}</div></div>
+        <div style="background:#f0fdf4;border-radius:14px;padding:14px;border:1px solid #86efac;">
+          <div style="font-size:14.5px;font-weight:900;color:#166534;margin-bottom:6px;">${label}</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div><div style="font-size:12px;color:#6b7280;">2025</div><div style="font-size:16px;color:#166534;font-weight:900;">${fmt(curr)}</div></div>
+            <div style="text-align:right;"><div style="font-size:12px;color:#6b7280;">2029</div><div style="font-size:18px;color:#004d1a;font-weight:900;">${fmt(proj)}</div></div>
           </div>
-          <div style="text-align:center;margin-top:12px;">
-            <span style="background:#10B981;color:white;padding:7px 16px;border-radius:50px;font-weight:900;font-size:13.5px;">+${g}%</span>
+          <div style="text-align:center;margin-top:10px;">
+            <span style="background:#10B981;color:white;padding:6px 14px;border-radius:50px;font-weight:900;font-size:13px;">+${g}%</span>
           </div>
         </div>
       `;
     });
 
     html += `</div>`;
-    summaryBox.innerHTML = html;
-    container.appendChild(summaryBox);
+    summary.innerHTML = html;
+    container.appendChild(summary);
 
-    // RESPONSIVE: 2 cols tablet, 4 cols desktop
+    // RESPONSIVE: 1 col mobile → 2 col tablet → 4 col desktop
     const style = document.createElement('style');
     style.textContent = `
-      #projectionsChart > div { margin:16px 8px !important; }
-      @media (min-width: 640px) { #projectionsChart > div:nth-child(-n+4) { display:inline-block; width:calc(50% - 16px); vertical-align:top; } }
-      @media (min-width: 1024px) { #projectionsChart > div:nth-child(-n+4) { width:calc(25% - 16px); } }
+      @media (min-width: 640px) { 
+        #projectionsChart > div { display: inline-block; width: calc(50% - 16px); vertical-align: top; }
+      }
+      @media (min-width: 1024px) { 
+        #projectionsChart > div { width: calc(25% - 16px); }
+        #projectionsChart > div:last-child { width: calc(100% - 16px); display: block; }
+      }
     `;
     document.head.appendChild(style);
   }
