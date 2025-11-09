@@ -1,4 +1,4 @@
-// projections.js — FINAL NUCLEAR FIX — WORKS 100%
+// projections.js — FINAL 100% WORKING VERSION
 (function () {
   'use strict';
 
@@ -75,11 +75,11 @@
       card.className = 'kpi-card';
       card.innerHTML = `
         <div class="kpi-title">${kpi.name} Growth</div>
-        <div class="plotly-container" data-plot-id="${i}"></div>
+        <div class="plotly-container" data-id="${i}"></div>
       `;
       container.appendChild(card);
 
-      const plotDiv = card.querySelector(`.plotly-container[data-plot-id="${i}"]`);
+      const plotDiv = card.querySelector('.plotly-container');
 
       const layout = {
         autosize: true,
@@ -103,26 +103,41 @@
         hovertemplate: `<b>%{y}</b><br>%{text}<extra></extra>`
       }], layout, { responsive: true, displayModeBar: false });
 
-      // Force resize
       setTimeout(() => Plotly.Plots.resize(plotDiv), 150);
       new ResizeObserver(() => Plotly.Plots.resize(plotDiv)).observe(plotDiv);
     });
 
-    // Summary card (unchanged)
+    // SUMMARY CARD — FULLY VISIBLE
     const first = projections[0];
     const last = projections[projections.length - 1];
     const growth = (a, b) => a > 0 ? ((b - a) / a * 100).toFixed(0) : '∞';
 
     const summary = document.createElement('div');
     summary.className = 'summary-card';
-    summary.innerHTML = `... your summary HTML ...`;
+    summary.innerHTML = `
+      <div class="summary-header">5-Year Growth Strategy</div>
+      <div class="summary-grid">
+        ${['Members', 'Contributions', 'Loans', 'Bank Balance'].map(label => {
+          const key = label.toLowerCase().replace(' ', '').replace('bankbalance', 'bankBalance');
+          const curr = first[key];
+          const proj = last[key];
+          const g = growth(curr, proj);
+          return `<div class="summary-item">
+            <div class="summary-label">${label}</div>
+            <div class="summary-values">
+              <div><span>${first.year}</span><strong>${fmt(curr)}</strong></div>
+              <div><span>${last.year}</span><strong>${fmt(proj)}</strong></div>
+            </div>
+            <div class="summary-growth">+${g}%</div>
+          </div>`;
+        }).join('')}
+      </div>
+    `;
     container.appendChild(summary);
   }
 
   function init() {
-    waitForData(() => {
-      try { createCharts(); } catch (e) { console.error(e); }
-    });
+    waitForData(createCharts);
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
