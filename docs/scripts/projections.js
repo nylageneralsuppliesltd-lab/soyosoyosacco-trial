@@ -1,4 +1,4 @@
-// projections.js — ULTIMATE FINAL: NO OVERFLOW, 2025-2029 PERFECTLY FIT, INSIDE TEXT
+// projections.js — ULTIMATE FINAL + RESIZE TWEAK (DESKTOP & MOBILE PERFECT)
 (function () {
   'use strict';
 
@@ -70,8 +70,25 @@
       `;
       container.appendChild(card);
 
-      // FINAL PERFECT CONFIG — YOUR LOGIC + MY CONTAINER FIXES
-      Plotly.newPlot(`chart-${i}`, [{
+      const chartId = `chart-${i}`;
+      const chartDiv = document.getElementById(chartId);
+
+      const layout = {
+        autosize: true,
+        bargap: 0.25,
+        margin: { l: 50, r: 30, t: 30, b: 50 },
+        paper_bgcolor: 'rgba(0,0,0,0)',
+        plot_bgcolor: 'rgba(0,0,0,0)',
+        xaxis: { visible: false, range: [0, maxVal * 1.05], fixedrange: true },
+        yaxis: {
+          automargin: true,
+          autorange: 'reversed',
+          fixedrange: true,
+          tickfont: { size: 15, color: '#004d1a', weight: 'bold' }
+        }
+      };
+
+      Plotly.newPlot(chartId, [{
         type: 'bar',
         orientation: 'h',
         y: projections.map(p => p.year),
@@ -80,38 +97,30 @@
         textposition: 'inside',
         insidetextanchor: 'middle',
         textfont: { size: 13, color: 'white', family: 'Lato, sans-serif', weight: 'bold' },
-        marker: { 
+        marker: {
           color: projections.map(p => yearColors[p.year]),
           line: { width: 2, color: 'white' }
         },
         hovertemplate: `<b>%{y}</b><br>%{text}<extra></extra>`,
         cliponaxis: true
-      }], {
-        autosize: true,
-        bargap: 0.25,
-        margin: { l: 50, r: 20, t: 30, b: 50 },
-        paper_bgcolor: 'rgba(0,0,0,0)',
-        plot_bgcolor: 'rgba(0,0,0,0)',
-        xaxis: { 
-          visible: false,
-          range: [0, maxVal * 1.05],
-          fixedrange: true
-        },
-        yaxis: { 
-          automargin: true,
-          autorange: 'reversed',
-          fixedrange: true,
-          tickfont: { size: 15, color: '#004d1a', weight: 'bold' }
-        }
-      }, {
+      }], layout, {
         responsive: true,
         displayModeBar: false,
         staticPlot: false,
         scrollZoom: false
       });
+
+      // FORCE PERFECT RESIZE ON FIRST LOAD (ELIMINATES 1-FRAME GLITCH)
+      setTimeout(() => Plotly.Plots.resize(chartDiv), 100);
+
+      // LIVE RESIZE ON WINDOW CHANGE
+      const resizeObserver = new ResizeObserver(() => {
+        Plotly.Plots.resize(chartDiv);
+      });
+      resizeObserver.observe(chartDiv);
     });
 
-    // SUMMARY CARD (unchanged)
+    // === SUMMARY CARD ===
     const first = projections[0];
     const last = projections[projections.length - 1];
     const growth = (a, b) => a > 0 ? ((b - a) / a * 100).toFixed(0) : '∞';
@@ -141,7 +150,7 @@
     `;
     container.appendChild(summary);
 
-    // FINAL STYLES — NO PADDING, MAX WIDTH, PERFECT FIT
+    // === FINAL STYLES ===
     const style = document.createElement('style');
     style.textContent = `
       #projectionsChart > .kpi-card,
@@ -163,12 +172,13 @@
         font-weight: 900;
         color: #004d1a;
       }
-      .kpi-chart { 
+      .kpi-chart {
         height: 420px !important;
         width: 100% !important;
         padding: 0 !important;
-        margin: 0 !important;
+        margin: 0 auto !important;
       }
+
       .summary-header {
         background: linear-gradient(90deg,#004d1a,#10B981);
         color: white;
@@ -185,18 +195,32 @@
       .summary-values strong { font-size: 15px; color: #004d1a; }
       .summary-growth { background: #10B981; color: white; padding: 6px 14px; border-radius: 50px; font-size: 12.5px; font-weight: 900; }
 
+      /* DESKTOP: PERFECT 2-CARD LAYOUT */
       @media (min-width: 769px) {
-        #projectionsChart > .kpi-card {
-          display: inline-block;
-          width: calc(50% - 16px);
-          vertical-align: top;
+        #projectionsChart {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: space-between;
         }
-        .kpi-chart { height: 440px !important; }
+        #projectionsChart > .kpi-card {
+          flex: 1 1 calc(50% - 20px);
+          max-width: 48%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: flex-start;
+        }
+        .kpi-chart {
+          height: 440px !important;
+          max-width: 95% !important;
+        }
         .summary-grid { grid-template-columns: repeat(4, 1fr); gap: 16px; }
         .summary-values strong { font-size: 17px; }
       }
+
+      /* MOBILE: FULL WIDTH */
       @media (max-width: 768px) {
-        .kpi-chart { height: 460px !important; }
+        .kpi-chart { height: 460px !important; width: 100% !important; }
       }
     `;
     document.head.appendChild(style);
