@@ -1,4 +1,4 @@
-// projections.js — FINAL VERSION WITH YOUR LATEST CONFIG + 2029 PERFECTLY FIT
+// projections.js — ULTIMATE FINAL: NO OVERFLOW, 2025-2029 PERFECTLY FIT, INSIDE TEXT
 (function () {
   'use strict';
 
@@ -70,7 +70,7 @@
       `;
       container.appendChild(card);
 
-      // YOUR EXACT FINAL CONFIG — PERFECT FIT
+      // FINAL PERFECT CONFIG — YOUR LOGIC + MY CONTAINER FIXES
       Plotly.newPlot(`chart-${i}`, [{
         type: 'bar',
         orientation: 'h',
@@ -82,18 +82,19 @@
         textfont: { size: 13, color: 'white', family: 'Lato, sans-serif', weight: 'bold' },
         marker: { 
           color: projections.map(p => yearColors[p.year]),
-          line: { width: 3, color: 'white' }
+          line: { width: 2, color: 'white' }
         },
         hovertemplate: `<b>%{y}</b><br>%{text}<extra></extra>`,
         cliponaxis: true
       }], {
-        bargap: 0.16,
-        margin: { l: 60, r: 30, t: 30, b: 60 },
+        autosize: true,
+        bargap: 0.25,
+        margin: { l: 50, r: 20, t: 30, b: 50 },
         paper_bgcolor: 'rgba(0,0,0,0)',
         plot_bgcolor: 'rgba(0,0,0,0)',
         xaxis: { 
           visible: false,
-          range: [0, maxVal * 1.08],
+          range: [0, maxVal * 1.05],
           fixedrange: true
         },
         yaxis: { 
@@ -105,12 +106,12 @@
       }, {
         responsive: true,
         displayModeBar: false,
-        staticPlot: false,     // Hover enabled
+        staticPlot: false,
         scrollZoom: false
       });
     });
 
-    // SUMMARY CARD
+    // SUMMARY CARD (unchanged)
     const first = projections[0];
     const last = projections[projections.length - 1];
     const growth = (a, b) => a > 0 ? ((b - a) / a * 100).toFixed(0) : '∞';
@@ -140,7 +141,7 @@
     `;
     container.appendChild(summary);
 
-    // FINAL STYLES — OPTIMAL HEIGHT
+    // FINAL STYLES — NO PADDING, MAX WIDTH, PERFECT FIT
     const style = document.createElement('style');
     style.textContent = `
       #projectionsChart > .kpi-card,
@@ -150,8 +151,9 @@
         overflow: hidden;
         box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         border: 1px solid #f0fdf4;
-        margin: 20px 12px;
-        max-width: calc(100% - 24px);
+        margin: 16px 8px;
+        max-width: calc(100% - 16px);
+        padding: 0 !important;
       }
       .kpi-title {
         padding: 16px;
@@ -162,8 +164,10 @@
         color: #004d1a;
       }
       .kpi-chart { 
-        height: 430px !important;
-        width: 100% !important; 
+        height: 420px !important;
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
       }
       .summary-header {
         background: linear-gradient(90deg,#004d1a,#10B981);
@@ -184,15 +188,15 @@
       @media (min-width: 769px) {
         #projectionsChart > .kpi-card {
           display: inline-block;
-          width: calc(50% - 24px);
+          width: calc(50% - 16px);
           vertical-align: top;
         }
-        .kpi-chart { height: 450px !important; }
+        .kpi-chart { height: 440px !important; }
         .summary-grid { grid-template-columns: repeat(4, 1fr); gap: 16px; }
         .summary-values strong { font-size: 17px; }
       }
       @media (max-width: 768px) {
-        .kpi-chart { height: 470px !important; }
+        .kpi-chart { height: 460px !important; }
       }
     `;
     document.head.appendChild(style);
