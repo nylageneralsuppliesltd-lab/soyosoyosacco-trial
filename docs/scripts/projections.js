@@ -1,4 +1,4 @@
-// projections.js — SOYOSOYO SACCO — FINAL FIXED: NO OVERFLOW, NO KES, NO EXPAND, NO BUGS
+// projections.js — FINAL PERFECTION: 2029 VISIBLE, NO SHIFT, NO OVERFLOW
 (function () {
   'use strict';
 
@@ -34,10 +34,8 @@
         const contributions = Math.round(last.contributions * (1 + rates.contributions * 0.45));
         const loans = Math.round(last.loans * (1 + rates.loans));
         const bankBalance = Math.round(last.bankBalance * (1 + rates.bank * 0.45));
-        const totalAssets = loans + contributions + bankBalance;
-        const profit = Math.round((last.roa / 100) * totalAssets);
-        projections.push({ year, members, contributions, loans, bankBalance, profit, roa: +last.roa.toFixed(2) });
-        last = { members, contributions, loans, bankBalance, profit, roa: last.roa };
+        projections.push({ year, members, contributions, loans, bankBalance, roa: +last.roa.toFixed(2) });
+        last = { members, contributions, loans, bankBalance, roa: last.roa };
       }
     });
     return projections;
@@ -62,6 +60,7 @@
 
     kpis.forEach((kpi, i) => {
       const values = projections.map(p => p[kpi.key]);
+      const maxVal = Math.max(...values);
 
       const card = document.createElement('div');
       card.className = 'kpi-card';
@@ -76,27 +75,41 @@
         orientation: 'h',
         y: projections.map(p => p.year),
         x: values,
-        text: values.map(v => fmt(v)),  // NO KES HERE
-        textposition: 'inside',
-        insidetextanchor: 'end',
-        textfont: { size: 15, color: 'white', weight: 'bold' },
-        marker: { color: projections.map(p => yearColors[p.year]), line: { width: 3, color: 'white' } },
-        hovertemplate: `<b>%{y}</b><br>${kpi.currency ? 'KES ' : ''}%{text}<extra></extra>`
+        text: values.map(v => fmt(v)),
+        textposition: 'outside',
+        textfont: { size: 13, color: '#004d1a', family: 'Lato, sans-serif', weight: 'bold' },
+        marker: { 
+          color: projections.map(p => yearColors[p.year]),
+          line: { width: 3, color: 'white' }
+        },
+        hovertemplate: `<b>%{y}</b><br>%{text}<extra></extra>`,
+        cliponaxis: false
       }], {
-        bargap: 0.4,
-        margin: { l: 70, r: 15, t: 10, b: 35 },
+        bargap: 0.3,
+        margin: { l: 75, r: 90, t: 15, b: 40 },
         paper_bgcolor: 'rgba(0,0,0,0)',
         plot_bgcolor: 'rgba(0,0,0,0)',
-        xaxis: { visible: false },
-        yaxis: { automargin: true, autorange: 'reversed', tickfont: { size: 14, color: '#004d1a', weight: 'bold' } }
+        xaxis: { 
+          visible: false,
+          range: [0, maxVal * 1.4],  // 40% extra space for text
+          fixedrange: true           // Prevents zoom/pan on touch
+        },
+        yaxis: { 
+          automargin: true,
+          autorange: 'reversed',
+          fixedrange: true,          // Prevents vertical scroll on touch
+          tickfont: { size: 14, color: '#004d1a', weight: 'bold' }
+        }
       }, {
         responsive: true,
         displayModeBar: false,
-        staticPlot: false  // Prevents expand on touch
+        staticPlot: true,            // CRITICAL: Stops any touch interaction
+        scrollZoom: false,
+        doubleClick: false
       });
     });
 
-    // SUMMARY
+    // SUMMARY CARD
     const first = projections[0];
     const last = projections[projections.length - 1];
     const growth = (a, b) => a > 0 ? ((b - a) / a * 100).toFixed(0) : '∞';
@@ -126,43 +139,80 @@
     `;
     container.appendChild(summary);
 
-    // INJECT STYLES — FIXED OVERFLOW + TIGHT MOBILE
+    // FINAL STYLES — NO OVERFLOW, 2029 VISIBLE, NO TOUCH SHIFT
     const style = document.createElement('style');
     style.textContent = `
       #projectionsChart > .kpi-card,
       #projectionsChart > .summary-card {
         background: white;
         border-radius: 18px;
-        overflow: hidden;
+        overflow: visible !important;
         box-shadow: 0 8px 25px rgba(0,0,0,0.08);
         border: 1px solid #f0fdf4;
-        margin: 14px 10px;
+        margin: 16px 10px;
         max-width: calc(100% - 20px);
       }
       .kpi-title {
-        padding: 12px;
+        padding: 14px;
         background: #f8fdfa;
         text-align: center;
         font-size: 15px;
         font-weight: 900;
         color: #004d1a;
       }
-      .kpi-chart { height: 280px; width: 100% !important; }
+      .kpi-chart { 
+        height: 290px !important; 
+        width: 100% !important; 
+      }
       .summary-header {
         background: linear-gradient(90deg,#004d1a,#10B981);
         color: white;
-        padding: 12px;
+        padding: 14px;
         text-align: center;
         font-size: 16px;
         font-weight: 900;
       }
-      .summary-grid { display: grid; grid-template-columns: 1fr; gap: 10px; padding: 12px; }
-      .summary-item { background: #f0fdf4; border-radius: 12px; padding: 8px; border: 1px solid #86efac; text-align: center; }
-      .summary-label { font-size: 12.5px; font-weight: 900; color: #166534; margin-bottom: 3px; }
-      .summary-values { display: flex; justify-content: space-between; font-size: 12px; }
-      .summary-values span { color: #6b7280; font-size: 10px; display: block; }
-      .summary-values strong { font-size: 13.5px; color: #004d1a; }
-      .summary-growth { background: #10B981; color: white; padding: 4px 10px; border-radius: 50px; font-size: 11.5px; font-weight: 900; margin-top: 5px; }
+      .summary-grid { 
+        display: grid; 
+        grid-template-columns: 1fr; 
+        gap: 10px; 
+        padding: 14px; 
+      }
+      .summary-item { 
+        background: #f0fdf4; 
+        border-radius: 12px; 
+        padding: 10px; 
+        border: 1px solid #86efac; 
+        text-align: center; 
+      }
+      .summary-label { 
+        font-size: 13px; 
+        font-weight: 900; 
+        color: #166534; 
+      }
+      .summary-values { 
+        display: flex; 
+        justify-content: space-between; 
+        font-size: 12.5px; 
+        margin: 6px 0; 
+      }
+      .summary-values span { 
+        color: #6b7280; 
+        font-size: 11px; 
+        display: block; 
+      }
+      .summary-values strong { 
+        font-size: 14px; 
+        color: #004d1a; 
+      }
+      .summary-growth { 
+        background: #10B981; 
+        color: white; 
+        padding: 5px 12px; 
+        border-radius: 50px; 
+        font-size: 12px; 
+        font-weight: 900; 
+      }
 
       @media (min-width: 769px) {
         #projectionsChart > .kpi-card {
@@ -170,15 +220,15 @@
           width: calc(50% - 20px);
           vertical-align: top;
         }
-        .summary-grid { grid-template-columns: repeat(4, 1fr); gap: 12px; }
-        .summary-item { padding: 10px; }
-        .summary-values strong { font-size: 15px; }
-        .summary-growth { font-size: 12px; padding: 5px 12px; }
+        .summary-grid { 
+          grid-template-columns: repeat(4, 1fr); 
+          gap: 14px; 
+        }
+        .summary-values strong { font-size: 16px; }
       }
       @media (max-width: 768px) {
-        .kpi-chart { height: 320px !important; }
-        .summary-grid { padding: 10px; gap: 8px; }
-        .summary-values strong { font-size: 13px; }
+        .kpi-chart { height: 330px !important; }
+        .summary-grid { padding: 12px; gap: 10px; }
       }
     `;
     document.head.appendChild(style);
