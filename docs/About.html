@@ -5,9 +5,100 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Us | Soyosoyo SACCO</title>
     <meta name="description" content="From 1998 Medicare roots to modern financial empowerment. The full story of Soyosoyo SACCO.">
-    <link rel="stylesheet" href="./style.css?v=38">
+    <link rel="stylesheet" href="./style.css?v=39">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .history-section {
+            margin: 80px 0;
+            padding: 30px;
+            background: #f8fdfa;
+            border-radius: 24px;
+            border: 2px solid #86efac;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+        }
+        .history-header {
+            text-align: center;
+            color: #004d1a;
+            font-size: 2rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+        }
+        .history-controls {
+            text-align: center;
+            margin: 20px 0;
+            gap: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .btn {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 900;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-save {
+            background: #10B981;
+            color: white;
+        }
+        .btn-save:hover { background: #059669; transform: translateY(-2px); }
+        .btn-download {
+            background: #004d1a;
+            color: white;
+        }
+        .btn-download:hover { background: #166534; transform: translateY(-2px); }
+        #fullHistoryTable {
+            overflow-x: auto;
+            margin-top: 20px;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        #fullHistoryTable table {
+            width: 100%;
+            min-width: 800px;
+            border-collapse: collapse;
+            font-family: 'Lato', sans-serif;
+            background: white;
+        }
+        #fullHistoryTable th {
+            background: #004d1a;
+            color: white;
+            padding: 16px;
+            text-align: center;
+            font-weight: 900;
+        }
+        #fullHistoryTable td {
+            padding: 14px;
+            text-align: center;
+            border-bottom: 1px solid #e6f4ea;
+        }
+        #fullHistoryTable tr:hover {
+            background: #fff8e1 !important;
+        }
+        #fullHistoryTable tr:nth-child(even) {
+            background: #f0fdf4;
+        }
+        .history-footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #004d1a;
+            font-weight: bold;
+            font-size: 15px;
+        }
+        .highlight-2028 {
+            background: #fff8e1 !important;
+            font-weight: bold;
+            box-shadow: inset 0 0 10px rgba(255,193,7,0.3);
+        }
+        @media (max-width: 768px) {
+            .history-controls { flex-direction: column; align-items: center; }
+            .btn { width: 90%; max-width: 300px; }
+        }
+    </style>
 </head>
 <body>
 
@@ -51,6 +142,23 @@
             <a href="index.html" class="products-button">Back to Home</a>
         </div>
     </section>
+
+    <!-- FULL HISTORY SECTION — WILL SHOW 2028 IN 2038 -->
+    <section class="history-section">
+        <h2 class="history-header">Complete Financial History (2025 – Present)</h2>
+        <div class="history-controls">
+            <button class="btn btn-save" onclick="saveCurrentYear()">
+                SAVE CURRENT YEAR DATA
+            </button>
+            <button class="btn btn-download" onclick="downloadHistoryCSV()">
+                DOWNLOAD FULL HISTORY (CSV)
+            </button>
+        </div>
+        <div id="fullHistoryTable"></div>
+        <div class="history-footer" id="historyFooter">
+            Loading historical records...
+        </div>
+    </section>
 </main>
 
 <footer>
@@ -63,5 +171,113 @@
 </footer>
 
 <script src="./scripts/main.js"></script>
+<script>
+    // AUTO-LOAD HISTORY + RENDER TABLE
+    function renderFullHistory() {
+        const tableContainer = document.getElementById('fullHistoryTable');
+        const footer = document.getElementById('historyFooter');
+        if (!tableContainer || !window.saccoHistory) {
+            footer.textContent = "No history data yet. It will appear after first save.";
+            return;
+        }
+
+        const years = Object.keys(window.saccoHistory).map(Number).sort((a, b) => a - b);
+        if (years.length === 0) {
+            footer.textContent = "No saved years yet.";
+            return;
+        }
+
+        tableContainer.innerHTML = `
+            <table>
+                <thead>
+                    <tr>
+                        <th>Year</th>
+                        <th>Members</th>
+                        <th>Contributions</th>
+                        <th>Loans</th>
+                        <th>Bank Balance</th>
+                        <th>ROA %</th>
+                        <th>Saved On</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${years.map(year => {
+                        const d = window.saccoHistory[year];
+                        const is2028 = year === 2028;
+                        return `
+                            <tr ${is2028 ? 'class="highlight-2028"' : ''}>
+                                <td style="font-weight:900; color:#004d1a;">${year}</td>
+                                <td>${d.members?.toLocaleString() || '—'}</td>
+                                <td>${d.contributions?.toLocaleString() || '—'}</td>
+                                <td>${d.loans?.toLocaleString() || '—'}</td>
+                                <td>${d.bankBalance?.toLocaleString() || '—'}</td>
+                                <td style="color:#10B981; font-weight:bold;">${d.roa || '—'}%</td>
+                                <td>${d.dateSaved || '—'}</td>
+                            </tr>
+                        `;
+                    }).join('')}
+                </tbody>
+            </table>
+        `;
+
+        footer.innerHTML = `
+            Total Years Saved: <strong>${years.length}</strong> | 
+            First Record: <strong>${years[0]}</strong> | 
+            Latest: <strong>${years[years.length-1]}</strong> |
+            Data stored permanently in your browser
+        `;
+    }
+
+    // SAVE CURRENT YEAR MANUALLY
+    function saveCurrentYear() {
+        if (!window.saccoData?.today) {
+            alert("No current data to save. Please load the homepage first.");
+            return;
+        }
+        const year = new Date().getFullYear();
+        if (!window.saccoHistory) window.saccoHistory = {};
+        
+        window.saccoHistory[year] = {
+            year: year,
+            members: window.saccoData.today.members,
+            contributions: window.saccoData.today.contributions,
+            loans: window.saccoData.today.loans,
+            bankBalance: window.saccoData.today.bankBalance,
+            profit: window.saccoData.today.profit,
+            roa: window.saccoData.today.roa,
+            dateSaved: new Date().toISOString().split('T')[0]
+        };
+        renderFullHistory();
+        alert(`SOYOSOYO SACCO ${year} DATA SAVED FOREVER!`);
+        console.log("History saved:", window.saccoHistory[year]);
+    }
+
+    // DOWNLOAD AS CSV
+    function downloadHistoryCSV() {
+        if (!window.saccoHistory || Object.keys(window.saccoHistory).length === 0) {
+            alert("No history to download yet.");
+            return;
+        }
+        const years = Object.keys(window.saccoHistory).sort();
+        let csv = "Year,Members,Contributions,Loans,Bank Balance,ROA %,Date Saved\n";
+        years.forEach(y => {
+            const d = window.saccoHistory[y];
+            csv += `${y},${d.members || ''},${d.contributions || ''},${d.loans || ''},${d.bankBalance || ''},${d.roa || ''},${d.dateSaved || ''}\n`;
+        });
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `SOYOSOYO_SACCO_HISTORY_2025_to_${new Date().getFullYear()}.csv`;
+        a.click();
+    }
+
+    // AUTO-RENDER ON LOAD & DATA UPDATE
+    document.addEventListener('DOMContentLoaded', renderFullHistory);
+    window.addEventListener('saccoDataUpdated', renderFullHistory);
+    
+    // Also try to render if history exists already
+    setTimeout(renderFullHistory, 1000);
+</script>
 </body>
 </html>
