@@ -1,5 +1,4 @@
-// SOYOSOYO SACCO — FINAL ULTRA-PREMIUM PROJECTIONS
-// Full-width, curved, soft, mobile-perfect, live
+// SOYOSOYO SACCO — FINAL: NUMBERS ALWAYS VISIBLE (READABILITY > PROPORTIONALITY)
 (function () {
   'use strict';
 
@@ -49,13 +48,10 @@
   }
 
   function fmt(num) {
-    if (num >= 1e9) return (num / 1e9).toFixed(1) + 'B';
-    if (num >= 1e6) return (num / 1e6).toFixed(1) + 'M';
-    if (num >= 1e3) return (num / 1e3).toFixed(0) + 'K';
     return num.toLocaleString();
   }
 
-  // ——————————————————— FULL-WIDTH, CURVED, SOFT FUNNELS ———————————————————
+  // ——————————————————— READABILITY > PROPORTIONALITY ———————————————————
   function createCharts(projections) {
     const container = document.getElementById('projectionsChart');
     if (!container || typeof Plotly === 'undefined') return;
@@ -82,6 +78,16 @@
     const colors = ['#FF6B9D', '#4FACFE', '#43E97B', '#FFA726', '#9C27B0'];
 
     kpis.forEach((kpi, i) => {
+      const values = projections.map(p => p[kpi.key]);
+      const maxVal = Math.max(...values);
+      const minVal = Math.min(...values);
+
+      // STRETCH SMALL BARS — ensure even smallest bar is at least 15% of max
+      const stretchedValues = values.map(v => {
+        const minVisible = maxVal * 0.15;
+        return v < minVisible ? minVisible : v;
+      });
+
       const card = document.createElement('div');
       card.style.cssText = `
         background: white;
@@ -89,7 +95,7 @@
         padding: 20px;
         box-shadow: 0 10px 35px rgba(0,0,0,0.08);
         border: 1px solid #f0fdf4;
-        height: 440px;
+        height: 460px;
         display: flex;
         flex-direction: column;
         overflow: hidden;
@@ -111,29 +117,39 @@
 
       grid.appendChild(card);
 
+      // Format labels with commas and KES
+      const labels = projections.map(p => {
+        const val = p[kpi.key];
+        const str = kpi.currency ? `KES ${fmt(val)}` : fmt(val);
+        return `<b>${str}</b>`;
+      });
+
       Plotly.newPlot(`funnel-${i}`, [{
         type: 'funnel',
         y: projections.map(p => p.year),
-        x: projections.map(p => p[kpi.key]),
+        x: stretchedValues,
+        text: labels,
         textposition: "inside",
-        texttemplate: "<b>%{x: + (kpi.currency ? ',.0f' : '')}</b>",
-        textfont: { size: 19, color: 'white', family: 'Lato, sans-serif', weight: 'bold' },
+        textfont: { 
+          size: 20, 
+          color: 'white', 
+          family: 'Lato, sans-serif', 
+          weight: 'bold' 
+        },
         marker: { 
           color: colors,
-          line: { width: 0 } // Removes sharp edges
+          line: { width: 0 }
         },
         connector: { 
-          line: { color: 'rgba(255,255,255,0.6)', width: 4 },
-          fillcolor: 'rgba(255,255,255,0.3)'
+          line: { color: 'rgba(255,255,255,0.6)', width: 4 }
         },
-        width: [1, 1, 1, 1, 1], // Forces full width
+        width: [1, 1, 1, 1, 1],
         offset: [0, 0, 0, 0, 0],
-        hovertemplate: `<b>%{y}</b><br>${kpi.currency ? 'KES ' : ''}<b>%{x:,.0f}</b><extra></extra>`
+        hovertemplate: `<b>%{y}</b><br>${kpi.currency ? 'KES ' : ''}<b>%{text}</b><extra></extra>`
       }], {
         margin: { l: 50, r: 50, t: 20, b: 40 },
         paper_bgcolor: 'rgba(0,0,0,0)',
         plot_bgcolor: 'rgba(0,0,0,0)',
-        uniformtext: { mode: 'hide', minsize: 14 }
       }, {
         responsive: true,
         displayModeBar: false
@@ -196,8 +212,8 @@
 
     rows.forEach((r, i) => {
       const accent = i === 2 ? '#059669' : '#10B981';
-      const curr = r.fmt === 'kes' ? `KES ${fmt(r.curr)}` : r.curr.toLocaleString();
-      const proj = r.fmt === 'kes' ? `KES ${fmt(r.proj)}` : r.proj.toLocaleString();
+      const curr = r.fmt === 'kes' ? `KES ${fmt(r.curr)}` : fmt(r.curr);
+      const proj = r.fmt === 'kes' ? `KES ${fmt(r.proj)}` : fmt(r.proj);
       const g = growth(r.curr, r.proj);
 
       html += `
@@ -236,7 +252,7 @@
         createCharts(projections);
         createSummaryTable(projections);
 
-        console.log('SOYOSOYO FINAL — FULL-WIDTH, CURVED, SOFT, PERFECT');
+        console.log('SOYOSOYO FINAL — ALL NUMBERS VISIBLE, NO BLANK BARS, LIVE');
       } catch (e) { console.error(e); }
     });
   }
