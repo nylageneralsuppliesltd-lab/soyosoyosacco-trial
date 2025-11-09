@@ -48,7 +48,7 @@
   }
 
   function fmt(num) {
-    return num.toLocaleString();
+    return Number(num).toLocaleString();
   }
 
   // ——————————————————— READABILITY > PROPORTIONALITY ———————————————————
@@ -56,12 +56,13 @@
     const container = document.getElementById('projectionsChart');
     if (!container || typeof Plotly === 'undefined') return;
 
+    // replace old HTML with a grid
     container.innerHTML = `
       <div style="
         display: grid;
         grid-template-columns: 1fr;
-        gap: 20px;
-        padding: 16px;
+        gap: 16px;
+        padding: 12px;
         max-width: 100%;
         box-sizing: border-box;
       " id="funnelGrid"></div>
@@ -79,10 +80,11 @@
 
     kpis.forEach((kpi, i) => {
       const values = projections.map(p => p[kpi.key]);
-      const maxVal = Math.max(...values);
+      const maxVal = Math.max(...values, 1); // avoid zero
       const minVal = Math.min(...values);
 
       // STRETCH SMALL BARS — ensure even smallest bar is at least 15% of max
+      // but keep a mapping to the actual value (we'll display actual via hover/customdata)
       const stretchedValues = values.map(v => {
         const minVisible = maxVal * 0.15;
         return v < minVisible ? minVisible : v;
@@ -91,73 +93,127 @@
       const card = document.createElement('div');
       card.style.cssText = `
         background: white;
-        border-radius: 24px;
-        padding: 20px;
-        box-shadow: 0 10px 35px rgba(0,0,0,0.08);
+        border-radius: 18px;
+        padding: 14px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.06);
         border: 1px solid #f0fdf4;
-        height: 460px;
         display: flex;
         flex-direction: column;
         overflow: hidden;
       `;
 
+      // Slightly reduced height for better mobile fit
       card.innerHTML = `
         <h4 style="
-          margin: 0 0 16px;
+          margin: 0 0 12px;
           color: #006400;
-          font-size: 19px;
+          font-size: 17px;
           text-align: center;
           font-weight: 800;
-          letter-spacing: 0.5px;
+          letter-spacing: 0.4px;
         ">
           ${kpi.name} Growth
         </h4>
-        <div id="funnel-${i}" style="flex: 1; min-height: 0; width: 100%;"></div>
+        <div id="funnel-${i}" style="width:100%; height:320px; min-height:220px;"></div>
       `;
 
       grid.appendChild(card);
 
-      // Format labels with commas and KES
-      const labels = projections.map(p => {
-        const val = p[kpi.key];
-        const str = kpi.currency ? `KES ${fmt(val)}` : fmt(val);
-        return `<b>${str}</b>`;
-      });
+      // TEXT: only show comma-formatted numbers (no KES), inside bar for readability.
+      // Use customdata for true values (so hover shows actual)
+      const formattedText = projections.map(p => fmt(p[kpi.key]));
+      const actualValues = projections.map(p => p[kpi.key]);
 
-      Plotly.newPlot(`funnel-${i}`, [{
-        type: 'funnel',
-        y: projections.map(p => p.year),
+      // Create Plotly horizontal bar chart (clean, readable, mobile-friendly)
+      const trace = {
+        type: 'bar',
+        orientation: 'h',
+        y: projections.map(p => String(p.year)),
         x: stretchedValues,
-        text: labels,
-        textposition: "inside",
-        textfont: { 
-          size: 20, 
-          color: 'white', 
-          family: 'Lato, sans-serif', 
-          weight: 'bold' 
+        text: formattedText,             // displayed inside/near bars
+        textposition: 'inside',
+        textfont: {
+          size: 14,
+          color: 'white',
+          family: 'Lato, sans-serif'
         },
-        marker: { 
-          color: colors,
+        marker: {
+          color: colors[i % colors.length],
           line: { width: 0 }
         },
-        connector: { 
-          line: { color: 'rgba(255,255,255,0.6)', width: 4 }
-        },
-        width: [1, 1, 1, 1, 1],
-        offset: [0, 0, 0, 0, 0],
-        hovertemplate: `<b>%{y}</b><br>${kpi.currency ? 'KES ' : ''}<b>%{text}</b><extra></extra>`
-      }], {
-        margin: { l: 50, r: 50, t: 20, b: 40 },
+        customdata: actualValues.map(v => fmt(v)), // actual formatted numbers for hover/touch
+        hovertemplate: '<b>%{y}</b><br><b>%{customdata}</b><extra></extra>',
+        cliponaxis: false
+      };
+
+      // Layout: small left margin so bars touch the left edge visually.
+      // xaxis visible false to avoid currency labels; show full width by setting range to 0..max*1.05
+      const layout = {
+        margin: { l: 70, r: 20, t: 10, b: 30 }, // l small so bars start near left container edge
         paper_bgcolor: 'rgba(0,0,0,0)',
         plot_bgcolor: 'rgba(0,0,0,0)',
-      }, {
+        xaxis: {
+          showgrid: false,
+          zeroline: false,
+          visible: false,
+          range: [0, maxVal * 1.07] // ensure bars can expand to the right edge; stretch is visual only
+        },
+        yaxis: {
+          automargin: true,
+          autorange: 'reversed', // keep 2025 at the top (same ordering as your projection array)
+          tickfont: { size: 13 }
+        },
+        height: 320
+      };
+
+      const config = {
         responsive: true,
         displayModeBar: false
+      };
+
+      // Render
+      Plotly.newPlot(`funnel-${i}`, [trace], layout, config);
+
+      // Improve mobile touch: when user taps a bar, show a small non-scrolling tooltip inside the card.
+      // We'll add a simple Plotly 'plotly_click' handler to show a small absolute positioned badge inside the card.
+      const plotEl = document.getElementById(`funnel-${i}`);
+      // Remove previous handler (if any) to avoid duplicates
+      plotEl.removeEventListener && plotEl.removeEventListener('plotly_click', () => {});
+      plotEl.on('plotly_click', function (ev) {
+        try {
+          const point = ev.points && ev.points[0];
+          if (!point) return;
+          // Remove any existing badge
+          const existing = card.querySelector('.bar-badge');
+          if (existing) existing.remove();
+
+          const badge = document.createElement('div');
+          badge.className = 'bar-badge';
+          badge.style.cssText = `
+            position: absolute;
+            right: 16px;
+            top: 16px;
+            z-index: 20;
+            background: rgba(255,255,255,0.96);
+            border-radius: 12px;
+            padding: 8px 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+            font-weight:800;
+            color:#064e3b;
+            font-size:14px;
+            pointer-events:none;
+          `;
+          // point.customdata is formatted string
+          badge.innerText = point.customdata || fmt(point.x || 0);
+          card.appendChild(badge);
+          // auto-remove after 2.6s
+          setTimeout(() => badge.remove(), 2600);
+        } catch (err) { /* silent */ }
       });
     });
   }
 
-  // ——————————————————— PERFECT MOBILE TABLE ———————————————————
+  // ——————————————————— PERFECT MOBILE SUMMARY (cards, no horizontal glide) ———————————————————
   function createSummaryTable(projections) {
     const container = document.getElementById('projectionSummary');
     if (!container) return;
@@ -168,75 +224,80 @@
 
     const rows = [
       { label: 'Members', curr: first.members, proj: last.members, fmt: 'num' },
-      { label: 'Contributions', curr: first.contributions, proj: last.contributions, fmt: 'kes' },
-      { label: 'Loans', curr: first.loans, proj: last.loans, fmt: 'kes' },
-      { label: 'Bank Balance', curr: first.bankBalance, proj: last.bankBalance, fmt: 'kes' }
+      { label: 'Contributions', curr: first.contributions, proj: last.contributions, fmt: 'num' },
+      { label: 'Loans', curr: first.loans, proj: last.loans, fmt: 'num' },
+      { label: 'Bank Balance', curr: first.bankBalance, proj: last.bankBalance, fmt: 'num' }
     ];
 
+    // Build responsive card grid that fits mobile screens without scrolling horizontally
     let html = `
-      <div style="
-        background:white;
-        border-radius:20px;
-        overflow:hidden;
-        box-shadow:0 10px 40px rgba(0,0,0,0.1);
-        border:1px solid #f0fdf4;
-        margin:20px 16px;
-      ">
-        <div style="
-          background:linear-gradient(90deg,#006400,#10B981);
-          padding:16px 20px;
-          text-align:center;
-        ">
-          <h3 style="
-            margin:0;
-            font-size:18px;
-            color:white;
-            font-weight:900;
-            letter-spacing:0.8px;
-            white-space:nowrap;
-          ">
-            5-Year Growth Strategy
-          </h3>
+      <style>
+        /* summary card grid */
+        .ss-card-grid {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 12px;
+          padding: 12px;
+          box-sizing: border-box;
+        }
+        .ss-card {
+          background: white;
+          border-radius: 14px;
+          padding: 12px;
+          box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+          border: 1px solid #f0fdf4;
+          display: flex;
+          flex-direction: column;
+          min-height: 84px;
+          justify-content: space-between;
+        }
+        .ss-label { font-size:13px; font-weight:900; color:#1f2937; }
+        .ss-values { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+        .ss-val { font-size:13px; color:#6b7280; font-weight:700; }
+        .ss-proj { font-size:15px; color:#006400; font-weight:900; }
+        .ss-growth { background:#10B981; color:white; padding:6px 8px; border-radius:999px; font-weight:900; font-size:12px; }
+        @media (max-width:420px) {
+          .ss-card-grid { grid-template-columns: 1fr; }
+        }
+      </style>
+
+      <div style="margin:12px 12px 24px 12px;">
+        <div style="background:linear-gradient(90deg,#006400,#10B981); padding:12px 14px; border-radius:12px; color:white; font-weight:900; text-align:center;">
+          5-Year Growth (2025 → 2029)
         </div>
-        <table style="width:100%; border-collapse:collapse; font-size:13.5px;">
-          <thead style="background:#f0fdf4;">
-            <tr>
-              <th style="padding:10px 8px; text-align:left; font-weight:700; color:#374151;">Metric</th>
-              <th style="padding:10px 6px; text-align:center; font-weight:700; color:#374151;">2025</th>
-              <th style="padding:10px 6px; text-align:center; font-weight:700; color:#374151;">2029</th>
-              <th style="padding:10px 6px; text-align:center; font-weight:700; color:#374151;">Growth</th>
-            </tr>
-          </thead>
-          <tbody>
+
+        <div class="ss-card-grid" style="margin-top:12px;">
     `;
 
-    rows.forEach((r, i) => {
-      const accent = i === 2 ? '#059669' : '#10B981';
-      const curr = r.fmt === 'kes' ? `KES ${fmt(r.curr)}` : fmt(r.curr);
-      const proj = r.fmt === 'kes' ? `KES ${fmt(r.proj)}` : fmt(r.proj);
+    rows.forEach((r) => {
+      const curr = fmt(r.curr);
+      const proj = fmt(r.proj);
       const g = growth(r.curr, r.proj);
-
       html += `
-        <tr>
-          <td style="padding:10px 8px; font-weight:700; color:#1f2937; background:${accent}08;">
-            ${r.label}
-          </td>
-          <td style="padding:10px 6px; text-align:center; color:#6b7280;">
-            ${curr}
-          </td>
-          <td style="padding:10px 6px; text-align:center; font-weight:900; color:#006400; background:${accent}12;">
-            ${proj}
-          </td>
-          <td style="padding:10px 6px; text-align:center; background:${accent};">
-            <span style="background:white; color:${accent}; padding:4px 10px; border-radius:50px; font-weight:900; font-size:12.5px;">
-              +${g}%
-            </span>
-          </td>
-        </tr>
+        <div class="ss-card">
+          <div class="ss-label">${r.label}</div>
+          <div class="ss-values">
+            <div style="display:flex;flex-direction:column;">
+              <div class="ss-val">${curr}</div>
+              <div style="font-size:12px;color:#9ca3af;">2025</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;">
+              <div class="ss-proj">${proj}</div>
+              <div style="font-size:12px;color:#9ca3af;">2029</div>
+            </div>
+          </div>
+          <div style="display:flex; justify-content:flex-end; margin-top:8px;">
+            <div class="ss-growth">+${g}%</div>
+          </div>
+        </div>
       `;
     });
 
-    html += `</tbody></table></div>`;
+    html += `
+        </div> <!-- grid -->
+      </div>
+    `;
+
     container.innerHTML = html;
   }
 
