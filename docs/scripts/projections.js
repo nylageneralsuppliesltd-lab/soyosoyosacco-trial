@@ -1,4 +1,4 @@
-// SOYOSOYO SACCO — FINAL: EXACTLY AS YOU WANTED — 2 CONTAINERS INSIDE MAIN
+// SOYOSOYO SACCO — FINAL: MOBILE-PERFECT, 2 CONTAINERS, FLAWLESS
 (function () {
   'use strict';
 
@@ -58,46 +58,50 @@
     container.innerHTML = `
       <div style="
         background: white;
-        border-radius: 24px;
-        padding: 24px;
-        box-shadow: 0 15px 50px rgba(0,0,0,0.1);
+        border-radius: 20px;
+        padding: 18px;
+        box-shadow: 0 12px 40px rgba(0,0,0,0.09);
         border: 1px solid #f0fdf4;
-        margin: 16px;
+        margin: 12px 8px;
+        max-width: 100%;
+        box-sizing: border-box;
       ">
         <h3 style="
-          margin: 0 0 16px;
+          margin: 0 0 12px;
           text-align: center;
-          font-size: 22px;
+          font-size: 19px;
           font-weight: 900;
           color: #004d1a;
+          line-height: 1.3;
         ">
           5-Year Growth Projections
         </h3>
         <p style="
           text-align: center;
           color: #6b7280;
-          font-size: 15px;
-          margin: 0 0 32px;
+          font-size: 13.5px;
+          margin: 0 0 24px;
+          line-height: 1.4;
         ">
           Smart forecasting based on our current performance trajectory (2025-2029)
         </p>
 
-        <!-- FIRST CONTAINER: 4 KPIs -->
+        <!-- KPI CONTAINER -->
         <div style="
           background: #f8fdfa;
-          border-radius: 20px;
-          padding: 20px;
+          border-radius: 16px;
+          padding: 16px;
           border: 1px solid #dcfce7;
-          margin-bottom: 24px;
+          margin-bottom: 20px;
         ">
           <div style="
             display: grid;
             grid-template-columns: 1fr;
-            gap: 20px;
+            gap: 18px;
           " id="kpiGrid"></div>
         </div>
 
-        <!-- SECOND CONTAINER: SUMMARY -->
+        <!-- SUMMARY CONTAINER -->
         <div id="summaryContainer"></div>
       </div>
     `;
@@ -123,30 +127,30 @@
     kpis.forEach((kpi, i) => {
       const values = projections.map(p => p[kpi.key]);
       const maxVal = Math.max(...values, 1);
-      const minVisible = maxVal * 0.20;
+      const minVisible = maxVal * 0.22;
       const stretched = values.map(v => v < minVisible ? minVisible : v);
 
       const card = document.createElement('div');
       card.style.cssText = `
         background: white;
-        border-radius: 18px;
-        padding: 16px;
-        box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+        border-radius: 16px;
+        padding: 14px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.05);
         border: 1px solid #f0fdf4;
         overflow: hidden;
       `;
 
       card.innerHTML = `
         <h4 style="
-          margin: 0 0 12px;
+          margin: 0 0 10px;
           color: #004d1a;
-          font-size: 17px;
+          font-size: 15.5px;
           text-align: center;
           font-weight: 900;
         ">
           ${kpi.name} Growth
         </h4>
-        <div id="chart-${i}" style="width:100%; height:340px;"></div>
+        <div id="chart-${i}" style="width:100%; height:300px;"></div>
       `;
 
       kpiGrid.appendChild(card);
@@ -160,27 +164,27 @@
         x: stretched,
         text: projections.map(p => kpi.currency ? `KES ${fmt(p[kpi.key])}` : fmt(p[kpi.key])),
         textposition: 'inside',
-        textfont: { size: 17, color: 'white', family: 'Inter, sans-serif', weight: 'bold' },
+        textfont: { size: 15, color: 'white', family: 'Inter, sans-serif', weight: 'bold' },
         insidetextanchor: 'middle',
         marker: {
           color: colors,
-          line: { width: 4, color: 'white' }
+          line: { width: 3.5, color: 'white' }
         }
       }], {
-        bargap: 0.4,
-        margin: { l: 80, r: 40, t: 20, b: 40 },
+        bargap: 0.38,
+        margin: { l: 65, r: 20, t: 15, b: 35 },
         paper_bgcolor: 'rgba(0,0,0,0)',
         plot_bgcolor: 'rgba(0,0,0,0)',
         xaxis: { visible: false },
         yaxis: {
           automargin: true,
           autorange: 'reversed',
-          tickfont: { size: 16, color: '#004d1a', family: 'Inter', weight: 'bold' }
+          tickfont: { size: 14, color: '#004d1a', family: 'Inter', weight: 'bold' }
         }
       }, { responsive: true, displayModeBar: false });
     });
 
-    // SUMMARY — EXACT ORIGINAL STYLE
+    // SUMMARY — MOBILE-FRIENDLY
     const first = projections[0];
     const last = projections[projections.length - 1];
     const growth = (a, b) => a > 0 ? ((b - a) / a * 100).toFixed(0) : '∞';
@@ -195,21 +199,21 @@
     let summaryHTML = `
       <div style="
         background: white;
-        border-radius: 20px;
-        padding: 20px;
-        box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+        border-radius: 16px;
+        padding: 16px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.05);
         border: 1px solid #f0fdf4;
       ">
         <div style="
           background: linear-gradient(90deg, #004d1a, #10B981);
-          padding: 16px;
-          border-radius: 16px;
+          padding: 14px;
+          border-radius: 14px;
           text-align: center;
-          margin-bottom: 20px;
+          margin-bottom: 16px;
         ">
           <h3 style="
             margin: 0;
-            font-size: 18px;
+            font-size: 16.5px;
             color: white;
             font-weight: 900;
           ">5-Year Growth Strategy</h3>
@@ -217,8 +221,8 @@
 
         <div style="
           display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          gap: 16px;
+          grid-template-columns: 1fr;
+          gap: 14px;
         ">
     `;
 
@@ -227,31 +231,31 @@
       summaryHTML += `
         <div style="
           background: #f0fdf4;
-          border-radius: 16px;
-          padding: 16px;
+          border-radius: 14px;
+          padding: 14px;
           border: 1px solid #86efac;
         ">
-          <div style="font-size: 15px; font-weight: 900; color: #166534; margin-bottom: 8px;">
+          <div style="font-size: 14px; font-weight: 900; color: #166534; margin-bottom: 6px;">
             ${r.label}
           </div>
-          <div style="display: flex; justify-content: space-between;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
             <div>
-              <div style="font-size: 13px; color: #6b7280;">2025</div>
-              <div style="font-size: 16px; color: #166534; font-weight: 900;">${fmt(r.curr)}</div>
+              <div style="font-size: 12px; color: #6b7280;">2025</div>
+              <div style="font-size: 15px; color: #166534; font-weight: 900;">${fmt(r.curr)}</div>
             </div>
             <div style="text-align: right;">
-              <div style="font-size: 13px; color: #6b7280;">2029</div>
-              <div style="font-size: 19px; color: #004d1a; font-weight: 900;">${fmt(r.proj)}</div>
+              <div style="font-size: 12px; color: #6b7280;">2029</div>
+              <div style="font-size: 17px; color: #004d1a; font-weight: 900;">${fmt(r.proj)}</div>
             </div>
           </div>
-          <div style="text-align: center; margin-top: 12px;">
+          <div style="text-align: center; margin-top: 10px;">
             <span style="
               background: #10B981;
               color: white;
-              padding: 6px 14px;
+              padding: 5px 12px;
               border-radius: 50px;
               font-weight: 900;
-              font-size: 13px;
+              font-size: 12.5px;
             ">+${g}%</span>
           </div>
         </div>
@@ -269,7 +273,7 @@
         if (!jan || !today) return;
         const projections = generateProjections(jan, today);
         createCharts(projections);
-        console.log('SOYOSOYO SACCO — PERFECT LAYOUT LOADED');
+        console.log('SOYOSOYO SACCO — MOBILE-PERFECT PROJECTIONS LOADED');
       } catch (e) {
         console.error(e);
       }
