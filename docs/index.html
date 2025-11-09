@@ -23,8 +23,10 @@
     
     <!-- CSS v56 -->
     <link rel="stylesheet" href="./style.css?v=56">
-<!-- Chart.js Library (v4.4.0) -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <!-- Plotly.js Library (Free 3D Charts) -->
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+    
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-05M38MYK0G"></script>
     <script>
@@ -33,85 +35,193 @@
       gtag('js', new Date());
       gtag('config', 'G-05M38MYK0G');
     </script>
-<!-- Projections Section Styles -->
+
+    <!-- Premium 3D Projections Styles -->
 <style>
-    .projections-section {
-        max-width: 1200px;
+    .projections-premium-section {
+        max-width: 1400px;
         margin: 60px auto;
-        padding: 40px 20px;
-        background: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 100%);
-        border-radius: 20px;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        padding: 50px 30px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+        border-radius: 24px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        position: relative;
+        overflow: hidden;
     }
     
-    .projections-header {
+    .projections-premium-section::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+        background-size: 30px 30px;
+        animation: floatBg 20s linear infinite;
+        pointer-events: none;
+    }
+    
+    @keyframes floatBg {
+        0% { transform: translate(0, 0); }
+        100% { transform: translate(30px, 30px); }
+    }
+    
+    .projections-premium-header {
         text-align: center;
         margin-bottom: 40px;
+        position: relative;
+        z-index: 1;
     }
     
-    .projections-header h2 {
-        font-size: 32px;
-        color: #006400;
-        margin: 0 0 10px 0;
-        font-weight: 700;
+    .projections-premium-header h2 {
+        font-size: 42px;
+        color: #ffffff;
+        margin: 0 0 15px 0;
+        font-weight: 800;
+        text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        background: linear-gradient(135deg, #fff 0%, #ffd700 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
     }
     
-    .projections-header p {
-        color: #666;
-        font-size: 16px;
+    .projections-premium-header p {
+        color: #ffffff;
+        font-size: 18px;
         margin: 0;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        opacity: 0.95;
     }
     
-    .chart-container {
-        background: white;
+    .chart-premium-container {
+        background: rgba(255,255,255,0.95);
         padding: 30px;
-        border-radius: 16px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        margin-bottom: 30px;
-        height: 500px;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        margin-bottom: 40px;
+        position: relative;
+        z-index: 1;
     }
     
-    #projectionSummary {
+    #premium3DChart {
+        width: 100%;
+        height: 700px;
+    }
+    
+    .metrics-premium-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 20px;
-        margin-top: 30px;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px;
+        margin-top: 40px;
+        position: relative;
+        z-index: 1;
     }
     
-    .projection-card {
-        background: white;
-        padding: 20px;
+    .metric-premium-card {
+        background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%);
+        padding: 30px;
+        border-radius: 18px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .metric-premium-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 6px;
+        background: linear-gradient(90deg, var(--card-color-1), var(--card-color-2));
+    }
+    
+    .metric-premium-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 15px 50px rgba(0,0,0,0.25);
+    }
+    
+    .metric-premium-card h4 {
+        margin: 0 0 20px 0;
+        font-size: 16px;
+        font-weight: 700;
+        color: #333;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .metric-value-premium {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        padding: 8px 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .metric-label-premium {
+        font-size: 13px;
+        color: #666;
+        font-weight: 500;
+    }
+    
+    .metric-number-premium {
+        font-size: 20px;
+        font-weight: 700;
+        background: linear-gradient(135deg, var(--card-color-1), var(--card-color-2));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .growth-badge-premium {
+        background: linear-gradient(135deg, var(--card-color-1), var(--card-color-2));
+        padding: 12px 20px;
         border-radius: 12px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-align: center;
+        margin-top: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
     
-    .projection-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    .growth-percentage-premium {
+        color: #ffffff;
+        font-weight: 800;
+        font-size: 28px;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    
+    .growth-text-premium {
+        font-size: 11px;
+        color: rgba(255,255,255,0.9);
+        margin-top: 4px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 600;
     }
     
     @media (max-width: 768px) {
-        .projections-section {
+        .projections-premium-section {
             margin: 30px 10px;
-            padding: 20px 15px;
+            padding: 30px 20px;
         }
         
-        .projections-header h2 {
-            font-size: 24px;
+        .projections-premium-header h2 {
+            font-size: 28px;
         }
         
-        .chart-container {
-            padding: 15px;
-            height: 400px;
+        #premium3DChart {
+            height: 450px;
         }
         
-        #projectionSummary {
+        .metrics-premium-grid {
             grid-template-columns: 1fr;
-            gap: 15px;
+            gap: 20px;
         }
     }
 </style>
+
 
     <!-- GROWTH INDICATOR STYLES -->
     <style>
@@ -393,20 +503,21 @@
     </section>
     
 <!-- Projections Section HTML -->
-<section class="projections-section">
-    <div class="projections-header">
-        <h2>📈 5-Year Growth Projections</h2>
-        <p>Smart forecasting based on our current performance trajectory (2025-2029)</p>
+<section class="projections-premium-section">
+    <div class="projections-premium-header">
+        <h2>5-Year Conservative Growth Forecast</h2>
+        <p>Interactive 3D Funnel Visualization (2025-2029)</p>
     </div>
     
-    <!-- Main Chart -->
-    <div class="chart-container">
-        <canvas id="projectionsChart"></canvas>
+    <!-- 3D Funnel Chart -->
+    <div class="chart-premium-container">
+        <div id="premium3DChart"></div>
     </div>
     
-    <!-- Summary Cards -->
-    <div id="projectionSummary"></div>
+    <!-- Premium Metrics Grid -->
+    <div class="metrics-premium-grid" id="metricsPremiumGrid"></div>
 </section>
+
     
     <!-- LOAN CALCULATOR -->
     <section class="tool-section" id="loan-calculator">
@@ -566,123 +677,309 @@
 <script src="./scripts/carousel.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
-<!-- Load Projections Script -->
-<script src="./scripts/projections.js"></script>
+
+  <!-- 3D Projections Script -->
 <script>
-    // MEMBER ACTIVITIES CAROUSEL SCRIPT
-    const memberImages = [
-        './assets/01acb621480e99c389cea4973abe4896.jpg',
-        './assets/3161c755955816487a8b0cd796d43c29.jpg',
-        './assets/c1cbf8720115247da59d153d3f0be3b0.jpg',
-        './assets/b8a8a30e9531f4d1cac3ddf56c594b5a.jpg',
-        './assets/8053495671fa13e271078ad77beff286.jpg',
-        './assets/8640680b79eba02a8544ba3bbbcdd655.jpg',
-        './assets/8c145fcc127b3fad7cbe25bc847f3e8c.jpg'
-    ];
+(function() {
+    'use strict';
 
-    let currentSlide = 0;
-
-    function initMemberCarousel() {
-        const slidesContainer = document.getElementById('memberSlides');
-        const dotsContainer = document.getElementById('memberDots');
-
-        // Create slides
-        memberImages.forEach((imgSrc, index) => {
-            const slide = document.createElement('div');
-            slide.className = 'slide';
-            slide.innerHTML = `<img src="${imgSrc}" alt="Member Activity ${index + 1}" loading="lazy">`;
-            slidesContainer.appendChild(slide);
-
-            // Create dots
-            const dot = document.createElement('span');
-            dot.className = 'dot';
-            dot.onclick = () => goToSlide(index);
-            dotsContainer.appendChild(dot);
-        });
-
-        showSlide(currentSlide);
-    }
-
-    function showSlide(index) {
-        const slides = document.querySelectorAll('#memberSlides .slide');
-        const dots = document.querySelectorAll('#memberDots .dot');
-        const totalSlides = slides.length;
-
-        if (index >= totalSlides) currentSlide = 0;
-        else if (index < 0) currentSlide = totalSlides - 1;
-        else currentSlide = index;
-
-        document.getElementById('memberSlides').style.transform = `translateX(-${currentSlide * 100}%)`;
-
-        dots.forEach((dot, i) => {
-            dot.className = i === currentSlide ? 'dot active' : 'dot';
-        });
-    }
-
-    function changeSlide(direction) {
-        showSlide(currentSlide + direction);
-    }
-
-    function goToSlide(index) {
-        showSlide(index);
-    }
-
-    // Auto-advance (optional: every 5 seconds)
-    setInterval(() => changeSlide(1), 5000);
-
-    // CLEAN GROWTH ARROW PLUGIN
-    const cleanGrowthArrowPlugin = {
-        id: 'cleanGrowthArrow',
-        afterDraw: function(chart) {
-            const { ctx, scales, data } = chart;
-            const dataset = data.datasets[0];
-            const janVal = dataset.data[0];
-            const todayVal = dataset.data[1];
-            const growthPercent = janVal === 0 ? 0 : ((todayVal - janVal) / Math.abs(janVal)) * 100;
-            const isPositive = growthPercent > 0;
-
-            const xScale = scales.x;
-            const yScale = scales.y;
-
-            const x1 = xScale.getPixelForValue(0);
-            const x2 = xScale.getPixelForValue(1);
-            const y1 = yScale.getPixelForValue(janVal);
-            const y2 = yScale.getPixelForValue(todayVal);
-
-            const headLength = 14;
-            const angle = Math.atan2(y2 - y1, x2 - x1);
-
-            const color = isPositive ? '#10B981' : '#EF4444';
-
-            ctx.save();
-            ctx.strokeStyle = color;
-            ctx.lineWidth = 3;
-            ctx.lineCap = 'round';
-            ctx.beginPath();
-            ctx.moveTo(x1, y1);
-            ctx.lineTo(x2, y2);
-            ctx.stroke();
-
-            ctx.beginPath();
-            ctx.moveTo(x2, y2);
-            ctx.lineTo(x2 - headLength * Math.cos(angle - Math.PI / 6), y2 - headLength * Math.sin(angle - Math.PI / 6));
-            ctx.lineTo(x2 - headLength * Math.cos(angle + Math.PI / 6), y2 - headLength * Math.sin(angle + Math.PI / 6));
-            ctx.closePath();
-            ctx.fillStyle = color;
-            ctx.fill();
-
-            if (growthPercent !== 0) {
-                const midX = (x1 + x2) / 2;
-                const midY = (y1 + y2) / 2 - 15;
-                ctx.font = 'bold 13px Lato';
-                ctx.fillStyle = color;
-                ctx.textAlign = 'center';
-                ctx.fillText(`${isPositive ? '+' : ''}${growthPercent.toFixed(1)}%`, midX, midY);
-            }
-            ctx.restore();
+    // Wait for carousel data
+    function waitForData(callback) {
+        if (window.saccoData && window.saccoData.jan && window.saccoData.today) {
+            callback();
+        } else {
+            setTimeout(() => waitForData(callback), 100);
         }
-    };
-    Chart.register(cleanGrowthArrowPlugin);
+    }
+
+    // Normalize data
+    function normalizeData(data) {
+        let roa = 0;
+        if (typeof data.roa === 'string') {
+            roa = parseFloat(data.roa.replace('%', ''));
+        } else if (typeof data.roa === 'number') {
+            roa = data.roa;
+        }
+        
+        return {
+            members: parseInt(data.members) || 0,
+            contributions: parseInt(data.contributions) || 0,
+            loans: parseInt(data.loans) || 0,
+            bankBalance: parseInt(data.bankBalance) || 0,
+            profit: parseInt(data.profit) || 0,
+            roa: roa
+        };
+    }
+
+    // CONSERVATIVE projection algorithm
+    function generateProjections(startData, endData, years = [2025, 2026, 2027, 2028, 2029], smoothing = 0.45) {
+        const start = normalizeData(startData);
+        const end = normalizeData(endData);
+        const projections = [];
+        
+        const membersGrowth = start.members > 0 ? (end.members - start.members) / start.members : 0;
+        const contributionsGrowth = start.contributions > 0 ? (end.contributions - start.contributions) / start.contributions : 0;
+        
+        // CONSERVATIVE LOAN GROWTH - Cap at 20% of actual or 15% annually
+        const actualLoansGrowth = start.loans > 0 ? (end.loans - start.loans) / start.loans : 0;
+        const loansGrowth = Math.min(actualLoansGrowth * 0.2, 0.15);
+        
+        const bankGrowth = start.bankBalance > 0 ? (end.bankBalance - start.bankBalance) / start.bankBalance : 0;
+
+        let last = { ...end };
+
+        years.forEach((year, idx) => {
+            if (idx === 0) {
+                projections.push({ 
+                    year, 
+                    members: end.members,
+                    contributions: end.contributions,
+                    loans: end.loans,
+                    bankBalance: end.bankBalance,
+                    profit: end.profit,
+                    roa: end.roa
+                });
+            } else {
+                const members = Math.round(last.members * (1 + membersGrowth * smoothing));
+                const contributions = Math.round(last.contributions * (1 + contributionsGrowth * smoothing));
+                const loans = Math.round(last.loans * (1 + loansGrowth * smoothing));
+                const bankBalance = Math.round(last.bankBalance * (1 + bankGrowth * smoothing));
+                
+                const totalAssets = loans + contributions + bankBalance;
+                const roaDecimal = last.roa / 100;
+                const profit = Math.round(roaDecimal * totalAssets);
+
+                projections.push({ 
+                    year, members, contributions, loans, bankBalance, profit,
+                    roa: parseFloat(last.roa.toFixed(2))
+                });
+                
+                last = { members, contributions, loans, bankBalance, profit, roa: last.roa };
+            }
+        });
+
+        return projections;
+    }
+
+    // Format currency
+    function formatCurrency(num) {
+        if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+        if (num >= 1000) return (num / 1000).toFixed(0) + 'K';
+        return num.toLocaleString();
+    }
+
+    // Create 3D pyramid for each year
+    function createPyramid(year, value, maxValue, xOffset, color1, color2) {
+        const height = (value / maxValue) * 3; // Scale height
+        const baseSize = 0.8;
+        
+        // Define vertices: square base + apex
+        const x = [
+            xOffset - baseSize, xOffset + baseSize, xOffset + baseSize, xOffset - baseSize, xOffset
+        ];
+        const y = [
+            -baseSize, -baseSize, baseSize, baseSize, 0
+        ];
+        const z = [
+            0, 0, 0, 0, height
+        ];
+
+        return {
+            type: 'mesh3d',
+            x: x,
+            y: y,
+            z: z,
+            i: [0, 0, 1, 2, 0, 1],  // Triangle faces
+            j: [1, 3, 2, 3, 1, 2],
+            k: [4, 4, 4, 4, 3, 3],
+            intensity: [0, 0, 0, 0, 1],
+            colorscale: [[0, color1], [1, color2]],
+            name: `${year}: ${formatCurrency(value)}`,
+            hovertemplate: `<b>${year}</b><br>Total Assets: ${formatCurrency(value)}<extra></extra>`,
+            showscale: false,
+            opacity: 0.85,
+            flatshading: false
+        };
+    }
+
+    // Create stunning 3D funnel chart with pyramids
+    function create3DFunnelChart(projections) {
+        const pyramids = [];
+        const colors = [
+            ['#FF6B9D', '#C44569'],  // 2025 - Pink gradient
+            ['#4FACFE', '#00F2FE'],  // 2026 - Blue gradient
+            ['#43E97B', '#38F9D7'],  // 2027 - Green gradient
+            ['#FA709A', '#FEE140'],  // 2028 - Orange gradient
+            ['#30CFD0', '#330867']   // 2029 - Purple gradient
+        ];
+
+        // Calculate total assets for each year
+        const totalAssets = projections.map(p => p.contributions + p.loans + p.bankBalance);
+        const maxAsset = Math.max(...totalAssets);
+
+        // Create pyramid for each year
+        projections.forEach((proj, idx) => {
+            const pyramid = createPyramid(
+                proj.year,
+                totalAssets[idx],
+                maxAsset,
+                idx * 2.5, // Spread pyramids horizontally
+                colors[idx][0],
+                colors[idx][1]
+            );
+            pyramids.push(pyramid);
+        });
+
+        const layout = {
+            title: {
+                text: '<b>3D Growth Funnel: Conservative 5-Year Assets Projection</b>',
+                font: { size: 24, family: 'Arial, sans-serif', color: '#333' }
+            },
+            scene: {
+                xaxis: { 
+                    title: 'Year Progression', 
+                    backgroundcolor: 'rgb(245, 245, 245)', 
+                    gridcolor: 'white', 
+                    showbackground: true,
+                    tickvals: [0, 2.5, 5, 7.5, 10],
+                    ticktext: projections.map(p => p.year)
+                },
+                yaxis: { 
+                    title: 'Growth Dimension', 
+                    backgroundcolor: 'rgb(245, 245, 245)', 
+                    gridcolor: 'white', 
+                    showbackground: true 
+                },
+                zaxis: { 
+                    title: 'Total Assets (KES)', 
+                    backgroundcolor: 'rgb(245, 245, 245)', 
+                    gridcolor: 'white', 
+                    showbackground: true 
+                },
+                camera: {
+                    eye: { x: 1.8, y: 1.8, z: 1.4 },
+                    center: { x: 0, y: 0, z: 0 }
+                }
+            },
+            margin: { l: 0, r: 0, b: 0, t: 60 },
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            showlegend: true,
+            legend: {
+                x: 0.05,
+                y: 0.95,
+                bgcolor: 'rgba(255,255,255,0.9)',
+                bordercolor: '#E2E2E2',
+                borderwidth: 2,
+                font: { size: 11 }
+            }
+        };
+
+        const config = {
+            responsive: true,
+            displayModeBar: true,
+            displaylogo: false,
+            modeBarButtonsToRemove: ['toImage']
+        };
+
+        Plotly.newPlot('premium3DChart', pyramids, layout, config);
+        console.log('✅ Premium 3D Pyramid Funnel Chart Created');
+    }
+
+    // Create premium metric cards
+    function createPremiumMetricCards(projections) {
+        const container = document.getElementById('metricsPremiumGrid');
+        const firstYear = projections[0];
+        const lastYear = projections[projections.length - 1];
+
+        const metrics = [
+            {
+                label: 'Members Growth',
+                current: firstYear.members,
+                projected: lastYear.members,
+                color1: '#FF6B9D',
+                color2: '#C44569'
+            },
+            {
+                label: 'Contributions Growth',
+                current: firstYear.contributions,
+                projected: lastYear.contributions,
+                color1: '#4FACFE',
+                color2: '#00F2FE'
+            },
+            {
+                label: 'Loans Growth (Conservative)',
+                current: firstYear.loans,
+                projected: lastYear.loans,
+                color1: '#43E97B',
+                color2: '#38F9D7'
+            },
+            {
+                label: 'Bank Balance Growth',
+                current: firstYear.bankBalance,
+                projected: lastYear.bankBalance,
+                color1: '#FA709A',
+                color2: '#FEE140'
+            }
+        ];
+
+        const cardsHTML = metrics.map(metric => {
+            const growth = metric.current > 0 
+                ? ((metric.projected - metric.current) / metric.current * 100).toFixed(1)
+                : '∞';
+            const isCurrency = !metric.label.includes('Members');
+            
+            return `
+                <div class="metric-premium-card" style="--card-color-1: ${metric.color1}; --card-color-2: ${metric.color2};">
+                    <h4>${metric.label}</h4>
+                    <div class="metric-value-premium">
+                        <span class="metric-label-premium">2025:</span>
+                        <strong class="metric-number-premium">${isCurrency ? formatCurrency(metric.current) : metric.current}</strong>
+                    </div>
+                    <div class="metric-value-premium">
+                        <span class="metric-label-premium">2029:</span>
+                        <strong class="metric-number-premium">${isCurrency ? formatCurrency(metric.projected) : metric.projected}</strong>
+                    </div>
+                    <div class="growth-badge-premium">
+                        <div class="growth-percentage-premium">+${growth}%</div>
+                        <div class="growth-text-premium">Conservative Growth</div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        container.innerHTML = cardsHTML;
+    }
+
+    // Initialize
+    function initPremium3DProjections() {
+        waitForData(() => {
+            try {
+                const { jan, today } = window.saccoData;
+                const projections = generateProjections(jan, today);
+                console.log('📊 Conservative 5-Year Projections:', projections);
+                
+                window.projections = projections;
+                create3DFunnelChart(projections);
+                createPremiumMetricCards(projections);
+            } catch (error) {
+                console.error('❌ Error generating premium 3D projections:', error);
+            }
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initPremium3DProjections);
+    } else {
+        initPremium3DProjections();
+    }
+
+    window.refreshPremium3DProjections = initPremium3DProjections;
+})();
+</script>  
+    
+   
+    <script src="./scripts/member-carousel.js"></script>
 
     // CHART RENDERER
     function renderGrowthCharts() {
