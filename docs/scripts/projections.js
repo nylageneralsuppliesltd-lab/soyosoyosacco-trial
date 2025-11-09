@@ -1,5 +1,5 @@
-// SOYOSOYO SACCO — FINAL MOBILE-PERFECT PROJECTIONS
-// One container, full-width, 2025 visible, table fits screen
+// SOYOSOYO SACCO — FINAL ULTRA-PREMIUM PROJECTIONS
+// Full-width, curved, soft, mobile-perfect, live
 (function () {
   'use strict';
 
@@ -55,7 +55,7 @@
     return num.toLocaleString();
   }
 
-  // ——————————————————— ONE CONTAINER, FULL WIDTH, MOBILE-PERFECT ———————————————————
+  // ——————————————————— FULL-WIDTH, CURVED, SOFT FUNNELS ———————————————————
   function createCharts(projections) {
     const container = document.getElementById('projectionsChart');
     if (!container || typeof Plotly === 'undefined') return;
@@ -85,20 +85,28 @@
       const card = document.createElement('div');
       card.style.cssText = `
         background: white;
-        border-radius: 18px;
+        border-radius: 24px;
         padding: 20px;
-        box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+        box-shadow: 0 10px 35px rgba(0,0,0,0.08);
         border: 1px solid #f0fdf4;
-        height: 420px;
+        height: 440px;
         display: flex;
         flex-direction: column;
+        overflow: hidden;
       `;
 
       card.innerHTML = `
-        <h4 style="margin:0 0 12px; color:#006400; font-size:18px; text-align:center; font-weight:800;">
+        <h4 style="
+          margin: 0 0 16px;
+          color: #006400;
+          font-size: 19px;
+          text-align: center;
+          font-weight: 800;
+          letter-spacing: 0.5px;
+        ">
           ${kpi.name} Growth
         </h4>
-        <div id="funnel-${i}" style="flex:1; min-height:0;"></div>
+        <div id="funnel-${i}" style="flex: 1; min-height: 0; width: 100%;"></div>
       `;
 
       grid.appendChild(card);
@@ -109,24 +117,31 @@
         x: projections.map(p => p[kpi.key]),
         textposition: "inside",
         texttemplate: "<b>%{x: + (kpi.currency ? ',.0f' : '')}</b>",
-        textfont: { size: 18, color: 'white', family: 'Lato, sans-serif', weight: 'bold' },
-        marker: { color: colors, line: { width: 4, color: 'white' } },
-        connector: { line: { color: 'rgba(255,255,255,0.4)', width: 3 } },
+        textfont: { size: 19, color: 'white', family: 'Lato, sans-serif', weight: 'bold' },
+        marker: { 
+          color: colors,
+          line: { width: 0 } // Removes sharp edges
+        },
+        connector: { 
+          line: { color: 'rgba(255,255,255,0.6)', width: 4 },
+          fillcolor: 'rgba(255,255,255,0.3)'
+        },
+        width: [1, 1, 1, 1, 1], // Forces full width
+        offset: [0, 0, 0, 0, 0],
         hovertemplate: `<b>%{y}</b><br>${kpi.currency ? 'KES ' : ''}<b>%{x:,.0f}</b><extra></extra>`
       }], {
-        margin: { l: 60, r: 40, t: 20, b: 50 },
+        margin: { l: 50, r: 50, t: 20, b: 40 },
         paper_bgcolor: 'rgba(0,0,0,0)',
         plot_bgcolor: 'rgba(0,0,0,0)',
-        font: { family: 'Lato' }
+        uniformtext: { mode: 'hide', minsize: 14 }
       }, {
         responsive: true,
-        displayModeBar: false,
-        staticPlot: false
+        displayModeBar: false
       });
     });
   }
 
-  // ——————————————————— MOBILE-FIT SUMMARY TABLE (NO SCROLL) ———————————————————
+  // ——————————————————— PERFECT MOBILE TABLE ———————————————————
   function createSummaryTable(projections) {
     const container = document.getElementById('projectionSummary');
     if (!container) return;
@@ -151,18 +166,29 @@
         border:1px solid #f0fdf4;
         margin:20px 16px;
       ">
-        <div style="background:linear-gradient(90deg,#006400,#10B981); padding:18px; text-align:center;">
-          <h3 style="margin:0; font-size:20px; color:white; font-weight:900;">
-            5-YEAR MASTERPLAN
+        <div style="
+          background:linear-gradient(90deg,#006400,#10B981);
+          padding:16px 20px;
+          text-align:center;
+        ">
+          <h3 style="
+            margin:0;
+            font-size:18px;
+            color:white;
+            font-weight:900;
+            letter-spacing:0.8px;
+            white-space:nowrap;
+          ">
+            5-Year Growth Strategy
           </h3>
         </div>
-        <table style="width:100%; border-collapse:collapse; font-size:14px;">
+        <table style="width:100%; border-collapse:collapse; font-size:13.5px;">
           <thead style="background:#f0fdf4;">
             <tr>
-              <th style="padding:12px 10px; text-align:left; font-weight:700; color:#374151;">Metric</th>
-              <th style="padding:12px 8px; text-align:center; font-weight:700; color:#374151;">2025</th>
-              <th style="padding:12px 8px; text-align:center; font-weight:700; color:#374151;">2029</th>
-              <th style="padding:12px 8px; text-align:center; font-weight:700; color:#374151;">Growth</th>
+              <th style="padding:10px 8px; text-align:left; font-weight:700; color:#374151;">Metric</th>
+              <th style="padding:10px 6px; text-align:center; font-weight:700; color:#374151;">2025</th>
+              <th style="padding:10px 6px; text-align:center; font-weight:700; color:#374151;">2029</th>
+              <th style="padding:10px 6px; text-align:center; font-weight:700; color:#374151;">Growth</th>
             </tr>
           </thead>
           <tbody>
@@ -176,17 +202,17 @@
 
       html += `
         <tr>
-          <td style="padding:12px 10px; font-weight:700; color:#1f2937; background:${accent}08;">
+          <td style="padding:10px 8px; font-weight:700; color:#1f2937; background:${accent}08;">
             ${r.label}
           </td>
-          <td style="padding:12px 8px; text-align:center; color:#6b7280;">
+          <td style="padding:10px 6px; text-align:center; color:#6b7280;">
             ${curr}
           </td>
-          <td style="padding:12px 8px; text-align:center; font-weight:900; color:#006400; background:${accent}12;">
+          <td style="padding:10px 6px; text-align:center; font-weight:900; color:#006400; background:${accent}12;">
             ${proj}
           </td>
-          <td style="padding:12px 8px; text-align:center; background:${accent}; color:white;">
-            <span style="background:white; color:${accent}; padding:4px 12px; border-radius:50px; font-weight:900; font-size:13px;">
+          <td style="padding:10px 6px; text-align:center; background:${accent};">
+            <span style="background:white; color:${accent}; padding:4px 10px; border-radius:50px; font-weight:900; font-size:12.5px;">
               +${g}%
             </span>
           </td>
@@ -210,7 +236,7 @@
         createCharts(projections);
         createSummaryTable(projections);
 
-        console.log('SOYOSOYO FINAL — MOBILE-PERFECT, ONE CONTAINER, 2025 VISIBLE');
+        console.log('SOYOSOYO FINAL — FULL-WIDTH, CURVED, SOFT, PERFECT');
       } catch (e) { console.error(e); }
     });
   }
