@@ -21,8 +21,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
     
-    <!-- MAIN SITE CSS (v57 — CLEAN PROJECTIONS) -->
-    <link rel="stylesheet" href="./style.css?v=57">
+    <!-- MAIN SITE CSS -->
+    <link rel="stylesheet" href="./style.css?v=60">
 
     <!-- Plotly.js Library -->
     <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
@@ -35,9 +35,9 @@
       gtag('js', new Date());
       gtag('config', 'G-05M38MYK0G');
     </script>
-    
- <!-- === FINAL NUCLEAR PROJECTION STYLES — NO CANVAS, NO CONFLICT === -->
-    <style id="projections-nuclear-fix">
+
+    <!-- FINAL WORKING PROJECTION STYLES — FULLY VISIBLE SUMMARY + NO CANVAS CONFLICT -->
+    <style id="projections-final-working">
       #projectionsChart { 
         isolation: isolate; 
         contain: layout style paint;
@@ -67,10 +67,10 @@
         color: #004d1a;
       }
 
-      /* ONLY targets Plotly container DIV — NEVER canvas */
       #projectionsChart .plotly-container {
         height: 420px !important;
         width: 100% !important;
+        background: white;
       }
 
       #projectionsChart .summary-header {
@@ -131,20 +131,39 @@
       }
 
       @media (min-width: 769px) {
-        #projectionsChart { display: flex; flex-wrap: wrap; justify-content: space-between; }
-        #projectionsChart > .kpi-card { flex: 1 1 calc(50% - 20px); max-width: 48%; }
-        #projectionsChart .plotly-container { height: 440px !important; }
-        #projectionsChart > .summary-card { flex: 1 1 100%; max-width: 100%; margin: 30px 8px 10px; }
-        #projectionsChart .summary-grid { grid-template-columns: repeat(4, 1fr); gap: 20px; padding: 20px; }
+        #projectionsChart { 
+          display: flex; 
+          flex-wrap: wrap; 
+          justify-content: space-between; 
+        }
+        #projectionsChart > .kpi-card { 
+          flex: 1 1 calc(50% - 20px); 
+          max-width: 48%; 
+        }
+        #projectionsChart .plotly-container { 
+          height: 440px !important; 
+        }
+        #projectionsChart > .summary-card { 
+          flex: 1 1 100%; 
+          max-width: 100%; 
+          margin: 30px 8px 10px; 
+        }
+        #projectionsChart .summary-grid { 
+          grid-template-columns: repeat(4, 1fr); 
+          gap: 20px; 
+          padding: 20px; 
+        }
         #projectionsChart .summary-values strong { font-size: 17px; }
         #projectionsChart .summary-growth { padding: 8px 16px; font-size: 13px; }
       }
 
       @media (max-width: 768px) {
-        #projectionsChart .plotly-container { height: 460px !important; }
+        #projectionsChart .plotly-container { 
+          height: 460px !important; 
+        }
       }
 
-      /* FINAL CANVAS PROTECTION — CHART.JS WINS */
+      /* PROTECT CHART.JS CANVASES */
       canvas, .chart-card canvas, canvas.financial-chart-canvas {
         height: auto !important;
         max-height: 270px !important;
@@ -152,7 +171,8 @@
         display: block !important;
       }
     </style>
-    <!-- GROWTH INDICATOR STYLES (shared) -->
+
+    <!-- GROWTH INDICATOR STYLES -->
     <style>
         .growth-indicator {
             text-align: center;
@@ -165,8 +185,7 @@
         .growth-indicator i { margin-right: 4px; font-size: 0.9em; }
     </style>
 
-    <!-- === DEDICATED STYLES FOR FINANCIAL GROWTH CHARTS (Chart.js) === -->
-    <!-- These are the EXACT working styles from your old version, now scoped to avoid conflicts -->
+    <!-- FINANCIAL GROWTH CHARTS STYLES -->
     <style>
         .growth-charts-grid {
             display: grid;
@@ -183,7 +202,6 @@
             padding: 1rem;
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
-        /* ONLY target Chart.js canvases inside financial charts */
         .chart-card .financial-chart-canvas {
             flex-grow: 1;
             max-height: 270px;
@@ -202,9 +220,6 @@
             .chart-card .financial-chart-canvas { max-height: 290px; }
         }
     </style>
-
-    <!-- === PROJECTION CHART (Plotly) uses its own <div> — NO CANVAS, NO CONFLICT === -->
-    <!-- No special styling needed here — Plotly handles layout internally -->
 
     <!-- MEMBER ACTIVITIES CAROUSEL STYLES -->
     <style>
@@ -271,7 +286,7 @@
 </head>
 <body>
 
-<!-- ==================== HEADER ==================== -->
+<!-- HEADER -->
 <header class="site-header">
     <div class="navbar">
         <a href="index.html">
@@ -297,7 +312,7 @@
     </div>
 </header>
 
-<!-- ==================== MAIN ==================== -->
+<!-- MAIN -->
 <main class="container">
 
     <!-- HISTORY TEASER -->
@@ -432,16 +447,16 @@
         </div>
     </section>
     
-    <!-- PROJECTIONS SECTION — Plotly (untouched, full-width) -->
-  <section style="margin: 60px 0; padding: 0 10px;">
-  <div style="text-align:center; margin-bottom: 30px;">
-    <h2 style="font-size: 28px; color: #004d1a; font-weight: 900; margin: 0;">5-Year Growth Projections</h2>
-    <p style="color: #6b7280; font-size: 16px; margin: 10px 0 0;">
-      Smart forecasting based on our current performance trajectory
-    </p>
-  </div>
-  <div id="projectionsChart"></div>
-</section>
+    <!-- PROJECTIONS SECTION — FULLY WORKING -->
+    <section style="margin: 60px 0; padding: 0 10px;">
+        <div style="text-align:center; margin-bottom: 30px;">
+            <h2 style="font-size: 28px; color: #004d1a; font-weight: 900; margin: 0;">5-Year Growth Projections</h2>
+            <p style="color: #6b7280; font-size: 16px; margin: 10px 0 0;">
+                Smart forecasting based on our current performance trajectory
+            </p>
+        </div>
+        <div id="projectionsChart"></div>
+    </section>
     
     <!-- LOAN CALCULATOR -->
     <section class="tool-section" id="loan-calculator">
@@ -554,7 +569,7 @@
 
 </main>
 
-<!-- ================= FOOTER ================= -->
+<!-- FOOTER -->
 <footer>
     <p>© <span id="autoYearStart">2025</span>–<span id="autoYearNow"></span>  SOYOSOYO SACCO. All rights reserved. | <a href="mailto:info@soyosoyosacco.com">info@soyosoyosacco.com</a></p>
     <div class="social-icons">
@@ -564,17 +579,17 @@
     </div>
 </footer>
 
-<!-- ==================== SCRIPTS ==================== -->
+<!-- SCRIPTS -->
 <script>
   document.getElementById('autoYearNow').textContent = new Date().getFullYear();
 </script>
 <script src="./scripts/carousel.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
-<script src="./scripts/projections.js"></script>
+<script src="./scripts/projections.js?v=FINAL"></script>
 <script src="./scripts/member-carousel.js"></script>
 
-<!-- FINANCIAL GROWTH CHARTS SCRIPT (unchanged logic, just uses new class) -->
+<!-- FINANCIAL GROWTH CHARTS SCRIPT -->
 <script>
     const cleanGrowthArrowPlugin = {
         id: 'cleanGrowthArrow',
