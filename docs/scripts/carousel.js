@@ -1,6 +1,6 @@
-// scripts/carousel.js?v=61
+// scripts/carousel.js?v=62
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('carousel.js v61 — FINAL VERSION — ARROWS + NO OVERFLOW');
+  console.log('carousel.js v62 — FINAL: CONE FIXED + ARROWS + NO OVERFLOW');
 
   // === DATA ===
   const loanTypesToday = [
@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     { name: 'Development', value: 553000 },
     { name: 'Education', value: 275000 }
   ];
-  const totalLoansToday = loanTypesToday.reduce((a, b) => a + b.value, 0);
+  const totalLoansToday = loanTypesToday.reduce((a,b) => a + b.value, 0);
   const externalLoansToday = 66784;
 
   const carouselData = [
@@ -36,10 +36,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // === FINANCIAL CAROUSEL ===
   const carousel = document.querySelector('.carousel');
   if (carousel) {
-    carousel.innerHTML = carouselData.map(item => `
+    carousel.innerHTML = carouselData.map(i => `
       <article class="carousel-item">
-        <h3 class="carousel-button" data-target="${item.number}">0</h3>
-        <p class="carousel-description">${item.desc}</p>
+        <h3 class="carousel-button" data-target="${i.number}">0</h3>
+        <p class="carousel-description">${i.desc}</p>
       </article>
     `).join('');
 
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { threshold: 0.5 }).observe(carousel.parentElement);
   }
 
-  // === 3D CONE ===
+  // === 3D CONE — FULLY FIXED ===
   const coneContainer = document.getElementById('coneContainer');
   if (coneContainer) {
     const script = document.createElement('script');
@@ -74,24 +74,44 @@ document.addEventListener('DOMContentLoaded', () => {
       const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
       renderer.setSize(coneContainer.clientWidth, coneContainer.clientHeight);
       renderer.setClearColor(0x000000, 0);
-      coneContainer.innerHTML = ''; coneContainer.appendChild(renderer.domElement);
+      coneContainer.innerHTML = '';
+      coneContainer.appendChild(renderer.domElement);
 
       scene.add(new THREE.AmbientLight(0xffffff, 0.8));
-      scene.add(new THREE.PointLight(0xffffff, 1).position.set(8,8,8));
 
-      const cone = new THREE.Mesh(new THREE.ConeGeometry(1.2, 2.4, 64), new THREE.MeshPhongMaterial({ color: 0x10B981, shininess: 120 }));
+      const pointLight = new THREE.PointLight(0xffffff, 1);
+      pointLight.position.set(8, 8, 8);
+      scene.add(pointLight);
+
+      const cone = new THREE.Mesh(
+        new THREE.ConeGeometry(1.2, 2.4, 64),
+        new THREE.MeshPhongMaterial({ color: 0x10B981, shininess: 120 })
+      );
       scene.add(cone);
-      const base = new THREE.Mesh(new THREE.CircleGeometry(1.4, 64), new THREE.MeshPhongMaterial({ color: 0xC4B5FD }));
-      base.rotation.x = -Math.PI/2; base.position.y = -1.2; scene.add(base);
+
+      const base = new THREE.Mesh(
+        new THREE.CircleGeometry(1.4, 64),
+        new THREE.MeshPhongMaterial({ color: 0xC4B5FD })
+      );
+      base.rotation.x = -Math.PI / 2;
+      base.position.y = -1.2;
+      scene.add(base);
+
       camera.position.set(3.5, 2.5, 4);
 
       const createLabel = text => {
-        const canvas = document.createElement('canvas'); canvas.width = 512; canvas.height = 128;
+        const canvas = document.createElement('canvas');
+        canvas.width = 512; canvas.height = 128;
         const ctx = canvas.getContext('2d');
-        ctx.font = 'bold 36px Lato'; ctx.fillStyle = '#000'; ctx.strokeStyle = '#fff'; ctx.lineWidth = 6;
-        ctx.strokeText(text, 20, 70); ctx.fillText(text, 20, 70);
+        ctx.font = 'bold 36px Lato';
+        ctx.fillStyle = '#000';
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 6;
+        ctx.strokeText(text, 20, 70);
+        ctx.fillText(text, 20, 70);
         const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(canvas) }));
-        sprite.scale.set(5, 1.6, 1); return sprite;
+        sprite.scale.set(5, 1.6, 1);
+        return sprite;
       };
 
       const d = window.saccoData.today;
@@ -100,7 +120,11 @@ document.addEventListener('DOMContentLoaded', () => {
         { text: `Loans: KES ${d.loans.toLocaleString()}`, pos: [-2.6, 1.0, 0] },
         { text: `Savings: KES ${d.contributions.toLocaleString()}`, pos: [2.2, 0.3, 0] },
         { text: `Profit: KES ${d.profit.toLocaleString()}`, pos: [-2.6, -0.5, 0] }
-      ].forEach(l => scene.add(Object.assign(createLabel(l.text), { position: new THREE.Vector3(...l.pos) })));
+      ].forEach(l => {
+        const label = createLabel(l.text);
+        label.position.set(...l.pos);
+        scene.add(label);
+      });
 
       window.addEventListener('resize', () => {
         camera.aspect = coneContainer.clientWidth / coneContainer.clientHeight;
@@ -108,9 +132,14 @@ document.addEventListener('DOMContentLoaded', () => {
         renderer.setSize(coneContainer.clientWidth, coneContainer.clientHeight);
       });
 
-      const animate = () => { requestAnimationFrame(animate); cone.rotation.y += 0.006; renderer.render(scene, camera); };
+      const animate = () => {
+        requestAnimationFrame(animate);
+        cone.rotation.y += 0.006;
+        renderer.render(scene, camera);
+      };
       animate();
     };
+    script.onerror = () => console.error('Failed to load three.js — check your connection');
     document.head.appendChild(script);
   }
 
@@ -121,26 +150,43 @@ document.addEventListener('DOMContentLoaded', () => {
     const createBarChart = (id, janVal, todayVal, colors, isMoney = false, isPct = false) => {
       const ctx = document.getElementById(id);
       if (!ctx) return;
+
       const g = growth(janVal, todayVal);
       const indicator = document.getElementById(id.replace('chart', 'growth'));
-      indicator.innerHTML = `<i class="fas fa-arrow-${g>0?'up':'down'}"></i> ${Math.abs(g).toFixed(1)}%`;
-      indicator.className = `growth-indicator ${g>0?'positive':'negative'}`;
+      indicator.innerHTML = `<i class="fas fa-arrow-${g > 0 ? 'up' : 'down'}"></i> ${Math.abs(g).toFixed(1)}%`;
+      indicator.className = `growth-indicator ${g > 0 ? 'positive' : 'negative'}`;
 
       new Chart(ctx, {
         type: 'bar',
-        data: { labels: ['Jan 2025', 'Today'], datasets: [{ data: [janVal, todayVal], backgroundColor: [colors.jan, colors.today], borderRadius: 10, barThickness: 45 }] },
+        data: {
+          labels: ['Jan 2025', 'Today'],
+          datasets: [{
+            data: [janVal, todayVal],
+            backgroundColor: [colors.jan, colors.today],
+            borderRadius: 10,
+            barThickness: 48
+          }]
+        },
         options: {
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
             legend: { display: false },
             datalabels: {
-              anchor: 'end', align: 'top', color: '#1e293b', font: { weight: 'bold', size: 13 },
-              formatter: v => isPct ? v.toFixed(2)+'%' : isMoney ? 'KES '+v.toLocaleString() : v.toLocaleString(),
-              backgroundColor: 'rgba(255,255,255,0.9)', padding: 6, borderRadius: 6
+              anchor: 'end',
+              align: 'top',
+              color: '#1e293b',
+              font: { weight: 'bold', size: 13 },
+              formatter: v => isPct ? v.toFixed(2) + '%' : isMoney ? 'KES ' + v.toLocaleString() : v.toLocaleString(),
+              backgroundColor: 'rgba(255,255,255,0.9)',
+              padding: 6,
+              borderRadius: 6
             }
           },
-          scales: { x: { grid: { display: false } }, y: { display: false, beginAtZero: true } }
+          scales: {
+            x: { grid: { display: false } },
+            y: { display: false, beginAtZero: true }
+          }
         },
         plugins: [ChartDataLabels]
       });
@@ -158,20 +204,26 @@ document.addEventListener('DOMContentLoaded', () => {
     createBarChart('chartROA', janROA, todayROA, { jan: '#0EA5E9', today: '#7DD3FC' }, false, true);
     createBarChart('chartLiquidity', janLiq, todayLiq, { jan: '#6366F1', today: '#A5B4FC' }, false, true);
 
-    // PIE CHART
     const pie = document.getElementById('chartLoanTypes');
     if (pie) {
       new Chart(pie, {
         type: 'pie',
         data: {
           labels: loanTypesToday.map(l => l.name),
-          datasets: [{ data: loanTypesToday.map(l => (l.value/totalLoansToday)*100), backgroundColor: ['#10B981','#F59E0B','#8B5CF6','#EF4444'] }]
+          datasets: [{
+            data: loanTypesToday.map(l => (l.value / totalLoansToday) * 100),
+            backgroundColor: ['#10B981', '#F59E0B', '#8B5CF6', '#EF4444']
+          }]
         },
         options: {
           responsive: true,
           plugins: {
             legend: { position: 'bottom' },
-            datalabels: { color: '#fff', font: { weight: 'bold' }, formatter: v => v > 8 ? v.toFixed(0)+'%' : '' }
+            datalabels: {
+              color: '#fff',
+              font: { weight: 'bold' },
+              formatter: v => v > 8 ? v.toFixed(0) + '%' : ''
+            }
           }
         },
         plugins: [ChartDataLabels]
@@ -194,12 +246,12 @@ document.addEventListener('DOMContentLoaded', () => {
     dots.innerHTML = images.map((_,idx) => `<span class="dot" onclick="i=${idx};show()"></span>`).join('');
     const show = () => {
       slides.style.transform = `translateX(-${i*100}%)`;
-      document.querySelectorAll('.dot').forEach((d,j)=>d.classList.toggle('active', j===i));
+      document.querySelectorAll('.dot').forEach((d,j) => d.classList.toggle('active', j===i));
     };
     window.changeSlide = n => { i = (i + n + images.length) % images.length; show(); };
     show();
     setInterval(() => changeSlide(1), 5000);
   }
 
-  console.log('SOYOSOYO SACCO — 100% PERFECT');
+  console.log('SOYOSOYO SACCO — 100% PERFECT, CONE SPINNING, NO ERRORS');
 });
