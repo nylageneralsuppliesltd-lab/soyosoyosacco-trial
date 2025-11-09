@@ -1,4 +1,4 @@
-// projections.js — ULTIMATE FINAL + RESIZE TWEAK (DESKTOP & MOBILE PERFECT)
+// projections.js — FINAL: SUMMARY CARD RESTORED + MOBILE 100% UNTOUCHED
 (function () {
   'use strict';
 
@@ -110,17 +110,13 @@
         scrollZoom: false
       });
 
-      // FORCE PERFECT RESIZE ON FIRST LOAD (ELIMINATES 1-FRAME GLITCH)
+      // PERFECT RESIZE ON LOAD + LIVE
       setTimeout(() => Plotly.Plots.resize(chartDiv), 100);
-
-      // LIVE RESIZE ON WINDOW CHANGE
-      const resizeObserver = new ResizeObserver(() => {
-        Plotly.Plots.resize(chartDiv);
-      });
+      const resizeObserver = new ResizeObserver(() => Plotly.Plots.resize(chartDiv));
       resizeObserver.observe(chartDiv);
     });
 
-    // === SUMMARY CARD ===
+    // SUMMARY CARD — RESTORED TO ORIGINAL GLORY
     const first = projections[0];
     const last = projections[projections.length - 1];
     const growth = (a, b) => a > 0 ? ((b - a) / a * 100).toFixed(0) : '∞';
@@ -150,7 +146,7 @@
     `;
     container.appendChild(summary);
 
-    // === FINAL STYLES ===
+    // STYLES — SUMMARY CARD BIG ON DESKTOP, MOBILE 100% UNTOUCHED
     const style = document.createElement('style');
     style.textContent = `
       #projectionsChart > .kpi-card,
@@ -179,6 +175,7 @@
         margin: 0 auto !important;
       }
 
+      /* SUMMARY CARD — ORIGINAL SIZE & BEAUTY */
       .summary-header {
         background: linear-gradient(90deg,#004d1a,#10B981);
         color: white;
@@ -187,15 +184,49 @@
         font-size: 17px;
         font-weight: 900;
       }
-      .summary-grid { display: grid; grid-template-columns: 1fr; gap: 14px; padding: 16px; }
-      .summary-item { background: #f0fdf4; border-radius: 14px; padding: 12px; border: 1px solid #86efac; text-align: center; }
-      .summary-label { font-size: 13.5px; font-weight: 900; color: #166534; }
-      .summary-values { display: flex; justify-content: space-between; font-size: 13px; margin: 8px 0; }
-      .summary-values span { color: #6b7280; font-size: 11.5px; display: block; }
-      .summary-values strong { font-size: 15px; color: #004d1a; }
-      .summary-growth { background: #10B981; color: white; padding: 6px 14px; border-radius: 50px; font-size: 12.5px; font-weight: 900; }
+      .summary-grid { 
+        display: grid; 
+        grid-template-columns: 1fr; 
+        gap: 14px; 
+        padding: 16px; 
+      }
+      .summary-item { 
+        background: #f0fdf4; 
+        border-radius: 14px; 
+        padding: 12px; 
+        border: 1px solid #86efac; 
+        text-align: center; 
+      }
+      .summary-label { 
+        font-size: 13.5px; 
+        font-weight: 900; 
+        color: #166534; 
+      }
+      .summary-values { 
+        display: flex; 
+        justify-content: space-between; 
+        font-size: 13px; 
+        margin: 8px 0; 
+      }
+      .summary-values span { 
+        color: #6b7280; 
+        font-size: 11.5px; 
+        display: block; 
+      }
+      .summary-values strong { 
+        font-size: 15px; 
+        color: #004d1a; 
+      }
+      .summary-growth { 
+        background: #10B981; 
+        color: white; 
+        padding: 6px 14px; 
+        border-radius: 50px; 
+        font-size: 12.5px; 
+        font-weight: 900; 
+      }
 
-      /* DESKTOP: PERFECT 2-CARD LAYOUT */
+      /* DESKTOP ONLY: BIG SUMMARY + 2 CHARTS */
       @media (min-width: 769px) {
         #projectionsChart {
           display: flex;
@@ -205,22 +236,35 @@
         #projectionsChart > .kpi-card {
           flex: 1 1 calc(50% - 20px);
           max-width: 48%;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: flex-start;
         }
         .kpi-chart {
           height: 440px !important;
           max-width: 95% !important;
         }
-        .summary-grid { grid-template-columns: repeat(4, 1fr); gap: 16px; }
-        .summary-values strong { font-size: 17px; }
+        /* SUMMARY CARD — FULL WIDTH, BIG, PROUD */
+        #projectionsChart > .summary-card {
+          flex: 1 1 100%;
+          max-width: 100%;
+          margin: 30px 8px 10px;
+        }
+        .summary-grid { 
+          grid-template-columns: repeat(4, 1fr); 
+          gap: 20px; 
+          padding: 20px; 
+        }
+        .summary-values strong { 
+          font-size: 17px; 
+        }
+        .summary-growth { 
+          padding: 8px 16px; 
+          font-size: 13px; 
+        }
       }
 
-      /* MOBILE: FULL WIDTH */
+      /* MOBILE — 100% UNTOUCHED */
       @media (max-width: 768px) {
         .kpi-chart { height: 460px !important; width: 100% !important; }
+        /* Summary card uses base styles only — NO CHANGES */
       }
     `;
     document.head.appendChild(style);
