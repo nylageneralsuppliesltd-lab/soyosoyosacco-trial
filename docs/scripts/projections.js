@@ -14,22 +14,27 @@
 
   // === NORMALIZE DATA ===
   function normalizeData(data) {
+    // Safely parse numbers - strip commas, currency symbols, and non-numeric chars
+    const parseNumber = (value) => {
+      if (typeof value === 'number') return value;
+      return Number(String(value).replace(/[^0-9.]/g, '')) || 0;
+    };
+    
     // Safely parse ROA - handle both string and number formats
     let roa = 0;
     if (typeof data.roa === 'string') {
-      // Remove % sign if present and parse
-      roa = parseFloat(data.roa.replace('%', ''));
+      roa = parseFloat(data.roa.replace('%', '')) || 0;
     } else if (typeof data.roa === 'number') {
       roa = data.roa;
     }
     
     return {
-      members: parseInt(data.members) || 0,
-      contributions: parseInt(data.contributions) || 0,
-      loans: parseInt(data.loans) || 0,
-      bankBalance: parseInt(data.bankBalance) || 0,
-      profit: parseInt(data.profit) || 0,
-      roa: roa // Already as percentage number (e.g., 5.32 means 5.32%)
+      members: parseNumber(data.members),
+      contributions: parseNumber(data.contributions),
+      loans: parseNumber(data.loans),
+      bankBalance: parseNumber(data.bankBalance),
+      profit: parseNumber(data.profit),
+      roa: roa
     };
   }
 
@@ -104,194 +109,98 @@
     return num.toLocaleString();
   }
 
-  // === CREATE CHART ===
+  // === CREATE 3D CONE CHARTS (ONE PER KPI) ===
   function createProjectionChart(projections) {
-    const canvas = document.getElementById('projectionsChart');
-    if (!canvas) {
-      console.warn('⚠️ Projections chart canvas not found');
+    const container = document.getElementById('projectionsChart');
+    if (!container) {
+      console.warn('⚠️ Projections chart container not found');
       return;
     }
 
-    const ctx = canvas.getContext('2d');
+    // Check if Plotly is available
+    if (typeof Plotly === 'undefined') {
+      console.error('❌ Plotly.js not loaded. Please add: <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>');
+      container.innerHTML = '<p style="color: red; text-align: center; padding: 40px;">Plotly.js library not loaded. Please refresh the page.</p>';
+      return;
+    }
+
+    // Clear canvas element and replace with div for Plotly
+    const parent = container.parentElement;
+    parent.innerHTML = '<div id="projectionsChart" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;"></div>';
+    const chartContainer = document.getElementById('projectionsChart');
+
     const years = projections.map(p => p.year);
 
-    // Create gradient colors
-    const gradientMembers = ctx.createLinearGradient(0, 0, 0, 400);
-    gradientMembers.addColorStop(0, 'rgba(125, 211, 192, 0.8)');
-    gradientMembers.addColorStop(1, 'rgba(125, 211, 192, 0.1)');
+    // Year colors (5 vibrant colors for 2025-2029)
+    const yearColors = ['#FF6B9D', '#4FACFE', '#43E97B', '#FFA726', '#9C27B0'];
 
-    const gradientContributions = ctx.createLinearGradient(0, 0, 0, 400);
-    gradientContributions.addColorStop(0, 'rgba(30, 123, 133, 0.8)');
-    gradientContributions.addColorStop(1, 'rgba(30, 123, 133, 0.1)');
-
-    const gradientLoans = ctx.createLinearGradient(0, 0, 0, 400);
-    gradientLoans.addColorStop(0, 'rgba(144, 238, 144, 0.8)');
-    gradientLoans.addColorStop(1, 'rgba(144, 238, 144, 0.1)');
-
-    const gradientBank = ctx.createLinearGradient(0, 0, 0, 400);
-    gradientBank.addColorStop(0, 'rgba(59, 130, 246, 0.8)');
-    gradientBank.addColorStop(1, 'rgba(59, 130, 246, 0.1)');
-
-    const gradientProfit = ctx.createLinearGradient(0, 0, 0, 400);
-    gradientProfit.addColorStop(0, 'rgba(34, 197, 94, 0.8)');
-    gradientProfit.addColorStop(1, 'rgba(34, 197, 94, 0.1)');
-
-    new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: years,
-        datasets: [
-          {
-            label: 'Members',
-            data: projections.map(p => p.members),
-            borderColor: '#7dd3c0',
-            backgroundColor: gradientMembers,
-            borderWidth: 3,
-            fill: true,
-            tension: 0.4,
-            yAxisID: 'y'
-          },
-          {
-            label: 'Contributions (KES)',
-            data: projections.map(p => p.contributions),
-            borderColor: '#1e7b85',
-            backgroundColor: gradientContributions,
-            borderWidth: 3,
-            fill: true,
-            tension: 0.4,
-            yAxisID: 'y1'
-          },
-          {
-            label: 'Loans (KES)',
-            data: projections.map(p => p.loans),
-            borderColor: '#90EE90',
-            backgroundColor: gradientLoans,
-            borderWidth: 3,
-            fill: true,
-            tension: 0.4,
-            yAxisID: 'y1'
-          },
-          {
-            label: 'Bank Balance (KES)',
-            data: projections.map(p => p.bankBalance),
-            borderColor: '#3b82f6',
-            backgroundColor: gradientBank,
-            borderWidth: 3,
-            fill: true,
-            tension: 0.4,
-            yAxisID: 'y1'
-          },
-          {
-            label: 'Profit (KES)',
-            data: projections.map(p => p.profit),
-            borderColor: '#22c55e',
-            backgroundColor: gradientProfit,
-            borderWidth: 3,
-            fill: true,
-            tension: 0.4,
-            yAxisID: 'y1'
-          }
-        ]
+    // KPI configurations
+    const kpis = [
+      {
+        name: 'Members',
+        data: projections.map(p => p.members),
+        isCurrency: false
       },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        interaction: {
-          mode: 'index',
-          intersect: false
-        },
-        plugins: {
-          title: {
-            display: true,
-            text: '5-Year Growth Projections (2025-2029)',
-            font: {
-              size: 20,
-              weight: 'bold'
-            },
-            color: '#006400'
-          },
-          legend: {
-            display: true,
-            position: 'bottom',
-            labels: {
-              usePointStyle: true,
-              padding: 15,
-              font: {
-                size: 12
-              }
-            }
-          },
-          tooltip: {
-            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-            padding: 12,
-            titleFont: {
-              size: 14,
-              weight: 'bold'
-            },
-            bodyFont: {
-              size: 13
-            },
-            callbacks: {
-              label: function(context) {
-                let label = context.dataset.label || '';
-                if (label) {
-                  label += ': ';
-                }
-                if (label.includes('Members')) {
-                  label += context.parsed.y;
-                } else {
-                  label += 'KES ' + formatCurrency(context.parsed.y);
-                }
-                return label;
-              }
-            }
-          }
-        },
-        scales: {
-          y: {
-            type: 'linear',
-            position: 'left',
-            title: {
-              display: true,
-              text: 'Members',
-              font: {
-                size: 14,
-                weight: 'bold'
-              },
-              color: '#7dd3c0'
-            },
-            ticks: {
-              color: '#7dd3c0'
-            },
-            grid: {
-              drawOnChartArea: false
-            }
-          },
-          y1: {
-            type: 'linear',
-            position: 'right',
-            title: {
-              display: true,
-              text: 'Amount (KES)',
-              font: {
-                size: 14,
-                weight: 'bold'
-              },
-              color: '#1e7b85'
-            },
-            ticks: {
-              color: '#1e7b85',
-              callback: function(value) {
-                return formatCurrency(value);
-              }
-            },
-            grid: {
-              drawOnChartArea: true,
-              color: 'rgba(0, 0, 0, 0.05)'
-            }
-          }
-        }
+      {
+        name: 'Contributions',
+        data: projections.map(p => p.contributions),
+        isCurrency: true
+      },
+      {
+        name: 'Loans',
+        data: projections.map(p => p.loans),
+        isCurrency: true
+      },
+      {
+        name: 'Bank Balance',
+        data: projections.map(p => p.bankBalance),
+        isCurrency: true
       }
+    ];
+
+    // Create a 3D cone for each KPI
+    kpis.forEach((kpi, kpiIndex) => {
+      const divId = `cone-${kpiIndex}`;
+      const div = document.createElement('div');
+      div.id = divId;
+      div.style.height = '400px';
+      chartContainer.appendChild(div);
+
+      // Create funnel data (cone shape)
+      const trace = {
+        type: 'funnel',
+        y: years.map(y => String(y)),
+        x: kpi.data,
+        textposition: "inside",
+        texttemplate: kpi.isCurrency ? "%{x:,.0f}" : "%{x}",
+        textfont: { size: 14, color: 'white', weight: 'bold' },
+        marker: {
+          color: yearColors,
+          line: { width: 2, color: 'white' }
+        },
+        connector: { line: { color: 'transparent' } },
+        hovertemplate: '<b>%{y}</b><br>' + 
+                       (kpi.isCurrency ? 'KES %{x:,.0f}' : '%{x}') + 
+                       '<extra></extra>'
+      };
+
+      const layout = {
+        title: {
+          text: `<b>${kpi.name} Growth</b><br><sub>2025 → 2029</sub>`,
+          font: { size: 18, color: '#333' }
+        },
+        margin: { l: 100, r: 50, t: 80, b: 50 },
+        paper_bgcolor: 'rgba(0,0,0,0)',
+        plot_bgcolor: 'rgba(0,0,0,0)',
+        showlegend: false
+      };
+
+      const config = {
+        responsive: true,
+        displayModeBar: false
+      };
+
+      Plotly.newPlot(divId, [trace], layout, config);
     });
 
     console.log('✅ 5-Year Projections Chart Created');
