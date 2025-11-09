@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
     
-    <!-- CSS v57 — CLEAN PROJECTIONS -->
+    <!-- MAIN SITE CSS (v57 — CLEAN PROJECTIONS) -->
     <link rel="stylesheet" href="./style.css?v=57">
 
     <!-- Plotly.js Library -->
@@ -36,7 +36,7 @@
       gtag('config', 'G-05M38MYK0G');
     </script>
 
-   <!-- GROWTH INDICATOR STYLES -->
+    <!-- GROWTH INDICATOR STYLES (shared) -->
     <style>
         .growth-indicator {
             text-align: center;
@@ -49,35 +49,47 @@
         .growth-indicator i { margin-right: 4px; font-size: 0.9em; }
     </style>
 
-    <!-- GROWTH CHARTS GRID STYLES — FIXED FOR WIDER BARS -->
+    <!-- === DEDICATED STYLES FOR FINANCIAL GROWTH CHARTS (Chart.js) === -->
+    <!-- These are the EXACT working styles from your old version, now scoped to avoid conflicts -->
     <style>
         .growth-charts-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); /* Bumped min-width for better bar space */
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 1rem;
         }
         .chart-card {
             position: relative;
-            height: 320px; /* Slight height bump for proportion */
+            height: 320px;
             display: flex;
             flex-direction: column;
+            background: #fff;
+            border-radius: 12px;
+            padding: 1rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
-        .chart-card canvas {
+        /* ONLY target Chart.js canvases inside financial charts */
+        .chart-card .financial-chart-canvas {
             flex-grow: 1;
-            max-height: 270px; /* Adjusted for new card height */
+            max-height: 270px;
+            width: 100% !important;
+            height: 100% !important;
         }
         .chart-card p {
             margin: 0.5rem 0 0 0;
             text-align: center;
             font-weight: bold;
+            color: #1a1a1a;
         }
         @media (max-width: 768px) {
             .growth-charts-grid { grid-template-columns: 1fr; }
-            .chart-card { height: 360px; } /* Taller on mobile for visibility */
-            .chart-card canvas { max-height: 290px; }
+            .chart-card { height: 360px; }
+            .chart-card .financial-chart-canvas { max-height: 290px; }
         }
     </style>
-    
+
+    <!-- === PROJECTION CHART (Plotly) uses its own <div> — NO CANVAS, NO CONFLICT === -->
+    <!-- No special styling needed here — Plotly handles layout internally -->
+
     <!-- MEMBER ACTIVITIES CAROUSEL STYLES -->
     <style>
         .member-activities-section {
@@ -263,48 +275,48 @@
         </div>
     </section>
 
-    <!-- GROWTH CHARTS -->
+    <!-- GROWTH CHARTS (Chart.js) -->
     <section class="section">
         <h2 style="text-align: center; margin-bottom: 1.5rem;">Growth Since January 2025</h2>
         <div class="growth-charts-grid">
             <div class="chart-card">
-                <canvas id="chartMembers"></canvas>
+                <canvas id="chartMembers" class="financial-chart-canvas"></canvas>
                 <p>Total Members</p>
                 <div id="growthMembers" class="growth-indicator"></div>
             </div>
             <div class="chart-card">
-                <canvas id="chartLoans"></canvas>
+                <canvas id="chartLoans" class="financial-chart-canvas"></canvas>
                 <p>Loans Disbursed</p>
                 <div id="growthLoans" class="growth-indicator"></div>
             </div>
             <div class="chart-card">
-                <canvas id="chartLoanTypes"></canvas>
+                <canvas id="chartLoanTypes" class="financial-chart-canvas"></canvas>
                 <p>Loan Types Distribution (%)</p>
             </div>
             <div class="chart-card">
-                <canvas id="chartContributions"></canvas>
+                <canvas id="chartContributions" class="financial-chart-canvas"></canvas>
                 <p>Contributions</p>
                 <div id="growthContributions" class="growth-indicator"></div>
             </div>
             <div class="chart-card">
-                <canvas id="chartProfit"></canvas>
+                <canvas id="chartProfit" class="financial-chart-canvas"></canvas>
                 <p>Profit</p>
                 <div id="growthProfit" class="growth-indicator"></div>
             </div>
             <div class="chart-card">
-                <canvas id="chartROA"></canvas>
+                <canvas id="chartROA" class="financial-chart-canvas"></canvas>
                 <p>Return on Assets (ROA)</p>
                 <div id="growthROA" class="growth-indicator"></div>
             </div>
             <div class="chart-card">
-                <canvas id="chartLiquidity"></canvas>
+                <canvas id="chartLiquidity" class="financial-chart-canvas"></canvas>
                 <p>Liquidity Ratio</p>
                 <div id="growthLiquidity" class="growth-indicator"></div>
             </div>
         </div>
     </section>
     
-    <!-- PROJECTIONS SECTION — CLEAN, FULL WIDTH, NO WRAPPERS -->
+    <!-- PROJECTIONS SECTION — Plotly (untouched, full-width) -->
     <section style="margin: 60px 0; padding: 0 10px;">
         <div style="text-align:center; margin-bottom: 30px;">
             <h2 style="font-size: 28px; color: #004d1a; font-weight: 900; margin: 0;">5-Year Growth Projections</h2>
@@ -437,17 +449,16 @@
 </footer>
 
 <!-- ==================== SCRIPTS ==================== -->
-    <script>
+<script>
   document.getElementById('autoYearNow').textContent = new Date().getFullYear();
 </script>
 <script src="./scripts/carousel.js"></script>
-<!-- Pin to v3.9.1 for datalabels@2.0.0 compatibility -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 <script src="./scripts/projections.js"></script>
 <script src="./scripts/member-carousel.js"></script>
 
-<!-- FULLY RESTORED FINANCIAL GROWTH CHARTS SCRIPT -->
+<!-- FINANCIAL GROWTH CHARTS SCRIPT (unchanged logic, just uses new class) -->
 <script>
     const cleanGrowthArrowPlugin = {
         id: 'cleanGrowthArrow',
@@ -594,13 +605,11 @@
         }
     }
 
-    // Single DOMContentLoaded for efficiency (no projections call—handled by external script)
     document.addEventListener('DOMContentLoaded', () => {
         renderGrowthCharts();
         initMemberCarousel();
         if (typeof updateFields === 'function') updateFields();
 
-        // Auto-year updates (merged)
         const currentYear = new Date().getFullYear();
         const startYear = 2025;
         document.querySelectorAll('footer p, .copyright, [class*="copyright"], [id*="copyright"]').forEach(el => {
