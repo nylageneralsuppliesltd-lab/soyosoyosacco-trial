@@ -1,11 +1,10 @@
 // scripts/carousel.js
 // -------------------------------------------------------------
-// COMBINED: KPI AUTO-SYNC + DYNAMIC 3D CONE VISUALIZATION
+// COMBINED: KPI AUTO-SYNC + DYNAMIC 3D CONE + MEMBER CAROUSEL
 // -------------------------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
   document.body.classList.add('js-enabled');
-
-  console.log('carousel.js started'); // Debug
+  console.log('carousel.js started');
 
   // === LOAN TYPES (Update actuals here) ===
   const loanTypesToday = [
@@ -20,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const externalLoansJan = 0;
   const externalLoansToday = 66784;
 
-  // === CURRENT DAILY DATA (Update Daily) ===
+  // === CURRENT DAILY DATA ===
   const carouselDataWithoutROA = [
     { number: 144, description: "Total Members" },
     { number: 907015, description: "Member Savings" },
@@ -31,7 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
     { number: 71, description: "Active Members" }
   ];
 
-  // === ROA CALCULATION ===
   const roaToday = ((carouselDataWithoutROA[5].number / (carouselDataWithoutROA[1].number + externalLoansToday)) * 100).toFixed(2);
   carouselDataWithoutROA.push({ number: roaToday, description: "ROA (%)" });
   const carouselData = carouselDataWithoutROA;
@@ -135,36 +133,25 @@ document.addEventListener('DOMContentLoaded', () => {
   const container = document.getElementById('coneContainer');
   if (!container) {
     console.warn('No #coneContainer found; skipping cone.');
-    return;
-  }
-
-  // Ensure container has size
-  container.style.width = container.style.width || '100%';
-  container.style.height = container.style.height || '400px';
-
-  // Load Three.js dynamically if needed
-  if (typeof THREE === 'undefined') {
-    const script = document.createElement('script');
-    script.src = "https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js";
-    script.onload = () => {
-      console.log('Three.js loaded');
-      initCone();
-    };
-    script.onerror = () => {
-      console.error('Three.js load failed; fallback to static.');
-      container.innerHTML = '<div style="text-align:center; color:#666; padding:20px;">Projection loading unavailable.</div>';
-    };
-    document.head.appendChild(script);
   } else {
-    initCone();
+    container.style.width = container.style.width || '100%';
+    container.style.height = container.style.height || '480px';
+
+    if (typeof THREE === 'undefined') {
+      const script = document.createElement('script');
+      script.src = "https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js";
+      script.onload = () => initCone();
+      script.onerror = () => {
+        container.innerHTML = '<div style="text-align:center; color:#666; padding:20px;">Projection loading unavailable.</div>';
+      };
+      document.head.appendChild(script);
+    } else {
+      initCone();
+    }
   }
 
   function initCone() {
-    console.log('Initializing cone...');
-    if (!container || container.clientWidth === 0) {
-      console.warn('Cone container has no size; skipping render.');
-      return;
-    }
+    if (!container || container.clientWidth === 0) return;
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
@@ -173,13 +160,11 @@ document.addEventListener('DOMContentLoaded', () => {
     container.innerHTML = '';
     container.appendChild(renderer.domElement);
 
-    // Lights
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
     const pointLight = new THREE.PointLight(0xffffff, 0.9);
     pointLight.position.set(10, 10, 10);
     scene.add(ambientLight, pointLight);
 
-    // Cone and base
     const geometry = new THREE.ConeGeometry(1, 2, 64);
     const material = new THREE.MeshPhongMaterial({ color: 0x10B981, shininess: 100, specular: 0xffffff });
     const cone = new THREE.Mesh(geometry, material);
@@ -194,19 +179,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     camera.position.set(3, 2, 3);
 
-    // Text labels
     const d = window.saccoData.today;
-    const data = {
-      Members: d.members,
-      Loans: d.loans,
-      Contributions: d.contributions,
-      Profit: d.profit
-    };
+    const data = { Members: d.members, Loans: d.loans, Contributions: d.contributions, Profit: d.profit };
 
     const createTextSprite = (text, color = '#111') => {
       const canvas = document.createElement('canvas');
-      canvas.width = 512;
-      canvas.height = 64;
+      canvas.width = 512; canvas.height = 64;
       const ctx = canvas.getContext('2d');
       ctx.font = 'bold 28px Lato, Arial';
       ctx.fillStyle = color;
@@ -232,7 +210,6 @@ document.addEventListener('DOMContentLoaded', () => {
       scene.add(sprite);
     });
 
-    // Responsive resize
     let resizeTimeout;
     function handleResize() {
       clearTimeout(resizeTimeout);
@@ -246,15 +223,100 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     window.addEventListener('resize', handleResize);
 
-    // Animate cone rotation
     function animate() {
       requestAnimationFrame(animate);
       cone.rotation.y += 0.01;
       renderer.render(scene, camera);
     }
     animate();
-
     console.log('Cone initialized successfully.');
+  }
+
+  // -------------------------------------------------------------
+  //  MEMBER ACTIVITIES CAROUSEL (MOVED HERE - FULLY FIXED)
+  // -------------------------------------------------------------
+  const memberImages = [
+    './assets/01acb621480e99c389cea4973abe4896.jpg',
+    './assets/3161c755955816487a8b0cd796d43c29.jpg',
+    './assets/c1cbf8720115247da59d153d3f0be3b0.jpg',
+    './assets/b8a8a30e9531f4d1cac3ddf56c594b5a.jpg',
+    './assets/8053495671fa13e271078ad77beff286.jpg',
+    './assets/8640680b79eba02a8544ba3bbbcdd655.jpg',
+    './assets/8c145fcc127b3fad7cbe25bc847f3e8c.jpg'
+  ];
+
+  let currentSlide = 0;
+
+  function initMemberCarousel() {
+    console.log('Initializing member carousel...');
+    const slidesContainer = document.getElementById('memberSlides');
+    const dotsContainer = document.getElementById('memberDots');
+
+    if (!slidesContainer || !dotsContainer) {
+      console.warn('Member carousel containers not found');
+      return;
+    }
+
+    slidesContainer.innerHTML = '';
+    dotsContainer.innerHTML = '';
+
+    memberImages.forEach((imgSrc, index) => {
+      const slide = document.createElement('div');
+      slide.className = 'slide';
+      const img = document.createElement('img');
+      img.src = imgSrc;
+      img.alt = `Member Activity ${index + 1}`;
+      img.loading = 'lazy';
+      img.onerror = () => {
+        img.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmMGYwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzY2NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlIG5vdCBmb3VuZDwvdGV4dD48L3N2Zz4=';
+      };
+      slide.appendChild(img);
+      slidesContainer.appendChild(slide);
+
+      const dot = document.createElement('span');
+      dot.className = 'dot';
+      dot.onclick = () => goToSlide(index);
+      dotsContainer.appendChild(dot);
+    });
+
+    showSlide(0);
+    startAutoPlay();
+  }
+
+  function showSlide(index) {
+    const slides = document.querySelectorAll('#memberSlides .slide');
+    const dots = document.querySelectorAll('#memberDots .dot');
+    const totalSlides = slides.length;
+
+    if (index >= totalSlides) currentSlide = 0;
+    else if (index < 0) currentSlide = totalSlides - 1;
+    else currentSlide = index;
+
+    document.getElementById('memberSlides').style.transform = `translateX(-${currentSlide * 100}%)`;
+
+    dots.forEach((dot, i) => {
+      dot.className = i === currentSlide ? 'dot active' : 'dot';
+    });
+  }
+
+  function changeSlide(direction) {
+    showSlide(currentSlide + direction);
+  }
+
+  window.changeSlide = changeSlide;
+
+  function goToSlide(index) {
+    showSlide(index);
+  }
+
+  function startAutoPlay() {
+    setInterval(() => changeSlide(1), 5000);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMemberCarousel);
+  } else {
+    initMemberCarousel();
   }
 
   console.log('carousel.js finished execution');
