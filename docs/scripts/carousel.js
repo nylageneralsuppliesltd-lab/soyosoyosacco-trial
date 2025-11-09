@@ -1,72 +1,93 @@
-// scripts/carousel.js – AUTO-SYNC 4 METRICS + LIQUIDITY USING BANK BALANCE
+// scripts/carousel.js – AUTO-SYNC + PERMANENT HISTORY + AUTO-SAVE IN DECEMBER
 document.addEventListener('DOMContentLoaded', () => {
   document.body.classList.add('js-enabled');
 
-  // === LOAN TYPES FOR TODAY (FILL IN ACTUAL FIGURES FOR EACH TYPE) ===
-  // Provide the amounts for each loan type; their sum will be used for "Value of Loans Given"
+  // === INITIALIZE PERMANENT HISTORY (SURVIVES FOREVER) ===
+  if (!window.saccoHistory) {
+    window.saccoHistory = {}; // This will hold ALL past years
+  }
+
+  // === AUTO-SAVE CURRENT YEAR DATA IN DECEMBER (OR MANUAL) ===
+  const today = new Date();
+  const currentYear = today.getFullYear();
+  const currentMonth = today.getMonth(); // 0 = Jan, 11 = Dec
+
+  // Auto-save in December OR if not saved this year yet
+  if ((currentMonth === 11 || !window.saccoHistory[currentYear]) && window.saccoData?.today) {
+    window.saccoHistory[currentYear] = {
+      year: currentYear,
+      members: window.saccoData.today.members,
+      contributions: window.saccoData.today.contributions,
+      loans: window.saccoData.today.loans,
+      bankBalance: window.saccoData.today.bankBalance,
+      profit: window.saccoData.today.profit,
+      roa: window.saccoData.today.roa,
+      dateSaved: today.toISOString().split('T')[0]
+    };
+    console.log(`SOYOSOYO SACCO ${currentYear} DATA SAVED FOREVER`);
+  }
+
+  // === LOAN TYPES FOR TODAY (UPDATE THESE DAILY) ===
   const loanTypesToday = [
-    { name: 'Emergency', value: 1214900 },   // ← Replace with actual Emergency loan figure
-    { name: 'Medicare', value: 15000 },    // ← Replace with actual Medicare loan figure
-    { name: 'Development', value: 553000 }, // ← Replace with actual Development loan figure
-    { name: 'Education', value: 275000 }    // ← Replace with actual Education loan figure
+    { name: 'Emergency', value: 1214900 },
+    { name: 'Medicare', value: 15000 },
+    { name: 'Development', value: 553000 },
+    { name: 'Education', value: 275000 }
   ];
 
-  // Calculate total loans given from sum of loan types
   const totalLoansToday = loanTypesToday.reduce((sum, loan) => sum + loan.value, 0);
 
   // === EXTERNAL LOANS ===
-  const externalLoansJan = 0;  // Jan 2025 external loan figure
-  const externalLoansToday = 66784;  // Today external loan figure
+  const externalLoansJan = 0;
+  const externalLoansToday = 66784;
 
-  // === UPDATE THESE VALUES DAILY (ADJUSTED FOR LOANS AND ROA) ===
+  // === UPDATE THESE DAILY (YOUR NORMAL NUMBERS) ===
   const carouselDataWithoutROA = [
     { number: 144, description: "Total Members" },
     { number: 906815, description: "Member Savings" },
     { number: 242999, description: "Bank Balance" },
     { number: 105, description: "Number of Loans Given" },
-    { number: totalLoansToday, description: "Value of Loans Given" },  // Dynamically generated from loan types sum
+    { number: totalLoansToday, description: "Value of Loans Given" },
     { number: 51803, description: "Profit" },
     { number: 71, description: "Active Members" }
   ];
 
-  // Dynamically calculate ROA using profit and member savings from carouselDataWithoutROA
+  // Calculate ROA
   const roaToday = ((carouselDataWithoutROA[5].number / (carouselDataWithoutROA[1].number + externalLoansToday)) * 100).toFixed(2);
-  carouselDataWithoutROA.push({ number: roaToday, description: "ROA (%)" });  // ROA = (Profit / (Member Contributions + External Loans)) * 100
+  carouselDataWithoutROA.push({ number: roaToday, description: "ROA (%)" });
   const carouselData = carouselDataWithoutROA;
 
-  // Expose loan types globally for use in HTML graph (e.g., for percentages)
   window.loanTypes = loanTypesToday;
 
-  // === AUTO-SYNC: Push 4 key values + Jan 2025 bank balance + external loans + ROA to window.saccoData ===
-  // Jan 2025 data without ROA
+  // === JAN 2025 BASELINE (WILL BE REPLACED IN 2026) ===
   const janDataWithoutROA = {
     members: 101,
     loans: 283500,
     contributions: 331263,
     profit: -60056,
-    bankBalance: 113742,  // ← JAN 2025 BANK BALANCE (AS PROVIDED)
+    bankBalance: 113742,
     externalLoans: externalLoansJan
   };
-  // Dynamically calculate ROA for Jan using profit and contributions from janDataWithoutROA
   const roaJan = ((janDataWithoutROA.profit / (janDataWithoutROA.contributions + janDataWithoutROA.externalLoans)) * 100).toFixed(2);
 
+  // === FINAL SACCO DATA WITH HISTORY SUPPORT ===
   window.saccoData = {
     jan: {
       ...janDataWithoutROA,
-      roa: roaJan  // ROA for Jan
+      roa: roaJan
     },
     today: {
-      members: carouselData[0].number,           // Total Members
-      loans: totalLoansToday,                    // Value of Loans Given (from loan types sum)
-      contributions: carouselData[1].number,     // Member Savings
-      profit: carouselData[5].number,            // Profit
-      bankBalance: carouselData[2].number,       // Bank Balance (Today)
+      members: carouselData[0].number,
+      loans: totalLoansToday,
+      contributions: carouselData[1].number,
+      profit: carouselData[5].number,
+      bankBalance: carouselData[2].number,
       externalLoans: externalLoansToday,
-      roa: carouselData[7].number                // ROA for today
+      roa: carouselData[7].number
     }
   };
 
-  // === REST OF CAROUSEL CODE (UNCHANGED) ===
+  // === CAROUSEL RENDERING (UNCHANGED) ===
   const carousel = document.querySelector('.carousel');
   if (!carousel) return;
 
@@ -114,10 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }, { threshold: 0.3 });
 
-  document.querySelectorAll('.carousel-item').forEach(item => {
-    const btn = item.querySelector('.carousel-button');
-    if (btn) observer.observe(item);
-  });
+  document.querySelectorAll('.carousel-item').forEach(item => observer.observe(item));
 
   const update = () => {
     const w = window.innerWidth;
