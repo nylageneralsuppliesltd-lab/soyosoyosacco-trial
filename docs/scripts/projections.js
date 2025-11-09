@@ -1,4 +1,5 @@
-// SOYOSOYO SACCO — FINAL: CLEAN, SIMPLE, MOBILE-PERFECT (5 BOXES ONLY)
+<!-- SOYOSOYO SACCO — FINAL RESPONSIVE VERSION -->
+<script>
 (function () {
   'use strict';
 
@@ -22,7 +23,7 @@
     const rates = {
       members: start.members ? (end.members - start.members) / start.members : 0,
       contributions: start.contributions ? (end.contributions - start.contributions) / start.contributions : 0,
-      loans: 1.00,
+      loans: 1.0,
       bank: start.bankBalance ? (end.bankBalance - start.bankBalance) / start.bankBalance : 0
     };
 
@@ -61,14 +62,19 @@
         <div style="text-align:center;margin-bottom:24px;">
           <h3 style="margin:0;font-size:21px;font-weight:900;color:#004d1a;">5-Year Growth Projections</h3>
           <p style="margin:8px 0 0;font-size:14px;color:#6b7280;">
-            Smart forecasting based on our current performance trajectory (2025-2029)
+            Smart forecasting based on our current performance trajectory (2025–2029)
           </p>
         </div>
 
-        <!-- 4 KPI BOXES -->
-        <div id="kpiContainer" style="display:grid;grid-template-columns:1fr;gap:18px;margin-bottom:24px;"></div>
+        <!-- KPI GRID -->
+        <div id="kpiContainer" style="
+          display:grid;
+          grid-template-columns:1fr;
+          gap:18px;
+          margin-bottom:24px;
+        "></div>
 
-        <!-- SUMMARY BOX -->
+        <!-- SUMMARY -->
         <div id="summaryBox"></div>
       </div>
     `;
@@ -85,6 +91,7 @@
 
     const yearColors = { 2025: '#FF4081', 2026: '#00BCD4', 2027: '#4CAF50', 2028: '#FFC107', 2029: '#9C27B0' };
 
+    // --- KPI BOXES ---
     kpis.forEach((kpi, i) => {
       const values = projections.map(p => p[kpi.key]);
       const maxVal = Math.max(...values, 1);
@@ -95,17 +102,16 @@
       box.style.cssText = `
         background:white;
         border-radius:18px;
-        padding:16px;
-        box-shadow:0 8px 25px rgba(0,0,0,0.07);
+        padding:14px;
+        box-shadow:0 6px 20px rgba(0,0,0,0.06);
         border:1px solid #f0fdf4;
-        overflow:hidden;
       `;
 
       box.innerHTML = `
-        <h4 style="margin:0 0 12px;text-align:center;font-size:16px;font-weight:900;color:#004d1a;">
+        <h4 style="margin:0 0 10px;text-align:center;font-size:16px;font-weight:900;color:#004d1a;">
           ${kpi.name} Growth
         </h4>
-        <div id="chart-${i}" style="width:100%;height:320px;"></div>
+        <div id="chart-${i}" style="width:100%;height:280px;"></div>
       `;
 
       kpiContainer.appendChild(box);
@@ -119,44 +125,28 @@
         x: stretched,
         text: projections.map(p => kpi.currency ? `KES ${fmt(p[kpi.key])}` : fmt(p[kpi.key])),
         textposition: 'inside',
-        textfont: { size: 16, color: 'white', weight: 'bold' },
         insidetextanchor: 'middle',
-        marker: { color: colors, line: { width: 4, color: 'white' } }
+        textfont: { size: 16, color: 'white', weight: 'bold' },
+        marker: { color: colors, line: { width: 2, color: 'white' } }
       }], {
-        bargap: 0.4,
-        margin: { l: 70, r: 20, t: 20, b: 40 },
+        bargap: 0.05,
+        margin: { l: 40, r: 10, t: 10, b: 10 },
         paper_bgcolor: 'rgba(0,0,0,0)',
         plot_bgcolor: 'rgba(0,0,0,0)',
-        xaxis: { visible: false },
-        yaxis: { 
-          automargin: true, 
-          autorange: 'reversed',
-          tickfont: { size: 15, color: '#004d1a', weight: 'bold' }
-        }
+        xaxis: { visible: false, fixedrange: true },
+        yaxis: { autorange: 'reversed', tickfont: { size: 14, color: '#004d1a', weight: 'bold' }, fixedrange: true }
       }, { responsive: true, displayModeBar: false });
     });
 
-    // SUMMARY BOX
+    // --- SUMMARY BOX ---
     const first = projections[0];
     const last = projections[projections.length - 1];
     const growth = (a, b) => a > 0 ? ((b - a) / a * 100).toFixed(0) : '∞';
 
     let summaryHTML = `
-      <div style="
-        background:white;
-        border-radius:18px;
-        padding:18px;
-        box-shadow:0 8px 25px rgba(0,0,0,0.07);
-        border:1px solid #f0fdf4;
-      ">
-        <div style="
-          background:linear-gradient(90deg,#004d1a,#10B981);
-          padding:14px;
-          border-radius:14px;
-          text-align:center;
-          margin-bottom:18px;
-        ">
-          <h3 style="margin:0;font-size:17px;color:white;font-weight:900;">5-Year Growth Strategy</h3>
+      <div style="background:white;border-radius:18px;padding:18px;box-shadow:0 6px 20px rgba(0,0,0,0.06);border:1px solid #f0fdf4;">
+        <div style="background:linear-gradient(90deg,#004d1a,#10B981);padding:14px;border-radius:14px;text-align:center;margin-bottom:18px;">
+          <h3 style="margin:0;font-size:17px;color:white;font-weight:900;">5-Year Growth Summary</h3>
         </div>
         <div style="display:grid;grid-template-columns:1fr;gap:14px;">
     `;
@@ -192,6 +182,14 @@
 
     summaryHTML += `</div></div>`;
     summaryBox.innerHTML = summaryHTML;
+
+    // --- RESPONSIVE GRID STYLING ---
+    const style = document.createElement('style');
+    style.innerHTML = `
+      @media (min-width: 640px) { #kpiContainer { grid-template-columns: repeat(2, 1fr); } }
+      @media (min-width: 1024px) { #kpiContainer { grid-template-columns: repeat(4, 1fr); } }
+    `;
+    document.head.appendChild(style);
   }
 
   function init() {
@@ -211,3 +209,4 @@
   window.refreshProjections = init;
   window.addEventListener('saccoDataUpdated', init);
 })();
+</script>
