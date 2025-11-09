@@ -1,4 +1,4 @@
-// projections.js — FINAL PERFECTION: 2029 VISIBLE, NO SHIFT, NO OVERFLOW
+// projections.js — ULTIMATE FINAL: BIGGER CONTAINERS, 2029 FULLY VISIBLE
 (function () {
   'use strict';
 
@@ -85,27 +85,26 @@
         hovertemplate: `<b>%{y}</b><br>%{text}<extra></extra>`,
         cliponaxis: false
       }], {
-        bargap: 0.3,
-        margin: { l: 75, r: 90, t: 15, b: 40 },
+        bargap: 0.28,
+        margin: { l: 80, r: 100, t: 30, b: 60 },  // INCREASED BOTTOM MARGIN
         paper_bgcolor: 'rgba(0,0,0,0)',
         plot_bgcolor: 'rgba(0,0,0,0)',
         xaxis: { 
           visible: false,
-          range: [0, maxVal * 1.4],  // 40% extra space for text
-          fixedrange: true           // Prevents zoom/pan on touch
+          range: [0, maxVal * 1.45],
+          fixedrange: true
         },
         yaxis: { 
           automargin: true,
           autorange: 'reversed',
-          fixedrange: true,          // Prevents vertical scroll on touch
-          tickfont: { size: 14, color: '#004d1a', weight: 'bold' }
+          fixedrange: true,
+          tickfont: { size: 15, color: '#004d1a', weight: 'bold' }
         }
       }, {
         responsive: true,
         displayModeBar: false,
-        staticPlot: true,            // CRITICAL: Stops any touch interaction
-        scrollZoom: false,
-        doubleClick: false
+        staticPlot: true,
+        scrollZoom: false
       });
     });
 
@@ -139,96 +138,98 @@
     `;
     container.appendChild(summary);
 
-    // FINAL STYLES — NO OVERFLOW, 2029 VISIBLE, NO TOUCH SHIFT
+    // FINAL STYLES — BIGGER CONTAINERS, 2029 FULLY VISIBLE
     const style = document.createElement('style');
     style.textContent = `
       #projectionsChart > .kpi-card,
       #projectionsChart > .summary-card {
         background: white;
-        border-radius: 18px;
+        border-radius: 20px;
         overflow: visible !important;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         border: 1px solid #f0fdf4;
-        margin: 16px 10px;
-        max-width: calc(100% - 20px);
+        margin: 20px 12px;
+        max-width: calc(100% - 24px);
       }
       .kpi-title {
-        padding: 14px;
+        padding: 16px;
         background: #f8fdfa;
         text-align: center;
-        font-size: 15px;
+        font-size: 16px;
         font-weight: 900;
         color: #004d1a;
       }
       .kpi-chart { 
-        height: 290px !important; 
+        height: 380px !important;   /* INCREASED HEIGHT */
         width: 100% !important; 
+        padding-bottom: 20px;
       }
       .summary-header {
         background: linear-gradient(90deg,#004d1a,#10B981);
         color: white;
-        padding: 14px;
+        padding: 16px;
         text-align: center;
-        font-size: 16px;
+        font-size: 17px;
         font-weight: 900;
       }
       .summary-grid { 
         display: grid; 
         grid-template-columns: 1fr; 
-        gap: 10px; 
-        padding: 14px; 
+        gap: 12px; 
+        padding: 16px; 
       }
       .summary-item { 
         background: #f0fdf4; 
-        border-radius: 12px; 
-        padding: 10px; 
+        border-radius: 14px; 
+        padding: 12px; 
         border: 1px solid #86efac; 
         text-align: center; 
       }
       .summary-label { 
-        font-size: 13px; 
+        font-size: 13.5px; 
         font-weight: 900; 
         color: #166534; 
       }
       .summary-values { 
         display: flex; 
         justify-content: space-between; 
-        font-size: 12.5px; 
-        margin: 6px 0; 
+        font-size: 13px; 
+        margin: 8px 0; 
       }
       .summary-values span { 
         color: #6b7280; 
-        font-size: 11px; 
+        font-size: 11.5px; 
         display: block; 
       }
       .summary-values strong { 
-        font-size: 14px; 
+        font-size: 15px; 
         color: #004d1a; 
       }
       .summary-growth { 
         background: #10B981; 
         color: white; 
-        padding: 5px 12px; 
+        padding: 6px 14px; 
         border-radius: 50px; 
-        font-size: 12px; 
+        font-size: 12.5px; 
         font-weight: 900; 
       }
 
       @media (min-width: 769px) {
         #projectionsChart > .kpi-card {
           display: inline-block;
-          width: calc(50% - 20px);
+          width: calc(50% - 24px);
           vertical-align: top;
         }
+        .kpi-chart { height: 400px !important; }  /* EVEN TALLER ON DESKTOP */
         .summary-grid { 
           grid-template-columns: repeat(4, 1fr); 
-          gap: 14px; 
+          gap: 16px; 
         }
-        .summary-values strong { font-size: 16px; }
+        .summary-values strong { font-size: 17px; }
       }
       @media (max-width: 768px) {
-        .kpi-chart { height: 330px !important; }
-        .summary-grid { padding: 12px; gap: 10px; }
+        .kpi-chart { height: 400px !important; }
+        .summary-grid { padding: 14px; gap: 12px; }
       }
     `;
     document.head.appendChild(style);
