@@ -1,4 +1,4 @@
-// projections.js — CLEAN, NO CSS INJECTION, ZERO CONFLICTS
+// projections.js — FINAL CLEAN VERSION (NO CSS, NO CONFLICTS)
 (function () {
   'use strict';
 
@@ -73,13 +73,15 @@
 
       const card = document.createElement('div');
       card.className = 'kpi-card';
-      card.innerHTML = `<div class="kpi-title">${kpi.name} Growth</div><div id="chart-${i}" class="kpi-chart"></div>`;
+      card.innerHTML = `<div class="kpi-title">${kpi.name} Growth</div><div id="chart-${i}"></div>`;
       container.appendChild(card);
 
       const layout = {
-        autosize: true, bargap: 0.25,
+        autosize: true,
+        bargap: 0.25,
         margin: { l: 50, r: 30, t: 30, b: 50 },
-        paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
+        paper_bgcolor: 'rgba(0,0,0,0)',
+        plot_bgcolor: 'rgba(0,0,0,0)',
         xaxis: { visible: false, range: [0, maxVal * 1.05], fixedrange: true },
         yaxis: { automargin: true, autorange: 'reversed', fixedrange: true, tickfont: { size: 15, color: '#004d1a', weight: 'bold' } }
       };
@@ -91,7 +93,7 @@
         text: values.map(v => fmt(v)),
         textposition: 'inside',
         insidetextanchor: 'middle',
-        textfont: { size: 13, color: 'white', weight: 'bold' },
+        textfont: { size: 13, color: 'white', family: 'Lato, sans-serif', weight: 'bold' },
         marker: { color: projections.map(p => yearColors[p.year] || '#10B981'), line: { width: 2, color: 'white' } },
         hovertemplate: `<b>%{y}</b><br>%{text}<extra></extra>`
       }], layout, { responsive: true, displayModeBar: false });
@@ -100,14 +102,32 @@
       new ResizeObserver(() => Plotly.Plots.resize(`chart-${i}`)).observe(document.getElementById(`chart-${i}`));
     });
 
-    // Summary card (same as before)
+    // Summary Card
     const first = projections[0];
     const last = projections[projections.length - 1];
     const growth = (a, b) => a > 0 ? ((b - a) / a * 100).toFixed(0) : '∞';
 
     const summary = document.createElement('div');
     summary.className = 'summary-card';
-    summary.innerHTML = `... your summary HTML ...`; // keep exactly what you had
+    summary.innerHTML = `
+      <div class="summary-header">5-Year Growth Strategy</div>
+      <div class="summary-grid">
+        ${['Members', 'Contributions', 'Loans', 'Bank Balance'].map(label => {
+          const key = label.toLowerCase().replace(' ', '').replace('bankbalance', 'bankBalance');
+          const curr = first[key];
+          const proj = last[key];
+          const g = growth(curr, proj);
+          return `<div class="summary-item">
+            <div class="summary-label">${label}</div>
+            <div class="summary-values">
+              <div><span>${first.year}</span><strong>${fmt(curr)}</strong></div>
+              <div><span>${last.year}</span><strong>${fmt(proj)}</strong></div>
+            </div>
+            <div class="summary-growth">+${g}%</div>
+          </div>`;
+        }).join('')}
+      </div>
+    `;
     container.appendChild(summary);
   }
 
