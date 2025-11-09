@@ -9,7 +9,7 @@
     <meta name="keywords" content="SACCO Kenya, loans Mombasa, savings cooperative, emergency loan, education loan, Soyosoyo SACCO">
     <meta property="og:type" content="website">
     <meta property="og:title" content="Soyosoyo SACCO | Affordable Loans & Savings in Coastal Kenya">
-    <meta property="og:description" content="Join Soyosoyo SACCO for 1% monthly loans, high dividends, and financial empowerment.">
+    <meta property="og:description" content="Join Soyosoyo SACCO for 1% monthly loans, high dividends, and financial empowerment. Emergency, education, and development loans in Coastal Kenya.">
     <meta property="og:image" content="https://soyosoyosacco.com/assets/141dd3faa98da9737b591161deac509a.jpg">
     <meta property="og:url" content="https://soyosoyosacco.com/">
     <meta name="twitter:card" content="summary_large_image">
@@ -20,10 +20,12 @@
     <link rel="icon" href="./assets/141dd3faa98da9737b591161deac509a.jpg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./style.css?v=62">
+    
+    <!-- CSS v56 -->
+    <link rel="stylesheet" href="./style.css?v=56">
 
     <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G- 05M38MYK0G"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-05M38MYK0G"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
@@ -31,79 +33,76 @@
       gtag('config', 'G-05M38MYK0G');
     </script>
 
-    <!-- BULLETPROOF STYLES — ARROWS + NO OVERFLOW -->
+    <!-- GROWTH INDICATOR STYLES -->
     <style>
         .growth-indicator {
             text-align: center;
-            margin-top: 0.7rem;
+            margin-top: 0.5rem;
             font-weight: bold;
-            font-size: 1.05rem;
-            color: #1e293b;
+            font-size: 1rem;
         }
         .growth-indicator.positive { color: #10B981; }
         .growth-indicator.negative { color: #EF4444; }
-        .growth-indicator i { margin-right: 6px; font-size: 1em; }
+        .growth-indicator i { margin-right: 4px; font-size: 0.9em; }
+    </style>
 
+    <!-- GROWTH CHARTS GRID STYLES -->
+    <style>
         .growth-charts-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.2rem;
-            padding: 1rem;
-            max-width: 1400px;
-            margin: 0 auto;
-            box-sizing: border-box;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
         }
         .chart-card {
-            background: #ffffff;
-            border-radius: 18px;
-            padding: 1.3rem;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
-            height: 350px;
+            position: relative;
+            height: 300px;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
-            border: 1px solid #e2e8f0;
         }
         .chart-card canvas {
-            flex: 1;
-            max-height: 240px;
-            width: 100% !important;
-            height: auto !important;
+            flex-grow: 1;
+            max-height: 250px;
         }
         .chart-card p {
-            margin: 0.9rem 0 0.4rem;
+            margin: 0.5rem 0 0 0;
             text-align: center;
-            font-weight: 900;
-            font-size: 1.2rem;
-            color: #1e293b;
+            font-weight: bold;
         }
-
         @media (max-width: 768px) {
-            .growth-charts-grid { grid-template-columns: 1fr; gap: 1.3rem; padding: 0.6rem; }
-            .chart-card { height: 330px; padding: 1.1rem; }
-            .chart-card canvas { max-height: 225px; }
+            .growth-charts-grid {
+                grid-template-columns: 1fr;
+            }
+            .chart-card {
+                height: 350px;
+            }
+            .chart-card canvas {
+                max-height: 280px;
+            }
         }
+    </style>
 
+    <!-- MEMBER ACTIVITIES CAROUSEL STYLES -->
+    <style>
         .member-activities-section {
-            margin-top: 3.5rem;
-            padding: 2.5rem 0;
-            background: #f8f9fa;
+            margin-top: 3rem;
+            padding: 2rem 0;
+            background-color: #f8f9fa;
         }
         .member-activities-carousel {
             position: relative;
             max-width: 1000px;
             margin: 0 auto;
             overflow: hidden;
-            border-radius: 18px;
-            box-shadow: 0 10px 35px rgba(0,0,0,0.12);
+            border-radius: 12px;
         }
         .member-activities-carousel .slides {
             display: flex;
-            transition: transform 0.6s ease;
-            height: 440px;
+            transition: transform 0.5s ease-in-out;
+            height: 400px; /* Increased height to better show faces */
         }
         .member-activities-carousel .slide {
             min-width: 100%;
+            height: 400px; /* Increased height to better show faces */
             flex-shrink: 0;
         }
         .member-activities-carousel .slide img {
@@ -115,48 +114,43 @@
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            background: rgba(0,0,0,0.65);
-            color: #fff;
+            background: rgba(0,0,0,0.5);
+            color: white;
             border: none;
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            font-size: 22px;
+            padding: 10px;
             cursor: pointer;
+            font-size: 18px;
             z-index: 10;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
-        .member-activities-carousel .prev { left: 14px; }
-        .member-activities-carousel .next { right: 14px; }
+        .member-activities-carousel .prev { left: 10px; }
+        .member-activities-carousel .next { right: 10px; }
         .member-activities-carousel .dots {
             display: flex;
             justify-content: center;
-            gap: 12px;
-            margin-top: 1.4rem;
+            gap: 8px;
+            margin-top: 1rem;
         }
         .member-activities-carousel .dot {
-            width: 13px;
-            height: 13px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
-            background: #bbb;
+            background: #ccc;
             cursor: pointer;
-            transition: all 0.3s;
         }
         .member-activities-carousel .dot.active {
             background: #10B981;
-            transform: scale(1.5);
         }
         @media (max-width: 768px) {
             .member-activities-carousel .slides,
-            .member-activities-carousel .slide { height: 270px; }
-            .member-activities-carousel .nav-btn { width: 42px; height: 42px; font-size: 19px; }
+            .member-activities-carousel .slide {
+                height: 250px; /* Increased from 200px for mobile */
+            }
         }
     </style>
 </head>
 <body>
 
+<!-- ==================== HEADER ==================== -->
 <header class="site-header">
     <div class="navbar">
         <a href="index.html">
@@ -173,6 +167,8 @@
             <a href="Join-Us.html">Join Us</a>
         </nav>
     </div>
+
+    <!-- HERO -->
     <div class="hero">
         <div class="banner-text">
             <h1>Soyosoyo SACCO</h1>
@@ -181,73 +177,139 @@
     </div>
 </header>
 
+<!-- ==================== MAIN ==================== -->
 <main class="container">
 
+    <!-- HISTORY TEASER -->
     <section class="section">
-        <h2 style="text-align:center;font-size:1.6rem;margin-bottom:1rem;">Our Journey</h2>
-        <p style="text-align:center;max-width:700px;margin:0 auto 1.5rem;">Founded in 1998 as a medical aid cooperative, we've evolved into a trusted financial partner for many in the Kenyan Coast.</p>
-        <div style="text-align:center;"><a href="About.html" class="products-button" style="padding:.75rem 2rem;">Read Full History</a></div>
-    </section>
-
-    <div class="mission-vision-container">
-        <img src="./assets/0065564ad0f92baf9be886b031073979.jpg" alt="Mission Icon" class="round">
-        <div><h2>Our Mission</h2><p>Empower members with accessible, affordable credit for healthcare, education, agriculture, growth and development.</p></div>
-    </div>
-    <div class="mission-vision-container">
-        <img src="./assets/d8c3d49708ed9831ff753b3548c717aa.jpg" alt="Vision Icon" class="round">
-        <div><h2>Our Vision</h2><p>To lead financial transformation and sustainable prosperity across Kenya.</p></div>
-    </div>
-    <div class="core-values-container">
-        <img src="./assets/8119c4ebd64ccbe641d0563d23444c34.jpg" alt="Core Values Icon" class="round">
-        <div><h2>Core Values</h2><ul><li>Empowerment</li><li>Integrity</li><li>Community</li><li>Accessibility</li><li>Growth</li></ul></div>
-    </div>
-
-    <section class="section">
-        <h2 style="text-align:center;">Leadership</h2>
-        <div class="leadership-grid">
-            <div class="leader-profile"><img src="./assets/judi.jpg" alt="Judith Malombo Mramba" class="round"><h3>Judith Malombo Mramba</h3><p>Chairperson</p></div>
-            <div class="leader-profile"><img src="./assets/jere.jpg" alt="Jeremiah Kalama Lewa" class="round"><h3>Jeremiah Kalama Lewa</h3><p>Vice-Chairperson</p></div>
-            <div class="leader-profile"><img src="./assets/sidi.jpg" alt="Sidi Saro Ngowa" class="round"><h3>Sidi Saro Ngowa</h3><p>Secretary</p></div>
-            <div class="leader-profile"><img src="./assets/thoya.jpg" alt="Thomas Thoya Kitsao" class="round"><h3>Thomas Thoya Kitsao</h3><p>Treasurer</p></div>
+        <h2 style="text-align: center; font-size: 1.6rem; margin-bottom: 1rem;">Our Journey</h2>
+        <p style="text-align: center; max-width: 700px; margin: 0 auto 1.5rem;">
+            Founded in 1998 as a medical aid cooperative, we’ve evolved into a trusted financial partner for many in the Kenyan Coast.
+        </p>
+        <div style="text-align: center;">
+            <a href="About.html" class="products-button" style="display: inline-block; padding: 0.75rem 2rem;">Read Full History</a>
         </div>
     </section>
 
+    <!-- MISSION / VISION / CORE VALUES -->
+    <div class="mission-vision-container">
+        <img src="./assets/0065564ad0f92baf9be886b031073979.jpg" alt="Mission" class="round">
+        <div>
+            <h2>Our Mission</h2>
+            <p>Empower members with accessible, affordable credit for healthcare, education, agriculture, growth and development.</p>
+        </div>
+    </div>
+
+    <div class="mission-vision-container">
+        <img src="./assets/d8c3d49708ed9831ff753b3548c717aa.jpg" alt="Vision" class="round">
+        <div>
+            <h2>Our Vision</h2>
+            <p>To lead financial transformation and sustainable prosperity across Kenya.</p>
+        </div>
+    </div>
+
+    <div class="core-values-container">
+        <img src="./assets/8119c4ebd64ccbe641d0563d23444c34.jpg" alt="Core Values" class="round">
+        <div>
+            <h2>Core Values</h2>
+            <ul>
+                <li>Empowerment</li>
+                <li>Integrity</li>
+                <li>Community</li>
+                <li>Accessibility</li>
+                <li>Growth</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- LEADERSHIP -->
     <section class="section">
-        <h2 style="text-align:center;">Featured Product</h2>
+        <h2 style="text-align: center;">Leadership</h2>
+        <div class="leadership-grid">
+            <div class="leader-profile">
+                <img src="./assets/judi.jpg" alt="Judith Malombo Mramba" class="round">
+                <h3>Judith Malombo Mramba</h3>
+                <p>Chairperson</p>
+            </div>
+            <div class="leader-profile">
+                <img src="./assets/jere.jpg" alt="Jeremiah Kalama Lewa" class="round">
+                <h3>Jeremiah Kalama Lewa</h3>
+                <p>Vice-Chairperson</p>
+            </div>
+            <div class="leader-profile">
+                <img src="./assets/sidi.jpg" alt="Sidi Saro Ngowa" class="round">
+                <h3>Sidi Saro Ngowa</h3>
+                <p>Secretary</p>
+            </div>
+            <div class="leader-profile">
+                <img src="./assets/thoya.jpg" alt="Thomas Thoya Kitsao" class="round">
+                <h3>Thomas Thoya Kitsao</h3>
+                <p>Treasurer</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRODUCTS PREVIEW -->
+    <section class="section">
+        <h2 style="text-align: center;">Featured Product</h2>
         <div class="products-grid">
             <div class="product-card">
                 <img src="./assets/ba04cd4377b3746fc0750dcf2ff3d935.jpg" alt="Education Loan" class="round">
-                <h2>Education Loan</h2>
+                <h2 style="text-align: center;">Education Loan</h2>
                 <p>Cover tuition, books, and living costs. Up to 12 months at 4% per annum.</p>
                 <a href="Products.html" class="products-button">Explore All Products</a>
             </div>
         </div>
     </section>
 
+    <!-- FINANCIAL HIGHLIGHTS CAROUSEL -->
     <section class="section">
-        <h2 style="text-align:center;">Financial Highlights</h2>
-        <p style="text-align:center;margin-bottom:1.5rem;">Our impact in numbers.</p>
-        <div class="carousel-wrapper"><div class="carousel" aria-label="Financial Metrics Carousel"></div></div>
-    </section>
-
-    <section class="section">
-        <h2 style="text-align:center;margin-bottom:1.5rem;">Growth Since January 2025</h2>
-        <div class="growth-charts-grid">
-            <div class="chart-card"><canvas id="chartMembers"></canvas><p>Total Members</p><div id="growthMembers" class="growth-indicator"></div></div>
-            <div class="chart-card"><canvas id="chartLoans"></canvas><p>Loans Disbursed</p><div id="growthLoans" class="growth-indicator"></div></div>
-            <div class="chart-card"><canvas id="chartLoanTypes"></canvas><p>Loan Types Distribution (%)</p></div>
-            <div class="chart-card"><canvas id="chartContributions"></canvas><p>Contributions</p><div id="growthContributions" class="growth-indicator"></div></div>
-            <div class="chart-card"><canvas id="chartProfit"></canvas><p>Profit</p><div id="growthProfit" class="growth-indicator"></div></div>
-            <div class="chart-card"><canvas id="chartROA"></canvas><p>Return on Assets (ROA)</p><div id="growthROA" class="growth-indicator"></div></div>
-            <div class="chart-card"><canvas id="chartLiquidity"></canvas><p>Liquidity Ratio</p><div id="growthLiquidity" class="growth-indicator"></div></div>
+        <h2 style="text-align: center;">Financial Highlights</h2>
+        <p style="text-align: center; margin-bottom: 1.5rem;">Our impact in numbers.</p>
+        <div class="carousel-wrapper">
+            <div class="carousel" aria-label="Financial Metrics Carousel"></div>
         </div>
     </section>
 
-    <!-- 3D CONE — NOW 100% WORKING -->
+    <!-- GROWTH CHARTS -->
     <section class="section">
-        <h2 style="text-align:center;">Live 3D Growth Cone</h2>
-        <p style="text-align:center;margin-bottom:1rem;">Real-time 3D visualization of members, loans, contributions, and profit.</p>
-        <div id="coneContainer" style="width:100%;height:520px;background:#f8fafc;border-radius:20px;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,0.13);"></div>
+        <h2 style="text-align: center; margin-bottom: 1.5rem;">Growth Since January 2025</h2>
+        <div class="growth-charts-grid">
+            <div class="chart-card">
+                <canvas id="chartMembers"></canvas>
+                <p>Total Members</p>
+                <div id="growthMembers" class="growth-indicator"></div>
+            </div>
+            <div class="chart-card">
+                <canvas id="chartLoans"></canvas>
+                <p>Loans Disbursed</p>
+                <div id="growthLoans" class="growth-indicator"></div>
+            </div>
+            <div class="chart-card">
+                <canvas id="chartLoanTypes"></canvas>
+                <p>Loan Types Distribution (%)</p>
+            </div>
+            <div class="chart-card">
+                <canvas id="chartContributions"></canvas>
+                <p>Contributions</p>
+                <div id="growthContributions" class="growth-indicator"></div>
+            </div>
+            <div class="chart-card">
+                <canvas id="chartProfit"></canvas>
+                <p>Profit</p>
+                <div id="growthProfit" class="growth-indicator"></div>
+            </div>
+            <div class="chart-card">
+                <canvas id="chartROA"></canvas>
+                <p>Return on Assets (ROA)</p>
+                <div id="growthROA" class="growth-indicator"></div>
+            </div>
+            <div class="chart-card">
+                <canvas id="chartLiquidity"></canvas>
+                <p>Liquidity Ratio</p>
+                <div id="growthLiquidity" class="growth-indicator"></div>
+            </div>
+        </div>
     </section>
 
     <!-- LOAN CALCULATOR -->
@@ -282,31 +344,66 @@
                 <button onclick="calculateLoan()">Calculate Loan</button>
                 <div class="result" id="result"></div>
 
-                <button onclick="toggleAmortizationTable()" id="amortizationButton" style="display:none;margin-top:1rem;">View Amortization Table</button>
-                <div class="amortization-table" id="amortizationTable" style="display:none;margin-top:1rem;">
-                    <table><thead><tr><th>Month</th><th>Payment (KES)</th><th>Principal (KES)</th><th>Interest (KES)</th><th>Balance (KES)</th></tr></thead><tbody id="amortizationBody"></tbody></table>
+                <!-- Amortization Table -->
+                <button onclick="toggleAmortizationTable()" id="amortizationButton" style="display: none; margin-top: 1rem;">View Amortization Table</button>
+                <div class="amortization-table" id="amortizationTable" style="display: none; margin-top: 1rem;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Month</th>
+                                <th>Payment (KES)</th>
+                                <th>Principal (KES)</th>
+                                <th>Interest (KES)</th>
+                                <th>Balance (KES)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="amortizationBody"></tbody>
+                    </table>
                 </div>
 
-                <button onclick="showFinesSection()" id="finesPromptButton" style="display:none;margin-top:1rem;">Calculate Fines for Missed Payments</button>
-                <div class="fines-section" id="finesSection" style="display:none;margin-top:1rem;">
+                <!-- Fines Section -->
+                <button onclick="showFinesSection()" id="finesPromptButton" style="display: none; margin-top: 1rem;">Calculate Fines for Missed Payments</button>
+                <div class="fines-section" id="finesSection" style="display: none; margin-top: 1rem;">
                     <h3>Calculate Late Repayment Fines</h3>
-                    <div class="form-group"><label for="lateMonth">Month of First Missed Payment:</label><input type="number" id="lateMonth" placeholder="e.g., 1" min="1"></div>
-                    <div class="form-group"><label for="monthsLate">Number of Consecutive Missed Payments:</label><input type="number" id="monthsLate" placeholder="e.g., 3" min="0"></div>
-                    <div class="form-group" id="paymentGroup" style="display:none;">
-                        <label for="paymentMonth">Month to Add Payment:</label><input type="number" id="paymentMonth" placeholder="e.g., 4" min="1">
-                        <label for="paymentAmount">Amount Paid (KES):</label><input type="number" id="paymentAmount" placeholder="e.g., 500" min="0">
+                    <div class="form-group">
+                        <label for="lateMonth">Month of First Missed Payment:</label>
+                        <input type="number" id="lateMonth" placeholder="e.g., 1" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="monthsLate">Number of Consecutive Missed Payments:</label>
+                        <input type="number" id="monthsLate" placeholder="e.g., 3" min="0">
+                    </div>
+                    <div class="form-group" id="paymentGroup" style="display: none;">
+                        <label for="paymentMonth">Month to Add Payment:</label>
+                        <input type="number" id="paymentMonth" placeholder="e.g., 4" min="1">
+                        <label for="paymentAmount">Amount Paid (KES):</label>
+                        <input type="number" id="paymentAmount" placeholder="e.g., 500" min="0">
                         <button onclick="addPayment()">Add Payment</button>
                     </div>
                     <button onclick="calculateFines()">Calculate Fines</button>
                     <div class="result" id="finesResult"></div>
-                    <button onclick="toggleFinesAmortizationTable()" id="finesAmortizationButton" style="display:none;margin-top:1rem;">View Amortization Table with Fines</button>
-                    <div class="fines-amortization-table" id="finesAmortizationTable" style="display:none;margin-top:1rem;">
-                        <table><thead><tr><th>Month</th><th>Payment (KES)</th><th>Principal (KES)</th><th>Interest (KES)</th><th>Installment Fine (KES)</th><th>Outstanding Fine (KES)</th><th>Balance (KES)</th></tr></thead><tbody id="finesAmortizationBody"></tbody></table>
+                    <button onclick="toggleFinesAmortizationTable()" id="finesAmortizationButton" style="display: none; margin-top: 1rem;">View Amortization Table with Fines</button>
+                    <div class="fines-amortization-table" id="finesAmortizationTable" style="display: none; margin-top: 1rem;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Month</th>
+                                    <th>Payment (KES)</th>
+                                    <th>Principal (KES)</th>
+                                    <th>Interest (KES)</th>
+                                    <th>Installment Fine (KES)</th>
+                                    <th>Outstanding Fine (KES)</th>
+                                    <th>Balance (KES)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="finesAmortizationBody"></tbody>
+                        </table>
                     </div>
                 </div>
 
-                <button onclick="toggleChart()" id="chartButton" style="display:none;margin-top:1rem;">View Chart</button>
-                <div class="loan-chart" id="loanChart" style="display:none;margin-top:1rem;height:300px;"></div>
+                <!-- Chart -->
+                <button onclick="toggleChart()" id="chartButton" style="display: none; margin-top: 1rem;">View Chart</button>
+                <div class="loan-chart" id="loanChart" style="display: none; margin-top: 1rem; height: 300px;"></div>
             </div>
         </div>
     </section>
@@ -315,7 +412,10 @@
     <section class="tool-section" id="dividends-calculator">
         <h2 style="text-align: center;">Dividends Calculator</h2>
         <div class="calculator">
-            <div class="form-group"><label for="dividendRate">Dividend Rate (%):</label><input type="number" id="dividendRate" placeholder="e.g., 12.5" step="0.01"></div>
+            <div class="form-group">
+                <label for="dividendRate">Dividend Rate (%):</label>
+                <input type="number" id="dividendRate" placeholder="e.g., 12.5" step="0.01">
+            </div>
             <div class="month-subheader">Enter your monthly savings contributions in the spaces below:</div>
             <div class="month-inputs">
                 <input type="number" id="jan" placeholder="Jan" min="0" step="0.01">
@@ -336,39 +436,348 @@
         </div>
     </section>
 
+    <!-- MEMBER ACTIVITIES CAROUSEL -->
     <section class="member-activities-section">
-        <h2 style="text-align:center;">Member Activities</h2>
-        <p style="text-align:center;margin-bottom:1.5rem;">See what our members are up to.</p>
-        <div class="member-activities-carousel" role="region" aria-label="Member Activities Carousel">
+        <h2 style="text-align: center;">Member Activities</h2>
+        <p style="text-align: center; margin-bottom: 1.5rem;">See what our members are up to.</p>
+        <div class="member-activities-carousel">
             <div class="slides" id="memberSlides"></div>
-            <button class="nav-btn prev" onclick="changeSlide(-1)" aria-label="Previous Slide">Previous</button>
-            <button class="nav-btn next" onclick="changeSlide(1)" aria-label="Next Slide">Next</button>
-            <div class="dots" id="memberDots" role="tablist"></div>
+            <button class="nav-btn prev" onclick="changeSlide(-1)">&#10094;</button>
+            <button class="nav-btn next" onclick="changeSlide(1)">&#10095;</button>
+            <div class="dots" id="memberDots"></div>
         </div>
     </section>
 
 </main>
 
+<!-- =================: FOOTER – ICONS ONLY (LIKE OTHER PAGES) -->
 <footer>
     <p>© 2025 SOYOSOYO SACCO. All rights reserved. | <a href="mailto:info@soyosoyosacco.com">info@soyosoyosacco.com</a></p>
     <div class="social-icons">
-        <a href="https://www.facebook.com/people/Soyosoyo-Sacco/61565783836766/" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-        <a href="https://x.com/SoyosoyoSACCO" target="_blank" rel="noopener noreferrer" aria-label="X"><i class="fab fa-twitter"></i></a>
-        <a href="https://www.instagram.com/soyosoyosacco" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.facebook.com/people/Soyosoyo-Sacco/61565783836766/" target="_blank" aria-label="Facebook">
+            <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="https://x.com/SoyosoyoSACCO" target="_blank" aria-label="Twitter">
+            <i class="fab fa-twitter"></i>
+        </a>
+        <a href="https://www.instagram.com/soyosoyosacco" target="_blank" aria-label="Instagram">
+            <i class="fab fa-instagram"></i>
+        </a>
     </div>
 </footer>
 
-<!-- SCRIPTS — CHART.JS FIRST, THEN CAROUSEL (CRITICAL FIX) -->
+<!-- ==================== SCRIPTS ==================== -->
+<script src="./scripts/carousel.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
-<script>window.ChartDataLabels = ChartDataLabels;</script>
-<script src="./scripts/carousel.js?v=62"></script>
+
+<script>
+    // MEMBER ACTIVITIES CAROUSEL SCRIPT
+    const memberImages = [
+        './assets/01acb621480e99c389cea4973abe4896.jpg',
+        './assets/3161c755955816487a8b0cd796d43c29.jpg',
+        './assets/c1cbf8720115247da59d153d3f0be3b0.jpg',
+        './assets/b8a8a30e9531f4d1cac3ddf56c594b5a.jpg',
+        './assets/8053495671fa13e271078ad77beff286.jpg',
+        './assets/8640680b79eba02a8544ba3bbbcdd655.jpg',
+        './assets/8c145fcc127b3fad7cbe25bc847f3e8c.jpg'
+    ];
+
+    let currentSlide = 0;
+
+    function initMemberCarousel() {
+        const slidesContainer = document.getElementById('memberSlides');
+        const dotsContainer = document.getElementById('memberDots');
+
+        // Create slides
+        memberImages.forEach((imgSrc, index) => {
+            const slide = document.createElement('div');
+            slide.className = 'slide';
+            slide.innerHTML = `<img src="${imgSrc}" alt="Member Activity ${index + 1}" loading="lazy">`;
+            slidesContainer.appendChild(slide);
+
+            // Create dots
+            const dot = document.createElement('span');
+            dot.className = 'dot';
+            dot.onclick = () => goToSlide(index);
+            dotsContainer.appendChild(dot);
+        });
+
+        showSlide(currentSlide);
+    }
+
+    function showSlide(index) {
+        const slides = document.querySelectorAll('#memberSlides .slide');
+        const dots = document.querySelectorAll('#memberDots .dot');
+        const totalSlides = slides.length;
+
+        if (index >= totalSlides) currentSlide = 0;
+        else if (index < 0) currentSlide = totalSlides - 1;
+        else currentSlide = index;
+
+        document.getElementById('memberSlides').style.transform = `translateX(-${currentSlide * 100}%)`;
+
+        dots.forEach((dot, i) => {
+            dot.className = i === currentSlide ? 'dot active' : 'dot';
+        });
+    }
+
+    function changeSlide(direction) {
+        showSlide(currentSlide + direction);
+    }
+
+    function goToSlide(index) {
+        showSlide(index);
+    }
+
+    // Auto-advance (optional: every 5 seconds)
+    setInterval(() => changeSlide(1), 5000);
+
+    // CLEAN GROWTH ARROW PLUGIN
+    const cleanGrowthArrowPlugin = {
+        id: 'cleanGrowthArrow',
+        afterDraw: function(chart) {
+            const { ctx, scales, data } = chart;
+            const dataset = data.datasets[0];
+            const janVal = dataset.data[0];
+            const todayVal = dataset.data[1];
+            const growthPercent = janVal === 0 ? 0 : ((todayVal - janVal) / Math.abs(janVal)) * 100;
+            const isPositive = growthPercent > 0;
+
+            const xScale = scales.x;
+            const yScale = scales.y;
+
+            const x1 = xScale.getPixelForValue(0);
+            const x2 = xScale.getPixelForValue(1);
+            const y1 = yScale.getPixelForValue(janVal);
+            const y2 = yScale.getPixelForValue(todayVal);
+
+            const headLength = 14;
+            const angle = Math.atan2(y2 - y1, x2 - x1);
+
+            const color = isPositive ? '#10B981' : '#EF4444';
+
+            ctx.save();
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(x2, y2);
+            ctx.lineTo(x2 - headLength * Math.cos(angle - Math.PI / 6), y2 - headLength * Math.sin(angle - Math.PI / 6));
+            ctx.lineTo(x2 - headLength * Math.cos(angle + Math.PI / 6), y2 - headLength * Math.sin(angle + Math.PI / 6));
+            ctx.closePath();
+            ctx.fillStyle = color;
+            ctx.fill();
+
+            if (growthPercent !== 0) {
+                const midX = (x1 + x2) / 2;
+                const midY = (y1 + y2) / 2 - 15;
+                ctx.font = 'bold 13px Lato';
+                ctx.fillStyle = color;
+                ctx.textAlign = 'center';
+                ctx.fillText(`${isPositive ? '+' : ''}${growthPercent.toFixed(1)}%`, midX, midY);
+            }
+            ctx.restore();
+        }
+    };
+    Chart.register(cleanGrowthArrowPlugin);
+
+    // CHART RENDERER
+    function renderGrowthCharts() {
+        if (!window.saccoData) {
+            console.warn('saccoData not ready. Retrying...');
+            setTimeout(renderGrowthCharts, 100);
+            return;
+        }
+
+        console.log('SACCO DATA LOADED:', window.saccoData);
+
+        const { jan, today } = window.saccoData;
+        const colors = {
+            members: { jan: '#8B5CF6', today: '#C4B5FD' },
+            loans: { jan: '#F59E0B', today: '#FBBF24' },
+            contributions: { jan: '#10B981', today: '#34D399' },
+            profit: { jan: '#EF4444', today: '#F87171' },
+            roa: { jan: '#0EA5E9', today: '#7DD3FC' },
+            liquidity: { jan: '#6366F1', today: '#A5B4FC' }
+        };
+
+        const growth = (j, t) => j === 0 ? (t === 0 ? 0 : 100) : ((t - j) / Math.abs(j)) * 100;
+
+        const updateIndicator = (id, g) => {
+            const el = document.getElementById(id);
+            const arrow = g > 0 ? 'up' : g < 0 ? 'down' : 'right';
+            const cls = g > 0 ? 'positive' : g < 0 ? 'negative' : '';
+            el.innerHTML = `<i class="fas fa-arrow-${arrow}"></i> ${Math.abs(g).toFixed(1)}%`;
+            el.className = `growth-indicator ${cls}`;
+        };
+
+        const createChart = (id, j, t, label, color, gid, isPercent = false, isMoney = false) => {
+            const g = growth(j, t);
+            updateIndicator(gid, g);
+
+            new Chart(document.getElementById(id).getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['Jan 2025', 'Today'],
+                    datasets: [{
+                        data: [j, t],
+                        backgroundColor: [color.jan, color.today],
+                        borderRadius: 10,
+                        maxBarThickness: 60
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: { 
+                                label: ctx => {
+                                    const val = ctx.raw;
+                                    if (isPercent) return val.toFixed(2) + '%';
+                                    if (isMoney) return 'KES ' + val.toLocaleString();
+                                    return val.toLocaleString();
+                                }
+                            }
+                        },
+                        datalabels: {
+                            anchor: 'end',
+                            align: 'top',
+                            color: '#1a1a1a',
+                            font: { weight: '900', size: 14 },
+                            formatter: v => {
+                                if (isPercent) return v.toFixed(2) + '%';
+                                if (isMoney) return 'KES ' + v.toLocaleString();
+                                return v.toLocaleString();
+                            },
+                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                            borderRadius: 6,
+                            padding: 7
+                        }
+                    },
+                    scales: {
+                        x: { grid: { display: false }, ticks: { color: '#1a1a1a', font: { weight: 'bold', size: 13 } } },
+                        y: { display: false, beginAtZero: true }
+                    },
+                    layout: { padding: { top: 50, left: 8, right: 8 } }
+                },
+                plugins: [ChartDataLabels]
+            });
+        };
+
+        // Use pre-calculated ROA from saccoData (includes external loans)
+        const janROA = parseFloat(jan.roa);
+        const todayROA = parseFloat(today.roa);
+
+        // Liquidity: ×100 (as before)
+        const janLiquidity = jan.contributions > 0 ? (jan.bankBalance / jan.contributions) * 100 : 0;
+        const todayLiquidity = today.contributions > 0 ? (today.bankBalance / today.contributions) * 100 : 0;
+
+        console.log('ROA:', janROA.toFixed(2) + '% →', todayROA.toFixed(2) + '%');
+
+        createChart('chartMembers', jan.members, today.members, 'Members', colors.members, 'growthMembers');
+        createChart('chartLoans', jan.loans, today.loans, 'Loans (KES)', colors.loans, 'growthLoans', false, true);
+        createChart('chartContributions', jan.contributions, today.contributions, 'Contributions (KES)', colors.contributions, 'growthContributions', false, true);
+        createChart('chartProfit', jan.profit, today.profit, 'Profit (KES)', colors.profit, 'growthProfit', false, true);
+        createChart('chartROA', janROA, todayROA, 'ROA (%)', colors.roa, 'growthROA', true);
+        createChart('chartLiquidity', janLiquidity, todayLiquidity, 'Liquidity Ratio (%)', colors.liquidity, 'growthLiquidity', true);
+
+        // Render Loan Types Distribution Pie Chart (with custom legend including percentages)
+        if (window.loanTypes && window.loanTypes.length > 0) {
+            const totalLoans = window.loanTypes.reduce((sum, loan) => sum + loan.value, 0);
+            if (totalLoans > 0) {
+                const labels = window.loanTypes.map(loan => loan.name);
+                const data = window.loanTypes.map(loan => (loan.value / totalLoans) * 100);
+                const loanColors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0']; // Colors for Emergency, Medicare, Development, Education
+
+                new Chart(document.getElementById('chartLoanTypes').getContext('2d'), {
+                    type: 'pie',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: data,
+                            backgroundColor: loanColors,
+                            borderWidth: 2,
+                            borderColor: '#fff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'bottom',
+                                labels: {
+                                    generateLabels: function(chart) {
+                                        const data = chart.data;
+                                        if (data.labels.length && data.datasets.length) {
+                                            return data.labels.map((label, i) => {
+                                                const value = data.datasets[0].data[i];
+                                                const percentage = value.toFixed(1) + '%';
+                                                return {
+                                                    text: `${label}: ${percentage}`,
+                                                    fillStyle: data.datasets[0].backgroundColor[i],
+                                                    strokeStyle: data.datasets[0].borderColor ? data.datasets[0].borderColor[i] : data.datasets[0].backgroundColor[i],
+                                                    lineWidth: data.datasets[0].borderWidth,
+                                                    hidden: false,
+                                                    index: i
+                                                };
+                                            });
+                                        }
+                                        return [];
+                                    },
+                                    font: { size: 12, weight: 'bold' },
+                                    padding: 20,
+                                    usePointStyle: true
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: ctx => `${ctx.label}: ${ctx.parsed.toFixed(1)}%`
+                                }
+                            },
+                            datalabels: {
+                                formatter: (value) => value > 5 ? value.toFixed(1) + '%' : '',  // Only show if >5%
+                                color: '#fff',
+                                font: { weight: 'bold', size: 12 },
+                                anchor: 'center',
+                                align: 'center'
+                            }
+                        }
+                    },
+                    plugins: [ChartDataLabels]
+                });
+            } else {
+                console.warn('Total loans is 0; skipping loan types chart.');
+            }
+        } else {
+            console.warn('loanTypes data not available; skipping loan types chart.');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        renderGrowthCharts();
+        initMemberCarousel();  // Initialize member carousel
+        if (typeof updateFields === 'function') updateFields();
+        if (typeof updateSliderValue === 'function') updateSliderValue('principal');
+    });
+</script>
+
 <script src="./scripts/main.js"></script>
 <script src="./scripts/calculator.js"></script>
 <script src="./scripts/dividendscalculator.js"></script>
 <script src="./scripts/chatbot.js"></script>
 <script src="./scripts/seo.js"></script>
 
+<!-- SCHEMA.ORG -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
