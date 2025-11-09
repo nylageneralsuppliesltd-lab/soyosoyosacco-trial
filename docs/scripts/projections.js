@@ -33,8 +33,8 @@
     };
   }
 
-  // === 5-YEAR PROJECTION ALGORITHM ===
-  function generateProjections(startData, endData, years = [2025, 2026, 2027, 2028, 2029], smoothing = 0.85) {
+  // === 5-YEAR PROJECTION ALGORITHM (CONSERVATIVE) ===
+  function generateProjections(startData, endData, years = [2025, 2026, 2027, 2028, 2029], smoothing = 0.45) {
     // Normalize input data
     const start = normalizeData(startData);
     const end = normalizeData(endData);
@@ -44,7 +44,11 @@
     // Calculate growth rates (avoiding division by zero)
     const membersGrowth = start.members > 0 ? (end.members - start.members) / start.members : 0;
     const contributionsGrowth = start.contributions > 0 ? (end.contributions - start.contributions) / start.contributions : 0;
-    const loansGrowth = start.loans > 0 ? (end.loans - start.loans) / start.loans : 0;
+    
+    // CONSERVATIVE LOAN GROWTH - Cap at 20% of actual growth or 15% annually, whichever is lower
+    const actualLoansGrowth = start.loans > 0 ? (end.loans - start.loans) / start.loans : 0;
+    const loansGrowth = Math.min(actualLoansGrowth * 0.2, 0.15);
+    
     const bankGrowth = start.bankBalance > 0 ? (end.bankBalance - start.bankBalance) / start.bankBalance : 0;
 
     let last = { ...end };
