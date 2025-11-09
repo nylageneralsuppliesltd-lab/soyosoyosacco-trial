@@ -1,10 +1,12 @@
 /* ========================================
-   SOYOSOYO SACCO – FINAL v54
-   Cache-busted: ?v=54
-   INTEGRATED: CONE PROJECTION + MEMBER ACTIVITIES CAROUSEL
-   NO CONFLICTS WITH EXISTING CAROUSELS (INDEX/JOIN-US)
-   GROWTH INDICATORS & CHARTS FULLY SUPPORTED
-   MOBILE-OPTIMIZED, NO OVERFLOW/BREAKS
+   SOYOSOYO SACCO – FINAL v53
+   Cache-busted: ?v=53
+   TWO CAROUSELS: INDEX + JOIN-US – NO CONFLICTS
+   % GROWTH + GREEN/RED ARROWS + NUMBERS ON BARS
+   MOBILE BARS: CENTERED, NO EDGE OVERFLOW
+   DESIGN RESTORED – NO FULL-SCREEN STRETCH
+   LOAN CALC: SLIDER -> NUMBER INPUT (MOBILE-FRIENDLY)
+   DIVIDENDS MOBILE: 2-COL FIT (REDUCED GAP/PADDING, OVERFLOW PREVENTED)
    ======================================== */
 
 /* ----------------- RESET & BASE ----------------- */
@@ -611,123 +613,6 @@ footer a:hover { color:#ffffff; }
     }
     .growth-indicator {
         font-size: 0.95rem;
-    }
-}
-
-/* ----------------- CONE PROJECTION VISUAL (INTEGRATED – NO CONFLICTS) ----------------- */
-.cone-visual {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 380px;
-    margin-top: 1rem;
-    perspective: 1000px;
-}
-.cone {
-    width: 220px;
-    height: 220px;
-    background: conic-gradient(#10B981, #F59E0B, #3B82F6, #10B981);
-    border-radius: 50%;
-    transform: rotateX(70deg);
-    animation: spin 8s linear infinite;
-    position: relative;
-}
-@keyframes spin {
-    0% { transform: rotateX(70deg) rotateZ(0deg); }
-    100% { transform: rotateX(70deg) rotateZ(360deg); }
-}
-.cone-data {
-    position: absolute;
-    bottom: -50px;
-    width: 100%;
-    text-align: center;
-    font-weight: bold;
-    color: #1a1a1a;
-}
-.cone-metric {
-    font-size: 1.2rem;
-    margin-top: 0.3rem;
-}
-@media (max-width: 768px) {
-    .cone {
-        width: 180px;
-        height: 180px;
-    }
-    .cone-metric {
-        font-size: 1rem;
-    }
-}
-
-/* ----------------- MEMBER ACTIVITIES CAROUSEL (INTEGRATED – NO CONFLICTS WITH OTHER CAROUSELS) ----------------- */
-.member-activities-section {
-    margin-top: 3rem;
-    padding: 2rem 0;
-    background-color: #f8f9fa;
-}
-.member-activities-carousel {
-    position: relative;
-    max-width: 1000px;
-    margin: 0 auto;
-    overflow: hidden;
-    border-radius: 12px;
-}
-.member-activities-carousel .slides {
-    display: flex;
-    transition: transform 0.5s ease-in-out;
-    height: 400px; /* Increased height to better show faces */
-}
-.member-activities-carousel .slide {
-    min-width: 100%;
-    height: 400px; /* Increased height to better show faces */
-    flex-shrink: 0;
-}
-.member-activities-carousel .slide img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-.member-activities-carousel .nav-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(0,0,0,0.5);
-    color: white;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-    font-size: 18px;
-    z-index: 10;
-}
-.member-activities-carousel .prev { left: 10px; }
-.member-activities-carousel .next { right: 10px; }
-.member-activities-carousel .dots {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 1rem;
-}
-.member-activities-carousel .dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: #ccc;
-    cursor: pointer;
-}
-.member-activities-carousel .dot.active {
-    background: #10B981;
-}
-@media (max-width: 768px) {
-    .member-activities-carousel .slides,
-    .member-activities-carousel .slide {
-        height: 250px; /* Increased from 200px for mobile */
-    }
-    .member-activities-carousel .nav-btn {
-        padding: 8px;
-        font-size: 16px;
-    }
-    .member-activities-carousel .dot {
-        width: 8px;
-        height: 8px;
     }
 }
 
