@@ -9,7 +9,7 @@
     <meta name="keywords" content="SACCO Kenya, loans Mombasa, savings cooperative, emergency loan, education loan, Soyosoyo SACCO">
     <meta property="og:type" content="website">
     <meta property="og:title" content="Soyosoyo SACCO | Affordable Loans & Savings in Coastal Kenya">
-    <meta property="og:description" content="Join Soyosoyo SACCO for 1% monthly loans, high dividends, and financial empowerment. Emergency, education, and development loans in Coastal Kenya.">
+    <meta property="og:description" content="Join Soyosoyo SACCO for 1% monthly loans, high dividends, and financial empowerment.">
     <meta property="og:image" content="https://soyosoyosacco.com/assets/141dd3faa98da9737b591161deac509a.jpg">
     <meta property="og:url" content="https://soyosoyosacco.com/">
     <meta name="twitter:card" content="summary_large_image">
@@ -20,9 +20,7 @@
     <link rel="icon" href="./assets/141dd3faa98da9737b591161deac509a.jpg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
-    
-    <!-- CSS v57 - FIXED ALL ISSUES -->
-    <link rel="stylesheet" href="./style.css?v=57">
+    <link rel="stylesheet" href="./style.css?v=59">
 
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-05M38MYK0G"></script>
@@ -33,127 +31,62 @@
       gtag('config', 'G-05M38MYK0G');
     </script>
 
-    <!-- GROWTH INDICATOR STYLES -->
+    <!-- FIXED & OPTIMIZED STYLES -->
     <style>
-        .growth-indicator {
-            text-align: center;
-            margin-top: 0.5rem;
-            font-weight: bold;
-            font-size: 1rem;
-        }
-        .growth-indicator.positive { color: #10B981; }
-        .growth-indicator.negative { color: #EF4444; }
-        .growth-indicator i { margin-right: 4px; font-size: 0.9em; }
-    </style>
+        .growth-indicator { text-align:center; margin-top:.6rem; font-weight:bold; font-size:1rem; }
+        .growth-indicator.positive { color:#10B981; }
+        .growth-indicator.negative { color:#EF4444; }
+        .growth-indicator i { margin-right:4px; font-size:.9em; }
 
-    <!-- GROWTH CHARTS GRID STYLES -->
-    <style>
         .growth-charts-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1rem;
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+            gap:1.2rem;
+            padding:0 .5rem;
+            max-width:1400px;
+            margin:0 auto;
         }
         .chart-card {
-            position: relative;
-            height: 300px;
-            display: flex;
-            flex-direction: column;
+            background:#fff;
+            border-radius:14px;
+            padding:1.2rem;
+            box-shadow:0 6px 20px rgba(0,0,0,.08);
+            height:340px;
+            display:flex;
+            flex-direction:column;
+            overflow:hidden;
         }
-        .chart-card canvas {
-            flex-grow: 1;
-            max-height: 250px;
-        }
-        .chart-card p {
-            margin: 0.5rem 0 0 0;
-            text-align: center;
-            font-weight: bold;
-        }
-        @media (max-width: 768px) {
-            .growth-charts-grid { grid-template-columns: 1fr; }
-            .chart-card { height: 350px; }
-            .chart-card canvas { max-height: 280px; }
-        }
-    </style>
+        .chart-card canvas { flex:1; max-height:260px; }
+        .chart-card p { margin:1rem 0 0; text-align:center; font-weight:900; font-size:1.1rem; color:#1e293b; }
 
-    <!-- MEMBER ACTIVITIES CAROUSEL STYLES -->
-    <style>
-        .member-activities-section {
-            margin-top: 3rem;
-            padding: 2rem 0;
-            background-color: #f8f9fa;
+        @media (max-width:768px) {
+            .growth-charts-grid { grid-template-columns:1fr; gap:1rem; }
+            .chart-card { height:320px; }
         }
-        .member-activities-carousel {
-            position: relative;
-            max-width: 1000px;
-            margin: 0 auto;
-            overflow: hidden;
-            border-radius: 12px;
-        }
-        .member-activities-carousel .slides {
-            display: flex;
-            transition: transform 0.5s ease-in-out;
-            height: 400px;
-        }
-        .member-activities-carousel .slide {
-            min-width: 100%;
-            height: 400px;
-            flex-shrink: 0;
-            background: #f0f0f0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .member-activities-carousel .slide img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .member-activities-carousel .nav-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(0,0,0,0.5);
-            color: white;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-            font-size: 18px;
-            z-index: 10;
-        }
-        .member-activities-carousel .prev { left: 10px; }
-        .member-activities-carousel .next { right: 10px; }
-        .member-activities-carousel .dots {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 1rem;
-        }
-        .member-activities-carousel .dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #ccc;
-            cursor: pointer;
-        }
-        .member-activities-carousel .dot.active {
-            background: #10B981;
-        }
-        @media (max-width: 768px) {
-            .member-activities-carousel .slides,
-            .member-activities-carousel .slide {
-                height: 250px;
-            }
+
+        .member-activities-section { margin-top:3rem; padding:2rem 0; background:#f8f9fa; }
+        .member-activities-carousel { position:relative; max-width:1000px; margin:0 auto; overflow:hidden; border-radius:16px; }
+        .member-activities-carousel .slides { display:flex; transition:transform .6s ease; height:420px; }
+        .member-activities-carousel .slide { min-width:100%; flex-shrink:0; }
+        .member-activities-carousel .slide img { width:100%; height:100%; object-fit:cover; }
+        .member-activities-carousel .nav-btn { position:absolute; top:50%; transform:translateY(-50%); background:rgba(0,0,0,.6); color:#fff; border:none; padding:12px 16px; cursor:pointer; font-size:20px; z-index:10; border-radius:50%; }
+        .member-activities-carousel .prev { left:12px; }
+        .member-activities-carousel .next { right:12px; }
+        .member-activities-carousel .dots { display:flex; justify-content:center; gap:10px; margin-top:1.2rem; }
+        .member-activities-carousel .dot { width:11px; height:11px; border-radius:50%; background:#bbb; cursor:pointer; transition:.3s; }
+        .member-activities-carousel .dot.active { background:#10B981; transform:scale(1.3); }
+
+        @media (max-width:768px) {
+            .member-activities-carousel .slides, .member-activities-carousel .slide { height:260px; }
         }
     </style>
 </head>
 <body>
 
-<!-- ==================== HEADER ==================== -->
+<!-- HEADER -->
 <header class="site-header">
     <div class="navbar">
-        <a href="index.html">
-            <img class="brand-logo round" src="./assets/141dd3faa98da9737b591161deac509a.jpg" alt="Soyosoyo Sacco Logo">
-        </a>
+        <a href="index.html"><img class="brand-logo round" src="./assets/141dd3faa98da9737b591161deac509a.jpg" alt="Soyosoyo Sacco Logo"></a>
         <a href="https://chamasoft.com/login" class="member-portal">Member Portal</a>
         <button id="menu-toggle" aria-label="Toggle Menu"></button>
         <nav class="nav-links">
@@ -165,8 +98,6 @@
             <a href="Join-Us.html">Join Us</a>
         </nav>
     </div>
-
-    <!-- HERO -->
     <div class="hero">
         <div class="banner-text">
             <h1>Soyosoyo SACCO</h1>
@@ -175,158 +106,92 @@
     </div>
 </header>
 
-<!-- ==================== MAIN ==================== -->
 <main class="container">
 
-    <!-- HISTORY TEASER -->
+    <!-- HISTORY -->
     <section class="section">
-        <h2 style="text-align: center; font-size: 1.6rem; margin-bottom: 1rem;">Our Journey</h2>
-        <p style="text-align: center; max-width: 700px; margin: 0 auto 1.5rem;">
+        <h2 style="text-align:center;font-size:1.6rem;margin-bottom:1rem;">Our Journey</h2>
+        <p style="text-align:center;max-width:700px;margin:0 auto 1.5rem;">
             Founded in 1998 as a medical aid cooperative, we've evolved into a trusted financial partner for many in the Kenyan Coast.
         </p>
-        <div style="text-align: center;">
-            <a href="About.html" class="products-button" style="display: inline-block; padding: 0.75rem 2rem;">Read Full History</a>
+        <div style="text-align:center;">
+            <a href="About.html" class="products-button" style="padding:.75rem 2rem;">Read Full History</a>
         </div>
     </section>
 
-    <!-- MISSION / VISION / CORE VALUES -->
+    <!-- MISSION / VISION / VALUES -->
     <div class="mission-vision-container">
-        <img src="./assets/0065564ad0f92baf9be886b031073979.jpg" alt="Mission Icon" class="round">
-        <div>
-            <h2>Our Mission</h2>
-            <p>Empower members with accessible, affordable credit for healthcare, education, agriculture, growth and development.</p>
-        </div>
+        <img src="./assets/0065564ad0f92baf9be886b031073979.jpg" alt="Mission" class="round">
+        <div><h2>Our Mission</h2><p>Empower members with accessible, affordable credit for healthcare, education, agriculture, growth and development.</p></div>
     </div>
-
     <div class="mission-vision-container">
-        <img src="./assets/d8c3d49708ed9831ff753b3548c717aa.jpg" alt="Vision Icon" class="round">
-        <div>
-            <h2>Our Vision</h2>
-            <p>To lead financial transformation and sustainable prosperity across Kenya.</p>
-        </div>
+        <img src="./assets/d8c3d49708ed9831ff753b3548c717aa.jpg" alt="Vision" class="round">
+        <div><h2>Our Vision</h2><p>To lead financial transformation and sustainable prosperity across Kenya.</p></div>
     </div>
-
     <div class="core-values-container">
-        <img src="./assets/8119c4ebd64ccbe641d0563d23444c34.jpg" alt="Core Values Icon" class="round">
-        <div>
-            <h2>Core Values</h2>
-            <ul>
-                <li>Empowerment</li>
-                <li>Integrity</li>
-                <li>Community</li>
-                <li>Accessibility</li>
-                <li>Growth</li>
-            </ul>
-        </div>
+        <img src="./assets/8119c4ebd64ccbe641d0563d23444c34.jpg" alt="Values" class="round">
+        <div><h2>Core Values</h2><ul><li>Empowerment</li><li>Integrity</li><li>Community</li><li>Accessibility</li><li>Growth</li></ul></div>
     </div>
 
     <!-- LEADERSHIP -->
     <section class="section">
-        <h2 style="text-align: center;">Leadership</h2>
+        <h2 style="text-align:center;">Leadership</h2>
         <div class="leadership-grid">
-            <div class="leader-profile">
-                <img src="./assets/judi.jpg" alt="Judith Malombo Mramba, Chairperson" class="round">
-                <h3>Judith Malombo Mramba</h3>
-                <p>Chairperson</p>
-            </div>
-            <div class="leader-profile">
-                <img src="./assets/jere.jpg" alt="Jeremiah Kalama Lewa, Vice-Chairperson" class="round">
-                <h3>Jeremiah Kalama Lewa</h3>
-                <p>Vice-Chairperson</p>
-            </div>
-            <div class="leader-profile">
-                <img src="./assets/sidi.jpg" alt="Sidi Saro Ngowa, Secretary" class="round">
-                <h3>Sidi Saro Ngowa</h3>
-                <p>Secretary</p>
-            </div>
-            <div class="leader-profile">
-                <img src="./assets/thoya.jpg" alt="Thomas Thoya Kitsao, Treasurer" class="round">
-                <h3>Thomas Thoya Kitsao</h3>
-                <p>Treasurer</p>
-            </div>
+            <div class="leader-profile"><img src="./assets/judi.jpg" alt="Judith Malombo Mramba" class="round"><h3>Judith Malombo Mramba</h3><p>Chairperson</p></div>
+            <div class="leader-profile"><img src="./assets/jere.jpg" alt="Jeremiah Kalama Lewa" class="round"><h3>Jeremiah Kalama Lewa</h3><p>Vice-Chairperson</p></div>
+            <div class="leader-profile"><img src="./assets/sidi.jpg" alt="Sidi Saro Ngowa" class="round"><h3>Sidi Saro Ngowa</h3><p>Secretary</p></div>
+            <div class="leader-profile"><img src="./assets/thoya.jpg" alt="Thomas Thoya Kitsao" class="round"><h3>Thomas Thoya Kitsao</h3><p>Treasurer</p></div>
         </div>
     </section>
 
-    <!-- PRODUCTS PREVIEW -->
+    <!-- PRODUCTS -->
     <section class="section">
-        <h2 style="text-align: center;">Featured Product</h2>
+        <h2 style="text-align:center;">Featured Product</h2>
         <div class="products-grid">
             <div class="product-card">
-                <img src="./assets/ba04cd4377b3746fc0750dcf2ff3d935.jpg" alt="Education Loan Product Image" class="round">
-                <h2 style="text-align: 100%;">Education Loan</h2>
+                <img src="./assets/ba04cd4377b3746fc0750dcf2ff3d935.jpg" alt="Education Loan" class="round">
+                <h2>Education Loan</h2>
                 <p>Cover tuition, books, and living costs. Up to 12 months at 4% per annum.</p>
                 <a href="Products.html" class="products-button">Explore All Products</a>
             </div>
         </div>
     </section>
 
-    <!-- FINANCIAL HIGHLIGHTS CAROUSEL -->
+    <!-- FINANCIAL CAROUSEL -->
     <section class="section">
-        <h2 style="text-align: center;">Financial Highlights</h2>
-        <p style="text-align: center; margin-bottom: 1.5rem;">Our impact in numbers.</p>
-        <div class="carousel-wrapper">
-            <div class="carousel" aria-label="Financial Metrics Carousel"></div>
-        </div>
+        <h2 style="text-align:center;">Financial Highlights</h2>
+        <p style="text-align:center;margin-bottom:1.5rem;">Our impact in numbers.</p>
+        <div class="carousel-wrapper"><div class="carousel" aria-label="Financial Metrics Carousel"></div></div>
     </section>
 
     <!-- GROWTH CHARTS -->
     <section class="section">
-        <h2 style="text-align: center; margin-bottom: 1.5rem;">Growth Since January 2025</h2>
+        <h2 style="text-align:center;margin-bottom:1.5rem;">Growth Since January 2025</h2>
         <div class="growth-charts-grid">
-            <div class="chart-card">
-                <canvas id="chartMembers" aria-label="Total Members Growth Chart"></canvas>
-                <p>Total Members</p>
-                <div id="growthMembers" class="growth-indicator"></div>
-            </div>
-            <div class="chart-card">
-                <canvas id="chartLoans" aria-label="Loans Disbursed Growth Chart"></canvas>
-                <p>Loans Disbursed</p>
-                <div id="growthLoans" class="growth-indicator"></div>
-            </div>
-            <div class="chart-card">
-                <canvas id="chartLoanTypes" aria-label="Loan Types Distribution Pie Chart"></canvas>
-                <p>Loan Types Distribution (%)</p>
-            </div>
-            <div class="chart-card">
-                <canvas id="chartContributions" aria-label="Contributions Growth Chart"></canvas>
-                <p>Contributions</p>
-                <div id="growthContributions" class="growth-indicator"></div>
-            </div>
-            <div class="chart-card">
-                <canvas id="chartProfit" aria-label="Profit Growth Chart"></canvas>
-                <p>Profit</p>
-                <div id="growthProfit" class="growth-indicator"></div>
-            </div>
-            <div class="chart-card">
-                <canvas id="chartROA" aria-label="Return on Assets Growth Chart"></canvas>
-                <p>Return on Assets (ROA)</p>
-                <div id="growthROA" class="growth-indicator"></div>
-            </div>
-            <div class="chart-card">
-                <canvas id="chartLiquidity" aria-label="Liquidity Ratio Growth Chart"></canvas>
-                <p>Liquidity Ratio</p>
-                <div id="growthLiquidity" class="growth-indicator"></div>
-            </div>
+            <div class="chart-card"><canvas id="chartMembers"></canvas><p>Total Members</p><div id="growthMembers" class="growth-indicator"></div></div>
+            <div class="chart-card"><canvas id="chartLoans"></canvas><p>Loans Disbursed</p><div id="growthLoans" class="growth-indicator"></div></div>
+            <div class="chart-card"><canvas id="chartLoanTypes"></canvas><p>Loan Types Distribution (%)</p></div>
+            <div class="chart-card"><canvas id="chartContributions"></canvas><p>Contributions</p><div id="growthContributions" class="growth-indicator"></div></div>
+            <div class="chart-card"><canvas id="chartProfit"></canvas><p>Profit</p><div id="growthProfit" class="growth-indicator"></div></div>
+            <div class="chart-card"><canvas id="chartROA"></canvas><p>Return on Assets (ROA)</p><div id="growthROA" class="growth-indicator"></div></div>
+            <div class="chart-card"><canvas id="chartLiquidity"></canvas><p>Liquidity Ratio</p><div id="growthLiquidity" class="growth-indicator"></div></div>
         </div>
     </section>
 
-    <!-- 3D CONE PROJECTION VISUALIZATION -->
+    <!-- 3D CONE -->
     <section class="section">
-        <h2 style="text-align: center;">Live 3D Growth Cone</h2>
-        <p style="text-align: center; margin-bottom: 1rem;">
-            Real-time 3D visualization of members, loans, contributions, and profit.
-        </p>
-        <div id="coneContainer" style="width: 100%; height: 480px; background: #f8fafc; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.1);"></div>
+        <h2 style="text-align:center;">Live 3D Growth Cone</h2>
+        <p style="text-align:center;margin-bottom:1rem;">Real-time 3D visualization of members, loans, contributions, and profit.</p>
+        <div id="coneContainer" style="width:100%;height:500px;background:#f8fafc;border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.12);"></div>
     </section>
 
-    <!-- LOAN CALCULATOR -->
+    <!-- LOAN CALCULATOR (unchanged) -->
     <section class="tool-section" id="loan-calculator">
-        <h2 style="text-align: center;">Loan Calculator</h2>
+        <h2 style="text-align:center;">Loan Calculator</h2>
         <div class="calculator-wrapper">
             <div class="calculator">
                 <h2><span class="soyo-logo">SOYOSOYO</span> SACCO Loan Calculator</h2>
-                <div class="form-group">
-                    <label for="loanType">Loan Type:</label>
+                <div class="form-group"><label for="loanType">Loan Type:</label>
                     <select id="loanType" onchange="updateFields()">
                         <option value="">Select Loan Type</option>
                         <option value="emergency">Emergency Loan</option>
@@ -336,94 +201,44 @@
                         <option value="apiCulture">Api Culture Loan</option>
                     </select>
                 </div>
-                <div class="form-group interest-rate">
-                    <label for="rate">Annual Interest Rate (%):</label>
-                    <input type="text" id="rate" readonly placeholder="Select a loan type">
-                </div>
-                <div class="form-group tenure">
-                    <label for="tenure">Tenure (Months):</label>
-                    <input type="text" id="tenure" readonly placeholder="Select a loan type">
-                </div>
-                <div class="form-group">
-                    <label for="principalAmount">Loan Amount (KES):</label>
-                    <input type="number" id="principalAmount" min="0" max="1000000" step="0.01" value="10000" placeholder="e.g., 1250.50">
-                </div>
+                <div class="form-group interest-rate"><label for="rate">Annual Interest Rate (%):</label><input type="text" id="rate" readonly></div>
+                <div class="form-group tenure"><label for="tenure">Tenure (Months):</label><input type="text" id="tenure" readonly></div>
+                <div class="form-group"><label for="principalAmount">Loan Amount (KES):</label><input type="number" id="principalAmount" min="0" max="1000000" step="0.01" value="10000"></div>
                 <button onclick="calculateLoan()">Calculate Loan</button>
                 <div class="result" id="result"></div>
-
-                <!-- Amortization Table -->
-                <button onclick="toggleAmortizationTable()" id="amortizationButton" style="display: none; margin-top: 1rem;">View Amortization Table</button>
-                <div class="amortization-table" id="amortizationTable" style="display: none; margin-top: 1rem;">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Month</th>
-                                <th>Payment (KES)</th>
-                                <th>Principal (KES)</th>
-                                <th>Interest (KES)</th>
-                                <th>Balance (KES)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="amortizationBody"></tbody>
-                    </table>
+                <button onclick="toggleAmortizationTable()" id="amortizationButton" style="display:none;margin-top:1rem;">View Amortization Table</button>
+                <div class="amortization-table" id="amortizationTable" style="display:none;margin-top:1rem;">
+                    <table><thead><tr><th>Month</th><th>Payment (KES)</th><th>Principal (KES)</th><th>Interest (KES)</th><th>Balance (KES)</th></tr></thead><tbody id="amortizationBody"></tbody></table>
                 </div>
-
-                <!-- Fines Section -->
-                <button onclick="showFinesSection()" id="finesPromptButton" style="display: none; margin-top: 1rem;">Calculate Fines for Missed Payments</button>
-                <div class="fines-section" id="finesSection" style="display: none; margin-top: 1rem;">
+                <button onclick="showFinesSection()" id="finesPromptButton" style="display:none;margin-top:1rem;">Calculate Fines for Missed Payments</button>
+                <div class="fines-section" id="finesSection" style="display:none;margin-top:1rem;">
                     <h3>Calculate Late Repayment Fines</h3>
-                    <div class="form-group">
-                        <label for="lateMonth">Month of First Missed Payment:</label>
-                        <input type="number" id="lateMonth" placeholder="e.g., 1" min="1">
-                    </div>
-                    <div class="form-group">
-                        <label for="monthsLate">Number of Consecutive Missed Payments:</label>
-                        <input type="number" id="monthsLate" placeholder="e.g., 3" min="0">
-                    </div>
-                    <div class="form-group" id="paymentGroup" style="display: none;">
-                        <label for="paymentMonth">Month to Add Payment:</label>
-                        <input type="number" id="paymentMonth" placeholder="e.g., 4" min="1">
-                        <label for="paymentAmount">Amount Paid (KES):</label>
-                        <input type="number" id="paymentAmount" placeholder="e.g., 500" min="0">
+                    <div class="form-group"><label for="lateMonth">Month of First Missed Payment:</label><input type="number" id="lateMonth" min="1"></div>
+                    <div class="form-group"><label for="monthsLate">Number of Consecutive Missed Payments:</label><input type="number" id="monthsLate" min="0"></div>
+                    <div class="form-group" id="paymentGroup" style="display:none;">
+                        <label for="paymentMonth">Month to Add Payment:</label><input type="number" id="paymentMonth" min="1">
+                        <label for="paymentAmount">Amount Paid (KES):</label><input type="number" id="paymentAmount" min="0">
                         <button onclick="addPayment()">Add Payment</button>
                     </div>
                     <button onclick="calculateFines()">Calculate Fines</button>
                     <div class="result" id="finesResult"></div>
-                    <button onclick="toggleFinesAmortizationTable()" id="finesAmortizationButton" style="display: none; margin-top: 1rem;">View Amortization Table with Fines</button>
-                    <div class="fines-amortization-table" id="finesAmortizationTable" style="display: none; margin-top: 1rem;">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Month</th>
-                                    <th>Payment (KES)</th>
-                                    <th>Principal (KES)</th>
-                                    <th>Interest (KES)</th>
-                                    <th>Installment Fine (KES)</th>
-                                    <th>Outstanding Fine (KES)</th>
-                                    <th>Balance (KES)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="finesAmortizationBody"></tbody>
-                        </table>
+                    <button onclick="toggleFinesAmortizationTable()" id="finesAmortizationButton" style="display:none;margin-top:1rem;">View Amortization Table with Fines</button>
+                    <div class="fines-amortization-table" id="finesAmortizationTable" style="display:none;margin-top:1rem;">
+                        <table><thead><tr><th>Month</th><th>Payment</th><th>Principal</th><th>Interest</th><th>Installment Fine</th><th>Outstanding Fine</th><th>Balance</th></tr></thead><tbody id="finesAmortizationBody"></tbody></table>
                     </div>
                 </div>
-
-                <!-- Chart -->
-                <button onclick="toggleChart()" id="chartButton" style="display: none; margin-top: 1rem;">View Chart</button>
-                <div class="loan-chart" id="loanChart" style="display: none; margin-top: 1rem; height: 300px;"></div>
+                <button onclick="toggleChart()" id="chartButton" style="display:none;margin-top:1rem;">View Chart</button>
+                <div class="loan-chart" id="loanChart" style="display:none;margin-top:1rem;height:300px;"></div>
             </div>
         </div>
     </section>
 
-    <!-- DIVIDENDS CALCULATOR -->
+    <!-- DIVIDENDS CALCULATOR (unchanged) -->
     <section class="tool-section" id="dividends-calculator">
-        <h2 style="text-align: center;">Dividends Calculator</h2>
+        <h2 style="text-align:center;">Dividends Calculator</h2>
         <div class="calculator">
-            <div class="form-group">
-                <label for="dividendRate">Dividend Rate (%):</label>
-                <input type="number" id="dividendRate" placeholder="e.g., 12.5" step="0.01">
-            </div>
-            <div class="month-subheader">Enter your monthly savings contributions in the spaces below:</div>
+            <div class="form-group"><label for="dividendRate">Dividend Rate (%):</label><input type="number" id="dividendRate" step="0.01"></div>
+            <div class="month-subheader">Enter your monthly savings contributions:</div>
             <div class="month-inputs">
                 <input type="number" id="jan" placeholder="Jan" min="0" step="0.01">
                 <input type="number" id="feb" placeholder="Feb" min="0" step="0.01">
@@ -443,51 +258,40 @@
         </div>
     </section>
 
-    <!-- MEMBER ACTIVITIES CAROUSEL -->
+    <!-- MEMBER ACTIVITIES -->
     <section class="member-activities-section">
-        <h2 style="text-align: center;">Member Activities</h2>
-        <p style="text-align: center; margin-bottom: 1.5rem;">See what our members are up to.</p>
-        <div class="member-activities-carousel" role="region" aria-label="Member Activities Carousel">
+        <h2 style="text-align:center;">Member Activities</h2>
+        <p style="text-align:center;margin-bottom:1.5rem;">See what our members are up to.</p>
+        <div class="member-activities-carousel">
             <div class="slides" id="memberSlides"></div>
-            <button class="nav-btn prev" onclick="changeSlide(-1)" aria-label="Previous Slide">Previous</button>
-            <button class="nav-btn next" onclick="changeSlide(1)" aria-label="Next Slide">Next</button>
-            <div class="dots" id="memberDots" role="tablist"></div>
+            <button class="nav-btn prev" onclick="changeSlide(-1)" aria-label="Previous">Previous</button>
+            <button class="nav-btn next" onclick="changeSlide(1)" aria-label="Next">Next</button>
+            <div class="dots" id="memberDots"></div>
         </div>
     </section>
 
 </main>
 
-<!-- =================: FOOTER ==================== -->
 <footer>
     <p>© 2025 SOYOSOYO SACCO. All rights reserved. | <a href="mailto:info@soyosoyosacco.com">info@soyosoyosacco.com</a></p>
     <div class="social-icons">
-        <a href="https://www.facebook.com/people/Soyosoyo-Sacco/61565783836766/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
-            <i class="fab fa-facebook-f"></i>
-        </a>
-        <a href="https://x.com/SoyosoyoSACCO" target="_blank" rel="noopener noreferrer" aria-label="X">
-            <i class="fab fa-twitter"></i>
-        </a>
-        <a href="https://www.instagram.com/soyosoyosacco" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-            <i class="fab fa-instagram"></i>
-        </a>
+        <a href="https://www.facebook.com/people/Soyosoyo-Sacco/61565783836766/" target="_blank"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://x.com/SoyosoyoSACCO" target="_blank"><i class="fab fa-twitter"></i></a>
+        <a href="https://www.instagram.com/soyosoyosacco" target="_blank"><i class="fab fa-instagram"></i></a>
     </div>
 </footer>
 
-<!-- ==================== SCRIPTS ==================== -->
-<script src="./scripts/carousel.js?v=57"></script>
+<!-- SCRIPTS - ONLY WHAT'S NEEDED -->
+<script src="./scripts/carousel.js?v=59"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
-<script>
-    window.ChartDataLabels = ChartDataLabels;
-</script>
-
+<script>window.ChartDataLabels = ChartDataLabels;</script>
 <script src="./scripts/main.js"></script>
 <script src="./scripts/calculator.js"></script>
 <script src="./scripts/dividendscalculator.js"></script>
 <script src="./scripts/chatbot.js"></script>
 <script src="./scripts/seo.js"></script>
 
-<!-- SCHEMA.ORG -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
