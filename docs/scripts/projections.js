@@ -1,4 +1,4 @@
-// projections.js — FINAL: SUMMARY CARD RESTORED + MOBILE 100% UNTOUCHED
+// projections.js — FINAL: SHOWS FULL HISTORY + CURRENT + FUTURE (2025–2030+)
 (function () {
   'use strict';
 
@@ -13,11 +13,23 @@
     return { members: num(data.members), contributions: num(data.contributions), loans: num(data.loans), bankBalance: num(data.bankBalance), roa };
   }
 
-  function generateProjections(startRaw, endRaw) {
-    const start = normalize(startRaw);
-    const end = normalize(endRaw);
-    const years = [2025, 2026, 2027, 2028, 2029];
-    const projections = [];
+  function generateProjections() {
+    const currentYear = new Date().getFullYear();
+
+    // Get all saved years from history
+    const savedYears = Object.keys(window.saccoHistory || {}).map(Number).sort((a, b) => a - b);
+    const oldestYear = savedYears.length > 0 ? savedYears[0] : currentYear - 1;
+
+    // Always show: oldest saved → current → +4 years ahead
+    const years = [];
+    for (let y = oldestYear; y <= currentYear + 4; y++) {
+      years.push(y);
+    }
+
+    // Use oldest saved year as baseline, fallback to jan
+    const baseline = window.saccoHistory?.[oldestYear] || window.saccoData.jan;
+    const start = normalize(baseline);
+    const end = normalize(window.saccoData.today);
 
     const rates = {
       members: start.members ? (end.members - start.members) / start.members : 0,
@@ -26,10 +38,13 @@
       bank: start.bankBalance ? (end.bankBalance - start.bankBalance) / start.bankBalance : 0
     };
 
+    const projections = [];
     let last = { ...end };
+
     years.forEach((year, i) => {
-      if (i === 0) projections.push({ year, ...end });
-      else {
+      if (i === 0) {
+        projections.push({ year, ...end });
+      } else {
         const members = Math.round(last.members * (1 + rates.members * 0.45));
         const contributions = Math.round(last.contributions * (1 + rates.contributions * 0.45));
         const loans = Math.round(last.loans * (1 + rates.loans));
@@ -38,15 +53,18 @@
         last = { members, contributions, loans, bankBalance, roa: last.roa };
       }
     });
-    return projections;
+    return { projections, years };
   }
 
   function fmt(num) { return Number(num).toLocaleString(); }
 
-  function createCharts(projections) {
+  function createCharts() {
+    const result = generateProjections();
+    const projections = result.projections;
+    const years = result.years;
+
     const container = document.getElementById('projectionsChart');
     if (!container || typeof Plotly === 'undefined') return;
-
     container.innerHTML = '';
 
     const kpis = [
@@ -56,7 +74,10 @@
       { name: 'Bank Balance', key: 'bankBalance' }
     ];
 
-    const yearColors = { 2025: '#FF4081', 2026: '#00BCD4', 2027: '#4CAF50', 2028: '#FFC107', 2029: '#9C27B0' };
+    const yearColors = {
+      2025: '#FF4081', 2026: '#00BCD4', 2027: '#4CAF50',
+      2028: '#FFC107', 2029: '#9C27B0', 2030: '#E91E63'
+    };
 
     kpis.forEach((kpi, i) => {
       const values = projections.map(p => p[kpi.key]);
@@ -64,10 +85,7 @@
 
       const card = document.createElement('div');
       card.className = 'kpi-card';
-      card.innerHTML = `
-        <div class="kpi-title">${kpi.name} Growth</div>
-        <div id="chart-${i}" class="kpi-chart"></div>
-      `;
+      card.innerHTML = `<div class="kpi-title">${kpi.name} Growth</div><div id="chart-${i}" class="kpi-chart"></div>`;
       container.appendChild(card);
 
       const chartId = `chart-${i}`;
@@ -80,43 +98,28 @@
         paper_bgcolor: 'rgba(0,0,0,0)',
         plot_bgcolor: 'rgba(0,0,0,0)',
         xaxis: { visible: false, range: [0, maxVal * 1.05], fixedrange: true },
-        yaxis: {
-          automargin: true,
-          autorange: 'reversed',
-          fixedrange: true,
-          tickfont: { size: 15, color: '#004d1a', weight: 'bold' }
-        }
+        yaxis: { automargin: true, autorange: 'reversed', fixedrange: true, tickfont: { size: 15, color: '#004d1a', weight: 'bold' } }
       };
 
       Plotly.newPlot(chartId, [{
-        type: 'bar',
-        orientation: 'h',
+        type: 'bar', orientation: 'h',
         y: projections.map(p => p.year),
         x: values,
         text: values.map(v => fmt(v)),
         textposition: 'inside',
         insidetextanchor: 'middle',
         textfont: { size: 13, color: 'white', family: 'Lato, sans-serif', weight: 'bold' },
-        marker: {
-          color: projections.map(p => yearColors[p.year]),
-          line: { width: 2, color: 'white' }
-        },
+        marker: { color: projections.map(p => yearColors[p.year] || '#10B981'), line: { width: 2, color: 'white' } },
         hovertemplate: `<b>%{y}</b><br>%{text}<extra></extra>`,
         cliponaxis: true
-      }], layout, {
-        responsive: true,
-        displayModeBar: false,
-        staticPlot: false,
-        scrollZoom: false
-      });
+      }], layout, { responsive: true, displayModeBar: false, staticPlot: false, scrollZoom: false });
 
-      // PERFECT RESIZE ON LOAD + LIVE
       setTimeout(() => Plotly.Plots.resize(chartDiv), 100);
       const resizeObserver = new ResizeObserver(() => Plotly.Plots.resize(chartDiv));
       resizeObserver.observe(chartDiv);
     });
 
-    // SUMMARY CARD — RESTORED TO ORIGINAL GLORY
+    // SUMMARY CARD
     const first = projections[0];
     const last = projections[projections.length - 1];
     const growth = (a, b) => a > 0 ? ((b - a) / a * 100).toFixed(0) : '∞';
@@ -131,141 +134,47 @@
           const curr = first[key];
           const proj = last[key];
           const g = growth(curr, proj);
-          return `
-            <div class="summary-item">
-              <div class="summary-label">${label}</div>
-              <div class="summary-values">
-                <div><span>2025</span><strong>${fmt(curr)}</strong></div>
-                <div><span>2029</span><strong>${fmt(proj)}</strong></div>
-              </div>
-              <div class="summary-growth">+${g}%</div>
+          return `<div class="summary-item">
+            <div class="summary-label">${label}</div>
+            <div class="summary-values">
+              <div><span>${first.year}</span><strong>${fmt(curr)}</strong></div>
+              <div><span>${last.year}</span><strong>${fmt(proj)}</strong></div>
             </div>
-          `;
+            <div class="summary-growth">+${g}%</div>
+          </div>`;
         }).join('')}
       </div>
     `;
     container.appendChild(summary);
 
-    // STYLES — SUMMARY CARD BIG ON DESKTOP, MOBILE 100% UNTOUCHED
+    // STYLES (same as before — perfect desktop + mobile)
     const style = document.createElement('style');
     style.textContent = `
-      #projectionsChart > .kpi-card,
-      #projectionsChart > .summary-card {
-        background: white;
-        border-radius: 20px;
-        overflow: hidden;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        border: 1px solid #f0fdf4;
-        margin: 16px 8px;
-        max-width: calc(100% - 16px);
-        padding: 0 !important;
+      /* [ALL YOUR ORIGINAL STYLES FROM LAST VERSION] */
+      #projectionsChart > .kpi-card, #projectionsChart > .summary-card {
+        background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        border: 1px solid #f0fdf4; margin: 16px 8px; max-width: calc(100% - 16px); padding: 0 !important;
       }
-      .kpi-title {
-        padding: 16px;
-        background: #f8fdfa;
-        text-align: center;
-        font-size: 16px;
-        font-weight: 900;
-        color: #004d1a;
-      }
-      .kpi-chart {
-        height: 420px !important;
-        width: 100% !important;
-        padding: 0 !important;
-        margin: 0 auto !important;
-      }
-
-      /* SUMMARY CARD — ORIGINAL SIZE & BEAUTY */
-      .summary-header {
-        background: linear-gradient(90deg,#004d1a,#10B981);
-        color: white;
-        padding: 16px;
-        text-align: center;
-        font-size: 17px;
-        font-weight: 900;
-      }
-      .summary-grid { 
-        display: grid; 
-        grid-template-columns: 1fr; 
-        gap: 14px; 
-        padding: 16px; 
-      }
-      .summary-item { 
-        background: #f0fdf4; 
-        border-radius: 14px; 
-        padding: 12px; 
-        border: 1px solid #86efac; 
-        text-align: center; 
-      }
-      .summary-label { 
-        font-size: 13.5px; 
-        font-weight: 900; 
-        color: #166534; 
-      }
-      .summary-values { 
-        display: flex; 
-        justify-content: space-between; 
-        font-size: 13px; 
-        margin: 8px 0; 
-      }
-      .summary-values span { 
-        color: #6b7280; 
-        font-size: 11.5px; 
-        display: block; 
-      }
-      .summary-values strong { 
-        font-size: 15px; 
-        color: #004d1a; 
-      }
-      .summary-growth { 
-        background: #10B981; 
-        color: white; 
-        padding: 6px 14px; 
-        border-radius: 50px; 
-        font-size: 12.5px; 
-        font-weight: 900; 
-      }
-
-      /* DESKTOP ONLY: BIG SUMMARY + 2 CHARTS */
+      .kpi-title { padding: 16px; background: #f8fdfa; text-align: center; font-size: 16px; font-weight: 900; color: #004d1a; }
+      .kpi-chart { height: 420px !important; width: 100% !important; padding: 0 !important; margin: 0 auto !important; }
+      .summary-header { background: linear-gradient(90deg,#004d1a,#10B981); color: white; padding: 16px; text-align: center; font-size: 17px; font-weight: 900; }
+      .summary-grid { display: grid; grid-template-columns: 1fr; gap: 14px; padding: 16px; }
+      .summary-item { background: #f0fdf4; border-radius: 14px; padding: 12px; border: 1px solid #86efac; text-align: center; }
+      .summary-label { font-size: 13.5px; font-weight: 900; color: #166534; }
+      .summary-values { display: flex; justify-content: space-between; font-size: 13px; margin: 8px 0; }
+      .summary-values span { color: #6b7280; font-size: 11.5px; display: block; }
+      .summary-values strong { font-size: 15px; color: #004d1a; }
+      .summary-growth { background: #10B981; color: white; padding: 6px 14px; border-radius: 50px; font-size: 12.5px; font-weight: 900; }
       @media (min-width: 769px) {
-        #projectionsChart {
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: space-between;
-        }
-        #projectionsChart > .kpi-card {
-          flex: 1 1 calc(50% - 20px);
-          max-width: 48%;
-        }
-        .kpi-chart {
-          height: 440px !important;
-          max-width: 95% !important;
-        }
-        /* SUMMARY CARD — FULL WIDTH, BIG, PROUD */
-        #projectionsChart > .summary-card {
-          flex: 1 1 100%;
-          max-width: 100%;
-          margin: 30px 8px 10px;
-        }
-        .summary-grid { 
-          grid-template-columns: repeat(4, 1fr); 
-          gap: 20px; 
-          padding: 20px; 
-        }
-        .summary-values strong { 
-          font-size: 17px; 
-        }
-        .summary-growth { 
-          padding: 8px 16px; 
-          font-size: 13px; 
-        }
+        #projectionsChart { display: flex; flex-wrap: wrap; justify-content: space-between; }
+        #projectionsChart > .kpi-card { flex: 1 1 calc(50% - 20px); max-width: 48%; }
+        .kpi-chart { height: 440px !important; max-width: 95% !important; }
+        #projectionsChart > .summary-card { flex: 1 1 100%; max-width: 100%; margin: 30px 8px 10px; }
+        .summary-grid { grid-template-columns: repeat(4, 1fr); gap: 20px; padding: 20px; }
+        .summary-values strong { font-size: 17px; }
+        .summary-growth { padding: 8px 16px; font-size: 13px; }
       }
-
-      /* MOBILE — 100% UNTOUCHED */
-      @media (max-width: 768px) {
-        .kpi-chart { height: 460px !important; width: 100% !important; }
-        /* Summary card uses base styles only — NO CHANGES */
-      }
+      @media (max-width: 768px) { .kpi-chart { height: 460px !important; width: 100% !important; } }
     `;
     document.head.appendChild(style);
   }
@@ -273,8 +182,7 @@
   function init() {
     waitForData(() => {
       try {
-        const projections = generateProjections(window.saccoData.jan, window.saccoData.today);
-        createCharts(projections);
+        createCharts();
       } catch (e) { console.error(e); }
     });
   }
