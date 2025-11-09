@@ -162,14 +162,16 @@
 </main>
 
 <footer>
-    <p>© 2025 SOYOSOYO SACCO. All rights reserved. | <a href="mailto:info@soyosoyosacco.com">info@soyosoyosacco.com</a></p>
+    <p>© 2025–<span id="currentYear"></span> SOYOSOYO SACCO. All rights reserved. | <a href="mailto:info@soyosoyosacco.com">info@soyosoyosacco.com</a></p>
     <div class="social-icons">
         <a href="https://www.facebook.com/people/Soyosoyo-Sacco/61565783836766/" target="_blank"><i class="fab fa-facebook-f"></i></a>
         <a href="https://x.com/SoyosoyoSACCO" target="_blank"><i class="fab fa-x-twitter"></i></a>
         <a href="https://www.instagram.com/soyosoyosacco" target="_blank"><i class="fab fa-instagram"></i></a>
     </div>
 </footer>
-
+<script>
+  document.getElementById('currentYear').textContent = new Date().getFullYear();
+</script>
 <script src="./scripts/main.js"></script>
 <script>
     // MONTHLY SAVE + RENDER + DOWNLOAD
@@ -279,6 +281,54 @@
     document.addEventListener('DOMContentLoaded', renderFullHistory);
     window.addEventListener('saccoDataUpdated', renderFullHistory);
     setTimeout(renderFullHistory, 1000);
+</script>
+    <script>
+  // AUTO-YEAR MAGIC — UPDATES EVERY YEAR TEXT AUTOMATICALLY
+  document.addEventListener('DOMContentLoaded', () => {
+    const currentYear = new Date().getFullYear();
+    const startYear = 2025; // Change only if you want a different base year
+
+    // Update copyright
+    document.querySelectorAll('footer p, .copyright, [class*="copyright"], [id*="copyright"]').forEach(el => {
+      if (el.textContent.includes('©')) {
+        el.innerHTML = el.innerHTML.replace(/\d{4}(?=\s*SOYOSOYO|\s*$)/, currentYear);
+      }
+    });
+
+    // Update any "2025" in titles, headers, or text
+    document.querySelectorAll('h1, h2, h3, p, span, div, li').forEach(el => {
+      if (el.textContent.includes('2025')) {
+        el.innerHTML = el.innerHTML.replace(/2025/g, currentYear);
+      }
+    });
+
+    // Special: Update "5-Year Growth Strategy" → "6-Year", etc.
+    document.querySelectorAll('.summary-header, h2').forEach(el => {
+      if (el.textContent.includes('Year Growth Strategy')) {
+        const yearsAhead = currentYear - startYear + 5;
+        el.textContent = `${yearsAhead}-Year Growth Strategy`;
+      }
+    });
+
+    // Special: Update "Monthly Financial History (2025 – Present)"
+    document.querySelectorAll('.history-header').forEach(el => {
+      if (el.textContent.includes('2025')) {
+        el.textContent = el.textContent.replace('2025', currentYear);
+      }
+    });
+
+    // Special: Update any "2025–Present" pattern
+    document.querySelectorAll('*').forEach(el => {
+      if (el.textContent.includes('2025 – Present') || el.textContent.includes('2025-Present')) {
+        el.innerHTML = el.innerHTML.replace(/2025(?=\s*[–-]\s*Present)/g, currentYear);
+      }
+    });
+
+    // Update footer year only
+    document.querySelectorAll('footer').forEach(footer => {
+      footer.innerHTML = footer.innerHTML.replace(/©\s*\d{4}/, `© ${currentYear}`);
+    });
+  });
 </script>
 </body>
 </html>
