@@ -283,30 +283,30 @@
 </script>
 
 <script>
-  // FINAL: 100% CAROUSEL-DRIVEN + NEON DB (NO LOCALSTORAGE, NO DUPLICATES)
+  // FINAL: 100% SAFE, CAROUSEL-DRIVEN, NEON DB — KEEPS YOUR SCRIPT TAGS
   const API_BASE = 'https://soyosoyo-sacco-api.onrender.com/api';
 
-  // Wait for carousel.js to load and provide live data
-  function getLiveCarouselData() {
+  // Wait for carousel.js to finish loading and populate window.saccoData
+  function waitForCarousel() {
     return new Promise((resolve) => {
       if (window.saccoData?.today) {
         resolve(window.saccoData.today);
         return;
       }
-      const check = setInterval(() => {
+      const interval = setInterval(() => {
         if (window.saccoData?.today) {
-        clearInterval(check);
+        clearInterval(interval);
         resolve(window.saccoData.today);
         }
       }, 200);
       setTimeout(() => {
-        clearInterval(check);
+        clearInterval(interval);
         resolve(null);
-      }, 10000);
+      }, 12000); // 12s max wait
     });
   }
 
-  // LOAD HISTORY FROM NEON DB ONLY
+  // LOAD HISTORY FROM NEON DB
   async function loadLiveHistory() {
     try {
       const res = await fetch(`${API_BASE}/history`, { cache: 'no-store' });
@@ -330,26 +330,26 @@
 
       const footer = document.getElementById('historyFooter');
       if (data.length === 0) {
-        footer.innerHTML = "No monthly data in database yet. Click <strong>SAVE</strong> to begin!";
+        footer.innerHTML = "No data saved yet. Visit homepage → click <strong>SAVE</strong> to begin!";
       } else {
         footer.innerHTML = `
           <strong>${data.length}</strong> months saved in Neon DB 
           <span style="color:#10B981;">| Latest: ${data[0].period}</span>
-          <span style="color:#004d1a;">| Source: carousel.js → Neon DB</span>
+          <span style="color:#004d1a;">| Live from carousel.js</span>
         `;
       }
     } catch (err) {
       console.warn('Neon DB offline', err);
-      document.getElementById('historyFooter').textContent = "Offline — check internet";
+      document.getElementById('historyFooter').textContent = "Offline — check internet connection";
       renderFullHistory();
     }
   }
 
   // SAVE CURRENT MONTH — ONLY FROM LIVE CAROUSEL
   async function saveCurrentMonth() {
-    const today = await getLiveCarouselData();
+    const today = await waitForCarousel();
     if (!today) {
-      alert("Carousel data not ready!\nPlease visit homepage first and wait for numbers to load.");
+      alert("Carousel not loaded!\nPlease visit homepage first and wait for numbers to appear.");
       return;
     }
 
@@ -374,27 +374,25 @@
       }
 
       const result = await res.json();
-      alert(`SAVED TO NEON DB!\nMonth: ${result.data.period}\nMembers: ${today.members.toLocaleString()}\nSource: carousel.js`);
+      alert(`SAVED TO NEON DB!\nMonth: ${result.data.period}\nMembers: ${today.members.toLocaleString()}\nSource: carousel.js @ ${new Date().toLocaleString('en-KE')}`);
       loadLiveHistory();
     } catch (err) {
-      console.error('Save failed:', err);
-      alert("Save failed — check internet. Try again later.");
+      console.error(err);
+      alert("Save failed — check internet and try again.");
     }
   }
 
-  // DOWNLOAD FROM NEON DB (NOT localStorage)
+  // DOWNLOAD FROM NEON DB
   async function downloadHistoryCSV() {
     try {
       const res = await fetch(`${API_BASE}/history`);
-      if (!res.ok) throw new Error('Failed to fetch');
       const data = await res.json();
-
       if (data.length === 0) {
         alert("No data to download yet.");
         return;
       }
 
-      let csv = "Period,Members,Contributions (KSh),Loans (KSh),Bank Balance (KSh),ROA %,Date Saved\n";
+      let csv = "Period,Members,Contributions,Loans,Bank Balance,ROA %,Saved On\n";
       data.sort((a, b) => a.period.localeCompare(b.period)).forEach(d => {
         csv += `${d.period},${d.members},${d.contributions},${d.loans},${d.bankBalance},${d.roa},${d.dateSaved}\n`;
       });
@@ -403,20 +401,20 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `SOYOSOYO_SACCO_HISTORY_${new Date().getFullYear()}.csv`;
+      a.download = `Soyosoyo_SACCO_History_${new Date().getFullYear()}.csv`;
       a.click();
       URL.revokeObjectURL(url);
-    } catch (err) {
+    } catch {
       alert("Download failed — check internet.");
     }
   }
 
-  // AUTO LOAD ON PAGE OPEN
+  // AUTO LOAD WHEN PAGE OPENS
   document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(loadLiveHistory, 800);
+    setTimeout(loadLiveHistory, 1000);
   });
 </script>
-
+    
 <script>
   // AUTO-YEAR MAGIC — UPDATES EVERY YEAR TEXT AUTOMATICALLY
   document.addEventListener('DOMContentLoaded', () => {
