@@ -482,7 +482,7 @@
 <script src="scripts/carousel.js"></script>
 
 <script>
-  // LOAD FROM LIVE API
+  // LOAD FROM LIVE NEON DB API
   async function loadLiveHistory() {
     try {
       const res = await fetch('/api/history');
@@ -503,7 +503,7 @@
       });
       renderFullHistory();
     } catch (err) {
-      console.warn('API down → using localStorage', err);
+      console.warn('Live API down → using localStorage fallback', err);
       loadPersistedData();
       renderFullHistory();
     }
@@ -513,7 +513,7 @@
   async function saveCurrentMonth() {
     loadPersistedData();
     if (!window.saccoData?.today) {
-      alert("No data. Visit homepage first to load carousel.");
+      alert("No current data. Visit homepage first to load carousel metrics.");
       return;
     }
 
@@ -522,7 +522,7 @@
       members: today.members,
       contributions: today.contributions,
       loans: today.loans || 0,
-      bank_balance: today.bankBalance || 0,  // ← underscore!
+      bank_balance: today.bankBalance || 0,
       roa: parseFloat(today.roa) || 0
     };
 
@@ -542,13 +542,13 @@
       alert(`SAVED TO NEON DB!\nMonth: ${result.data.period}\nMembers: ${today.members.toLocaleString()}`);
       loadLiveHistory();
     } catch (err) {
-      console.error('Save failed:', err);
-      alert('SAVE FAILED\nOpen console (F12) → copy red error → send to me');
+      console.error('Save error:', err);
+      alert('SAVE FAILED — Open console (F12) → copy red error → send me');
     }
   }
 
+  // Auto-load on page open
   document.addEventListener('DOMContentLoaded', loadLiveHistory);
 </script>
-
 </body>
 </html>
