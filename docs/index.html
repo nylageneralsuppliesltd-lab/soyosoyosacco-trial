@@ -22,7 +22,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
     
     <!-- MAIN SITE CSS -->
-    <link rel="stylesheet" href="./style.css?v=201">
+    <link rel="stylesheet" href="./style.css?v=202">
 
     <!-- Plotly.js -->
     <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
@@ -45,6 +45,17 @@
         margin: 2rem 0;
         width: 100%;
       }
+        /* ADD THIS NEW SECTION */
+.growth-charts-grid .chart-card {
+  height: 420px !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+.growth-charts-grid .chart-card canvas {
+  flex: 1 1 auto !important;
+  min-height: 280px !important;
+  height: auto !important;
+}
       .chart-card {
         position: relative;
         width: 100%;
