@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="msvalidate.01" content="858002EEAD3486E0F9BDC0652A4071B4" />
     <title>Soyosoyo SACCO | Affordable Loans & Savings in Coastal Kenya</title>
-    <meta name="description" content="Join Soyosoyo SACCO for 1% monthly loans, high dividends, and financial empowerment. Emergency, education, and development loans available in Mombasa, Kilifi, Kwale.">
+    <meta name="description" content="Join Soyosoyo SACCO for 1% monthly loans, high dividends, and financial empowerment.">
     <meta name="keywords" content="SACCO Kenya, loans Mombasa, savings cooperative, emergency loan, education loan, Soyosoyo SACCO">
     <meta property="og:type" content="website">
     <meta property="og:title" content="Soyosoyo SACCO | Affordable Loans & Savings in Coastal Kenya">
-    <meta property="og:description" content="Join Soyosoyo SACCO for 1% monthly loans, high dividends, and financial empowerment. Emergency, education, and development loans in Coastal Kenya.">
+    <meta property="og:description" content="Join Soyosoyo SACCO for 1% monthly loans, high dividends, and financial empowerment.">
     <meta property="og:image" content="https://soyosoyosacco.com/assets/141dd3faa98da9737b591161deac509a.jpg">
     <meta property="og:url" content="https://soyosoyosacco.com/">
     <meta name="twitter:card" content="summary_large_image">
@@ -22,7 +22,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
     
     <!-- MAIN SITE CSS -->
-    <link rel="stylesheet" href="./style.css?v=101">
+    <link rel="stylesheet" href="./style.css?v=102">
 
     <!-- Plotly.js -->
     <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
@@ -36,13 +36,14 @@
       gtag('config', 'G-05M38MYK0G');
     </script>
 
-    <!-- ULTIMATE CLEAN FIX — FINANCIAL CHARTS + PROJECTIONS 100% INDEPENDENT -->
-    <style id="ultimate-clean-fix">
-      /* FINANCIAL CHARTS — CLEAN, PROPORTIONAL, NO !IMPORTANT WARS */
+    <!-- FINAL WORKING FIX — CHART.JS + PLOTLY 100% PERFECT -->
+    <style id="final-working-fix">
+      /* === CHART.JS FINANCIAL CARDS === */
       .chart-card {
-        height: 320px;
-        display: flex;
-        flex-direction: column;
+        position: relative;
+        height: 320px !important;
+        display: flex !important;
+        flex-direction: column !important;
         background: #fff;
         border-radius: 12px;
         padding: 1rem;
@@ -56,33 +57,140 @@
         display: block !important;
       }
       @media (max-width: 768px) {
-        .chart-card { height: 360px; }
+        .chart-card { height: 360px !important; }
       }
 
-      /* PROJECTIONS — FULLY ISOLATED, NEVER TOUCHED BY CHART.JS */
+      /* === PLOTLY PROJECTIONS — FULLY RESTORED === */
       #projectionsChart { 
-        isolation: isolate;
+        isolation: isolate; 
         contain: layout style paint;
-        max-width: 1400px;
-        margin: 0 auto;
+        max-width: 1400px; 
+        margin: 0 auto; 
         padding: 0 10px;
         font-family: 'Lato', sans-serif;
       }
+
+      #projectionsChart > .kpi-card,
+      #projectionsChart > .summary-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        border: 1px solid #f0fdf4;
+        margin: 16px 8px;
+        max-width: calc(100% - 16px);
+      }
+
+      #projectionsChart .kpi-title {
+        padding: 16px;
+        background: #f8fdfa;
+        text-align: center;
+        font-size: 16px;
+        font-weight: 900;
+        color: #004d1a;
+      }
+
       #projectionsChart .plotly-projection-div {
         height: 420px !important;
         width: 100% !important;
       }
-      @media (min-width: 769px) { 
-        #projectionsChart .plotly-projection-div { height: 440px !important; } 
-      }
-      @media (max-width: 768px) { 
-        #projectionsChart .plotly-projection-div { height: 460px !important; } 
+
+      #projectionsChart .summary-header {
+        background: linear-gradient(90deg,#004d1a,#10B981);
+        color: white;
+        padding: 16px;
+        text-align: center;
+        font-size: 17px;
+        font-weight: 900;
       }
 
-      /* KILL ANY OLD GLOBAL CANVAS POISON FROM style.css */
-      canvas { height: auto !important; }
+      #projectionsChart .summary-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 14px;
+        padding: 16px;
+      }
 
-      /* GROWTH INDICATORS */
+      #projectionsChart .summary-item {
+        background: #f0fdf4;
+        border-radius: 14px;
+        padding: 12px;
+        border: 1px solid #86efac;
+        text-align: center;
+      }
+
+      #projectionsChart .summary-label {
+        font-size: 13.5px;
+        font-weight: 900;
+        color: #166534;
+      }
+
+      #projectionsChart .summary-values {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+        margin: 8px 0;
+      }
+
+      #projectionsChart .summary-values span {
+        color: #6b7280;
+        font-size: 11.5px;
+        display: block;
+      }
+
+      #projectionsChart .summary-values strong {
+        font-size: 15px;
+        color: #004d1a;
+      }
+
+      #projectionsChart .summary-growth {
+        background: #10B981;
+        color: white;
+        padding: 6px 14px;
+        border-radius: 50px;
+        font-size: 12.5px;
+        font-weight: 900;
+      }
+
+      @media (min-width: 769px) {
+        #projectionsChart { 
+          display: flex; 
+          flex-wrap: wrap; 
+          justify-content: space-between; 
+        }
+        #projectionsChart > .kpi-card { 
+          flex: 1 1 calc(50% - 20px); 
+          max-width: 48%; 
+        }
+        #projectionsChart .plotly-projection-div { 
+          height: 440px !important; 
+        }
+        #projectionsChart > .summary-card { 
+          flex: 1 1 100%; 
+          max-width: 100%; 
+          margin: 30px 8px 10px; 
+        }
+        #projectionsChart .summary-grid { 
+          grid-template-columns: repeat(4, 1fr); 
+          gap: 20px; 
+          padding: 20px; 
+        }
+        #projectionsChart .summary-values strong { 
+          font-size: 17px; 
+        }
+        #projectionsChart .summary-growth { 
+          padding: 8px 16px; 
+          font-size: 13px; 
+        }
+      }
+
+      @media (max-width: 768px) {
+        #projectionsChart .plotly-projection-div { 
+          height: 460px !important; 
+        }
+      }
+
+      /* === GROWTH INDICATORS & GRID === */
       .growth-indicator {
         text-align: center;
         margin-top: 0.5rem;
@@ -106,7 +214,11 @@
         font-weight: bold;
         color: #1a1a1a;
       }
+
+      /* === KILL GLOBAL CANVAS POISON === */
+      canvas { height: auto !important; }
     </style>
+
 
     <!-- MEMBER CAROUSEL -->
     <style>
