@@ -109,17 +109,20 @@ document.addEventListener('DOMContentLoaded', () => {
       .toString()
       .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
-
   const animateCounter = (el, target) => {
     const end = +target;
-    let start = 0, id = null;
-    const duration = 1200; // Increased for visibility
-    const step = (now) => {
-      if (!id) id = now;
-      const progress = Math.min((now - id) / duration, 1);
-      const value = Math.round(start + progress * (end - start));
+    const duration = 1200;
+    const startTime = performance.now();
+    
+    const step = (currentTime) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const value = Math.round(progress * end);
       el.textContent = formatNumber(value);
-      if (progress < 1) requestAnimationFrame(step);
+      
+      if (progress < 1) {
+        requestAnimationFrame(step);
+      }
     };
     requestAnimationFrame(step);
   };
@@ -162,13 +165,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.addEventListener('resize', update);
   update();
-  // Force immediate animation on page load
-setTimeout(() => {
-  document.querySelectorAll('.carousel-item').forEach(item => {
-    const btn = item.querySelector('.carousel-button');
-    if (btn && btn.dataset.target) {
-      animateCounter(btn, btn.dataset.target);
-    }
-  });
-}, 500);
+ // Start animations immediately
+  setTimeout(() => {
+    document.querySelectorAll('.carousel-item .carousel-button').forEach(btn => {
+      if (btn.dataset.target) {
+        animateCounter(btn, btn.dataset.target);
+      }
+    });
+  }, 300);
 });
