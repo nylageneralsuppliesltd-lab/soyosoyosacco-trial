@@ -1,4 +1,4 @@
-// projections.js — FINAL 100% WORKING VERSION
+// scripts/projections.js — FULLY RESTORED ORIGINAL STYLE + WORKING
 (function () {
   'use strict';
 
@@ -9,7 +9,7 @@
 
   function normalize(data) {
     const num = v => Number(String(v).replace(/[^0-9.]/g, '')) || 0;
-    const roa = typeof data.roa === 'string' ? parseFloat(data.roa.replace('%', '')) || 0 : data.roa;
+    const roa = typeof data.roa === 'string' ? parseFloat(data.roa.replace('%', '')) || 0 : data.roa || 0;
     return { members: num(data.members), contributions: num(data.contributions), loans: num(data.loans), bankBalance: num(data.bankBalance), roa };
   }
 
@@ -107,7 +107,7 @@
       new ResizeObserver(() => Plotly.Plots.resize(plotDiv)).observe(plotDiv);
     });
 
-    // SUMMARY CARD — FULLY VISIBLE
+    // SUMMARY CARD — EXACT ORIGINAL STYLE
     const first = projections[0];
     const last = projections[projections.length - 1];
     const growth = (a, b) => a > 0 ? ((b - a) / a * 100).toFixed(0) : '∞';
