@@ -250,53 +250,24 @@
     </section>
 
     <!-- GROWTH CHARTS (Chart.js) -->
-    <section class="section">
+        <section class="section">
         <h2 style="text-align: center; margin-bottom: 1.5rem;">Growth Since January 2025</h2>
         <div class="growth-charts-grid">
-            <div class="chart-card">
-                <canvas id="chartMembers" class="financial-chart-canvas"></canvas>
-                <p>Total Members</p>
-                <div id="growthMembers" class="growth-indicator"></div>
-            </div>
-            <div class="chart-card">
-                <canvas id="chartLoans" class="financial-chart-canvas"></canvas>
-                <p>Loans Disbursed</p>
-                <div id="growthLoans" class="growth-indicator"></div>
-            </div>
-            <div class="chart-card">
-                <canvas id="chartLoanTypes" class="financial-chart-canvas"></canvas>
-                <p>Loan Types Distribution (%)</p>
-            </div>
-            <div class="chart-card">
-                <canvas id="chartContributions" class="financial-chart-canvas"></canvas>
-                <p>Contributions</p>
-                <div id="growthContributions" class="growth-indicator"></div>
-            </div>
-            <div class="chart-card">
-                <canvas id="chartProfit" class="financial-chart-canvas"></canvas>
-                <p>Profit</p>
-                <div id="growthProfit" class="growth-indicator"></div>
-            </div>
-            <div class="chart-card">
-                <canvas id="chartROA" class="financial-chart-canvas"></canvas>
-                <p>Return on Assets (ROA)</p>
-                <div id="growthROA" class="growth-indicator"></div>
-            </div>
-            <div class="chart-card">
-                <canvas id="chartLiquidity" class="financial-chart-canvas"></canvas>
-                <p>Liquidity Ratio</p>
-                <div id="growthLiquidity" class="growth-indicator"></div>
-            </div>
+            <div class="chart-card"><canvas id="chartMembers"></canvas><p>Total Members</p><div id="growthMembers" class="growth-indicator"></div></div>
+            <div class="chart-card"><canvas id="chartLoans"></canvas><p>Loans Disbursed</p><div id="growthLoans" class="growth-indicator"></div></div>
+            <div class="chart-card"><canvas id="chartLoanTypes"></canvas><p>Loan Types Distribution (%)</p></div>
+            <div class="chart-card"><canvas id="chartContributions"></canvas><p>Contributions</p><div id="growthContributions" class="growth-indicator"></div></div>
+            <div class="chart-card"><canvas id="chartProfit"></canvas><p>Profit</p><div id="growthProfit" class="growth-indicator"></div></div>
+            <div class="chart-card"><canvas id="chartROA"></canvas><p>Return on Assets (ROA)</p><div id="growthROA" class="growth-indicator"></div></div>
+            <div class="chart-card"><canvas id="chartLiquidity"></canvas><p>Liquidity Ratio</p><div id="growthLiquidity" class="growth-indicator"></div></div>
         </div>
     </section>
-    
-    <!-- PROJECTIONS SECTION — ORIGINAL STYLE RESTORED + FULLY WORKING -->
+
+    <!-- PROJECTIONS -->
     <section style="margin: 60px 0; padding: 0 10px;">
         <div style="text-align:center; margin-bottom: 30px;">
             <h2 style="font-size: 28px; color: #004d1a; font-weight: 900; margin: 0;">5-Year Growth Projections</h2>
-            <p style="color: #6b7280; font-size: 16px; margin: 10px 0 0;">
-                Smart forecasting based on our current performance trajectory
-            </p>
+            <p style="color: #6b7280; font-size: 16px; margin: 10px 0 0;">Smart forecasting based on our current performance trajectory</p>
         </div>
         <div id="projectionsChart"></div>
     </section>
