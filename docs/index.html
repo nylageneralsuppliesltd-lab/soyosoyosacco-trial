@@ -321,12 +321,12 @@
   }
 
   /* 3. Block any future global canvas poisoning */
-  canvas { 
-    height: auto !important; 
-  }
-  .chart-card canvas { 
-    height: 260px !important; 
-  }
+ .chart-card canvas {
+  height: 300px !important;
+  width: 100% !important;
+  display: block !important;
+}
+
 </style>
 </head>
 <body>
@@ -876,6 +876,13 @@
         if (typeof updateFields === 'function') updateFields();
         if (typeof updateSliderValue === 'function') updateSliderValue('principal');
     });
+</script>
+    <script>
+document.addEventListener("DOMContentLoaded", () => {
+  setTimeout(() => {
+    if (typeof renderGrowthCharts === "function") renderGrowthCharts();
+  }, 500);
+});
 </script>
     
 <script src="./scripts/main.js"></script>
