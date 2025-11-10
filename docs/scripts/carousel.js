@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   generateItems();
 
-  const formatNumber = (num) => {
+    const formatNumber = (num) => {
     if (isNaN(num)) return num;
     const abs = Math.abs(num);
     return (abs >= 1000 ? (abs / 1000).toFixed(0) + 'k' : abs)
@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const animateCounter = (el, target) => {
     const end = +target;
     let start = 0, id = null;
-    const duration = 600;
+    const duration = 1200; // Increased for visibility
     const step = (now) => {
       if (!id) id = now;
       const progress = Math.min((now - id) / duration, 1);
@@ -124,19 +124,30 @@ document.addEventListener('DOMContentLoaded', () => {
     requestAnimationFrame(step);
   };
 
+  // Animate all visible items immediately on load
+  const animateVisibleItems = () => {
+    document.querySelectorAll('.carousel-item').forEach(item => {
+      const btn = item.querySelector('.carousel-button');
+      if (btn && btn.dataset.target) {
+        animateCounter(btn, btn.dataset.target);
+      }
+    });
+  };
+
+  // Run animation after carousel is rendered
+  setTimeout(animateVisibleItems, 100);
+
+  // Re-animate when items scroll back into view
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       const btn = entry.target.querySelector('.carousel-button');
-      if (entry.isIntersecting && btn) {
+      if (entry.isIntersecting && btn && btn.textContent === '0') {
         animateCounter(btn, btn.dataset.target);
-      } else if (btn) {
-        btn.textContent = '0';
       }
     });
-  }, { threshold: 0.3 });
+  }, { threshold: 0.5 });
 
   document.querySelectorAll('.carousel-item').forEach(item => observer.observe(item));
-
   const update = () => {
     const w = window.innerWidth;
     const iw = w <= 768 ? 220 : 300;
