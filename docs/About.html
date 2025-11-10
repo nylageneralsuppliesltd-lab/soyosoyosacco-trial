@@ -63,14 +63,14 @@
             margin-top: 20px;
             border-radius: 16px;
             box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+            -webkit-overflow-scrolling: touch;
         }
         #fullHistoryTable table {
             width: 100%;
-            min-width: 800px; /* Desktop fit */
+            min-width: 800px;
             border-collapse: collapse;
             background: white;
-            table-layout: fixed; /* Ensures consistent column widths on desktop */
+            table-layout: fixed;
         }
         #fullHistoryTable th {
             background: #004d1a;
@@ -96,7 +96,6 @@
         #fullHistoryTable tr:nth-child(even) {
             background: #f0fdf4;
         }
-        /* Right-align numeric columns for clarity */
         #fullHistoryTable td:nth-child(2),
         #fullHistoryTable td:nth-child(3),
         #fullHistoryTable td:nth-child(4),
@@ -116,7 +115,6 @@
             font-weight: bold;
             box-shadow: inset 0 0 10px rgba(255,193,7,0.3);
         }
-        /* MOBILE: Vertical stack - no horizontal scroll, full data flow */
         @media (max-width: 768px) {
             .history-section {
                 padding: 20px;
@@ -134,15 +132,15 @@
                 max-width: 300px; 
             }
             #fullHistoryTable {
-                overflow-x: hidden; /* Eliminate horizontal scroll */
+                overflow-x: hidden;
             }
             #fullHistoryTable table {
-                min-width: auto; /* Allow full width fit */
+                min-width: auto;
                 font-size: 12px;
                 border: 0;
             }
             #fullHistoryTable thead {
-                display: none; /* Hide headers on mobile - data stacks naturally */
+                display: none;
             }
             #fullHistoryTable tbody,
             #fullHistoryTable tr,
@@ -172,14 +170,14 @@
             }
             #fullHistoryTable td {
                 padding: 12px;
-                text-align: left !important; /* Left-align for readability */
+                text-align: left !important;
                 border: none;
                 border-bottom: 1px solid #f0f9f0;
                 position: relative;
                 font-size: 13px;
             }
             #fullHistoryTable td:before {
-                content: attr(data-label) ": "; /* Pull header labels into cells */
+                content: attr(data-label) ": ";
                 font-weight: bold;
                 color: #004d1a;
                 display: block;
@@ -191,7 +189,6 @@
             #fullHistoryTable td:last-child {
                 border-bottom: none;
             }
-            /* Specific label overrides */
             #fullHistoryTable td:nth-of-type(1):before { content: "Period: "; }
             #fullHistoryTable td:nth-of-type(2):before { content: "Members: "; }
             #fullHistoryTable td:nth-of-type(3):before { content: "Contributions: "; }
@@ -199,7 +196,6 @@
             #fullHistoryTable td:nth-of-type(5):before { content: "Bank Balance: "; }
             #fullHistoryTable td:nth-of-type(6):before { content: "ROA: "; color: #10B981; }
             #fullHistoryTable td:nth-of-type(7):before { content: "Saved On: "; }
-            #fullHistoryTable .ksh::before { content: "KSh " attr(data-value); display: inline; }
             #fullHistoryTable .roa::after { content: "%"; }
         }
         @media (max-width: 480px) {
@@ -251,7 +247,7 @@
         </div>
     </section>
 
-    <!-- MONTHLY HISTORY SECTION — ENHANCED FOR CLEAR ALIGNMENT -->
+    <!-- MONTHLY HISTORY SECTION -->
     <section class="history-section">
         <h2 class="history-header">Monthly Financial History (2025 – Present)</h2>
         <div class="history-controls">
@@ -278,38 +274,92 @@
     </div>
 </footer>
 
-<script>
-  document.getElementById('currentYear').textContent = new Date().getFullYear();
-</script>
+<!-- ONLY ONE SCRIPT BLOCK – FULLY WORKING -->
+<script src="scripts/main.js"></script>
+<script src="scripts/carousel.js"></script>
 
 <script>
-  // FINAL: 100% SAFE, CAROUSEL-DRIVEN, NEON DB — KEEPS YOUR SCRIPT TAGS
   const API_BASE = 'https://soyosoyo-sacco-api.onrender.com/api';
+  window.saccoHistory = {};
+  window.saccoData = window.saccoData || {};
 
-  // Wait for carousel.js to finish loading and populate window.saccoData
-  function waitForCarousel() {
-    return new Promise((resolve) => {
-      if (window.saccoData?.today) {
-        resolve(window.saccoData.today);
-        return;
-      }
-      const interval = setInterval(() => {
-        if (window.saccoData?.today) {
-        clearInterval(interval);
-        resolve(window.saccoData.today);
-        }
-      }, 200);
-      setTimeout(() => {
-        clearInterval(interval);
-        resolve(null);
-      }, 12000); // 12s max wait
-    });
+  // 1. Load from localStorage if API is down
+  function loadPersistedData() {
+    const saved = localStorage.getItem('saccoHistoryBackup');
+    if (saved) {
+      const data = JSON.parse(saved);
+      window.saccoHistory = {};
+      data.forEach(row => {
+        window.saccoHistory[row.period] = row;
+      });
+    }
   }
 
-  // LOAD HISTORY FROM NEON DB
+  // 2. Render beautiful table (desktop + mobile)
+  function renderFullHistory() {
+    const container = document.getElementById('fullHistoryTable');
+    const footer = document.getElementById('historyFooter');
+    const history = Object.values(window.saccoHistory).sort((a, b) => b.period.localeCompare(a.period));
+
+    if (history.length === 0) {
+      container.innerHTML = '<p style="text-align:center; color:#666; padding:20px;">No history saved yet. Visit homepage and click SAVE to begin!</p>';
+      footer.innerHTML = 'No records found.';
+      return;
+    }
+
+    let tableHTML = `
+      <table>
+        <thead>
+          <tr>
+            <th>Period</th>
+            <th>Members</th>
+            <th>Contributions</th>
+            <th>Loans</th>
+            <th>Bank Balance</th>
+            <th>ROA</th>
+            <th>Saved On</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    const currentMonthKey = new Date().toISOString().slice(0, 7); // YYYY-MM
+
+    history.forEach(row => {
+      const isCurrent = row.period === currentMonthKey;
+      tableHTML += `
+        <tr ${isCurrent ? 'class="current-month"' : ''}>
+          <td data-label="Period">${row.period}</td>
+          <td data-label="Members">${row.members.toLocaleString()}</td>
+          <td data-label="Contributions">KSh ${row.contributions.toLocaleString()}</td>
+          <td data-label="Loans">KSh ${row.loans.toLocaleString()}</td>
+          <td data-label="Bank Balance">KSh ${row.bankBalance.toLocaleString()}</td>
+          <td data-label="ROA" class="roa">${row.roa}</td>
+          <td data-label="Saved On">${new Date(row.dateSaved).toLocaleDateString('en-KE')}</td>
+        </tr>
+      `;
+    });
+
+    tableHTML += '</tbody></table>';
+    container.innerHTML = tableHTML;
+
+    footer.innerHTML = `
+      <strong>${history.length}</strong> months saved 
+      <span style="color:#10B981;">| Latest: ${history[0].period}</span>
+    `;
+  }
+
+  // 3. Load from Neon DB (with timeout + fallback)
   async function loadLiveHistory() {
     try {
-      const res = await fetch(`${API_BASE}/history`, { cache: 'no-store' });
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 15000);
+      const res = await fetch(`${API_BASE}/history`, { 
+        signal: controller.signal,
+        cache: 'no-store'
+      });
+      clearTimeout(timeout);
+
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
 
@@ -326,36 +376,23 @@
         };
       });
 
-      renderFullHistory();
-
-      const footer = document.getElementById('historyFooter');
-      if (data.length === 0) {
-        footer.innerHTML = "No data saved yet. Visit homepage → click <strong>SAVE</strong> to begin!";
-      } else {
-        footer.innerHTML = `
-          <strong>${data.length}</strong> months saved in Neon DB 
-          <span style="color:#10B981;">| Latest: ${data[0].period}</span>
-          <span style="color:#004d1a;">| Live from carousel.js</span>
-        `;
-      }
+      localStorage.setItem('saccoHistoryBackup', JSON.stringify(data));
     } catch (err) {
-      console.warn('Neon DB offline', err);
-      document.getElementById('historyFooter').textContent = "Offline — check internet connection";
+      console.warn('Server sleeping or offline → using local backup', err);
+      loadPersistedData();
+    } finally {
       renderFullHistory();
     }
   }
-    
-<script src="scripts/main.js"></script>
-<script src="scripts/carousel.js"></script>
-    
-  // SAVE CURRENT MONTH — ONLY FROM LIVE CAROUSEL
+
+  // 4. Save current month
   async function saveCurrentMonth() {
-    const today = await waitForCarousel();
-    if (!today) {
-      alert("Carousel not loaded!\nPlease visit homepage first and wait for numbers to appear.");
+    if (!window.saccoData?.today) {
+      alert("Carousel data not ready!\n\nPlease go to HOMEPAGE first, wait 10 seconds for numbers to load, then come back and try again.");
       return;
     }
 
+    const today = window.saccoData.today;
     const payload = {
       members: today.members,
       contributions: today.contributions,
@@ -377,139 +414,41 @@
       }
 
       const result = await res.json();
-      alert(`SAVED TO NEON DB!\nMonth: ${result.data.period}\nMembers: ${today.members.toLocaleString()}\nSource: carousel.js @ ${new Date().toLocaleString('en-KE')}`);
+      alert(`SAVED SUCCESSFULLY!\nMonth: ${result.data.period}\nMembers: ${today.members.toLocaleString()}\nTime: ${new Date().toLocaleString('en-KE')}`);
       loadLiveHistory();
     } catch (err) {
-      console.error(err);
-      alert("Save failed — check internet and try again.");
+      alert(`Save failed. Your server is probably sleeping.\n\nFix: Open HOMEPAGE in another tab → wait 30 seconds → try again.\n\nError: ${err.message}`);
     }
   }
 
-  // DOWNLOAD FROM NEON DB
-  async function downloadHistoryCSV() {
-    try {
-      const res = await fetch(`${API_BASE}/history`);
-      const data = await res.json();
-      if (data.length === 0) {
-        alert("No data to download yet.");
-        return;
-      }
-
-      let csv = "Period,Members,Contributions,Loans,Bank Balance,ROA %,Saved On\n";
-      data.sort((a, b) => a.period.localeCompare(b.period)).forEach(d => {
-        csv += `${d.period},${d.members},${d.contributions},${d.loans},${d.bankBalance},${d.roa},${d.dateSaved}\n`;
-      });
-
-      const blob = new Blob([csv], { type: 'text/csv' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `Soyosoyo_SACCO_History_${new Date().getFullYear()}.csv`;
-      a.click();
-      URL.revokeObjectURL(url);
-    } catch {
-      alert("Download failed — check internet.");
-    }
-  }
-
-  // AUTO LOAD WHEN PAGE OPENS
-  document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(loadLiveHistory, 1000);
-  });
-</script>
-    
-<script>
-  // AUTO-YEAR MAGIC — UPDATES EVERY YEAR TEXT AUTOMATICALLY
-  document.addEventListener('DOMContentLoaded', () => {
-    const currentYear = new Date().getFullYear();
-    const startYear = 2025; // Change only if you want a different base year
-
-    // Update copyright
-    document.querySelectorAll('footer p').forEach(el => {
-      if (el.textContent.includes('©')) {
-        el.innerHTML = el.innerHTML.replace(/©\s*\d{4}–\d{4}/, `© ${startYear}–${currentYear}`);
-        el.innerHTML = el.innerHTML.replace(/©\s*\d{4}/, `© ${currentYear}`);
-      }
-    });
-
-    // Update history header
-    document.querySelectorAll('.history-header').forEach(el => {
-      if (el.textContent.includes('2025')) {
-        el.textContent = el.textContent.replace('2025', currentYear);
-      }
-    });
-  });
-</script>
-
-
-<script>
-  // LOAD FROM LIVE NEON DB API
-  async function loadLiveHistory() {
-    try {
-      const res = await fetch('https://soyosoyo-sacco-api.onrender.com/api/history');
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-
-      window.saccoHistory = {};
-      data.forEach(row => {
-        window.saccoHistory[row.period] = {
-          period: row.period,
-          members: row.members,
-          contributions: row.contributions,
-          loans: row.loans,
-          bankBalance: row.bankBalance,
-          roa: row.roa,
-          dateSaved: row.dateSaved
-        };
-      });
-      renderFullHistory();
-    } catch (err) {
-      console.warn('Live API down → using localStorage fallback', err);
-      loadPersistedData();
-      renderFullHistory();
-    }
-  }
-
-  // SAVE TO NEON DB
-  async function saveCurrentMonth() {
-    loadPersistedData();
-    if (!window.saccoData?.today) {
-      alert("No current data. Visit homepage first to load carousel metrics.");
+  // 5. Download CSV
+  function downloadHistoryCSV() {
+    const history = Object.values(window.saccoHistory);
+    if (history.length === 0) {
+      alert("No data to download yet.");
       return;
     }
 
-    const today = window.saccoData.today;
-    const payload = {
-      members: today.members,
-      contributions: today.contributions,
-      loans: today.loans || 0,
-      bank_balance: today.bankBalance || 0,
-      roa: parseFloat(today.roa) || 0
-    };
+    let csv = "Period,Members,Contributions,Loans,Bank Balance,ROA %,Saved On\n";
+    history.sort((a, b) => a.period.localeCompare(b.period)).forEach(d => {
+      csv += `${d.period},${d.members},${d.contributions},${d.loans},${d.bankBalance},${d.roa},${d.dateSaved}\n`;
+    });
 
-    try {
-      const res = await fetch('https://soyosoyo-sacco-api.onrender.com/api/history/save', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-
-      if (!res.ok) {
-        const text = await res.text();
-        throw new Error(`HTTP ${res.status}: ${text}`);
-      }
-
-      const result = await res.json();
-      alert(`SAVED TO NEON DB!\nMonth: ${result.data.period}\nMembers: ${today.members.toLocaleString()}`);
-      loadLiveHistory();
-    } catch (err) {
-      console.error('Save error:', err);
-      alert('SAVE FAILED — Open console (F12) → copy red error → send me');
-    }
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Soyosoyo_SACCO_History_${new Date().getFullYear()}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
-  // Auto-load on page open
-  document.addEventListener('DOMContentLoaded', loadLiveHistory);
+  // Auto-run everything
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
+    setTimeout(loadLiveHistory, 1000);
+  });
 </script>
+
 </body>
 </html>
