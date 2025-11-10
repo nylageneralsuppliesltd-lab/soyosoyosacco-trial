@@ -5,117 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Us | Soyosoyo SACCO</title>
     <meta name="description" content="From 1998 Medicare roots to modern financial empowerment. The full story of Soyosoyo SACCO.">
-    <link rel="stylesheet" href="style.css?v=41">
+    <link rel="stylesheet" href="style.css?v=42">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        .history-section {
-            margin: 80px 0;
-            padding: 30px;
-            background: #f8fdfa;
-            border-radius: 24px;
-            border: 2px solid #86efac;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.08);
-            font-family: 'Lato', sans-serif;
-        }
-        .history-header {
-            text-align: center;
-            color: #004d1a;
-            font-size: 2rem;
-            font-weight: 900;
-            margin-bottom: 20px;
-        }
-        .history-controls {
-            text-align: center;
-            margin: 20px 0;
-            gap: 15px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        .btn {
-            padding: 12px 28px;
-            border: none;
-            border-radius: 50px;
-            font-weight: 900;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .btn-save {
-            background: #10B981;
-            color: white;
-        }
-        .btn-save:hover { 
-            background: #059669; 
-            transform: translateY(-2px); 
-        }
-        .btn-download {
-            background: #004d1a;
-            color: white;
-        }
-        .btn-download:hover { 
-            background: #166534; 
-            transform: translateY(-2px); 
-        }
-        #fullHistoryTable {
-            overflow-x: auto;
-            margin-top: 20px;
-            border-radius: 16px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            -webkit-overflow-scrolling: touch;
-        }
-        #fullHistoryTable table {
-            width: 100%;
-            min-width: 800px;
-            border-collapse: collapse;
-            background: white;
-            table-layout: fixed;
-        }
-        #fullHistoryTable th {
-            background: #004d1a;
-            color: white;
-            padding: 16px 8px;
-            text-align: center;
-            font-weight: 900;
-            font-size: 14px;
-            white-space: nowrap;
-        }
-        #fullHistoryTable td {
-            padding: 14px 8px;
-            text-align: center;
-            border-bottom: 1px solid #e6f4ea;
-            font-size: 14px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        #fullHistoryTable tr:hover {
-            background: #fff8e1 !important;
-        }
-        #fullHistoryTable tr:nth-child(even) {
-            background: #f0fdf4;
-        }
-        #fullHistoryTable td:nth-child(2),
-        #fullHistoryTable td:nth-child(3),
-        #fullHistoryTable td:nth-child(4),
-        #fullHistoryTable td:nth-child(5),
-        #fullHistoryTable td:nth-child(6) {
-            text-align: right;
-        }
-        .history-footer {
-            text-align: center;
-            margin-top: 20px;
-            color: #004d1a;
-            font-weight: bold;
-            font-size: 15px;
-        }
-        .current-month {
-            background: #fff8e1 !important;
-            font-weight: bold;
-            box-shadow: inset 0 0 10px rgba(255,193,7,0.3);
-        }
-        @media (max-width: 768px) {
+        .history-section{margin:80px 0;padding:30px;background:#f8fdfa;border-radius:24px;border:2px solid #86efac;box-shadow:0 15px 40px rgba(0,0,0,0.08);font-family:'Lato',sans-serif}
+        .history-header{text-align:center;color:#004d1a;font-size:2rem;font-weight:900;margin-bottom:20px}
+        .history-controls{text-align:center;margin:20px 0;gap:15px;display:flex;flex-wrap:wrap;justify-content:center}
+        .btn{padding:12px 28px;border:none;border-radius:50px;font-weight:900;font-size:14px;cursor:pointer;transition:all .3s}
+        .btn-save{background:#10B981;color:white}
+        .btn-save:hover{background:#059669;transform:translateY(-2px)}
+        .btn-download{background:#004d1a;color:white}
+        .btn-download:hover{background:#166534;transform:translateY(-2px)}
+        .btn-social{background:#1DA1F2;color:white}
+        .btn-social:hover{background:#0d8bd9;transform:translateY(-2px)}
+        #fullHistoryTable{overflow-x:auto;margin-top:20px;border-radius:16px;box-shadow:0 8px 25px rgba(0,0,0,0.1);-webkit-overflow-scrolling:touch}
+        #fullHistoryTable table{width:100%;min-width:800px;border-collapse:collapse;background:white;table-layout:fixed}
+        #fullHistoryTable th{background:#004d1a;color:white;padding:16px 8px;text-align:center;font-weight:900;font-size:14px;white-space:nowrap}
+        #fullHistoryTable td{padding:14px 8px;text-align:center;border-bottom:1px solid #e6f4ea;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        #fullHistoryTable tr:hover{background:#fff8e1 !important}
+        #fullHistoryTable tr:nth-child(even){background:#f0fdf4}
+        #fullHistoryTable td:nth-child(2),#fullHistoryTable td:nth-child(3),#fullHistoryTable td:nth-child(4),#fullHistoryTable td:nth-child(5),#fullHistoryTable td:nth-child(6){text-align:right}
+        .history-footer{text-align:center;margin-top:20px;color:#004d1a;font-weight:bold;font-size:15px}
+        .current-month{background:#fff8e1 !important;font-weight:bold;box-shadow:inset 0 0 10px rgba(255,193,7,0.3)}
+        @media (max-width:768px){
             .history-section{padding:20px;margin:40px 0}
             .history-header{font-size:1.5rem}
             .history-controls{flex-direction:column;align-items:center}
@@ -124,21 +37,11 @@
             #fullHistoryTable table{min-width:auto;font-size:12px;border:0}
             #fullHistoryTable thead{display:none}
             #fullHistoryTable tbody,#fullHistoryTable tr,#fullHistoryTable td{display:block;width:100%}
-            #fullHistoryTable tr{
-                margin-bottom:12px;border:1px solid #e6f4ea;border-radius:12px;
-                overflow:hidden;background:white;box-shadow:0 2px 8px rgba(0,0,0,0.05);
-                transition:transform .2s
-            }
+            #fullHistoryTable tr{margin-bottom:12px;border:1px solid #e6f4ea;border-radius:12px;overflow:hidden;background:white;box-shadow:0 2px 8px rgba(0,0,0,0.05);transition:transform .2s}
             #fullHistoryTable tr:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,0.1)}
             #fullHistoryTable tr.current-month{border-color:#fbbf24;box-shadow:inset 0 0 10px rgba(255,193,7,0.3),0 2px 8px rgba(0,0,0,0.05)}
-            #fullHistoryTable td{
-                padding:12px;text-align:left !important;border:none;
-                border-bottom:1px solid #f0f9f0;position:relative;font-size:13px
-            }
-            #fullHistoryTable td:before{
-                content:attr(data-label) ": ";font-weight:bold;color:#004d1a;
-                display:block;font-size:11px;text-transform:uppercase;margin-bottom:4px;letter-spacing:.5px
-            }
+            #fullHistoryTable td{padding:12px;text-align:left !important;border:none;border-bottom:1px solid #f0f9f0;position:relative;font-size:13px}
+            #fullHistoryTable td:before{content:attr(data-label) ": ";font-weight:bold;color:#004d1a;display:block;font-size:11px;text-transform:uppercase;margin-bottom:4px;letter-spacing:.5px}
             #fullHistoryTable td:last-child{border-bottom:none}
             #fullHistoryTable td:nth-of-type(1):before{content:"Period: "}
             #fullHistoryTable td:nth-of-type(2):before{content:"Members: "}
@@ -199,6 +102,7 @@
         <div class="history-controls">
             <button class="btn btn-save" onclick="saveCurrentMonth()">SAVE THIS MONTH'S DATA</button>
             <button class="btn btn-download" onclick="downloadHistoryCSV()">DOWNLOAD FULL HISTORY (CSV)</button>
+            <button class="btn btn-social" onclick="postToSocials()">POST TO SOCIALS</button>
         </div>
         <div id="fullHistoryTable"></div>
         <div class="history-footer" id="historyFooter">Loading monthly records...</div>
@@ -222,21 +126,34 @@
   window.saccoHistory = {};
   window.saccoData = window.saccoData || {};
 
-  // Format date like "11-NOV-2025 20:47"
-  function formatDateTime(isoString) {
-    const d = new Date(isoString);
-    const day = String(d.getDate()).padStart(2, '0');
-    const month = d.toLocaleString('en-US', { month: 'short' }).toUpperCase();
+  // Format: Nov-2025
+  function formatMonth(period) {
+    const [y, m] = period.split('-');
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return `${months[parseInt(m)-1]}-${y}`;
+  }
+
+  // Format: 11-Nov-2025 20:47
+  function formatDateTime(iso) {
+    if (!iso) return 'Invalid Date';
+    const d = new Date(iso);
+    if (isNaN(d)) return 'Invalid Date';
+    const day = String(d.getDate()).padStart(2,'0');
+    const month = d.toLocaleString('en-US',{month:'short'}).toUpperCase();
     const year = d.getFullYear();
     const time = d.toTimeString().slice(0,5);
     return `${day}-${month}-${year} ${time}`;
   }
 
-  // Format nice display date like "11 Nov 2025, 20:47"
-  function formatDisplayDate(isoString) {
-    return new Date(isoString).toLocaleString('en-KE', {
-      day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
-    }).replace(',', '');
+  // Nice display: 11 Nov 2025, 20:47
+  function formatDisplayDate(iso) {
+    if (!iso) return 'Invalid Date';
+    const d = new Date(iso);
+    if (isNaN(d)) return 'Invalid Date';
+    return d.toLocaleString('en-KE', {
+      day:'numeric', month:'short', year:'numeric',
+      hour:'2-digit', minute:'2-digit'
+    }).replace(',','');
   }
 
   function loadPersistedData() {
@@ -251,7 +168,8 @@
   function renderFullHistory() {
     const container = document.getElementById('fullHistoryTable');
     const footer = document.getElementById('historyFooter');
-    const history = Object.values(window.saccoHistory).sort((a,b) => b.period.localeCompare(a.period));
+    const history = Object.values(window.saccoHistory)
+      .sort((a,b) => b.period.localeCompare(a.period));
 
     if (history.length === 0) {
       container.innerHTML = '<p style="text-align:center;color:#666;padding:20px;">No history saved yet. Visit homepage → click SAVE to begin!</p>';
@@ -269,7 +187,7 @@
     history.forEach(row => {
       const isCurrent = row.period === currentMonthKey;
       tableHTML += `<tr ${isCurrent?'class="current-month"':''}>
-        <td data-label="Period">${row.period}</td>
+        <td data-label="Period">${formatMonth(row.period)}</td>
         <td data-label="Members">${row.members.toLocaleString()}</td>
         <td data-label="Contributions">KSh ${row.contributions.toLocaleString()}</td>
         <td data-label="Loans">KSh ${row.loans.toLocaleString()}</td>
@@ -285,7 +203,7 @@
     const latest = history[0];
     footer.innerHTML = `
       <strong>${history.length}</strong> months saved 
-      <span style="color:#10B981;">| Latest: ${latest.period}</span>
+      <span style="color:#10B981;">| Latest: ${formatMonth(latest.period)}</span>
       <span style="color:#004d1a;">| Saved: ${formatDisplayDate(latest.dateSaved)}</span>
     `;
   }
@@ -303,11 +221,11 @@
       data.forEach(row => {
         window.saccoHistory[row.period] = {
           period: row.period,
-          members: row.members,
-          contributions: row.contributions,
-          loans: row.loans,
-          bankBalance: row.bankBalance,
-          roa: row.roa,
+          members: Number(row.members),
+          contributions: Number(row.contributions),
+          loans: Number(row.loans),
+          bankBalance: Number(row.bankBalance),
+          roa: Number(row.roa),
           dateSaved: row.dateSaved
         };
       });
@@ -340,9 +258,9 @@
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify(payload)
       });
-      if (!res.ok) { const text=await res.text(); throw new Error(text||res.status); }
+      if (!res.ok) { const text = await res.text(); throw new Error(text || res.status); }
       const result = await res.json();
-      alert(`SAVED SUCCESSFULLY!\nMonth: ${result.data.period}\nSaved at: ${formatDateTime(result.data.dateSaved)}`);
+      alert(`SAVED SUCCESSFULLY!\nMonth: ${formatMonth(result.data.period)}\nSaved at: ${formatDateTime(result.data.dateSaved)}`);
       loadLiveHistory();
     } catch (err) {
       alert(`Save failed – server sleeping.\nOpen HOMEPAGE → wait 30 sec → try again.\nError: ${err.message}`);
@@ -355,7 +273,7 @@
 
     let csv = "Period,Members,Contributions,Loans,Bank Balance,ROA %,Saved On\n";
     history.sort((a,b)=>a.period.localeCompare(b.period)).forEach(d => {
-      csv += `${d.period},${d.members},${d.contributions},${d.loans},${d.bankBalance},${d.roa},${formatDateTime(d.dateSaved)}\n`;
+      csv += `${formatMonth(d.period)},${d.members},${d.contributions},${d.loans},${d.bankBalance},${d.roa},${formatDateTime(d.dateSaved)}\n`;
     });
 
     const blob = new Blob([csv], {type:'text/csv'});
@@ -367,12 +285,49 @@
     URL.revokeObjectURL(url);
   }
 
-  // AUTO-RUN + LIVE UPDATE
+  function postToSocials() {
+    if (!window.saccoHistory || Object.keys(window.saccoHistory).length === 0) {
+      alert("No data saved yet! Click SAVE first.");
+      return;
+    }
+    const latest = Object.values(window.saccoHistory)
+      .sort((a,b) => b.period.localeCompare(a.period))[0];
+    const prev = Object.values(window.saccoHistory)
+      .sort((a,b) => b.period.localeCompare(a.period))[1];
+
+    const monthName = formatMonth(latest.period);
+    const savedTime = formatDateTime(latest.dateSaved);
+
+    const memberGrowth = prev ? ` (+${latest.members - prev.members})` : '';
+    const contribGrowth = prev ? ` (+KSh ${(latest.contributions - prev.contributions).toLocaleString()})` : '';
+
+    const message = `Soyosoyo SACCO – ${monthName} Update
+
+Members: ${latest.members.toLocaleString()}${memberGrowth}
+Contributions: KSh ${latest.contributions.toLocaleString()}${contribGrowth}
+Loans Issued: KSh ${latest.loans.toLocaleString()}
+Bank Balance: KSh ${latest.bankBalance.toLocaleString()}
+ROA: ${latest.roa}%
+
+Saved on ${savedTime}
+We are growing together!
+
+#SoyosoyoSACCO #CoopPower #Mombasa #KenyaCoast
+https://soyosoyo-sacco-api.onrender.com`;
+
+    navigator.clipboard.writeText(message).then(() => {
+      alert("Post copied! Opening socials...");
+    });
+
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(message)}`,'_blank');
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=https://soyosoyo-sacco-api.onrender.com&quote=${encodeURIComponent(message)}`,'_blank');
+    window.open(`https://wa.me/?text=${encodeURIComponent(message)}`,'_blank');
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('currentYear').textContent = new Date().getFullYear();
     loadLiveHistory();
 
-    // Live auto-update every 5 seconds
     let lastMembers = 0;
     setInterval(() => {
       if (window.saccoData?.today && window.saccoData.today.members !== lastMembers) {
