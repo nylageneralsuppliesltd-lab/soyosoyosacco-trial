@@ -497,7 +497,7 @@
           members: row.members,
           contributions: row.contributions,
           loans: row.loans,
-          bankBalance: row.bankBalance,
+          bankBalance: row.bank_balance,  // ← match DB column
           roa: row.roa,
           dateSaved: row.dateSaved
         };
@@ -510,37 +510,45 @@
     }
   }
 
-  // SAVE TO LIVE DATABASE
-  async function saveCurrentMonth() {
-    loadPersistedData();
-    if (!window.saccoData?.today) {
-      alert("No current data. Visit homepage first.");
-      return;
+// SAVE TO LIVE DATABASE — FIXED FIELD NAMES
+async function saveCurrentMonth() {
+  loadPersistedData();
+  if (!window.saccoData?.today) {
+    alert("No current data. Visit homepage first.");
+    return;
+  }
+
+  const today = window.saccoData.today;
+  try {
+    const res = await fetch('/api/history/save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        members: today.members,
+        contributions: today.contributions,
+        loans: today.loans || 0,
+        bank_balance: today.bankBalance || 0,  // ← FIXED: underscore!
+        roa: parseFloat(today.roa) || 0
+      })
+    });
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(`HTTP ${res.status}: ${errorText}`);
     }
 
-    const today = window.saccoData.today;
-    try {
-      const res = await fetch('/api/history/save', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          members: today.members,
-          contributions: today.contributions,
-          loans: today.loans || 0,
-          bankBalance: today.bankBalance || 0,
-          roa: parseFloat(today.roa) || 0
-        })
-      });
-      const result = await res.json();
-      if (result.success) {
-        alert(`LIVE DATA SAVED! Month: ${result.data.period}`);
-        loadLiveHistory(); // Refresh from DB
-      }
-    } catch (err) {
-      alert('Save failed. Check internet or try again.');
-      console.error(err);
+    const result = await res.json();
+    if (result.success) {
+      alert(`LIVE DATA SAVED TO NEON DB! ✅\nMonth: ${result.data.period}\nMembers: ${today.members.toLocaleString()}`);
+      loadLiveHistory(); // Refresh from DB
+    } else {
+      alert('Save failed: ' + JSON.stringify(result));
     }
+  } catch (err) {
+    console.error('Save error:', err);
+    alert('Save failed — open browser console (F12) and send me the red error message.');
   }
+}
 
   // Load on start
   document.addEventListener('DOMContentLoaded', loadLiveHistory);
