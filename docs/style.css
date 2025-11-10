@@ -615,5 +615,18 @@ footer a:hover { color:#ffffff; }
         font-size: 0.95rem;
     }
 }
-
+/* MOBILE MENU FIX - FORCE PROPER Z-INDEX */
+@media (max-width: 768px) {
+  header.site-header {
+    position: relative !important;
+    z-index: 10000 !important;
+  }
+  header.site-header .nav-links {
+    z-index: 10001 !important;
+  }
+  header.site-header #menu-toggle {
+    z-index: 10002 !important;
+    position: relative !important;
+  }
+}
 /* ----------------- END OF FILE ----------------- */
