@@ -46,41 +46,63 @@
             background: #10B981;
             color: white;
         }
-        .btn-save:hover { background: #059669; transform: translateY(-2px); }
+        .btn-save:hover { 
+            background: #059669; 
+            transform: translateY(-2px); 
+        }
         .btn-download {
             background: #004d1a;
             color: white;
         }
-        .btn-download:hover { background: #166534; transform: translateY(-2px); }
+        .btn-download:hover { 
+            background: #166534; 
+            transform: translateY(-2px); 
+        }
         #fullHistoryTable {
             overflow-x: auto;
             margin-top: 20px;
             border-radius: 16px;
             box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
         }
         #fullHistoryTable table {
             width: 100%;
-            min-width: 900px;
+            min-width: 800px; /* Slightly reduced for better mobile fit */
             border-collapse: collapse;
             background: white;
+            table-layout: fixed; /* Ensures consistent column widths */
         }
         #fullHistoryTable th {
             background: #004d1a;
             color: white;
-            padding: 16px;
+            padding: 16px 8px; /* Reduced padding for tighter fit */
             text-align: center;
             font-weight: 900;
+            font-size: 14px; /* Smaller font for mobile */
+            white-space: nowrap; /* Prevent wrapping in headers */
         }
         #fullHistoryTable td {
-            padding: 14px;
+            padding: 14px 8px; /* Reduced padding */
             text-align: center;
             border-bottom: 1px solid #e6f4ea;
+            font-size: 14px;
+            white-space: nowrap; /* Prevent wrapping in cells */
+            overflow: hidden;
+            text-overflow: ellipsis; /* Handle overflow gracefully */
         }
         #fullHistoryTable tr:hover {
             background: #fff8e1 !important;
         }
         #fullHistoryTable tr:nth-child(even) {
             background: #f0fdf4;
+        }
+        /* Right-align numeric columns for clarity */
+        #fullHistoryTable td:nth-child(2),
+        #fullHistoryTable td:nth-child(3),
+        #fullHistoryTable td:nth-child(4),
+        #fullHistoryTable td:nth-child(5),
+        #fullHistoryTable td:nth-child(6) {
+            text-align: right;
         }
         .history-footer {
             text-align: center;
@@ -95,8 +117,34 @@
             box-shadow: inset 0 0 10px rgba(255,193,7,0.3);
         }
         @media (max-width: 768px) {
-            .history-controls { flex-direction: column; align-items: center; }
-            .btn { width: 90%; max-width: 300px; }
+            .history-section {
+                padding: 20px;
+                margin: 40px 0;
+            }
+            .history-header {
+                font-size: 1.5rem;
+            }
+            .history-controls { 
+                flex-direction: column; 
+                align-items: center; 
+            }
+            .btn { 
+                width: 90%; 
+                max-width: 300px; 
+            }
+            #fullHistoryTable table {
+                min-width: 700px; /* Adjust for mobile */
+                font-size: 12px;
+            }
+            #fullHistoryTable th,
+            #fullHistoryTable td {
+                padding: 10px 4px;
+            }
+        }
+        @media (max-width: 480px) {
+            #fullHistoryTable table {
+                min-width: 600px;
+            }
         }
     </style>
 </head>
@@ -143,7 +191,7 @@
         </div>
     </section>
 
-    <!-- MONTHLY HISTORY SECTION — UPGRADED -->
+    <!-- MONTHLY HISTORY SECTION — ENHANCED FOR CLEAR ALIGNMENT -->
     <section class="history-section">
         <h2 class="history-header">Monthly Financial History (2025 – Present)</h2>
         <div class="history-controls">
@@ -169,12 +217,14 @@
         <a href="https://www.instagram.com/soyosoyosacco" target="_blank"><i class="fab fa-instagram"></i></a>
     </div>
 </footer>
+
 <script>
   document.getElementById('currentYear').textContent = new Date().getFullYear();
 </script>
 <script src="./scripts/main.js"></script>
+<script src="./scripts/carousel.js"></script>
+
 <script>
-    <script src="./scripts/carousel.js"></script>
     // MONTHLY SAVE + RENDER + DOWNLOAD — ENHANCED WITH PERSISTENCE
     function loadPersistedData() {
         // Load history if available
@@ -362,6 +412,7 @@
         renderFullHistory();
     }, 1000);
 </script>
+
 <script>
   // AUTO-YEAR MAGIC — UPDATES EVERY YEAR TEXT AUTOMATICALLY
   document.addEventListener('DOMContentLoaded', () => {
@@ -410,7 +461,8 @@
     });
   });
 </script>
-    <script>
+
+<script>
   if (!window.saccoData) {
     fetch('https://soyosoyosacco.com/data.json')
       .then(r => r.json())
