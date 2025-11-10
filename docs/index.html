@@ -22,7 +22,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
     
     <!-- MAIN SITE CSS -->
-    <link rel="stylesheet" href="./style.css?v=100">
+    <link rel="stylesheet" href="./style.css?v=101">
 
     <!-- Plotly.js -->
     <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
@@ -36,298 +36,95 @@
       gtag('config', 'G-05M38MYK0G');
     </script>
 
-   <!-- FINAL FIXED STYLES — PROJECTIONS + FINANCIAL CHARTS 100% WORKING -->
-<style id="final-fixed-styles">
-  /* PROJECTIONS — FULLY ISOLATED, NO LEAK TO CHART.JS */
-  #projectionsChart { 
-    isolation: isolate; 
-    contain: layout style paint;
-    max-width: 1400px; 
-    margin: 0 auto; 
-    padding: 0 10px;
-    font-family: 'Lato', sans-serif;
-  }
+    <!-- ULTIMATE CLEAN FIX — FINANCIAL CHARTS + PROJECTIONS 100% INDEPENDENT -->
+    <style id="ultimate-clean-fix">
+      /* FINANCIAL CHARTS — CLEAN, PROPORTIONAL, NO !IMPORTANT WARS */
+      .chart-card {
+        height: 320px;
+        display: flex;
+        flex-direction: column;
+        background: #fff;
+        border-radius: 12px;
+        padding: 1rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      }
+      .chart-card canvas {
+        flex-grow: 1 !important;
+        height: 100% !important;
+        width: 100% !important;
+        max-height: none !important;
+        display: block !important;
+      }
+      @media (max-width: 768px) {
+        .chart-card { height: 360px; }
+      }
 
-  #projectionsChart > .kpi-card,
-  #projectionsChart > .summary-card {
-    background: white;
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    border: 1px solid #f0fdf4;
-    margin: 16px 8px;
-    max-width: calc(100% - 16px);
-  }
+      /* PROJECTIONS — FULLY ISOLATED, NEVER TOUCHED BY CHART.JS */
+      #projectionsChart { 
+        isolation: isolate;
+        contain: layout style paint;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 10px;
+        font-family: 'Lato', sans-serif;
+      }
+      #projectionsChart .plotly-projection-div {
+        height: 420px !important;
+        width: 100% !important;
+      }
+      @media (min-width: 769px) { 
+        #projectionsChart .plotly-projection-div { height: 440px !important; } 
+      }
+      @media (max-width: 768px) { 
+        #projectionsChart .plotly-projection-div { height: 460px !important; } 
+      }
 
-  #projectionsChart .kpi-title {
-    padding: 16px;
-    background: #f8fdfa;
-    text-align: center;
-    font-size: 16px;
-    font-weight: 900;
-    color: #004d1a;
-  }
+      /* KILL ANY OLD GLOBAL CANVAS POISON FROM style.css */
+      canvas { height: auto !important; }
 
-  /* ULTRA-SPECIFIC CLASS — ONLY AFFECTS PLOTLY, NEVER CHART.JS */
-  #projectionsChart .plotly-projection-div {
-    height: 420px !important;
-    width: 100% !important;
-  }
+      /* GROWTH INDICATORS */
+      .growth-indicator {
+        text-align: center;
+        margin-top: 0.5rem;
+        font-weight: bold;
+        font-size: 1rem;
+      }
+      .growth-indicator.positive { color: #10B981; }
+      .growth-indicator.negative { color: #EF4444; }
+      .growth-indicator i { margin-right: 4px; font-size: 0.9em; }
 
-  #projectionsChart .summary-header {
-    background: linear-gradient(90deg,#004d1a,#10B981);
-    color: white;
-    padding: 16px;
-    text-align: center;
-    font-size: 17px;
-    font-weight: 900;
-  }
+      .growth-charts-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 1rem;
+        margin: 2rem 0;
+      }
 
-  #projectionsChart .summary-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 14px;
-    padding: 16px;
-  }
+      .chart-card p {
+        margin: 0.5rem 0 0 0;
+        text-align: center;
+        font-weight: bold;
+        color: #1a1a1a;
+      }
+    </style>
 
-  #projectionsChart .summary-item {
-    background: #f0fdf4;
-    border-radius: 14px;
-    padding: 12px;
-    border: 1px solid #86efac;
-    text-align: center;
-  }
-
-  #projectionsChart .summary-label {
-    font-size: 13.5px;
-    font-weight: 900;
-    color: #166534;
-  }
-
-  #projectionsChart .summary-values {
-    display: flex;
-    justify-content: space-between;
-    font-size: 13px;
-    margin: 8px 0;
-  }
-
-  #projectionsChart .summary-values span {
-    color: #6b7280;
-    font-size: 11.5px;
-    display: block;
-  }
-
-  #projectionsChart .summary-values strong {
-    font-size: 15px;
-    color: #004d1a;
-  }
-
-  #projectionsChart .summary-growth {
-    background: #10B981;
-    color: white;
-    padding: 6px 14px;
-    border-radius: 50px;
-    font-size: 12.5px;
-    font-weight: 900;
-  }
-
-  @media (min-width: 769px) {
-    #projectionsChart { 
-      display: flex; 
-      flex-wrap: wrap; 
-      justify-content: space-between; 
-    }
-    #projectionsChart > .kpi-card { 
-      flex: 1 1 calc(50% - 20px); 
-      max-width: 48%; 
-    }
-    #projectionsChart .plotly-projection-div { 
-      height: 440px !important; 
-    }
-    #projectionsChart > .summary-card { 
-      flex: 1 1 100%; 
-      max-width: 100%; 
-      margin: 30px 8px 10px; 
-    }
-    #projectionsChart .summary-grid { 
-      grid-template-columns: repeat(4, 1fr); 
-      gap: 20px; 
-      padding: 20px; 
-    }
-    #projectionsChart .summary-values strong { 
-      font-size: 17px; 
-    }
-    #projectionsChart .summary-growth { 
-      padding: 8px 16px; 
-      font-size: 13px; 
-    }
-  }
-
-  @media (max-width: 768px) {
-    #projectionsChart .plotly-projection-div { 
-      height: 460px !important; 
-    }
-  }
-
-  /* FINANCIAL CHARTS — 100% RESTORED, FULL SIZE, NO INTERFERENCE */
-  .growth-indicator {
-    text-align: center;
-    margin-top: 0.5rem;
-    font-weight: bold;
-    font-size: 1rem;
-  }
-  .growth-indicator.positive { color: #10B981; }
-  .growth-indicator.negative { color: #EF4444; }
-  .growth-indicator i { margin-right: 4px; font-size: 0.9em; }
-
-  .growth-charts-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 1rem;
-    margin: 2rem 0;
-  }
-
-  .chart-card {
-    position: relative;
-    height: 320px;
-    display: flex;
-    flex-direction: column;
-    background: #fff;
-    border-radius: 12px;
-    padding: 1rem;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  }
-
-  .chart-card canvas {
-    flex-grow: 1;
-    max-height: 270px !important;
-    height: 100% !important;
-    width: 100% !important;
-    display: block !important;
-  }
-
-  .chart-card p {
-    margin: 0.5rem 0 0 0;
-    text-align: center;
-    font-weight: bold;
-    color: #1a1a1a;
-  }
-
-  @media (max-width: 768px) {
-    .growth-charts-grid { 
-      grid-template-columns: 1fr; 
-    }
-    .chart-card { 
-      height: 360px; 
-    }
-    .chart-card canvas { 
-      max-height: 290px !important; 
-    }
-  }
-
-  /* FINAL PROTECTION — CHART.JS ALWAYS WINS */
-  canvas:not(.plotly-projection-div canvas) {
-    height: auto !important;
-    max-height: 290px !important;
-  }
-</style>
-
-    <!-- MEMBER CAROUSEL (ORIGINAL) -->
+    <!-- MEMBER CAROUSEL -->
     <style>
-        .member-activities-section {
-            margin-top: 3rem;
-            padding: 2rem 0;
-            background-color: #f8f9fa;
-        }
-        .member-activities-carousel {
-            position: relative;
-            max-width: 1000px;
-            margin: 0 auto;
-            overflow: hidden;
-            border-radius: 12px;
-        }
-        .member-activities-carousel .slides {
-            display: flex;
-            transition: transform 0.5s ease-in-out;
-            height: 400px;
-        }
-        .member-activities-carousel .slide {
-            min-width: 100%;
-            height: 400px;
-            flex-shrink: 0;
-        }
-        .member-activities-carousel .slide img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .member-activities-carousel .nav-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(0,0,0,0.5);
-            color: white;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-            font-size: 18px;
-            z-index: 10;
-        }
+        .member-activities-section { margin-top: 3rem; padding: 2rem 0; background-color: #f8f9fa; }
+        .member-activities-carousel { position: relative; max-width: 1000px; margin: 0 auto; overflow: hidden; border-radius: 12px; }
+        .member-activities-carousel .slides { display: flex; transition: transform 0.5s ease-in-out; height: 400px; }
+        .member-activities-carousel .slide { min-width: 100%; height: 400px; flex-shrink: 0; }
+        .member-activities-carousel .slide img { width: 100%; height: 100%; object-fit: cover; }
+        .member-activities-carousel .nav-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; padding: 10px; cursor: pointer; font-size: 18px; z-index: 10; }
         .member-activities-carousel .prev { left: 10px; }
         .member-activities-carousel .next { right: 10px; }
-        .member-activities-carousel .dots {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 1rem;
-        }
-        .member-activities-carousel .dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #ccc;
-            cursor: pointer;
-        }
+        .member-activities-carousel .dots { display: flex; justify-content: center; gap: 8px; margin-top: 1rem; }
+        .member-activities-carousel .dot { width: 10px; height: 10px; border-radius: 50%; background: #ccc; cursor: pointer; }
         .member-activities-carousel .dot.active { background: #10B981; }
         @media (max-width: 768px) {
-            .member-activities-carousel .slides,
-            .member-activities-carousel .slide { height: 250px; }
+            .member-activities-carousel .slides, .member-activities-carousel .slide { height: 250px; }
         }
     </style>
-    <!-- FINAL SURGICAL FIX — CHART.JS BARS FULL SIZE | PROJECTIONS 100% UNTOUCHED -->
-<style id="surgical-chart-fix">
-  /* 1. Kill ONLY the rule that squeezes Chart.js (from your style.css) */
-  .chart-card canvas {
-    height: 260px !important;
-    min-height: 260px !important;
-    max-height: 270px !important;
-    flex-grow: 1 !important;
-  }
-
-  /* 2. Ensure Plotly canvas stays exactly as projections.js wants it */
-  #projectionsChart .plotly-projection-div,
-  #projectionsChart .plotly-projection-div > div,
-  #projectionsChart canvas {
-    height: 420px !important;
-    min-height: 420px !important;
-    max-height: none !important;
-  }
-
-  @media (min-width: 769px) {
-    #projectionsChart .plotly-projection-div { height: 440px !important; }
-  }
-  @media (max-width: 768px) {
-    #projectionsChart .plotly-projection-div { height: 460px !important; }
-  }
-
-  /* 3. Block any future global canvas poisoning */
- .chart-card canvas {
-  height: 300px !important;
-  width: 100% !important;
-  display: block !important;
-}
-
-</style>
 </head>
 <body>
 
@@ -338,11 +135,9 @@
             <img class="brand-logo round" src="./assets/141dd3faa98da9737b591161deac509a.jpg" alt="Soyosoyo Sacco Logo">
         </a>
         <a href="https://chamasoft.com/login" class="member-portal">Member Portal</a>
-      <button id="menu-toggle" aria-label="Toggle Menu">
-  <span></span>
-  <span></span>
-  <span></span>
-</button>
+        <button id="menu-toggle" aria-label="Toggle Menu">
+            <span></span><span></span><span></span>
+        </button>
         <nav class="nav-links">
             <a href="index.html">Home</a>
             <a href="Products.html">Products</a>
@@ -352,7 +147,6 @@
             <a href="Join-Us.html">Join Us</a>
         </nav>
     </div>
-
     <div class="hero">
         <div class="banner-text">
             <h1>Soyosoyo SACCO</h1>
