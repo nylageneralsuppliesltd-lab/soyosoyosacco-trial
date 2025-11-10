@@ -195,9 +195,7 @@
     <section class="history-section">
         <h2 class="history-header">Monthly Financial History (2025 – Present)</h2>
         <div class="history-controls">
-            <button class="btn btn-save" onclick="saveCurrentMonth()">
-                SAVE THIS MONTH'S DATA
-            </button>
+            <button class="btn btn-save" onclick="saveCurrentMonth(true)">SAVE THIS MONTH'S DATA</button>
             <button class="btn btn-download" onclick="downloadHistoryCSV()">
                 DOWNLOAD FULL HISTORY (CSV)
             </button>
@@ -222,10 +220,12 @@
   document.getElementById('currentYear').textContent = new Date().getFullYear();
 </script>
 <script src="./scripts/main.js"></script>
+
+<!-- CAROUSEL SCRIPT LOADED HERE TO ENSURE DATA INITIALIZATION BEFORE HISTORY LOGIC -->
 <script src="./scripts/carousel.js"></script>
 
 <script>
-    // MONTHLY SAVE + RENDER + DOWNLOAD — ENHANCED WITH PERSISTENCE
+    // MONTHLY SAVE + RENDER + DOWNLOAD — ENHANCED WITH PERSISTENCE, POINTING TO CAROUSEL DATA
     function loadPersistedData() {
         // Load history if available
         const savedHistory = localStorage.getItem('saccoHistory');
@@ -243,7 +243,7 @@
         if (savedToday && !window.saccoData?.today) {
             try {
                 window.saccoData = { today: JSON.parse(savedToday) };
-                console.log('Loaded persisted today data');
+                console.log('Loaded persisted today data from carousel');
             } catch (e) {
                 console.error('Corrupted today data:', e);
             }
@@ -259,11 +259,22 @@
         }
     }
 
-    function saveCurrentMonth() {
-        loadPersistedData();  // Ensure latest is loaded
+    // Helper: Check if data has changed compared to existing monthly entry
+    function hasDataChanged(today, existing) {
+        if (!existing) return true; // New month: always save
+        const keys = ['members', 'contributions', 'loans', 'bankBalance', 'profit', 'roa'];
+        return keys.some(key => {
+            const newVal = today[key];
+            const oldVal = existing[key];
+            return newVal !== oldVal && (newVal == null || oldVal == null || String(newVal).trim() !== String(oldVal).trim());
+        });
+    }
+
+    function saveCurrentMonth(isManual = false) {
+        loadPersistedData();  // Ensure latest is loaded from carousel persistence
 
         if (!window.saccoData?.today) {
-            alert("No current data. Please visit the homepage first to load metrics.");
+            if (isManual) alert("No current data. Please visit the homepage first to load metrics via carousel.");
             return;
         }
 
@@ -275,7 +286,7 @@
 
         // Validate key fields
         if (isNaN(today.members) || isNaN(today.contributions)) {
-            alert("Invalid data format. Check homepage metrics.");
+            if (isManual) alert("Invalid data format. Check homepage carousel metrics.");
             return;
         }
 
@@ -284,13 +295,15 @@
         const year = date.getFullYear();
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const key = `${year}-${month}`;
+        const existing = window.saccoHistory[key];
 
-        // Skip if already saved this month (optional: uncomment to enforce)
-        // if (window.saccoHistory[key]) {
-        //     alert(`Data for ${key} already saved on ${window.saccoHistory[key].dateSaved}.`);
-        //     return;
-        // }
+        // Check if data has actually changed (or new entry)
+        if (!hasDataChanged(today, existing)) {
+            if (isManual) alert(`No changes detected in current month's data. Up-to-date as of ${existing.dateSaved}.`);
+            return;
+        }
 
+        // Always overwrite for the current month to capture daily carousel updates
         window.saccoHistory[key] = {
             period: key,
             members: today.members,
@@ -304,8 +317,14 @@
 
         savePersistedData();  // Persist immediately
         renderFullHistory();
-        alert(`MONTHLY DATA ${key} SAVED FOREVER! (Members: ${today.members.toLocaleString()})`);
-        console.log("Saved:", window.saccoHistory[key]);
+        const action = existing ? 'UPDATED' : 'SAVED';
+        const msg = `${action} MONTHLY DATA ${key} WITH LATEST CAROUSEL METRICS! (Members: ${today.members.toLocaleString()})`;
+        if (isManual) {
+            alert(msg);
+        } else {
+            console.log('AUTO-' + msg); // Silent for auto, log for dev
+        }
+        console.log("Saved/Updated from carousel data:", window.saccoHistory[key]);
     }
 
     function renderFullHistory() {
@@ -315,7 +334,7 @@
         if (!tableContainer) return;
 
         if (!window.saccoHistory || Object.keys(window.saccoHistory).length === 0) {
-            tableContainer.innerHTML = `<p style="text-align:center; color:#6b7280; padding:40px;">No monthly data saved yet. Click the green button to start!</p>`;
+            tableContainer.innerHTML = `<p style="text-align:center; color:#6b7280; padding:40px;">No monthly data saved yet. Click the green button to start! (Data sourced from homepage carousel)</p>`;
             footer.textContent = "Start saving your monthly growth today.";
             return;
         }
@@ -361,7 +380,7 @@
             Total Records: <strong>${periods.length}</strong> | 
             First: <strong>${periods[periods.length-1]}</strong> | 
             Latest: <strong>${periods[0]}</strong> |
-            <span style="color:#10B981;">Space used: ~${totalSize} KB</span>
+            <span style="color:#10B981;">Space used: ~${totalSize} KB (Persisted from carousel)</span>
         `;
     }
 
@@ -398,15 +417,24 @@
         }
     }
 
-    // AUTO-RENDER
+    // AUTO-RENDER: Wait for carousel to potentially load data, then render
     document.addEventListener('DOMContentLoaded', () => {
-        loadPersistedData();
-        renderFullHistory();
+        // Give carousel.js a moment to init if present
+        setTimeout(() => {
+            loadPersistedData();
+            renderFullHistory();
+        }, 500);
     });
+
+    // AUTO-SAVE ON CAROUSEL UPDATE: Triggers only if data changed
     window.addEventListener('saccoDataUpdated', () => {
-        savePersistedData();
+        savePersistedData(); // Always persist today data
+        // Auto-save current month if changed (silent)
+        setTimeout(() => saveCurrentMonth(false), 100); // Slight delay to ensure data is set
         renderFullHistory();
     });
+
+    // Additional safety load after carousel
     setTimeout(() => {
         loadPersistedData();
         renderFullHistory();
@@ -462,15 +490,21 @@
   });
 </script>
 
+<!-- FALLBACK FETCH INTEGRATED WITH CAROUSEL LOGIC: Only if no data after carousel load -->
 <script>
-  if (!window.saccoData) {
-    fetch('https://soyosoyosacco.com/data.json')
-      .then(r => r.json())
-      .then(d => {
-        window.saccoData = d;
-        window.dispatchEvent(new Event('saccoDataUpdated'));
-      });
-  }
+  // This runs after carousel.js; checks if data is still missing
+  setTimeout(() => {
+    if (!window.saccoData) {
+      fetch('https://soyosoyosacco.com/data.json')
+        .then(r => r.json())
+        .then(d => {
+          window.saccoData = d;
+          window.dispatchEvent(new Event('saccoDataUpdated'));
+          console.log('Fallback data loaded for history (carousel fallback)');
+        })
+        .catch(e => console.error('Data fetch failed:', e));
+    }
+  }, 1500);
 </script>
 </body>
 </html>
