@@ -1,4 +1,4 @@
-// docs/api/index.js  ← FINAL WORKING VERSION
+// docs/api/index.js  ← FINAL WITH CASE FIX + HARD CODED PATH
 const express = require('express');
 const { Pool } = require('pg');
 const cors = require('cors');
@@ -7,7 +7,6 @@ require('dotenv').config();
 
 const app = express();
 
-// Critical middlewares
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '..'))); // Serve all files from /docs
@@ -30,28 +29,23 @@ pool.query(`
     roa DECIMAL(5,2),
     date_saved DATE DEFAULT CURRENT_DATE
   )
-`).catch(err => console.error('Table creation error:', err));
+`).catch(err => console.error('Table error:', err));
 
-// API ROUTES — MUST COME BEFORE STATIC FALLBACK
+// API ROUTES
 const apiRouter = express.Router();
 
 apiRouter.get('/history', async (req, res) => {
   try {
     const result = await pool.query(`
       SELECT 
-        period, 
-        members, 
-        contributions, 
-        loans, 
-        bank_balance AS "bankBalance", 
-        roa, 
+        period, members, contributions, loans, 
+        bank_balance AS "bankBalance", roa, 
         date_saved AS "dateSaved"
-      FROM sacco_history 
-      ORDER BY period DESC
+      FROM sacco_history ORDER BY period DESC
     `);
     res.json(result.rows);
   } catch (err) {
-    console.error('GET /api/history error:', err);
+    console.error('GET error:', err);
     res.status(500).json({ error: err.message });
   }
 });
@@ -77,22 +71,21 @@ apiRouter.post('/history/save', async (req, res) => {
     const result = await pool.query(query, values);
     res.json({ success: true, data: result.rows[0] });
   } catch (err) {
-    console.error('POST /api/history/save error:', err);
+    console.error('POST error:', err);
     res.status(500).json({ error: err.message });
   }
 });
 
-// Mount API routes
 app.use('/api', apiRouter);
 
-// Fallback: serve about.html for any unknown route
+// FALLBACK — FIXED CASE: About.html (capital A!)
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'about.html'));
+  res.sendFile(path.join(__dirname, '..', 'About.html'));  // ← CAPITAL A!
 });
 
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
-  console.log(`SOYOSOYO SACCO API LIVE`);
-  console.log(`→ GET:  https://soyosoyo-sacco-api.onrender.com/api/history`);
-  console.log(`→ POST: https://soyosoyo-sacco-api.onrender.com/api/history/save`);
+  console.log(`SOYOSOYO SACCO API LIVE & SERVING About.html`);
+  console.log(`→ https://soyosoyo-sacco-api.onrender.com/About.html`);
+  console.log(`→ https://soyosoyo-sacco-api.onrender.com/api/history`);
 });
