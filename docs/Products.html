@@ -488,5 +488,16 @@
     });
   });
 </script>
+    <!-- DATA LOADER FOR ALL PAGES -->
+<script>
+  if (!window.saccoData) {
+    fetch('https://soyosoyosacco.com/data.json')
+      .then(r => r.json())
+      .then(d => {
+        window.saccoData = d;
+        window.dispatchEvent(new Event('saccoDataUpdated'));
+      });
+  }
+</script>
 </body>
 </html>
