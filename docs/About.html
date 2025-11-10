@@ -58,14 +58,6 @@
             background: #166534; 
             transform: translateY(-2px); 
         }
-        .btn-reload {
-            background: #3b82f6;
-            color: white;
-        }
-        .btn-reload:hover { 
-            background: #2563eb; 
-            transform: translateY(-2px); 
-        }
         #fullHistoryTable {
             overflow-x: auto;
             margin-top: 20px;
@@ -75,28 +67,28 @@
         }
         #fullHistoryTable table {
             width: 100%;
-            min-width: 800px; /* Slightly reduced for better mobile fit */
+            min-width: 800px; /* Desktop fit */
             border-collapse: collapse;
             background: white;
-            table-layout: fixed; /* Ensures consistent column widths */
+            table-layout: fixed; /* Ensures consistent column widths on desktop */
         }
         #fullHistoryTable th {
             background: #004d1a;
             color: white;
-            padding: 16px 8px; /* Reduced padding for tighter fit */
+            padding: 16px 8px;
             text-align: center;
             font-weight: 900;
-            font-size: 14px; /* Smaller font for mobile */
-            white-space: nowrap; /* Prevent wrapping in headers */
+            font-size: 14px;
+            white-space: nowrap;
         }
         #fullHistoryTable td {
-            padding: 14px 8px; /* Reduced padding */
+            padding: 14px 8px;
             text-align: center;
             border-bottom: 1px solid #e6f4ea;
             font-size: 14px;
-            white-space: nowrap; /* Prevent wrapping in cells */
+            white-space: nowrap;
             overflow: hidden;
-            text-overflow: ellipsis; /* Handle overflow gracefully */
+            text-overflow: ellipsis;
         }
         #fullHistoryTable tr:hover {
             background: #fff8e1 !important;
@@ -124,6 +116,7 @@
             font-weight: bold;
             box-shadow: inset 0 0 10px rgba(255,193,7,0.3);
         }
+        /* MOBILE: Vertical stack - no horizontal scroll, full data flow */
         @media (max-width: 768px) {
             .history-section {
                 padding: 20px;
@@ -140,113 +133,78 @@
                 width: 90%; 
                 max-width: 300px; 
             }
-            /* MOBILE: Transform table to vertical cards - no horizontal scroll */
             #fullHistoryTable {
-                overflow-x: hidden; /* No horizontal scroll */
-                display: block;
+                overflow-x: hidden; /* Eliminate horizontal scroll */
             }
             #fullHistoryTable table {
-                display: none; /* Hide desktop table */
+                min-width: auto; /* Allow full width fit */
+                font-size: 12px;
+                border: 0;
             }
-            #fullHistoryTable .mobile-cards {
-                display: flex;
-                flex-direction: column;
-                gap: 12px;
-                max-height: none; /* Full flow */
+            #fullHistoryTable thead {
+                display: none; /* Hide headers on mobile - data stacks naturally */
             }
-            #fullHistoryTable .mobile-card {
-                background: white;
-                border-radius: 16px;
-                padding: 16px;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            #fullHistoryTable tbody,
+            #fullHistoryTable tr,
+            #fullHistoryTable td {
+                display: block;
+                width: 100%;
+            }
+            #fullHistoryTable tr {
+                margin-bottom: 12px;
                 border: 1px solid #e6f4ea;
-                transition: all 0.3s ease; /* Smooth animation */
-                animation: fadeInUp 0.3s ease forwards;
-                opacity: 0;
-                transform: translateY(10px);
+                border-radius: 12px;
+                overflow: hidden;
+                background: white;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+                transition: transform 0.2s ease;
             }
-            #fullHistoryTable .mobile-card:nth-child(even) {
+            #fullHistoryTable tr:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            }
+            #fullHistoryTable tr:nth-child(even) {
                 background: #f0fdf4;
             }
-            #fullHistoryTable .mobile-card:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-            }
-            #fullHistoryTable .mobile-card.current-month {
-                background: #fff8e1 !important;
+            #fullHistoryTable tr.current-month {
                 border-color: #fbbf24;
-                box-shadow: inset 0 0 10px rgba(255,193,7,0.3), 0 4px 12px rgba(0,0,0,0.05);
+                box-shadow: inset 0 0 10px rgba(255,193,7,0.3), 0 2px 8px rgba(0,0,0,0.05);
             }
-            #fullHistoryTable .mobile-card-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 12px;
-                font-weight: 900;
-                color: #004d1a;
-                font-size: 16px;
-            }
-            #fullHistoryTable .mobile-card-body {
-                display: grid;
-                grid-template-columns: 1fr 1fr; /* 2-column grid for elegance */
-                gap: 8px 16px;
+            #fullHistoryTable td {
+                padding: 12px;
+                text-align: left !important; /* Left-align for readability */
+                border: none;
+                border-bottom: 1px solid #f0f9f0;
+                position: relative;
                 font-size: 13px;
             }
-            #fullHistoryTable .mobile-card-item {
-                display: flex;
-                flex-direction: column;
-            }
-            #fullHistoryTable .mobile-card-label {
+            #fullHistoryTable td:before {
+                content: attr(data-label) ": "; /* Pull header labels into cells */
+                font-weight: bold;
+                color: #004d1a;
+                display: block;
                 font-size: 11px;
-                color: #6b7280;
-                font-weight: 700;
-                margin-bottom: 2px;
                 text-transform: uppercase;
+                margin-bottom: 4px;
                 letter-spacing: 0.5px;
             }
-            #fullHistoryTable .mobile-card-value {
-                font-weight: 600;
-                color: #004d1a;
+            #fullHistoryTable td:last-child {
+                border-bottom: none;
             }
-            #fullHistoryTable .mobile-card-value.roa {
-                color: #10B981;
-                font-weight: bold;
-            }
-            #fullHistoryTable .mobile-card-value.ksh::before {
-                content: "KSh ";
-            }
-            #fullHistoryTable .mobile-card-date {
-                grid-column: span 2;
-                text-align: center;
-                margin-top: 8px;
-                padding-top: 8px;
-                border-top: 1px solid #e6f4ea;
-                font-size: 12px;
-                color: #6b7280;
-                font-style: italic;
-            }
-            /* Fade-in animation for smooth flow */
-            @keyframes fadeInUp {
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-            /* Stagger animation for cards */
-            #fullHistoryTable .mobile-card:nth-child(1) { animation-delay: 0s; }
-            #fullHistoryTable .mobile-card:nth-child(2) { animation-delay: 0.1s; }
-            #fullHistoryTable .mobile-card:nth-child(3) { animation-delay: 0.2s; }
-            #fullHistoryTable .mobile-card:nth-child(n+4) { animation-delay: 0.3s; }
+            /* Specific label overrides */
+            #fullHistoryTable td:nth-of-type(1):before { content: "Period: "; }
+            #fullHistoryTable td:nth-of-type(2):before { content: "Members: "; }
+            #fullHistoryTable td:nth-of-type(3):before { content: "Contributions: "; }
+            #fullHistoryTable td:nth-of-type(4):before { content: "Loans: "; }
+            #fullHistoryTable td:nth-of-type(5):before { content: "Bank Balance: "; }
+            #fullHistoryTable td:nth-of-type(6):before { content: "ROA: "; color: #10B981; }
+            #fullHistoryTable td:nth-of-type(7):before { content: "Saved On: "; }
+            #fullHistoryTable .ksh::before { content: "KSh " attr(data-value); display: inline; }
+            #fullHistoryTable .roa::after { content: "%"; }
         }
         @media (max-width: 480px) {
-            #fullHistoryTable .mobile-card-body {
-                grid-template-columns: 1fr; /* Single column on very small screens */
-                gap: 12px 0;
-            }
-            #fullHistoryTable .mobile-card-date {
-                grid-column: span 1;
-            }
-            .history-header { font-size: 1.3rem; }
+            #fullHistoryTable td { padding: 10px; font-size: 12px; }
+            #fullHistoryTable tr { margin-bottom: 10px; }
         }
     </style>
 </head>
@@ -421,18 +379,17 @@
         const periods = Object.keys(window.saccoHistory).sort().reverse(); // newest first
         const currentMonth = new Date().toISOString().slice(0,7); // "2025-11"
 
-        // Desktop Table
-        let desktopHTML = `
+        tableContainer.innerHTML = `
             <table>
                 <thead>
                     <tr>
-                        <th>Period</th>
-                        <th>Members</th>
-                        <th>Contributions</th>
-                        <th>Loans</th>
-                        <th>Bank Balance</th>
-                        <th>ROA %</th>
-                        <th>Saved On</th>
+                        <th data-label="Period">Period</th>
+                        <th data-label="Members">Members</th>
+                        <th data-label="Contributions">Contributions</th>
+                        <th data-label="Loans">Loans</th>
+                        <th data-label="Bank Balance">Bank Balance</th>
+                        <th data-label="ROA %">ROA %</th>
+                        <th data-label="Saved On">Saved On</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -441,66 +398,19 @@
                         const isCurrent = key === currentMonth;
                         return `
                             <tr ${isCurrent ? 'class="current-month"' : ''}>
-                                <td style="font-weight:900; color:#004d1a;">${d.period || key}</td>
-                                <td>${d.members?.toLocaleString() || '—'}</td>
-                                <td>KSh ${d.contributions?.toLocaleString() || '—'}</td>
-                                <td>KSh ${d.loans?.toLocaleString() || '—'}</td>
-                                <td>KSh ${d.bankBalance?.toLocaleString() || '—'}</td>
-                                <td style="color:#10B981; font-weight:bold;">${d.roa || '—'}%</td>
-                                <td>${d.dateSaved || '—'}</td>
+                                <td data-label="Period" style="font-weight:900; color:#004d1a;">${d.period || key}</td>
+                                <td data-label="Members">${d.members?.toLocaleString() || '—'}</td>
+                                <td data-label="Contributions" class="ksh">${d.contributions?.toLocaleString() || '—'}</td>
+                                <td data-label="Loans" class="ksh">${d.loans?.toLocaleString() || '—'}</td>
+                                <td data-label="Bank Balance" class="ksh">${d.bankBalance?.toLocaleString() || '—'}</td>
+                                <td data-label="ROA %" class="roa">${d.roa || '—'}</td>
+                                <td data-label="Saved On">${d.dateSaved || '—'}</td>
                             </tr>
                         `;
                     }).join('')}
                 </tbody>
             </table>
         `;
-
-        // Mobile Cards - Vertical flow, no scroll
-        let mobileHTML = `
-            <div class="mobile-cards">
-                ${periods.map((key, index) => {
-                    const d = window.saccoHistory[key];
-                    const isCurrent = key === currentMonth;
-                    return `
-                        <div class="mobile-card ${isCurrent ? 'current-month' : ''}">
-                            <div class="mobile-card-header">
-                                <span>${d.period || key}</span>
-                                <span style="font-size: 12px; color: #6b7280;">Month Overview</span>
-                            </div>
-                            <div class="mobile-card-body">
-                                <div class="mobile-card-item">
-                                    <span class="mobile-card-label">Members</span>
-                                    <span class="mobile-card-value">${d.members?.toLocaleString() || '—'}</span>
-                                </div>
-                                <div class="mobile-card-item">
-                                    <span class="mobile-card-label">Contributions</span>
-                                    <span class="mobile-card-value ksh">${d.contributions?.toLocaleString() || '—'}</span>
-                                </div>
-                                <div class="mobile-card-item">
-                                    <span class="mobile-card-label">Loans</span>
-                                    <span class="mobile-card-value ksh">${d.loans?.toLocaleString() || '—'}</span>
-                                </div>
-                                <div class="mobile-card-item">
-                                    <span class="mobile-card-label">Bank Balance</span>
-                                    <span class="mobile-card-value ksh">${d.bankBalance?.toLocaleString() || '—'}</span>
-                                </div>
-                                <div class="mobile-card-item">
-                                    <span class="mobile-card-label">ROA</span>
-                                    <span class="mobile-card-value roa">${d.roa || '—'}%</span>
-                                </div>
-                                <div class="mobile-card-item">
-                                    <span class="mobile-card-label">Profit</span>
-                                    <span class="mobile-card-value ksh">${d.profit?.toLocaleString() || '—'}</span>
-                                </div>
-                            </div>
-                            <div class="mobile-card-date">Saved on ${d.dateSaved || '—'}</div>
-                        </div>
-                    `;
-                }).join('')}
-            </div>
-        `;
-
-        tableContainer.innerHTML = desktopHTML + mobileHTML;
 
         const totalSize = (JSON.stringify(window.saccoHistory).length / 1024).toFixed(1);
         footer.innerHTML = `
