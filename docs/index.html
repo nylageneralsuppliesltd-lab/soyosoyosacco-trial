@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="msvalidate.01" content="858002EEAD3486E0F9BDC0652A4071B4" />
     <title>Soyosoyo SACCO | Affordable Loans & Savings in Coastal Kenya</title>
-    <meta name="description" content="Join Soyosoyo SACCO for 1% monthly loans, high dividends, and financial empowerment.">
+    <meta name="description" content="Join Soyosoyo SACCO for 1% monthly loans, high dividends, and financial empowerment. Emergency, education, and development loans available in Mombasa, Kilifi, Kwale.">
     <meta name="keywords" content="SACCO Kenya, loans Mombasa, savings cooperative, emergency loan, education loan, Soyosoyo SACCO">
     <meta property="og:type" content="website">
     <meta property="og:title" content="Soyosoyo SACCO | Affordable Loans & Savings in Coastal Kenya">
@@ -22,7 +22,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
     
     <!-- MAIN SITE CSS -->
-    <link rel="stylesheet" href="./style.css?v=102">
+    <link rel="stylesheet" href="./style.css?v=200">
 
     <!-- Plotly.js -->
     <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
@@ -36,36 +36,59 @@
       gtag('config', 'G-05M38MYK0G');
     </script>
 
-    <!-- FINAL WORKING FIX — CHART.JS + PLOTLY 100% PERFECT -->
+    <!-- YOUR FINAL MASTERPIECE CSS — 100% INTEGRATED -->
     <style id="final-working-fix">
-      /* === CHART.JS FINANCIAL CARDS === */
+      /* ========================================
+         CHART.JS FINANCIAL CARDS (ISOLATED)
+         ======================================== */
       .chart-card {
         position: relative;
-        height: 320px !important;
-        display: flex !important;
-        flex-direction: column !important;
+        width: 100%;
+        height: 380px;
+        display: flex;
+        flex-direction: column;
         background: #fff;
         border-radius: 12px;
-        padding: 1rem;
+        padding: 1.5rem;
         box-shadow: 0 4px 12px rgba(0,0,0,0.05);
       }
+      
       .chart-card canvas {
-        flex-grow: 1 !important;
-        height: 100% !important;
+        flex: 1 1 auto !important;
         width: 100% !important;
-        max-height: none !important;
+        height: 100% !important;
+        max-width: 100% !important;
+        max-height: 100% !important;
+        min-height: 250px !important;
         display: block !important;
       }
-      @media (max-width: 768px) {
-        .chart-card { height: 360px !important; }
+      
+      .chart-card p {
+        margin: 0.5rem 0 0 0;
+        text-align: center;
+        font-weight: bold;
+        color: #1a1a1a;
+        flex-shrink: 0;
       }
 
-      /* === PLOTLY PROJECTIONS — FULLY RESTORED === */
-      #projectionsChart { 
-        isolation: isolate; 
+      @media (max-width: 768px) {
+        .chart-card { 
+          height: 360px;
+          padding: 1rem;
+        }
+        .chart-card canvas {
+          min-height: 200px !important;
+        }
+      }
+
+      /* ========================================
+         PLOTLY PROJECTIONS (FULLY ISOLATED)
+         ======================================== */
+      #projectionsChart {
+        isolation: isolate;
         contain: layout style paint;
-        max-width: 1400px; 
-        margin: 0 auto; 
+        max-width: 1400px;
+        margin: 0 auto;
         padding: 0 10px;
         font-family: 'Lato', sans-serif;
       }
@@ -153,50 +176,54 @@
       }
 
       @media (min-width: 769px) {
-        #projectionsChart { 
-          display: flex; 
-          flex-wrap: wrap; 
-          justify-content: space-between; 
+        #projectionsChart {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: space-between;
         }
-        #projectionsChart > .kpi-card { 
-          flex: 1 1 calc(50% - 20px); 
-          max-width: 48%; 
+        #projectionsChart > .kpi-card {
+          flex: 1 1 calc(50% - 20px);
+          max-width: 48%;
         }
-        #projectionsChart .plotly-projection-div { 
-          height: 440px !important; 
+        #projectionsChart .plotly-projection-div {
+          height: 440px !important;
         }
-        #projectionsChart > .summary-card { 
-          flex: 1 1 100%; 
-          max-width: 100%; 
-          margin: 30px 8px 10px; 
+        #projectionsChart > .summary-card {
+          flex: 1 1 100%;
+          max-width: 100%;
+          margin: 30px 8px 10px;
         }
-        #projectionsChart .summary-grid { 
-          grid-template-columns: repeat(4, 1fr); 
-          gap: 20px; 
-          padding: 20px; 
+        #projectionsChart .summary-grid {
+          grid-template-columns: repeat(4, 1fr);
+          gap: 20px;
+          padding: 20px;
         }
-        #projectionsChart .summary-values strong { 
-          font-size: 17px; 
+        #projectionsChart .summary-values strong {
+          font-size: 17px;
         }
-        #projectionsChart .summary-growth { 
-          padding: 8px 16px; 
-          font-size: 13px; 
+        #projectionsChart .summary-growth {
+          padding: 8px 16px;
+          font-size: 13px;
         }
       }
 
       @media (max-width: 768px) {
-        #projectionsChart .plotly-projection-div { 
-          height: 460px !important; 
+        #projectionsChart .plotly-projection-div {
+          height: 460px !important;
         }
       }
 
-      /* === GROWTH INDICATORS & GRID === */
+      /* ========================================
+         GROWTH INDICATORS & GRID (ISOLATED)
+         ======================================== */
       .growth-indicator {
         text-align: center;
         margin-top: 0.5rem;
         font-weight: bold;
         font-size: 1rem;
+        flex-shrink: 0;
       }
+      
       .growth-indicator.positive { color: #10B981; }
       .growth-indicator.negative { color: #EF4444; }
       .growth-indicator i { margin-right: 4px; font-size: 0.9em; }
@@ -204,19 +231,19 @@
       .growth-charts-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-        gap: 1rem;
+        gap: 1.5rem;
         margin: 2rem 0;
+        width: 100%;
       }
 
-      .chart-card p {
-        margin: 0.5rem 0 0 0;
-        text-align: center;
-        font-weight: bold;
-        color: #1a1a1a;
+      /* ========================================
+         RESET GLOBAL CANVAS (CRITICAL FIX)
+         ======================================== */
+      canvas { 
+        height: auto !important; 
+        min-height: unset !important; 
+        max-height: none !important; 
       }
-
-      /* === KILL GLOBAL CANVAS POISON === */
-      canvas { height: auto !important; }
     </style>
 
 
