@@ -283,176 +283,138 @@
 </script>
 
 <script>
-    // MONTHLY SAVE + RENDER + DOWNLOAD — ENHANCED WITH PERSISTENCE, POINTING TO CAROUSEL DATA
-    function loadPersistedData() {
-        // Load history if available
-        const savedHistory = localStorage.getItem('saccoHistory');
-        if (savedHistory && !window.saccoHistory) {
-            try {
-                window.saccoHistory = JSON.parse(savedHistory);
-                console.log('Recovered history from localStorage');
-            } catch (e) {
-                console.error('Corrupted history:', e);
-                window.saccoHistory = {};
-            }
-        }
-        // Load today data if missing (from carousel persistence)
-        const savedToday = localStorage.getItem('saccoDataToday');
-        if (savedToday && !window.saccoData?.today) {
-            try {
-                window.saccoData = { today: JSON.parse(savedToday) };
-                console.log('Loaded persisted today data from carousel');
-            } catch (e) {
-                console.error('Corrupted today data:', e);
-            }
-        }
-    }
+  // FINAL: 100% CAROUSEL-DRIVEN + NEON DB (NO LOCALSTORAGE, NO DUPLICATES)
+  const API_BASE = 'https://soyosoyo-sacco-api.onrender.com/api';
 
-    function savePersistedData() {
-        if (window.saccoHistory) {
-            localStorage.setItem('saccoHistory', JSON.stringify(window.saccoHistory));
-        }
+  // Wait for carousel.js to load and provide live data
+  function getLiveCarouselData() {
+    return new Promise((resolve) => {
+      if (window.saccoData?.today) {
+        resolve(window.saccoData.today);
+        return;
+      }
+      const check = setInterval(() => {
         if (window.saccoData?.today) {
-            localStorage.setItem('saccoDataToday', JSON.stringify(window.saccoData.today));
+        clearInterval(check);
+        resolve(window.saccoData.today);
         }
-    }
+      }, 200);
+      setTimeout(() => {
+        clearInterval(check);
+        resolve(null);
+      }, 10000);
+    });
+  }
 
-    function saveCurrentMonth() {
-        loadPersistedData();  // Ensure latest is loaded from carousel persistence
+  // LOAD HISTORY FROM NEON DB ONLY
+  async function loadLiveHistory() {
+    try {
+      const res = await fetch(`${API_BASE}/history`, { cache: 'no-store' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
 
-        if (!window.saccoData?.today) {
-            alert("No current data. Please visit the homepage first to load metrics via carousel.");
-            return;
-        }
-
-        // Convert ROA string to number if needed
-        const today = { ...window.saccoData.today };
-        if (typeof today.roa === 'string') {
-            today.roa = parseFloat(today.roa);
-        }
-
-        // Validate key fields
-        if (isNaN(today.members) || isNaN(today.contributions)) {
-            alert("Invalid data format. Check homepage carousel metrics.");
-            return;
-        }
-
-        if (!window.saccoHistory) window.saccoHistory = {};
-        const date = new Date();
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const key = `${year}-${month}`;
-
-        // Always overwrite for the current month to capture daily carousel updates
-        window.saccoHistory[key] = {
-            period: key,
-            members: today.members,
-            contributions: today.contributions,
-            loans: today.loans || 0,
-            bankBalance: today.bankBalance || 0,
-            profit: today.profit || 0,
-            roa: today.roa || 0,
-            dateSaved: date.toISOString().split('T')[0]
+      window.saccoHistory = {};
+      data.forEach(row => {
+        window.saccoHistory[row.period] = {
+          period: row.period,
+          members: row.members,
+          contributions: row.contributions,
+          loans: row.loans,
+          bankBalance: row.bankBalance,
+          roa: row.roa,
+          dateSaved: row.dateSaved
         };
+      });
 
-        savePersistedData();  // Persist immediately
-        renderFullHistory();
-        const action = window.saccoHistory[key] && date.toISOString().split('T')[0] !== (window.saccoHistory[key].dateSaved || '') ? 'UPDATED' : 'SAVED';
-        alert(`MONTHLY DATA ${key} ${action} WITH LATEST CAROUSEL METRICS! (Members: ${today.members.toLocaleString()})`);
-        console.log("Saved/Updated from carousel data:", window.saccoHistory[key]);
-    }
+      renderFullHistory();
 
-    function renderFullHistory() {
-        loadPersistedData();
-        const tableContainer = document.getElementById('fullHistoryTable');
-        const footer = document.getElementById('historyFooter');
-        if (!tableContainer) return;
-
-        if (!window.saccoHistory || Object.keys(window.saccoHistory).length === 0) {
-            tableContainer.innerHTML = `<p style="text-align:center; color:#6b7280; padding:40px;">No monthly data saved yet. Click the green button to start! (Data sourced from homepage carousel)</p>`;
-            footer.textContent = "Start saving your monthly growth today.";
-            return;
-        }
-
-        const periods = Object.keys(window.saccoHistory).sort().reverse(); // newest first
-        const currentMonth = new Date().toISOString().slice(0,7); // "2025-11"
-
-        tableContainer.innerHTML = `
-            <table>
-                <thead>
-                    <tr>
-                        <th data-label="Period">Period</th>
-                        <th data-label="Members">Members</th>
-                        <th data-label="Contributions">Contributions</th>
-                        <th data-label="Loans">Loans</th>
-                        <th data-label="Bank Balance">Bank Balance</th>
-                        <th data-label="ROA %">ROA %</th>
-                        <th data-label="Saved On">Saved On</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${periods.map(key => {
-                        const d = window.saccoHistory[key];
-                        const isCurrent = key === currentMonth;
-                        return `
-                            <tr ${isCurrent ? 'class="current-month"' : ''}>
-                                <td data-label="Period" style="font-weight:900; color:#004d1a;">${d.period || key}</td>
-                                <td data-label="Members">${d.members?.toLocaleString() || '—'}</td>
-                                <td data-label="Contributions" class="ksh">${d.contributions?.toLocaleString() || '—'}</td>
-                                <td data-label="Loans" class="ksh">${d.loans?.toLocaleString() || '—'}</td>
-                                <td data-label="Bank Balance" class="ksh">${d.bankBalance?.toLocaleString() || '—'}</td>
-                                <td data-label="ROA %" class="roa">${d.roa || '—'}</td>
-                                <td data-label="Saved On">${d.dateSaved || '—'}</td>
-                            </tr>
-                        `;
-                    }).join('')}
-                </tbody>
-            </table>
-        `;
-
-        const totalSize = (JSON.stringify(window.saccoHistory).length / 1024).toFixed(1);
+      const footer = document.getElementById('historyFooter');
+      if (data.length === 0) {
+        footer.innerHTML = "No monthly data in database yet. Click <strong>SAVE</strong> to begin!";
+      } else {
         footer.innerHTML = `
-            Total Records: <strong>${periods.length}</strong> | 
-            First: <strong>${periods[periods.length-1]}</strong> | 
-            Latest: <strong>${periods[0]}</strong> |
-            <span style="color:#10B981;">Space used: ~${totalSize} KB (Persisted from carousel)</span>
+          <strong>${data.length}</strong> months saved in Neon DB 
+          <span style="color:#10B981;">| Latest: ${data[0].period}</span>
+          <span style="color:#004d1a;">| Source: carousel.js → Neon DB</span>
         `;
+      }
+    } catch (err) {
+      console.warn('Neon DB offline', err);
+      document.getElementById('historyFooter').textContent = "Offline — check internet";
+      renderFullHistory();
+    }
+  }
+
+  // SAVE CURRENT MONTH — ONLY FROM LIVE CAROUSEL
+  async function saveCurrentMonth() {
+    const today = await getLiveCarouselData();
+    if (!today) {
+      alert("Carousel data not ready!\nPlease visit homepage first and wait for numbers to load.");
+      return;
     }
 
-    function downloadHistoryCSV() {
-        loadPersistedData();
-        if (!window.saccoHistory || Object.keys(window.saccoHistory).length === 0) {
-            alert("No data to download yet.");
-            return;
-        }
-        const periods = Object.keys(window.saccoHistory).sort();
-        let csv = "Period,Members,Contributions (KSh),Loans (KSh),Bank Balance (KSh),ROA %,Date Saved\n";
-        periods.forEach(key => {
-            const d = window.saccoHistory[key];
-            csv += `${d.period || key},${d.members || ''},${d.contributions || ''},${d.loans || ''},${d.bankBalance || ''},${d.roa || ''},${d.dateSaved || ''}\n`;
-        });
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `SOYOSOYO_SACCO_MONTHLY_HISTORY_${new Date().getFullYear()}.csv`;
-        a.click();
-        URL.revokeObjectURL(url);
-    }
+    const payload = {
+      members: today.members,
+      contributions: today.contributions,
+      loans: today.loans || 0,
+      bank_balance: today.bankBalance || 0,
+      roa: parseFloat(today.roa) || 0
+    };
 
-    // AUTO-RENDER
-    document.addEventListener('DOMContentLoaded', () => {
-        loadPersistedData();
-        renderFullHistory();
-    });
-    window.addEventListener('saccoDataUpdated', () => {
-        savePersistedData();
-        renderFullHistory();
-    });
-    setTimeout(() => {
-        loadPersistedData();
-        renderFullHistory();
-    }, 1000);
+    try {
+      const res = await fetch(`${API_BASE}/history/save`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text || res.status);
+      }
+
+      const result = await res.json();
+      alert(`SAVED TO NEON DB!\nMonth: ${result.data.period}\nMembers: ${today.members.toLocaleString()}\nSource: carousel.js`);
+      loadLiveHistory();
+    } catch (err) {
+      console.error('Save failed:', err);
+      alert("Save failed — check internet. Try again later.");
+    }
+  }
+
+  // DOWNLOAD FROM NEON DB (NOT localStorage)
+  async function downloadHistoryCSV() {
+    try {
+      const res = await fetch(`${API_BASE}/history`);
+      if (!res.ok) throw new Error('Failed to fetch');
+      const data = await res.json();
+
+      if (data.length === 0) {
+        alert("No data to download yet.");
+        return;
+      }
+
+      let csv = "Period,Members,Contributions (KSh),Loans (KSh),Bank Balance (KSh),ROA %,Date Saved\n";
+      data.sort((a, b) => a.period.localeCompare(b.period)).forEach(d => {
+        csv += `${d.period},${d.members},${d.contributions},${d.loans},${d.bankBalance},${d.roa},${d.dateSaved}\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `SOYOSOYO_SACCO_HISTORY_${new Date().getFullYear()}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      alert("Download failed — check internet.");
+    }
+  }
+
+  // AUTO LOAD ON PAGE OPEN
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(loadLiveHistory, 800);
+  });
 </script>
 
 <script>
@@ -478,8 +440,6 @@
   });
 </script>
 
-<script src="scripts/main.js"></script>
-<script src="scripts/carousel.js"></script>
 
 <script>
   // LOAD FROM LIVE NEON DB API
