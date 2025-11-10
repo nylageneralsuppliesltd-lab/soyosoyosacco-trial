@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Us | Soyosoyo SACCO</title>
     <meta name="description" content="From 1998 Medicare roots to modern financial empowerment. The full story of Soyosoyo SACCO.">
-    <link rel="stylesheet" href="./style.css?v=40">
+    <link rel="stylesheet" href="style.css?v=40">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -212,7 +212,7 @@
 
 <header class="site-header">
     <div class="navbar">
-        <a href="index.html"><img class="brand-logo round" src="./assets/141dd3faa98da9737b591161deac509a.jpg" alt="Logo"></a>
+        <a href="index.html"><img class="brand-logo round" src="assets/141dd3faa98da9737b591161deac509a.jpg" alt="Soyosoyo SACCO Logo"></a>
         <a href="https://chamasoft.com/login" class="member-portal">Member Portal</a>
         <button id="menu-toggle" aria-label="Toggle Menu"></button>
         <nav class="nav-links">
@@ -272,17 +272,15 @@
 <footer>
     <p>© 2025–<span id="currentYear"></span> SOYOSOYO SACCO. All rights reserved. | <a href="mailto:info@soyosoyosacco.com">info@soyosoyosacco.com</a></p>
     <div class="social-icons">
-        <a href="https://www.facebook.com/people/Soyosoyo-Sacco/61565783836766/" target="_blank"><i class="fab fa-facebook-f"></i></a>
-        <a href="https://x.com/SoyosoyoSACCO" target="_blank"><i class="fab fa-x-twitter"></i></a>
-        <a href="https://www.instagram.com/soyosoyosacco" target="_blank"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.facebook.com/people/Soyosoyo-Sacco/61565783836766/" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://x.com/SoyosoyoSACCO" target="_blank" aria-label="X (Twitter)"><i class="fab fa-x-twitter"></i></a>
+        <a href="https://www.instagram.com/soyosoyosacco" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
     </div>
 </footer>
 
 <script>
   document.getElementById('currentYear').textContent = new Date().getFullYear();
 </script>
-<script src="./scripts/main.js"></script>
-<script src="./scripts/carousel.js"></script>
 
 <script>
     // MONTHLY SAVE + RENDER + DOWNLOAD — ENHANCED WITH PERSISTENCE, POINTING TO CAROUSEL DATA
@@ -442,18 +440,6 @@
         URL.revokeObjectURL(url);
     }
 
-    // BONUS: Clear all data (for testing/resets)
-    function clearAllData() {
-        if (confirm('Clear all saved monthly data? This is permanent!')) {
-            localStorage.removeItem('saccoHistory');
-            localStorage.removeItem('saccoDataToday');
-            window.saccoHistory = {};
-            window.saccoData = {}; // Careful: this wipes current too
-            renderFullHistory();
-            alert('All data cleared.');
-        }
-    }
-
     // AUTO-RENDER
     document.addEventListener('DOMContentLoaded', () => {
         loadPersistedData();
@@ -476,57 +462,89 @@
     const startYear = 2025; // Change only if you want a different base year
 
     // Update copyright
-    document.querySelectorAll('footer p, .copyright, [class*="copyright"], [id*="copyright"]').forEach(el => {
+    document.querySelectorAll('footer p').forEach(el => {
       if (el.textContent.includes('©')) {
-        el.innerHTML = el.innerHTML.replace(/\d{4}(?=\s*SOYOSOYO|\s*$)/, currentYear);
+        el.innerHTML = el.innerHTML.replace(/©\s*\d{4}–\d{4}/, `© ${startYear}–${currentYear}`);
+        el.innerHTML = el.innerHTML.replace(/©\s*\d{4}/, `© ${currentYear}`);
       }
     });
 
-    // Update any "2025" in titles, headers, or text
-    document.querySelectorAll('h1, h2, h3, p, span, div, li').forEach(el => {
-      if (el.textContent.includes('2025')) {
-        el.innerHTML = el.innerHTML.replace(/2025/g, currentYear);
-      }
-    });
-
-    // Special: Update "5-Year Growth Strategy" → "6-Year", etc.
-    document.querySelectorAll('.summary-header, h2').forEach(el => {
-      if (el.textContent.includes('Year Growth Strategy')) {
-        const yearsAhead = currentYear - startYear + 5;
-        el.textContent = `${yearsAhead}-Year Growth Strategy`;
-      }
-    });
-
-    // Special: Update "Monthly Financial History (2025 – Present)"
+    // Update history header
     document.querySelectorAll('.history-header').forEach(el => {
       if (el.textContent.includes('2025')) {
         el.textContent = el.textContent.replace('2025', currentYear);
       }
     });
-
-    // Special: Update any "2025–Present" pattern
-    document.querySelectorAll('*').forEach(el => {
-      if (el.textContent.includes('2025 – Present') || el.textContent.includes('2025-Present')) {
-        el.innerHTML = el.innerHTML.replace(/2025(?=\s*[–-]\s*Present)/g, currentYear);
-      }
-    });
-
-    // Update footer year only
-    document.querySelectorAll('footer').forEach(footer => {
-      footer.innerHTML = footer.innerHTML.replace(/©\s*\d{4}/, `© ${currentYear}`);
-    });
   });
 </script>
 
+<script src="scripts/main.js"></script>
+<script src="scripts/carousel.js"></script>
+
 <script>
-  if (!window.saccoData) {
-    fetch('https://soyosoyosacco.com/data.json')
-      .then(r => r.json())
-      .then(d => {
-        window.saccoData = d;
-        window.dispatchEvent(new Event('saccoDataUpdated'));
+  // AUTO-LOAD DATA FROM YOUR LIVE API
+  async function loadLiveHistory() {
+    try {
+      const res = await fetch('/api/history');
+      if (!res.ok) throw new Error('API down');
+      const data = await res.json();
+
+      // Convert to same format as localStorage
+      window.saccoHistory = {};
+      data.forEach(row => {
+        window.saccoHistory[row.period] = {
+          period: row.period,
+          members: row.members,
+          contributions: row.contributions,
+          loans: row.loans,
+          bankBalance: row.bankBalance,
+          roa: row.roa,
+          dateSaved: row.dateSaved
+        };
       });
+      renderFullHistory();
+    } catch (err) {
+      console.warn('Live API failed, using localStorage fallback');
+      loadPersistedData();
+      renderFullHistory();
+    }
   }
+
+  // SAVE TO LIVE DATABASE
+  async function saveCurrentMonth() {
+    loadPersistedData();
+    if (!window.saccoData?.today) {
+      alert("No current data. Visit homepage first.");
+      return;
+    }
+
+    const today = window.saccoData.today;
+    try {
+      const res = await fetch('/api/history/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          members: today.members,
+          contributions: today.contributions,
+          loans: today.loans || 0,
+          bankBalance: today.bankBalance || 0,
+          roa: parseFloat(today.roa) || 0
+        })
+      });
+      const result = await res.json();
+      if (result.success) {
+        alert(`LIVE DATA SAVED! Month: ${result.data.period}`);
+        loadLiveHistory(); // Refresh from DB
+      }
+    } catch (err) {
+      alert('Save failed. Check internet or try again.');
+      console.error(err);
+    }
+  }
+
+  // Load on start
+  document.addEventListener('DOMContentLoaded', loadLiveHistory);
 </script>
+
 </body>
 </html>
