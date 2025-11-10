@@ -571,12 +571,12 @@ footer a:hover { color:#ffffff; }
     box-shadow: 0 8px 25px rgba(0,0,0,0.08);
     text-align: center;
     transition: transform 0.3s ease;
-    overflow: hidden;
+   
     position: relative;
 }
 .chart-card:hover { transform: translateY(-6px); }
 .chart-card canvas {
-    height: 180px !important;
+   
     margin: 0 auto;
     max-width: 100%;
     display: block;
@@ -609,7 +609,7 @@ footer a:hover { color:#ffffff; }
         padding: 1.4rem 1rem;
     }
     .chart-card canvas { 
-        height: 160px !important; 
+     
     }
     .growth-indicator {
         font-size: 0.95rem;
