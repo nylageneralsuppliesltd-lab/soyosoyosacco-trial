@@ -1,4 +1,4 @@
-// scripts/calculator.js — GLOBAL GOOGLE CHARTS FIX (NO HTML CHANGE NEEDED)
+// scripts/calculator.js — FINAL GLOBAL GOOGLE CHARTS FIX (NO HTML CHANGE)
 (() => {
   'use strict';
 
@@ -16,7 +16,7 @@
       google.charts.load('current', { packages: ['corechart'] });
       google.charts.setOnLoadCallback(() => {
         chartLoaded = true;
-        console.log('Google Charts loaded globally');
+        console.log('Google Charts loaded successfully');
         if (loanData) drawChart();
       });
     };
@@ -26,13 +26,14 @@
     };
     document.head.appendChild(script);
   } else {
-    // Already loaded (rare case)
+    // Already loaded somehow
     google.charts.load('current', { packages: ['corechart'] });
     google.charts.setOnLoadCallback(() => {
       chartLoaded = true;
       if (loanData) drawChart();
     });
   }
+
 
 const loanConfigurations = {
     'emergency': { 
