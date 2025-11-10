@@ -36,43 +36,72 @@
       gtag('config', 'G-05M38MYK0G');
     </script>
 
-    <!-- YOUR FINAL WINNING CSS — 100% INTEGRATED -->
+       <!-- FINAL FIX — CHART.JS + PLOTLY FULLY ISOLATED, NO GLOBAL POLLUTION -->
     <style id="final-working-fix">
       /* ========================================
-         CHART.JS FINANCIAL CARDS
+         CHART.JS FINANCIAL CARDS (ISOLATED)
          ======================================== */
+      .growth-charts-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 1.5rem;
+        margin: 2rem 0;
+        width: 100%;
+      }
+      
       .chart-card {
         position: relative;
-        height: 320px;
+        width: 100%;
+        height: 420px;
         display: flex;
         flex-direction: column;
         background: #fff;
         border-radius: 12px;
-        padding: 1rem;
+        padding: 1.5rem;
         box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        overflow: visible !important;
       }
       
       .chart-card canvas {
         flex: 1 1 auto;
         width: 100% !important;
         height: 100% !important;
-        max-height: none !important;
+        max-width: 100% !important;
+        min-height: 280px !important;
         display: block !important;
+        transform: none !important;
       }
       
       .chart-card p {
-        margin: 0.5rem 0 0 0;
+        margin: 0.75rem 0 0 0;
         text-align: center;
         font-weight: bold;
         color: #1a1a1a;
+        font-size: 1rem;
+        flex-shrink: 0;
       }
       
-      @media (max-width: 768px) {
-        .chart-card { height: 360px; }
+      .growth-indicator {
+        text-align: center;
+        margin-top: 0.5rem;
+        font-weight: bold;
+        font-size: 1rem;
+        flex-shrink: 0;
       }
-
+      .growth-indicator.positive { color: #10B981; }
+      .growth-indicator.negative { color: #EF4444; }
+      .growth-indicator i { margin-right: 4px; font-size: 0.9em; }
+      @media (max-width: 768px) {
+        .chart-card { 
+          height: 380px;
+          padding: 1.2rem;
+        }
+        .chart-card canvas {
+          min-height: 240px !important;
+        }
+      }
       /* ========================================
-         PLOTLY PROJECTIONS — ISOLATED
+         PLOTLY PROJECTIONS (FULLY SCOPED)
          ======================================== */
       #projectionsChart {
         isolation: isolate;
@@ -82,7 +111,6 @@
         padding: 0 10px;
         font-family: 'Lato', sans-serif;
       }
-
       #projectionsChart > .kpi-card,
       #projectionsChart > .summary-card {
         background: white;
@@ -93,7 +121,6 @@
         margin: 16px 8px;
         max-width: calc(100% - 16px);
       }
-
       #projectionsChart .kpi-title {
         padding: 16px;
         background: #f8fdfa;
@@ -102,12 +129,10 @@
         font-weight: 900;
         color: #004d1a;
       }
-
       #projectionsChart .plotly-projection-div {
         height: 420px !important;
         width: 100% !important;
       }
-
       #projectionsChart .summary-header {
         background: linear-gradient(90deg,#004d1a,#10B981);
         color: white;
@@ -116,14 +141,12 @@
         font-size: 17px;
         font-weight: 900;
       }
-
       #projectionsChart .summary-grid {
         display: grid;
         grid-template-columns: 1fr;
         gap: 14px;
         padding: 16px;
       }
-
       #projectionsChart .summary-item {
         background: #f0fdf4;
         border-radius: 14px;
@@ -131,31 +154,26 @@
         border: 1px solid #86efac;
         text-align: center;
       }
-
       #projectionsChart .summary-label {
         font-size: 13.5px;
         font-weight: 900;
         color: #166534;
       }
-
       #projectionsChart .summary-values {
         display: flex;
         justify-content: space-between;
         font-size: 13px;
         margin: 8px 0;
       }
-
       #projectionsChart .summary-values span {
         color: #6b7280;
         font-size: 11.5px;
         display: block;
       }
-
       #projectionsChart .summary-values strong {
         font-size: 15px;
         color: #004d1a;
       }
-
       #projectionsChart .summary-growth {
         background: #10B981;
         color: white;
@@ -164,7 +182,6 @@
         font-size: 12.5px;
         font-weight: 900;
       }
-
       @media (min-width: 769px) {
         #projectionsChart {
           display: flex;
@@ -196,36 +213,13 @@
           font-size: 13px;
         }
       }
-
       @media (max-width: 768px) {
         #projectionsChart .plotly-projection-div {
           height: 460px !important;
         }
       }
-
       /* ========================================
-         GROWTH INDICATORS & GRID
-         ======================================== */
-      .growth-indicator {
-        text-align: center;
-        margin-top: 0.5rem;
-        font-weight: bold;
-        font-size: 1rem;
-      }
-      .growth-indicator.positive { color: #10B981; }
-      .growth-indicator.negative { color: #EF4444; }
-      .growth-indicator i { margin-right: 4px; font-size: 0.9em; }
-
-      .growth-charts-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-        gap: 1rem;
-        margin: 2rem 0;
-      }
-
-      /* ========================================
-         NO GLOBAL CANVAS RULES!
-         Each chart system controls its own canvas
+         NO GLOBAL RULES - EVERYTHING SCOPED
          ======================================== */
     </style>
 
