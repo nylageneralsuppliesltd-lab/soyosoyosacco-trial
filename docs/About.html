@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, immediate-scale=1.0">
     <title>About Us | Soyosoyo SACCO</title>
     <meta name="description" content="From 1998 Medicare roots to modern financial empowerment. The full story of Soyosoyo SACCO.">
     <link rel="stylesheet" href="./style.css?v=40">
@@ -56,6 +56,14 @@
         }
         .btn-download:hover { 
             background: #166534; 
+            transform: translateY(-2px); 
+        }
+        .btn-reload {
+            background: #3b82f6;
+            color: white;
+        }
+        .btn-reload:hover { 
+            background: #2563eb; 
             transform: translateY(-2px); 
         }
         #fullHistoryTable {
@@ -199,6 +207,7 @@
             <button class="btn btn-download" onclick="downloadHistoryCSV()">
                 DOWNLOAD FULL HISTORY (CSV)
             </button>
+            <button class="btn btn-reload" onclick="reloadHistory()">RELOAD HISTORY</button>
         </div>
         <div id="fullHistoryTable"></div>
         <div class="history-footer" id="historyFooter">
@@ -227,16 +236,19 @@
 <script>
     // MONTHLY SAVE + RENDER + DOWNLOAD — ENHANCED WITH PERSISTENCE, POINTING TO CAROUSEL DATA
     function loadPersistedData() {
+        console.log('Loading persisted data...'); // Debug log
         // Load history if available
         const savedHistory = localStorage.getItem('saccoHistory');
         if (savedHistory && !window.saccoHistory) {
             try {
                 window.saccoHistory = JSON.parse(savedHistory);
-                console.log('Recovered history from localStorage');
+                console.log('Recovered history from localStorage:', window.saccoHistory);
             } catch (e) {
                 console.error('Corrupted history:', e);
                 window.saccoHistory = {};
             }
+        } else if (!window.saccoHistory) {
+            window.saccoHistory = {};
         }
         // Load today data if missing (from carousel persistence)
         const savedToday = localStorage.getItem('saccoDataToday');
@@ -253,6 +265,7 @@
     function savePersistedData() {
         if (window.saccoHistory) {
             localStorage.setItem('saccoHistory', JSON.stringify(window.saccoHistory));
+            console.log('Persisted history to localStorage');
         }
         if (window.saccoData?.today) {
             localStorage.setItem('saccoDataToday', JSON.stringify(window.saccoData.today));
@@ -331,7 +344,12 @@
         loadPersistedData();
         const tableContainer = document.getElementById('fullHistoryTable');
         const footer = document.getElementById('historyFooter');
-        if (!tableContainer) return;
+        if (!tableContainer) {
+            console.error('Table container not found!');
+            return;
+        }
+
+        console.log('Rendering history:', window.saccoHistory); // Debug log
 
         if (!window.saccoHistory || Object.keys(window.saccoHistory).length === 0) {
             tableContainer.innerHTML = `<p style="text-align:center; color:#6b7280; padding:40px;">No monthly data saved yet. Click the green button to start! (Data sourced from homepage carousel)</p>`;
@@ -382,6 +400,7 @@
             Latest: <strong>${periods[0]}</strong> |
             <span style="color:#10B981;">Space used: ~${totalSize} KB (Persisted from carousel)</span>
         `;
+        console.log('History rendered successfully');
     }
 
     function downloadHistoryCSV() {
@@ -405,6 +424,14 @@
         URL.revokeObjectURL(url);
     }
 
+    // NEW: Manual reload function to force history load (for debugging after code updates)
+    function reloadHistory() {
+        console.log('Manual reload triggered');
+        loadPersistedData();
+        renderFullHistory();
+        alert('History reloaded! Check console for details.');
+    }
+
     // BONUS: Clear all data (for testing/resets)
     function clearAllData() {
         if (confirm('Clear all saved monthly data? This is permanent!')) {
@@ -417,28 +444,37 @@
         }
     }
 
-    // AUTO-RENDER: Wait for carousel to potentially load data, then render
+    // AUTO-RENDER: Multiple fallbacks to ensure load after code updates
     document.addEventListener('DOMContentLoaded', () => {
-        // Give carousel.js a moment to init if present
+        console.log('DOM loaded, starting history init');
+        loadPersistedData();
+        renderFullHistory();
+        // Immediate render
         setTimeout(() => {
             loadPersistedData();
             renderFullHistory();
-        }, 500);
+        }, 100); // Quick retry
+        setTimeout(() => {
+            loadPersistedData();
+            renderFullHistory();
+        }, 500); // Carousel init
     });
 
     // AUTO-SAVE ON CAROUSEL UPDATE: Triggers only if data changed
     window.addEventListener('saccoDataUpdated', () => {
+        console.log('Carousel data updated, checking for auto-save');
         savePersistedData(); // Always persist today data
         // Auto-save current month if changed (silent)
         setTimeout(() => saveCurrentMonth(false), 100); // Slight delay to ensure data is set
         renderFullHistory();
     });
 
-    // Additional safety load after carousel
+    // Final safety net: Load after potential carousel/fallback
     setTimeout(() => {
         loadPersistedData();
         renderFullHistory();
-    }, 1000);
+        console.log('Final safety load complete');
+    }, 2000);
 </script>
 
 <script>
