@@ -68,7 +68,7 @@
     const yearColors = { 2025: '#FF4081', 2026: '#00BCD4', 2027: '#4CAF50', 2028: '#FFC107', 2029: '#9C27B0' };
 
     kpis.forEach((kpi, i) => {
-      const values = projections.map(p => p[kpi.key]);
+      const values = projections.map(p => p[kpi.key] || 0);
       const maxVal = Math.max(...values);
 
       const card = document.createElement('div');
@@ -103,13 +103,24 @@
         hovertemplate: `<b>%{y}</b><br>%{text}<extra></extra>`
       }], layout, { responsive: true, displayModeBar: false });
 
-      setTimeout(() => Plotly.Plots.resize(plotDiv), 150);
-      new ResizeObserver(() => Plotly.Plots.resize(plotDiv)).observe(plotDiv);
+            // SAFE RESIZE — waits until div is visible AND has size
+      const safeResize = () => {
+        if (plotDiv.offsetWidth > 0 && plotDiv.offsetHeight > 0) {
+          Plotly.Plots.resize(plotDiv);
+        } else {
+          requestAnimationFrame(safeResize);
+        }
+      };
+      setTimeout(safeResize, 200);
+      new ResizeObserver(safeResize).observe(plotDiv);
+      new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) safeResize();
+      }).observe(plotDiv);
     });
 
     const first = projections[0];
     const last = projections[projections.length - 1];
-    const growth = (a, b) => a > 0 ? ((b - a) / a * 100).toFixed(0) : '∞';
+    const growth = (a, b) => a > 0 ? ((b - a) / a * 100).toFixed(0) : (b > 0 ? '∞' : '0');
 
     const summary = document.createElement('div');
     summary.className = 'summary-card';
