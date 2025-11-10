@@ -1,33 +1,29 @@
-// scripts/carousel.js – AUTO-SYNC + PERMANENT HISTORY + AUTO-SAVE IN DECEMBER
+// scripts/carousel.js – SOYOSOYO SACCO – PERMANENT HISTORY + AUTO-SAVE
 document.addEventListener('DOMContentLoaded', () => {
   document.body.classList.add('js-enabled');
 
-  // === INITIALIZE PERMANENT HISTORY (SURVIVES FOREVER) ===
-  if (!window.saccoHistory) {
-    window.saccoHistory = {}; // This will hold ALL past years
-  }
+  // === PERSISTENT HISTORY USING localStorage ===
+  const getHistory = () => {
+    try {
+      const stored = localStorage.getItem('soyosoyoSaccoHistory');
+      return stored ? JSON.parse(stored) : {};
+    } catch (e) {
+      console.error('Failed to load history', e);
+      return {};
+    }
+  };
 
-  // === AUTO-SAVE CURRENT YEAR DATA IN DECEMBER (OR MANUAL) ===
-  const today = new Date();
-  const currentYear = today.getFullYear();
-  const currentMonth = today.getMonth(); // 0 = Jan, 11 = Dec
+  const saveHistory = (history) => {
+    try {
+      localStorage.setItem('soyosoyoSaccoHistory', JSON.stringify(history));
+    } catch (e) {
+      console.error('Failed to save history (storage full?)', e);
+    }
+  };
 
-  // Auto-save in December OR if not saved this year yet
-  if ((currentMonth === 11 || !window.saccoHistory[currentYear]) && window.saccoData?.today) {
-    window.saccoHistory[currentYear] = {
-      year: currentYear,
-      members: window.saccoData.today.members,
-      contributions: window.saccoData.today.contributions,
-      loans: window.saccoData.today.loans,
-      bankBalance: window.saccoData.today.bankBalance,
-      profit: window.saccoData.today.profit,
-      roa: window.saccoData.today.roa,
-      dateSaved: today.toISOString().split('T')[0]
-    };
-    console.log(`SOYOSOYO SACCO ${currentYear} DATA SAVED FOREVER`);
-  }
+  let saccoHistory = getHistory();
 
-  // === LOAN TYPES FOR TODAY (UPDATE THESE DAILY) ===
+  // === DAILY UPDATED VALUES (CHANGE THESE DAILY) ===
   const loanTypesToday = [
     { name: 'Emergency', value: 1214900 },
     { name: 'Medicare', value: 15000 },
@@ -35,13 +31,9 @@ document.addEventListener('DOMContentLoaded', () => {
     { name: 'Education', value: 275000 }
   ];
 
-  const totalLoansToday = loanTypesToday.reduce((sum, loan) => sum + loan.value, 0);
-
-  // === EXTERNAL LOANS ===
-  const externalLoansJan = 0;
+  const totalLoansToday = loanTypesToday.reduce((sum, l) => sum + l.value, 0);
   const externalLoansToday = 66784;
 
-  // === UPDATE THESE DAILY (YOUR NORMAL NUMBERS) ===
   const carouselDataWithoutROA = [
     { number: 144, description: "Total Members" },
     { number: 906815, description: "Member Savings" },
@@ -53,41 +45,67 @@ document.addEventListener('DOMContentLoaded', () => {
   ];
 
   // Calculate ROA
-  const roaToday = ((carouselDataWithoutROA[5].number / (carouselDataWithoutROA[1].number + externalLoansToday)) * 100).toFixed(2);
+  const assets = carouselDataWithoutROA[1].number + externalLoansToday;
+  const profit = carouselDataWithoutROA[5].number;
+  const roaToday = assets > 0 ? ((profit / assets) * 100).toFixed(2) : 0;
+
   carouselDataWithoutROA.push({ number: roaToday, description: "ROA (%)" });
   const carouselData = carouselDataWithoutROA;
 
   window.loanTypes = loanTypesToday;
 
-  // === JAN 2025 BASELINE (WILL BE REPLACED IN 2026) ===
-  const janDataWithoutROA = {
+  // === JAN 2025 BASELINE (fallback if not in history) ===
+  const janFallback = {
     members: 101,
-    loans: 283500,
     contributions: 331263,
+    loans: 283500,
     profit: -60056,
     bankBalance: 113742,
-    externalLoans: externalLoansJan
+    externalLoans: 0
   };
-  const roaJan = ((janDataWithoutROA.profit / (janDataWithoutROA.contributions + janDataWithoutROA.externalLoans)) * 100).toFixed(2);
 
-  // === FINAL SACCO DATA WITH HISTORY SUPPORT ===
+  const janData = saccoHistory[2025]?.jan || janFallback;
+  const roaJan = janData.contributions + janData.externalLoans > 0
+    ? ((janData.profit / (janData.contributions + janData.externalLoans)) * 100).toFixed(2)
+    : 0;
+
+  // === FINAL DATA OBJECT ===
+  const todayData = {
+    members: carouselData[0].number,
+    contributions: carouselData[1].number,
+    loans: totalLoansToday,
+    profit: carouselData[5].number,
+    bankBalance: carouselData[2].number,
+    externalLoans: externalLoansToday,
+    roa: roaToday
+  };
+
   window.saccoData = {
-    jan: {
-      ...janDataWithoutROA,
-      roa: roaJan
-    },
-    today: {
-      members: carouselData[0].number,
-      loans: totalLoansToday,
-      contributions: carouselData[1].number,
-      profit: carouselData[5].number,
-      bankBalance: carouselData[2].number,
-      externalLoans: externalLoansToday,
-      roa: carouselData[7].number
-    }
+    jan: { ...janData, roa: roaJan },
+    today: todayData
   };
 
-  // === CAROUSEL RENDERING (UNCHANGED) ===
+  // === AUTO-SAVE IN DECEMBER OR IF YEAR NOT SAVED ===
+  const today = new Date();
+  const currentYear = today.getFullYear();
+  const currentMonth = today.getMonth();
+
+  if ((currentMonth === 11 || !saccoHistory[currentYear]) && todayData) {
+    saccoHistory[currentYear] = {
+      year: currentYear,
+      members: todayData.members,
+      contributions: todayData.contributions,
+      loans: todayData.loans,
+      bankBalance: todayData.bankBalance,
+      profit: todayData.profit,
+      roa: todayData.roa,
+      dateSaved: today.toISOString().split('T')[0]
+    };
+    saveHistory(saccoHistory);
+    console.log(`SOYOSOYO SACCO ${currentYear} DATA SAVED PERMANENTLY`);
+  }
+
+  // === CAROUSEL RENDERING (unchanged, just moved below) ===
   const carousel = document.querySelector('.carousel');
   if (!carousel) return;
 
@@ -98,59 +116,55 @@ document.addEventListener('DOMContentLoaded', () => {
         <p class="carousel-description">${item.description}</p>
       </article>
     `).join('');
-    carousel.innerHTML = itemHTML + itemHTML;
+    carousel.innerHTML = itemHTML + itemHTML; // duplicate for loop
   };
   generateItems();
 
-    const formatNumber = (num) => {
+  const formatNumber = (num) => {
     if (isNaN(num)) return num;
     const abs = Math.abs(num);
-    return (abs >= 1000 ? (abs / 1000).toFixed(0) + 'k' : abs)
-      .toString()
-      .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    const formatted = abs >= 1000 ? (abs / 1000).toFixed(0) + 'k' : abs;
+    return formatted.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
+
   const animateCounter = (el, target) => {
     const end = +target;
     const duration = 1200;
     const startTime = performance.now();
-    
-    const step = (currentTime) => {
-      const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / duration, 1);
+
+    const step = (now) => {
+      const progress = Math.min((now - startTime) / duration, 1);
       const value = Math.round(progress * end);
       el.textContent = formatNumber(value);
-      
-      if (progress < 1) {
-        requestAnimationFrame(step);
-      }
+      if (progress < 1) requestAnimationFrame(step);
     };
     requestAnimationFrame(step);
   };
 
-  // Animate all visible items immediately on load
-  const animateVisibleItems = () => {
+  const animateVisible = () => {
     document.querySelectorAll('.carousel-item').forEach(item => {
       const btn = item.querySelector('.carousel-button');
-      if (btn && btn.dataset.target) {
+      if (btn && btn.dataset.target && btn.textContent === '0') {
         animateCounter(btn, btn.dataset.target);
       }
     });
   };
 
-  // Run animation after carousel is rendered
-  setTimeout(animateVisibleItems, 100);
+  setTimeout(animateVisible, 100);
 
-  // Re-animate when items scroll back into view
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-      const btn = entry.target.querySelector('.carousel-button');
-      if (entry.isIntersecting && btn && btn.textContent === '0') {
-        animateCounter(btn, btn.dataset.target);
+      if (entry.isIntersecting) {
+        const btn = entry.target.querySelector('.carousel-button');
+        if (btn && btn.textContent === '0') {
+          animateCounter(btn, btn.dataset.target);
+        }
       }
     });
   }, { threshold: 0.5 });
 
   document.querySelectorAll('.carousel-item').forEach(item => observer.observe(item));
+
   const update = () => {
     const w = window.innerWidth;
     const iw = w <= 768 ? 220 : 300;
@@ -165,12 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.addEventListener('resize', update);
   update();
- // Start animations immediately
-  setTimeout(() => {
-    document.querySelectorAll('.carousel-item .carousel-button').forEach(btn => {
-      if (btn.dataset.target) {
-        animateCounter(btn, btn.dataset.target);
-      }
-    });
-  }, 300);
+
+  // Final animation trigger
+  setTimeout(animateVisible, 300);
 });
