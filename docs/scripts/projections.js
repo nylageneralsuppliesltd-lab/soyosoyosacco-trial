@@ -1,4 +1,4 @@
-// scripts/projections.js — FULLY RESTORED ORIGINAL STYLE + WORKING
+// scripts/projections.js — FINAL VERSION
 (function () {
   'use strict';
 
@@ -65,7 +65,7 @@
       { name: 'Bank Balance', key: 'bankBalance' }
     ];
 
-    const yearColors = { 2025: '#FF4081', 2026: '#00BCD4', 2027: '#4CAF50', 2028: '#FFC107', 2029: '#9C27B0', 2030: '#E91E63' };
+    const yearColors = { 2025: '#FF4081', 2026: '#00BCD4', 2027: '#4CAF50', 2028: '#FFC107', 2029: '#9C27B0' };
 
     kpis.forEach((kpi, i) => {
       const values = projections.map(p => p[kpi.key]);
@@ -75,11 +75,11 @@
       card.className = 'kpi-card';
       card.innerHTML = `
         <div class="kpi-title">${kpi.name} Growth</div>
-        <div class="plotly-container" data-id="${i}"></div>
+        <div class="plotly-projection-div" data-id="${i}"></div>
       `;
       container.appendChild(card);
 
-      const plotDiv = card.querySelector('.plotly-container');
+      const plotDiv = card.querySelector('.plotly-projection-div');
 
       const layout = {
         autosize: true,
@@ -107,7 +107,6 @@
       new ResizeObserver(() => Plotly.Plots.resize(plotDiv)).observe(plotDiv);
     });
 
-    // SUMMARY CARD — EXACT ORIGINAL STYLE
     const first = projections[0];
     const last = projections[projections.length - 1];
     const growth = (a, b) => a > 0 ? ((b - a) / a * 100).toFixed(0) : '∞';
