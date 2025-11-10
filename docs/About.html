@@ -71,32 +71,32 @@
             margin-top: 20px;
             border-radius: 16px;
             box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            -webkit-overflow-scrolling: touch;
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
         }
         #fullHistoryTable table {
             width: 100%;
-            min-width: 800px;
+            min-width: 800px; /* Slightly reduced for better mobile fit */
             border-collapse: collapse;
             background: white;
-            table-layout: fixed;
+            table-layout: fixed; /* Ensures consistent column widths */
         }
         #fullHistoryTable th {
             background: #004d1a;
             color: white;
-            padding: 16px 8px;
+            padding: 16px 8px; /* Reduced padding for tighter fit */
             text-align: center;
             font-weight: 900;
-            font-size: 14px;
-            white-space: nowrap;
+            font-size: 14px; /* Smaller font for mobile */
+            white-space: nowrap; /* Prevent wrapping in headers */
         }
         #fullHistoryTable td {
-            padding: 14px 8px;
+            padding: 14px 8px; /* Reduced padding */
             text-align: center;
             border-bottom: 1px solid #e6f4ea;
             font-size: 14px;
-            white-space: nowrap;
+            white-space: nowrap; /* Prevent wrapping in cells */
             overflow: hidden;
-            text-overflow: ellipsis;
+            text-overflow: ellipsis; /* Handle overflow gracefully */
         }
         #fullHistoryTable tr:hover {
             background: #fff8e1 !important;
@@ -125,15 +125,128 @@
             box-shadow: inset 0 0 10px rgba(255,193,7,0.3);
         }
         @media (max-width: 768px) {
-            .history-section { padding: 20px; margin: 40px 0; }
-            .history-header { font-size: 1.5rem; }
-            .history-controls { flex-direction: column; align-items: center; }
-            .btn { width: 90%; max-width: 300px; }
-            #fullHistoryTable table { min-width: 700px; font-size: 12px; }
-            #fullHistoryTable th, #fullHistoryTable td { padding: 10px 4px; }
+            .history-section {
+                padding: 20px;
+                margin: 40px 0;
+            }
+            .history-header {
+                font-size: 1.5rem;
+            }
+            .history-controls { 
+                flex-direction: column; 
+                align-items: center; 
+            }
+            .btn { 
+                width: 90%; 
+                max-width: 300px; 
+            }
+            /* MOBILE: Transform table to vertical cards - no horizontal scroll */
+            #fullHistoryTable {
+                overflow-x: hidden; /* No horizontal scroll */
+                display: block;
+            }
+            #fullHistoryTable table {
+                display: none; /* Hide desktop table */
+            }
+            #fullHistoryTable .mobile-cards {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                max-height: none; /* Full flow */
+            }
+            #fullHistoryTable .mobile-card {
+                background: white;
+                border-radius: 16px;
+                padding: 16px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+                border: 1px solid #e6f4ea;
+                transition: all 0.3s ease; /* Smooth animation */
+                animation: fadeInUp 0.3s ease forwards;
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            #fullHistoryTable .mobile-card:nth-child(even) {
+                background: #f0fdf4;
+            }
+            #fullHistoryTable .mobile-card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            }
+            #fullHistoryTable .mobile-card.current-month {
+                background: #fff8e1 !important;
+                border-color: #fbbf24;
+                box-shadow: inset 0 0 10px rgba(255,193,7,0.3), 0 4px 12px rgba(0,0,0,0.05);
+            }
+            #fullHistoryTable .mobile-card-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 12px;
+                font-weight: 900;
+                color: #004d1a;
+                font-size: 16px;
+            }
+            #fullHistoryTable .mobile-card-body {
+                display: grid;
+                grid-template-columns: 1fr 1fr; /* 2-column grid for elegance */
+                gap: 8px 16px;
+                font-size: 13px;
+            }
+            #fullHistoryTable .mobile-card-item {
+                display: flex;
+                flex-direction: column;
+            }
+            #fullHistoryTable .mobile-card-label {
+                font-size: 11px;
+                color: #6b7280;
+                font-weight: 700;
+                margin-bottom: 2px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+            #fullHistoryTable .mobile-card-value {
+                font-weight: 600;
+                color: #004d1a;
+            }
+            #fullHistoryTable .mobile-card-value.roa {
+                color: #10B981;
+                font-weight: bold;
+            }
+            #fullHistoryTable .mobile-card-value.ksh::before {
+                content: "KSh ";
+            }
+            #fullHistoryTable .mobile-card-date {
+                grid-column: span 2;
+                text-align: center;
+                margin-top: 8px;
+                padding-top: 8px;
+                border-top: 1px solid #e6f4ea;
+                font-size: 12px;
+                color: #6b7280;
+                font-style: italic;
+            }
+            /* Fade-in animation for smooth flow */
+            @keyframes fadeInUp {
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            /* Stagger animation for cards */
+            #fullHistoryTable .mobile-card:nth-child(1) { animation-delay: 0s; }
+            #fullHistoryTable .mobile-card:nth-child(2) { animation-delay: 0.1s; }
+            #fullHistoryTable .mobile-card:nth-child(3) { animation-delay: 0.2s; }
+            #fullHistoryTable .mobile-card:nth-child(n+4) { animation-delay: 0.3s; }
         }
         @media (max-width: 480px) {
-            #fullHistoryTable table { min-width: 600px; }
+            #fullHistoryTable .mobile-card-body {
+                grid-template-columns: 1fr; /* Single column on very small screens */
+                gap: 12px 0;
+            }
+            #fullHistoryTable .mobile-card-date {
+                grid-column: span 1;
+            }
+            .history-header { font-size: 1.3rem; }
         }
     </style>
 </head>
@@ -180,16 +293,21 @@
         </div>
     </section>
 
-    <!-- MONTHLY HISTORY SECTION — SHARED & ROBUST -->
+    <!-- MONTHLY HISTORY SECTION — ENHANCED FOR CLEAR ALIGNMENT -->
     <section class="history-section">
         <h2 class="history-header">Monthly Financial History (2025 – Present)</h2>
         <div class="history-controls">
-            <button class="btn btn-save" onclick="saveCurrentMonth(true)">SAVE THIS MONTH'S DATA</button>
-            <button class="btn btn-download" onclick="downloadHistoryCSV()">DOWNLOAD FULL HISTORY (CSV)</button>
-            <button class="btn btn-reload" onclick="reloadHistory()">RELOAD HISTORY</button>
+            <button class="btn btn-save" onclick="saveCurrentMonth()">
+                SAVE THIS MONTH'S DATA
+            </button>
+            <button class="btn btn-download" onclick="downloadHistoryCSV()">
+                DOWNLOAD FULL HISTORY (CSV)
+            </button>
         </div>
         <div id="fullHistoryTable"></div>
-        <div class="history-footer" id="historyFooter">Loading shared monthly records...</div>
+        <div class="history-footer" id="historyFooter">
+            Loading monthly records...
+        </div>
     </section>
 </main>
 
@@ -209,120 +327,67 @@
 <script src="./scripts/carousel.js"></script>
 
 <script>
-    // CONFIG: Replace with your actual API endpoint (e.g., 'https://soyosoyosacco.com/api/history')
-    const API_ENDPOINT = 'YOUR_API_ENDPOINT'; // e.g., '/api/history' for relative
-
-    // Load today data (carousel persistence, unchanged)
-    function loadTodayData() {
+    // MONTHLY SAVE + RENDER + DOWNLOAD — ENHANCED WITH PERSISTENCE, POINTING TO CAROUSEL DATA
+    function loadPersistedData() {
+        // Load history if available
+        const savedHistory = localStorage.getItem('saccoHistory');
+        if (savedHistory && !window.saccoHistory) {
+            try {
+                window.saccoHistory = JSON.parse(savedHistory);
+                console.log('Recovered history from localStorage');
+            } catch (e) {
+                console.error('Corrupted history:', e);
+                window.saccoHistory = {};
+            }
+        }
+        // Load today data if missing (from carousel persistence)
         const savedToday = localStorage.getItem('saccoDataToday');
         if (savedToday && !window.saccoData?.today) {
             try {
                 window.saccoData = { today: JSON.parse(savedToday) };
-            } catch (e) { console.error('Corrupted today data:', e); }
-        }
-    }
-
-    // SHARED: Load history from server (primary) or localStorage (fallback)
-    async function loadHistoryFromServer() {
-        if (!API_ENDPOINT || API_ENDPOINT === 'YOUR_API_ENDPOINT') {
-            console.warn('API endpoint not set; falling back to localStorage');
-            loadLocalHistory();
-            return;
-        }
-        try {
-            const response = await fetch(API_ENDPOINT, { method: 'GET' });
-            if (response.ok) {
-                window.saccoHistory = await response.json();
-                console.log('Loaded shared history from server:', window.saccoHistory);
-                // Sync to local for offline fallback
-                localStorage.setItem('saccoHistory', JSON.stringify(window.saccoHistory));
-            } else {
-                throw new Error('Server error');
-            }
-        } catch (e) {
-            console.error('Server load failed:', e);
-            loadLocalHistory(); // Fallback
-        }
-    }
-
-    function loadLocalHistory() {
-        const savedHistory = localStorage.getItem('saccoHistory');
-        if (savedHistory) {
-            try {
-                window.saccoHistory = JSON.parse(savedHistory);
-                console.log('Loaded history from localStorage:', window.saccoHistory);
+                console.log('Loaded persisted today data from carousel');
             } catch (e) {
-                console.error('Corrupted local history:', e);
-                window.saccoHistory = {};
+                console.error('Corrupted today data:', e);
             }
-        } else {
-            window.saccoHistory = {};
         }
     }
 
-    // SHARED: Save history to server (primary) or localStorage (fallback)
-    async function saveHistoryToServer(history) {
-        if (!API_ENDPOINT || API_ENDPOINT === 'YOUR_API_ENDPOINT') {
-            console.warn('API endpoint not set; saving to localStorage only');
-            localStorage.setItem('saccoHistory', JSON.stringify(history));
-            return;
+    function savePersistedData() {
+        if (window.saccoHistory) {
+            localStorage.setItem('saccoHistory', JSON.stringify(window.saccoHistory));
         }
-        try {
-            const response = await fetch(API_ENDPOINT, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(history)
-            });
-            if (!response.ok) throw new Error('Save failed');
-            console.log('Saved shared history to server');
-            // Sync to local
-            localStorage.setItem('saccoHistory', JSON.stringify(history));
-        } catch (e) {
-            console.error('Server save failed:', e);
-            localStorage.setItem('saccoHistory', JSON.stringify(history)); // Fallback
-        }
-    }
-
-    // Persist today data (unchanged)
-    function saveTodayData() {
         if (window.saccoData?.today) {
             localStorage.setItem('saccoDataToday', JSON.stringify(window.saccoData.today));
         }
     }
 
-    // Change detection (unchanged)
-    function hasDataChanged(today, existing) {
-        if (!existing) return true;
-        const keys = ['members', 'contributions', 'loans', 'bankBalance', 'profit', 'roa'];
-        return keys.some(key => {
-            const newVal = today[key];
-            const oldVal = existing[key];
-            return newVal !== oldVal && (newVal == null || oldVal == null || String(newVal).trim() !== String(oldVal).trim());
-        });
-    }
+    function saveCurrentMonth() {
+        loadPersistedData();  // Ensure latest is loaded from carousel persistence
 
-    // Save function (now server-aware)
-    async function saveCurrentMonth(isManual = false) {
-        loadTodayData();
         if (!window.saccoData?.today) {
-            if (isManual) alert("No current data. Visit homepage for carousel metrics.");
+            alert("No current data. Please visit the homepage first to load metrics via carousel.");
             return;
         }
+
+        // Convert ROA string to number if needed
         const today = { ...window.saccoData.today };
-        if (typeof today.roa === 'string') today.roa = parseFloat(today.roa);
+        if (typeof today.roa === 'string') {
+            today.roa = parseFloat(today.roa);
+        }
+
+        // Validate key fields
         if (isNaN(today.members) || isNaN(today.contributions)) {
-            if (isManual) alert("Invalid data. Check carousel.");
+            alert("Invalid data format. Check homepage carousel metrics.");
             return;
         }
-        await loadHistoryFromServer(); // Ensure latest shared
+
         if (!window.saccoHistory) window.saccoHistory = {};
         const date = new Date();
-        const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-        const existing = window.saccoHistory[key];
-        if (!hasDataChanged(today, existing)) {
-            if (isManual) alert(`No changes. Up-to-date as of ${existing?.dateSaved || 'N/A'}.`);
-            return;
-        }
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const key = `${year}-${month}`;
+
+        // Always overwrite for the current month to capture daily carousel updates
         window.saccoHistory[key] = {
             period: key,
             members: today.members,
@@ -333,50 +398,125 @@
             roa: today.roa || 0,
             dateSaved: date.toISOString().split('T')[0]
         };
-        await saveHistoryToServer(window.saccoHistory);
+
+        savePersistedData();  // Persist immediately
         renderFullHistory();
-        const action = existing ? 'UPDATED' : 'SAVED';
-        const msg = `${action} shared monthly data ${key}! (Members: ${today.members.toLocaleString()})`;
-        if (isManual) alert(msg);
-        else console.log('AUTO-' + msg);
+        const action = window.saccoHistory[key] && date.toISOString().split('T')[0] !== (window.saccoHistory[key].dateSaved || '') ? 'UPDATED' : 'SAVED';
+        alert(`MONTHLY DATA ${key} ${action} WITH LATEST CAROUSEL METRICS! (Members: ${today.members.toLocaleString()})`);
+        console.log("Saved/Updated from carousel data:", window.saccoHistory[key]);
     }
 
-    // Render (unchanged, but now shows shared data)
     function renderFullHistory() {
+        loadPersistedData();
         const tableContainer = document.getElementById('fullHistoryTable');
         const footer = document.getElementById('historyFooter');
         if (!tableContainer) return;
+
         if (!window.saccoHistory || Object.keys(window.saccoHistory).length === 0) {
-            tableContainer.innerHTML = `<p style="text-align:center; color:#6b7280; padding:40px;">No shared monthly data yet. Click SAVE to start! (Sourced from carousel)</p>`;
-            footer.textContent = "Start building shared monthly growth.";
+            tableContainer.innerHTML = `<p style="text-align:center; color:#6b7280; padding:40px;">No monthly data saved yet. Click the green button to start! (Data sourced from homepage carousel)</p>`;
+            footer.textContent = "Start saving your monthly growth today.";
             return;
         }
-        const periods = Object.keys(window.saccoHistory).sort().reverse();
-        const currentMonth = new Date().toISOString().slice(0,7);
-        tableContainer.innerHTML = `
+
+        const periods = Object.keys(window.saccoHistory).sort().reverse(); // newest first
+        const currentMonth = new Date().toISOString().slice(0,7); // "2025-11"
+
+        // Desktop Table
+        let desktopHTML = `
             <table>
-                <thead><tr><th>Period</th><th>Members</th><th>Contributions</th><th>Loans</th><th>Bank Balance</th><th>ROA %</th><th>Saved On</th></tr></thead>
-                <tbody>${periods.map(key => {
+                <thead>
+                    <tr>
+                        <th>Period</th>
+                        <th>Members</th>
+                        <th>Contributions</th>
+                        <th>Loans</th>
+                        <th>Bank Balance</th>
+                        <th>ROA %</th>
+                        <th>Saved On</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${periods.map(key => {
+                        const d = window.saccoHistory[key];
+                        const isCurrent = key === currentMonth;
+                        return `
+                            <tr ${isCurrent ? 'class="current-month"' : ''}>
+                                <td style="font-weight:900; color:#004d1a;">${d.period || key}</td>
+                                <td>${d.members?.toLocaleString() || '—'}</td>
+                                <td>KSh ${d.contributions?.toLocaleString() || '—'}</td>
+                                <td>KSh ${d.loans?.toLocaleString() || '—'}</td>
+                                <td>KSh ${d.bankBalance?.toLocaleString() || '—'}</td>
+                                <td style="color:#10B981; font-weight:bold;">${d.roa || '—'}%</td>
+                                <td>${d.dateSaved || '—'}</td>
+                            </tr>
+                        `;
+                    }).join('')}
+                </tbody>
+            </table>
+        `;
+
+        // Mobile Cards - Vertical flow, no scroll
+        let mobileHTML = `
+            <div class="mobile-cards">
+                ${periods.map((key, index) => {
                     const d = window.saccoHistory[key];
                     const isCurrent = key === currentMonth;
-                    return `<tr ${isCurrent ? 'class="current-month"' : ''}>
-                        <td style="font-weight:900; color:#004d1a;">${d.period || key}</td>
-                        <td>${d.members?.toLocaleString() || '—'}</td>
-                        <td>KSh ${d.contributions?.toLocaleString() || '—'}</td>
-                        <td>KSh ${d.loans?.toLocaleString() || '—'}</td>
-                        <td>KSh ${d.bankBalance?.toLocaleString() || '—'}</td>
-                        <td style="color:#10B981; font-weight:bold;">${d.roa || '—'}%</td>
-                        <td>${d.dateSaved || '—'}</td>
-                    </tr>`;
-                }).join('')}</tbody>
-            </table>`;
+                    return `
+                        <div class="mobile-card ${isCurrent ? 'current-month' : ''}">
+                            <div class="mobile-card-header">
+                                <span>${d.period || key}</span>
+                                <span style="font-size: 12px; color: #6b7280;">Month Overview</span>
+                            </div>
+                            <div class="mobile-card-body">
+                                <div class="mobile-card-item">
+                                    <span class="mobile-card-label">Members</span>
+                                    <span class="mobile-card-value">${d.members?.toLocaleString() || '—'}</span>
+                                </div>
+                                <div class="mobile-card-item">
+                                    <span class="mobile-card-label">Contributions</span>
+                                    <span class="mobile-card-value ksh">${d.contributions?.toLocaleString() || '—'}</span>
+                                </div>
+                                <div class="mobile-card-item">
+                                    <span class="mobile-card-label">Loans</span>
+                                    <span class="mobile-card-value ksh">${d.loans?.toLocaleString() || '—'}</span>
+                                </div>
+                                <div class="mobile-card-item">
+                                    <span class="mobile-card-label">Bank Balance</span>
+                                    <span class="mobile-card-value ksh">${d.bankBalance?.toLocaleString() || '—'}</span>
+                                </div>
+                                <div class="mobile-card-item">
+                                    <span class="mobile-card-label">ROA</span>
+                                    <span class="mobile-card-value roa">${d.roa || '—'}%</span>
+                                </div>
+                                <div class="mobile-card-item">
+                                    <span class="mobile-card-label">Profit</span>
+                                    <span class="mobile-card-value ksh">${d.profit?.toLocaleString() || '—'}</span>
+                                </div>
+                            </div>
+                            <div class="mobile-card-date">Saved on ${d.dateSaved || '—'}</div>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+
+        tableContainer.innerHTML = desktopHTML + mobileHTML;
+
         const totalSize = (JSON.stringify(window.saccoHistory).length / 1024).toFixed(1);
-        footer.innerHTML = `Total Records: <strong>${periods.length}</strong> | First: <strong>${periods[periods.length-1]}</strong> | Latest: <strong>${periods[0]}</strong> | <span style="color:#10B981;">~${totalSize} KB (Shared via server)</span>`;
+        footer.innerHTML = `
+            Total Records: <strong>${periods.length}</strong> | 
+            First: <strong>${periods[periods.length-1]}</strong> | 
+            Latest: <strong>${periods[0]}</strong> |
+            <span style="color:#10B981;">Space used: ~${totalSize} KB (Persisted from carousel)</span>
+        `;
     }
 
-    // Download (unchanged)
     function downloadHistoryCSV() {
-        if (!window.saccoHistory || Object.keys(window.saccoHistory).length === 0) return alert("No data to download.");
+        loadPersistedData();
+        if (!window.saccoHistory || Object.keys(window.saccoHistory).length === 0) {
+            alert("No data to download yet.");
+            return;
+        }
         const periods = Object.keys(window.saccoHistory).sort();
         let csv = "Period,Members,Contributions (KSh),Loans (KSh),Bank Balance (KSh),ROA %,Date Saved\n";
         periods.forEach(key => {
@@ -392,58 +532,91 @@
         URL.revokeObjectURL(url);
     }
 
-    // Reload (forces server/local load)
-    async function reloadHistory() {
-        console.log('Manual reload...');
-        await loadHistoryFromServer();
-        renderFullHistory();
-        alert('Shared history reloaded!');
+    // BONUS: Clear all data (for testing/resets)
+    function clearAllData() {
+        if (confirm('Clear all saved monthly data? This is permanent!')) {
+            localStorage.removeItem('saccoHistory');
+            localStorage.removeItem('saccoDataToday');
+            window.saccoHistory = {};
+            window.saccoData = {}; // Careful: this wipes current too
+            renderFullHistory();
+            alert('All data cleared.');
+        }
     }
 
-    // AUTO-RENDER: Robust multi-load for refresh/code updates
-    document.addEventListener('DOMContentLoaded', async () => {
-        console.log('Page loaded, initializing shared history');
-        await loadHistoryFromServer();
-        renderFullHistory();
-        setTimeout(() => { loadHistoryFromServer(); renderFullHistory(); }, 500);
-        setTimeout(() => { loadHistoryFromServer(); renderFullHistory(); }, 1500);
-    });
-
-    // AUTO-SAVE ON CAROUSEL UPDATE (site-wide shared)
-    window.addEventListener('saccoDataUpdated', async () => {
-        saveTodayData();
-        await saveCurrentMonth(false); // Silent auto-save if changed
+    // AUTO-RENDER
+    document.addEventListener('DOMContentLoaded', () => {
+        loadPersistedData();
         renderFullHistory();
     });
-
-    // Fallback fetch for today data
+    window.addEventListener('saccoDataUpdated', () => {
+        savePersistedData();
+        renderFullHistory();
+    });
     setTimeout(() => {
-        if (!window.saccoData) {
-            fetch('https://soyosoyosacco.com/data.json')
-                .then(r => r.json())
-                .then(d => {
-                    window.saccoData = d;
-                    window.dispatchEvent(new Event('saccoDataUpdated'));
-                })
-                .catch(e => console.error('Data fetch failed:', e));
-        }
+        loadPersistedData();
+        renderFullHistory();
     }, 1000);
 </script>
 
 <script>
-  // AUTO-YEAR MAGIC (unchanged)
+  // AUTO-YEAR MAGIC — UPDATES EVERY YEAR TEXT AUTOMATICALLY
   document.addEventListener('DOMContentLoaded', () => {
     const currentYear = new Date().getFullYear();
-    document.querySelectorAll('footer p').forEach(el => {
-      if (el.textContent.includes('©')) el.innerHTML = el.innerHTML.replace(/\d{4}/, currentYear);
+    const startYear = 2025; // Change only if you want a different base year
+
+    // Update copyright
+    document.querySelectorAll('footer p, .copyright, [class*="copyright"], [id*="copyright"]').forEach(el => {
+      if (el.textContent.includes('©')) {
+        el.innerHTML = el.innerHTML.replace(/\d{4}(?=\s*SOYOSOYO|\s*$)/, currentYear);
+      }
     });
+
+    // Update any "2025" in titles, headers, or text
+    document.querySelectorAll('h1, h2, h3, p, span, div, li').forEach(el => {
+      if (el.textContent.includes('2025')) {
+        el.innerHTML = el.innerHTML.replace(/2025/g, currentYear);
+      }
+    });
+
+    // Special: Update "5-Year Growth Strategy" → "6-Year", etc.
+    document.querySelectorAll('.summary-header, h2').forEach(el => {
+      if (el.textContent.includes('Year Growth Strategy')) {
+        const yearsAhead = currentYear - startYear + 5;
+        el.textContent = `${yearsAhead}-Year Growth Strategy`;
+      }
+    });
+
+    // Special: Update "Monthly Financial History (2025 – Present)"
     document.querySelectorAll('.history-header').forEach(el => {
-      if (el.textContent.includes('2025')) el.textContent = el.textContent.replace('2025', currentYear);
+      if (el.textContent.includes('2025')) {
+        el.textContent = el.textContent.replace('2025', currentYear);
+      }
     });
+
+    // Special: Update any "2025–Present" pattern
     document.querySelectorAll('*').forEach(el => {
-      if (el.textContent.includes('2025 – Present')) el.innerHTML = el.innerHTML.replace(/2025(?=\s*[–-]\s*Present)/g, currentYear);
+      if (el.textContent.includes('2025 – Present') || el.textContent.includes('2025-Present')) {
+        el.innerHTML = el.innerHTML.replace(/2025(?=\s*[–-]\s*Present)/g, currentYear);
+      }
+    });
+
+    // Update footer year only
+    document.querySelectorAll('footer').forEach(footer => {
+      footer.innerHTML = footer.innerHTML.replace(/©\s*\d{4}/, `© ${currentYear}`);
     });
   });
+</script>
+
+<script>
+  if (!window.saccoData) {
+    fetch('https://soyosoyosacco.com/data.json')
+      .then(r => r.json())
+      .then(d => {
+        window.saccoData = d;
+        window.dispatchEvent(new Event('saccoDataUpdated'));
+      });
+  }
 </script>
 </body>
 </html>
