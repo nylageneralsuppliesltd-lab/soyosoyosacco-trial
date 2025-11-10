@@ -22,7 +22,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
     
     <!-- MAIN SITE CSS -->
-    <link rel="stylesheet" href="./style.css?v=61">
+    <link rel="stylesheet" href="./style.css?v=100">
 
     <!-- Plotly.js -->
     <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
@@ -841,23 +841,6 @@
         if (typeof updateFields === 'function') updateFields();
         if (typeof updateSliderValue === 'function') updateSliderValue('principal');
     });
-</script>
-<!-- CHART.JS GROWTH CHARTS SCRIPT (100% ORIGINAL) -->
-<script>
-    const cleanGrowthArrowPlugin = { /* ... your full plugin from before ... */ };
-    Chart.register(cleanGrowthArrowPlugin);
-    Chart.register(ChartDataLabels);
-
-    function renderGrowthCharts() { /* ... your full renderGrowthCharts function ... */ }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        renderGrowthCharts();
-        initMemberCarousel();
-        if (typeof updateFields === 'function') updateFields();
-        /* ... your full year update code ... */
-    });
-</script>
-
 <script src="./scripts/main.js"></script>
 <script src="./scripts/calculator.js"></script>
 <script src="./scripts/dividendscalculator.js"></script>
