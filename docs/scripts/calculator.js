@@ -20,20 +20,7 @@
         if (loanData) drawChart();
       });
     };
-    script.onerror = () => {
-      console.error('Failed to load Google Charts loader');
-      chartLoaded = false;
-    };
-    document.head.appendChild(script);
-  } else {
-    // Already loaded somehow
-    google.charts.load('current', { packages: ['corechart'] });
-    google.charts.setOnLoadCallback(() => {
-      chartLoaded = true;
-      if (loanData) drawChart();
-    });
-  }
-
+    
 
 const loanConfigurations = {
     'emergency': { 
