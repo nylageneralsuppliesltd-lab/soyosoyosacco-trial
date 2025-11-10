@@ -577,9 +577,6 @@ footer a:hover { color:#ffffff; }
 .chart-card:hover { transform: translateY(-6px); }
 .chart-card canvas {
    
-    margin: 0 auto;
-    max-width: 100%;
-    display: block;
 }
 .chart-card p {
     margin-top: 0.8rem;
