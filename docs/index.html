@@ -36,11 +36,8 @@
       gtag('config', 'G-05M38MYK0G');
     </script>
 
-       <!-- FINAL FIX — CHART.JS + PLOTLY FULLY ISOLATED, NO GLOBAL POLLUTION -->
+    <!-- FINAL FIX — CHART.JS + PLOTLY FULLY ISOLATED, NO GLOBAL POLLUTION -->
     <style id="final-working-fix">
-      /* ========================================
-         CHART.JS FINANCIAL CARDS (ISOLATED)
-         ======================================== */
       .growth-charts-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -48,7 +45,6 @@
         margin: 2rem 0;
         width: 100%;
       }
-      
       .chart-card {
         position: relative;
         width: 100%;
@@ -61,7 +57,6 @@
         box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         overflow: visible !important;
       }
-      
       .chart-card canvas {
         flex: 1 1 auto;
         width: 100% !important;
@@ -71,7 +66,6 @@
         display: block !important;
         transform: none !important;
       }
-      
       .chart-card p {
         margin: 0.75rem 0 0 0;
         text-align: center;
@@ -80,7 +74,6 @@
         font-size: 1rem;
         flex-shrink: 0;
       }
-      
       .growth-indicator {
         text-align: center;
         margin-top: 0.5rem;
@@ -92,17 +85,9 @@
       .growth-indicator.negative { color: #EF4444; }
       .growth-indicator i { margin-right: 4px; font-size: 0.9em; }
       @media (max-width: 768px) {
-        .chart-card { 
-          height: 380px;
-          padding: 1.2rem;
-        }
-        .chart-card canvas {
-          min-height: 240px !important;
-        }
+        .chart-card { height: 380px; padding: 1.2rem; }
+        .chart-card canvas { min-height: 240px !important; }
       }
-      /* ========================================
-         PLOTLY PROJECTIONS (FULLY SCOPED)
-         ======================================== */
       #projectionsChart {
         isolation: isolate;
         contain: layout style paint;
@@ -183,46 +168,18 @@
         font-weight: 900;
       }
       @media (min-width: 769px) {
-        #projectionsChart {
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: space-between;
-        }
-        #projectionsChart > .kpi-card {
-          flex: 1 1 calc(50% - 20px);
-          max-width: 48%;
-        }
-        #projectionsChart .plotly-projection-div {
-          height: 440px !important;
-        }
-        #projectionsChart > .summary-card {
-          flex: 1 1 100%;
-          max-width: 100%;
-          margin: 30px 8px 10px;
-        }
-        #projectionsChart .summary-grid {
-          grid-template-columns: repeat(4, 1fr);
-          gap: 20px;
-          padding: 20px;
-        }
-        #projectionsChart .summary-values strong {
-          font-size: 17px;
-        }
-        #projectionsChart .summary-growth {
-          padding: 8px 16px;
-          font-size: 13px;
-        }
+        #projectionsChart { display: flex; flex-wrap: wrap; justify-content: space-between; }
+        #projectionsChart > .kpi-card { flex: 1 1 calc(50% - 20px); max-width: 48%; }
+        #projectionsChart .plotly-projection-div { height: 440px !important; }
+        #projectionsChart > .summary-card { flex: 1 1 100%; max-width: 100%; margin: 30px 8px 10px; }
+        #projectionsChart .summary-grid { grid-template-columns: repeat(4, 1fr); gap: 20px; padding: 20px; }
+        #projectionsChart .summary-values strong { font-size: 17px; }
+        #projectionsChart .summary-growth { padding: 8px 16px; font-size: 13px; }
       }
       @media (max-width: 768px) {
-        #projectionsChart .plotly-projection-div {
-          height: 460px !important;
-        }
+        #projectionsChart .plotly-projection-div { height: 460px !important; }
       }
-      /* ========================================
-         NO GLOBAL RULES - EVERYTHING SCOPED
-         ======================================== */
     </style>
-
 
     <!-- MEMBER CAROUSEL -->
     <style>
@@ -366,7 +323,7 @@
     </section>
 
     <!-- GROWTH CHARTS (Chart.js) -->
-        <section class="section">
+    <section class="section">
         <h2 style="text-align: center; margin-bottom: 1.5rem;">Growth Since January 2025</h2>
         <div class="growth-charts-grid">
             <div class="chart-card"><canvas id="chartMembers"></canvas><p>Total Members</p><div id="growthMembers" class="growth-indicator"></div></div>
@@ -503,9 +460,9 @@
 <footer>
     <p>© <span id="autoYearStart">2025</span>–<span id="autoYearNow"></span>  SOYOSOYO SACCO. All rights reserved. | <a href="mailto:info@soyosoyosacco.com">info@soyosoyosacco.com</a></p>
     <div class="social-icons">
-        <a href="https://www.facebook.com/people/Soyosoyo-Sacco/61565783836766/" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-        <a href="https://x.com/SoyosoyoSACCO" target="_blank" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-        <a href="https://www.instagram.com/soyosoyosacco" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.facebook.com/people/Soyosoyo-Sacco/61565783836766/" target="_blank" aria-label="Facebook">Facebook</a>
+        <a href="https://x.com/SoyosoyoSACCO" target="_blank" aria-label="Twitter">Twitter</a>
+        <a href="https://www.instagram.com/soyosoyosacco" target="_blank" aria-label="Instagram">Instagram</a>
     </div>
 </footer>
 
@@ -513,311 +470,250 @@
 <script>
   document.getElementById('autoYearNow').textContent = new Date().getFullYear();
 </script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
 <script src="./scripts/carousel.js"></script>
-
 <script src="./scripts/projections.js?v=RESTORED"></script>
 <script src="./scripts/member-carousel.js"></script>
 
-    <script>
-      // CLEAN GROWTH ARROW PLUGIN
-    const cleanGrowthArrowPlugin = {
-        id: 'cleanGrowthArrow',
-        afterDraw: function(chart) {
-            const { ctx, scales, data } = chart;
-            const dataset = data.datasets[0];
-            const janVal = dataset.data[0];
-            const todayVal = dataset.data[1];
-            const growthPercent = janVal === 0 ? 0 : ((todayVal - janVal) / Math.abs(janVal)) * 100;
-            const isPositive = growthPercent > 0;
+<script>
+  const cleanGrowthArrowPlugin = {
+    id: 'cleanGrowthArrow',
+    afterDraw: function(chart) {
+      const { ctx, scales, data } = chart;
+      const dataset = data.datasets[0];
+      const janVal = dataset.data[0];
+      const todayVal = dataset.data[1];
+      const growthPercent = janVal === 0 ? 0 : ((todayVal - janVal) / Math.abs(janVal)) * 100;
+      const isPositive = growthPercent > 0;
 
-            const xScale = scales.x;
-            const yScale = scales.y;
+      const xScale = scales.x;
+      const yScale = scales.y;
 
-            const x1 = xScale.getPixelForValue(0);
-            const x2 = xScale.getPixelForValue(1);
-            const y1 = yScale.getPixelForValue(janVal);
-            const y2 = yScale.getPixelForValue(todayVal);
+      const x1 = xScale.getPixelForValue(0);
+      const x2 = xScale.getPixelForValue(1);
+      const y1 = yScale.getPixelForValue(janVal);
+      const y2 = yScale.getPixelForValue(todayVal);
 
-            const headLength = 14;
-            const angle = Math.atan2(y2 - y1, x2 - x1);
+      const headLength = 14;
+      const angle = Math.atan2(y2 - y1, x2 - x1);
 
-            const color = isPositive ? '#10B981' : '#EF4444';
+      const color = isPositive ? '#10B981' : '#EF4444';
 
-            ctx.save();
-            ctx.strokeStyle = color;
-            ctx.lineWidth = 3;
-            ctx.lineCap = 'round';
-            ctx.beginPath();
-            ctx.moveTo(x1, y1);
-            ctx.lineTo(x2, y2);
-            ctx.stroke();
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 3;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
 
-            ctx.beginPath();
-            ctx.moveTo(x2, y2);
-            ctx.lineTo(x2 - headLength * Math.cos(angle - Math.PI / 6), y2 - headLength * Math.sin(angle - Math.PI / 6));
-            ctx.lineTo(x2 - headLength * Math.cos(angle + Math.PI / 6), y2 - headLength * Math.sin(angle + Math.PI / 6));
-            ctx.closePath();
-            ctx.fillStyle = color;
-            ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(x2, y2);
+      ctx.lineTo(x2 - headLength * Math.cos(angle - Math.PI / 6), y2 - headLength * Math.sin(angle - Math.PI / 6));
+      ctx.lineTo(x2 - headLength * Math.cos(angle + Math.PI / 6), y2 - headLength * Math.sin(angle + Math.PI / 6));
+      ctx.closePath();
+      ctx.fillStyle = color;
+      ctx.fill();
 
-            if (growthPercent !== 0) {
-                const midX = (x1 + x2) / 2;
-                const midY = (y1 + y2) / 2 - 15;
-                ctx.font = 'bold 13px Lato';
-                ctx.fillStyle = color;
-                ctx.textAlign = 'center';
-                ctx.fillText(`${isPositive ? '+' : ''}${growthPercent.toFixed(1)}%`, midX, midY);
-            }
-            ctx.restore();
-        }
+      if (growthPercent !== 0) {
+        const midX = (x1 + x2) / 2;
+        const midY = (y1 + y2) / 2 - 15;
+        ctx.font = 'bold 13px Lato';
+        ctx.fillStyle = color;
+        ctx.textAlign = 'center';
+        ctx.fillText(`${isPositive ? '+' : ''}${growthPercent.toFixed(1)}%`, midX, midY);
+      }
+      ctx.restore();
+    }
+  };
+  Chart.register(cleanGrowthArrowPlugin);
+
+  function renderGrowthCharts() {
+    if (!window.saccoData) {
+      console.warn('saccoData not ready. Retrying...');
+      setTimeout(renderGrowthCharts, 100);
+      return;
+    }
+
+    const { jan, today } = window.saccoData;
+    const colors = {
+      members: { jan: '#8B5CF6', today: '#C4B5FD' },
+      loans: { jan: '#F59E0B', today: '#FBBF24' },
+      contributions: { jan: '#10B981', today: '#34D399' },
+      profit: { jan: '#EF4444', today: '#F87171' },
+      roa: { jan: '#0EA5E9', today: '#7DD3FC' },
+      liquidity: { jan: '#6366F1', today: '#A5B4FC' }
     };
-    Chart.register(cleanGrowthArrowPlugin);
 
-    // CHART RENDERER
-    function renderGrowthCharts() {
-        if (!window.saccoData) {
-            console.warn('saccoData not ready. Retrying...');
-            setTimeout(renderGrowthCharts, 100);
-            return;
-        }
+    const growth = (j, t) => j === 0 ? (t === 0 ? 0 : 100) : ((t - j) / Math.abs(j)) * 100;
 
-        console.log('SACCO DATA LOADED:', window.saccoData);
-
-        const { jan, today } = window.saccoData;
-        const colors = {
-            members: { jan: '#8B5CF6', today: '#C4B5FD' },
-            loans: { jan: '#F59E0B', today: '#FBBF24' },
-            contributions: { jan: '#10B981', today: '#34D399' },
-            profit: { jan: '#EF4444', today: '#F87171' },
-            roa: { jan: '#0EA5E9', today: '#7DD3FC' },
-            liquidity: { jan: '#6366F1', today: '#A5B4FC' }
-        };
-
-        const growth = (j, t) => j === 0 ? (t === 0 ? 0 : 100) : ((t - j) / Math.abs(j)) * 100;
-
-        const updateIndicator = (id, g) => {
-            const el = document.getElementById(id);
-            const arrow = g > 0 ? 'up' : g < 0 ? 'down' : 'right';
-            const cls = g > 0 ? 'positive' : g < 0 ? 'negative' : '';
-            el.innerHTML = `<i class="fas fa-arrow-${arrow}"></i> ${Math.abs(g).toFixed(1)}%`;
-            el.className = `growth-indicator ${cls}`;
-        };
+    const updateIndicator = (id, g) => {
+      const el = document.getElementById(id);
+      const arrow = g > 0 ? 'up' : g < 0 ? 'down' : 'right';
+      const cls = g > 0 ? 'positive' : g < 0 ? 'negative' : '';
+      el.innerHTML = `<i class="fas fa-arrow-${arrow}"></i> ${Math.abs(g).toFixed(1)}%`;
+      el.className = `growth-indicator ${cls}`;
+    };
 
     const createChart = (id, j, t, label, color, gid, isPercent = false, isMoney = false) => {
-    const g = growth(j, t);
-    updateIndicator(gid, g);
-    
-    // YOUR MATHEMATICAL MASTERPIECE
-    const maxDataValue = Math.max(j, t);
-    const yMax = maxDataValue * 1.15; // 15% headroom = arrows land perfectly
+      const g = growth(j, t);
+      updateIndicator(gid, g);
+      
+      const maxDataValue = Math.max(j, t);
+      const yMax = maxDataValue * 1.15;
 
-    new Chart(document.getElementById(id).getContext('2d'), {
+      new Chart(document.getElementById(id).getContext('2d'), {
         type: 'bar',
         data: {
-            labels: ['Jan 2025', 'Today'],
-            datasets: [{
-                data: [j, t],
-                backgroundColor: [color.jan, color.today],
-                borderRadius: 10,
-                maxBarThickness: 80
-            }]
+          labels: ['Jan 2025', 'Today'],
+          datasets: [{
+            data: [j, t],
+            backgroundColor: [color.jan, color.today],
+            borderRadius: 10,
+            maxBarThickness: 80
+          }]
         },
         options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: { 
+                label: ctx => {
+                  const val = ctx.raw;
+                  if (isPercent) return val.toFixed(2) + '%';
+                  if (isMoney) return 'KES ' + val.toLocaleString();
+                  return val.toLocaleString();
+                }
+              }
+            },
+            datalabels: {
+              anchor: 'end',
+              align: 'end',
+              offset: -2,
+              clamp: true,
+              color: '#1a1a1a',
+              font: { weight: '900', size: 13 },
+              formatter: v => {
+                if (isPercent) return v.toFixed(2) + '%';
+                if (isMoney) return 'KES ' + v.toLocaleString();
+                return v.toLocaleString();
+              },
+              backgroundColor: 'rgba(255, 255, 255, 0.95)',
+              borderRadius: 6,
+              padding: { top: 5, bottom: 5, left: 8, right: 8 }
+            }
+          },
+          scales: {
+            x: { grid: { display: false }, ticks: { color: '#1a1a1a', font: { weight: 'bold', size: 12 } } },
+            y: { display: false, beginAtZero: true, max: yMax }
+          },
+          layout: { padding: { top: 45, left: 10, right: 10, bottom: 5 } }
+        },
+        plugins: [ChartDataLabels]
+      });
+    };
+
+    const janROA = parseFloat(jan.roa);
+    const todayROA = parseFloat(today.roa);
+    const janLiquidity = jan.contributions > 0 ? (jan.bankBalance / jan.contributions) * 100 : 0;
+    const todayLiquidity = today.contributions > 0 ? (today.bankBalance / today.contributions) * 100 : 0;
+
+    createChart('chartMembers', jan.members, today.members, 'Members', colors.members, 'growthMembers');
+    createChart('chartLoans', jan.loans, today.loans, 'Loans (KES)', colors.loans, 'growthLoans', false, true);
+    createChart('chartContributions', jan.contributions, today.contributions, 'Contributions (KES)', colors.contributions, 'growthContributions', false, true);
+    createChart('chartProfit', jan.profit, today.profit, 'Profit (KES)', colors.profit, 'growthProfit', false, true);
+    createChart('chartROA', janROA, todayROA, 'ROA (%)', colors.roa, 'growthROA', true);
+    createChart('chartLiquidity', janLiquidity, todayLiquidity, 'Liquidity Ratio (%)', colors.liquidity, 'growthLiquidity', true);
+
+    if (window.loanTypes && window.loanTypes.length > 0) {
+      const totalLoans = window.loanTypes.reduce((sum, loan) => sum + loan.value, 0);
+      if (totalLoans > 0) {
+        const labels = window.loanTypes.map(loan => loan.name);
+        const data = window.loanTypes.map(loan => (loan.value / totalLoans) * 100);
+        const loanColors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'];
+
+        new Chart(document.getElementById('chartLoanTypes').getContext('2d'), {
+          type: 'pie',
+          data: {
+            labels: labels,
+            datasets: [{
+              data: data,
+              backgroundColor: loanColors,
+              borderWidth: 2,
+              borderColor: '#fff'
+            }]
+          },
+          options: {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: { display: false },
-                tooltip: {
-                    callbacks: { 
-                        label: ctx => {
-                            const val = ctx.raw;
-                            if (isPercent) return val.toFixed(2) + '%';
-                            if (isMoney) return 'KES ' + val.toLocaleString();
-                            return val.toLocaleString();
-                        }
+              legend: {
+                display: true,
+                position: 'bottom',
+                labels: {
+                  generateLabels: function(chart) {
+                    const data = chart.data;
+                    if (data.labels.length && data.datasets.length) {
+                      return data.labels.map((label, i) => {
+                        const value = data.datasets[0].data[i];
+                        const percentage = value.toFixed(1) + '%';
+                        return {
+                          text: `${label}: ${percentage}`,
+                          fillStyle: data.datasets[0].backgroundColor[i],
+                          strokeStyle: data.datasets[0].borderColor[i],
+                          lineWidth: data.datasets[0].borderWidth,
+                          hidden: false,
+                          index: i
+                        };
+                      });
                     }
-                },
-                datalabels: {
-                    anchor: 'end',
-                    align: 'end',
-                    offset: -2,
-                    clamp: true,
-                    color: '#1a1a1a',
-                    font: { weight: '900', size: 13 },
-                    formatter: v => {
-                        if (isPercent) return v.toFixed(2) + '%';
-                        if (isMoney) return 'KES ' + v.toLocaleString();
-                        return v.toLocaleString();
-                    },
-                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                    borderRadius: 6,
-                    padding: { top: 5, bottom: 5, left: 8, right: 8 }
+                    return [];
+                  },
+                  font: { size: 12, weight: 'bold' },
+                  padding: 20,
+                  usePointStyle: true
                 }
-            },
-            scales: {
-                x: { 
-                    grid: { display: false }, 
-                    ticks: { color: '#1a1a1a', font: { weight: 'bold', size: 12 } } 
-                },
-                y: { 
-                    display: false, 
-                    beginAtZero: true,
-                    max: yMax
+              },
+              tooltip: {
+                callbacks: {
+                  label: ctx => `${ctx.label}: ${ctx.parsed.toFixed(1)}%`
                 }
-            },
-            layout: { padding: { top: 45, left: 10, right: 10, bottom: 5 } }
-        },
-        plugins: [ChartDataLabels]
-    });
-};
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: { 
-                                label: ctx => {
-                                    const val = ctx.raw;
-                                    if (isPercent) return val.toFixed(2) + '%';
-                                    if (isMoney) return 'KES ' + val.toLocaleString();
-                                    return val.toLocaleString();
-                                }
-                            }
-                        },
-                        datalabels: {
-                            anchor: 'end',
-                            align: 'top',
-                            color: '#1a1a1a',
-                            font: { weight: '900', size: 14 },
-                            formatter: v => {
-                                if (isPercent) return v.toFixed(2) + '%';
-                                if (isMoney) return 'KES ' + v.toLocaleString();
-                                return v.toLocaleString();
-                            },
-                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                            borderRadius: 6,
-                            padding: 7
-                        }
-                    },
-                    scales: {
-                        x: { grid: { display: false }, ticks: { color: '#1a1a1a', font: { weight: 'bold', size: 13 } } },
-                        y: { display: false, beginAtZero: true }
-                    },
-                    layout: { padding: { top: 50, left: 8, right: 8 } }
-                },
-                plugins: [ChartDataLabels]
-            });
-        };
-
-        // Use pre-calculated ROA from saccoData (includes external loans)
-        const janROA = parseFloat(jan.roa);
-        const todayROA = parseFloat(today.roa);
-
-        // Liquidity: ×100 (as before)
-        const janLiquidity = jan.contributions > 0 ? (jan.bankBalance / jan.contributions) * 100 : 0;
-        const todayLiquidity = today.contributions > 0 ? (today.bankBalance / today.contributions) * 100 : 0;
-
-        console.log('ROA:', janROA.toFixed(2) + '% →', todayROA.toFixed(2) + '%');
-
-        createChart('chartMembers', jan.members, today.members, 'Members', colors.members, 'growthMembers');
-        createChart('chartLoans', jan.loans, today.loans, 'Loans (KES)', colors.loans, 'growthLoans', false, true);
-        createChart('chartContributions', jan.contributions, today.contributions, 'Contributions (KES)', colors.contributions, 'growthContributions', false, true);
-        createChart('chartProfit', jan.profit, today.profit, 'Profit (KES)', colors.profit, 'growthProfit', false, true);
-        createChart('chartROA', janROA, todayROA, 'ROA (%)', colors.roa, 'growthROA', true);
-        createChart('chartLiquidity', janLiquidity, todayLiquidity, 'Liquidity Ratio (%)', colors.liquidity, 'growthLiquidity', true);
-
-        // Render Loan Types Distribution Pie Chart (with custom legend including percentages)
-        if (window.loanTypes && window.loanTypes.length > 0) {
-            const totalLoans = window.loanTypes.reduce((sum, loan) => sum + loan.value, 0);
-            if (totalLoans > 0) {
-                const labels = window.loanTypes.map(loan => loan.name);
-                const data = window.loanTypes.map(loan => (loan.value / totalLoans) * 100);
-                const loanColors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0']; // Colors for Emergency, Medicare, Development, Education
-
-                new Chart(document.getElementById('chartLoanTypes').getContext('2d'), {
-                    type: 'pie',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            data: data,
-                            backgroundColor: loanColors,
-                            borderWidth: 2,
-                            borderColor: '#fff'
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                display: true,
-                                position: 'bottom',
-                                labels: {
-                                    generateLabels: function(chart) {
-                                        const data = chart.data;
-                                        if (data.labels.length && data.datasets.length) {
-                                            return data.labels.map((label, i) => {
-                                                const value = data.datasets[0].data[i];
-                                                const percentage = value.toFixed(1) + '%';
-                                                return {
-                                                    text: `${label}: ${percentage}`,
-                                                    fillStyle: data.datasets[0].backgroundColor[i],
-                                                    strokeStyle: data.datasets[0].borderColor ? data.datasets[0].borderColor[i] : data.datasets[0].backgroundColor[i],
-                                                    lineWidth: data.datasets[0].borderWidth,
-                                                    hidden: false,
-                                                    index: i
-                                                };
-                                            });
-                                        }
-                                        return [];
-                                    },
-                                    font: { size: 12, weight: 'bold' },
-                                    padding: 20,
-                                    usePointStyle: true
-                                }
-                            },
-                            tooltip: {
-                                callbacks: {
-                                    label: ctx => `${ctx.label}: ${ctx.parsed.toFixed(1)}%`
-                                }
-                            },
-                            datalabels: {
-                                formatter: (value) => value > 5 ? value.toFixed(1) + '%' : '',  // Only show if >5%
-                                color: '#fff',
-                                font: { weight: 'bold', size: 12 },
-                                anchor: 'center',
-                                align: 'center'
-                            }
-                        }
-                    },
-                    plugins: [ChartDataLabels]
-                });
-            } else {
-                console.warn('Total loans is 0; skipping loan types chart.');
+              },
+              datalabels: {
+                formatter: (value) => value > 5 ? value.toFixed(1) + '%' : '',
+                color: '#fff',
+                font: { weight: 'bold', size: 12 },
+                anchor: 'center',
+                align: 'center'
+              }
             }
-        } else {
-            console.warn('loanTypes data not available; skipping loan types chart.');
-        }
+          },
+          plugins: [ChartDataLabels]
+        });
+      }
     }
+  }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        renderGrowthCharts();
-        initMemberCarousel();  // Initialize member carousel
-        if (typeof updateFields === 'function') updateFields();
-        if (typeof updateSliderValue === 'function') updateSliderValue('principal');
-    });
+  document.addEventListener('DOMContentLoaded', () => {
+    renderGrowthCharts();
+    initMemberCarousel();
+    if (typeof updateFields === 'function') updateFields();
+    if (typeof updateSliderValue === 'function') updateSliderValue('principal');
+  });
 </script>
-    <script>
+
+<script>
 document.addEventListener("DOMContentLoaded", () => {
   setTimeout(() => {
     if (typeof renderGrowthCharts === "function") renderGrowthCharts();
   }, 500);
 });
 </script>
-    
+
 <script src="./scripts/main.js"></script>
 <script src="./scripts/calculator.js"></script>
 <script src="./scripts/dividendscalculator.js"></script>
@@ -838,55 +734,43 @@ document.addEventListener("DOMContentLoaded", () => {
   "areaServed": ["Kilifi", "Mombasa", "Kwale"]
 }
 </script>
+
 <script>
-  // AUTO-YEAR MAGIC — UPDATES EVERY YEAR TEXT AUTOMATICALLY
   document.addEventListener('DOMContentLoaded', () => {
     const currentYear = new Date().getFullYear();
-    const startYear = 2025; // Change only if you want a different base year
-
-    // Update copyright
+    const startYear = 2025;
     document.querySelectorAll('footer p, .copyright, [class*="copyright"], [id*="copyright"]').forEach(el => {
       if (el.textContent.includes('©')) {
         el.innerHTML = el.innerHTML.replace(/\d{4}(?=\s*SOYOSOYO|\s*$)/, currentYear);
       }
     });
-
-    // Update any "2025" in titles, headers, or text
     document.querySelectorAll('h1, h2, h3, p, span, div, li').forEach(el => {
       if (el.textContent.includes('2025')) {
         el.innerHTML = el.innerHTML.replace(/2025/g, currentYear);
       }
     });
-
-    // Special: Update "5-Year Growth Strategy" → "6-Year", etc.
     document.querySelectorAll('.summary-header, h2').forEach(el => {
       if (el.textContent.includes('Year Growth Strategy')) {
         const yearsAhead = currentYear - startYear + 5;
         el.textContent = `${yearsAhead}-Year Growth Strategy`;
       }
     });
-
-    // Special: Update "Monthly Financial History (2025 – Present)"
     document.querySelectorAll('.history-header').forEach(el => {
       if (el.textContent.includes('2025')) {
         el.textContent = el.textContent.replace('2025', currentYear);
       }
     });
-
-    // Special: Update any "2025–Present" pattern
     document.querySelectorAll('*').forEach(el => {
       if (el.textContent.includes('2025 – Present') || el.textContent.includes('2025-Present')) {
         el.innerHTML = el.innerHTML.replace(/2025(?=\s*[–-]\s*Present)/g, currentYear);
       }
     });
-
-    // Update footer year only
     document.querySelectorAll('footer').forEach(footer => {
       footer.innerHTML = footer.innerHTML.replace(/©\s*\d{4}/, `© ${currentYear}`);
     });
   });
 </script>
-    <!-- DATA LOADER FOR ALL PAGES -->
+
 <script>
   const API_BASE = 'https://soyosoyo-sacco-api.onrender.com/api';
   async function loadLiveData() {
@@ -906,8 +790,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!window.saccoData) loadLiveData();
 </script>
 
-    <script>
-  // Safe Plotly init — waits for DOM + data
+<script>
   document.addEventListener('DOMContentLoaded', () => {
     const tryInit = () => {
       if (window.saccoData && typeof initProjections === 'function') {
@@ -920,6 +803,6 @@ document.addEventListener("DOMContentLoaded", () => {
     tryInit();
   });
 </script>
-    
+
 </body>
 </html>
