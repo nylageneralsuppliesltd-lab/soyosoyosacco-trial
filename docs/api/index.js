@@ -1,4 +1,4 @@
-// docs/api/index.js
+// docs/api/index.js  ← REPLACE ENTIRE FILE WITH THIS
 const express = require('express');
 const { Pool } = require('pg');
 const cors = require('cors');
@@ -6,17 +6,19 @@ const path = require('path');
 require('dotenv').config();
 
 const app = express();
+
+// MIDDLEWARES
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '..'))); // Serve website files
+app.use(express.static(path.join(__dirname, '..'))); // Serve website from docs/
 
-// Neon Postgres connection
+// Neon DB
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }
 });
 
-// Create table if not exists
+// Create table
 pool.query(`
   CREATE TABLE IF NOT EXISTS sacco_history (
     id SERIAL PRIMARY KEY,
@@ -30,7 +32,7 @@ pool.query(`
   )
 `);
 
-// GET: All history (public)
+// API ROUTES — MUST BE BEFORE STATIC FALLBACK
 app.get('/api/history', async (req, res) => {
   try {
     const result = await pool.query(`
@@ -39,15 +41,14 @@ app.get('/api/history', async (req, res) => {
     `);
     res.json(result.rows);
   } catch (err) {
-    console.error(err);
+    console.error('GET error:', err);
     res.status(500).json({ error: 'Database error' });
   }
 });
 
-// POST: Save/Update current month (called by website)
 app.post('/api/history/save', async (req, res) => {
-  const { members, contributions, loans, bankBalance, roa } = req.body;
-  const period = new Date().toISOString().slice(0, 7); // YYYY-MM
+  const { members, contributions, loans, bank_balance, roa } = req.body;
+  const period = new Date().toISOString().slice(0, 7);
 
   try {
     const query = `
@@ -62,22 +63,21 @@ app.post('/api/history/save', async (req, res) => {
         date_saved = CURRENT_DATE
       RETURNING *
     `;
-    const values = [period, members, contributions, loans || 0, bankBalance || 0, roa || 0];
+    const values = [period, members, contributions, loans || 0, bank_balance || 0, roa || 0];
     const result = await pool.query(query, values);
     res.json({ success: true, data: result.rows[0] });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Save failed' });
+    console.error('POST error:', err);
+    res.status(500).json({ error: err.message });
   }
 });
 
-// Serve website (fallback for GitHub Pages + Render)
+// FALLBACK: Serve about.html for any other route
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'about.html'));
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`API running on port ${PORT}`);
-  console.log(`Visit: https://your-render-url.onrender.com/api/history`);
+  console.log(`API LIVE: https://your-url.onrender.com/api/history`);
 });
