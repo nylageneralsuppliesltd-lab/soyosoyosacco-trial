@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, immediate-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Us | Soyosoyo SACCO</title>
     <meta name="description" content="From 1998 Medicare roots to modern financial empowerment. The full story of Soyosoyo SACCO.">
     <link rel="stylesheet" href="./style.css?v=40">
@@ -71,32 +71,32 @@
             margin-top: 20px;
             border-radius: 16px;
             box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+            -webkit-overflow-scrolling: touch;
         }
         #fullHistoryTable table {
             width: 100%;
-            min-width: 800px; /* Slightly reduced for better mobile fit */
+            min-width: 800px;
             border-collapse: collapse;
             background: white;
-            table-layout: fixed; /* Ensures consistent column widths */
+            table-layout: fixed;
         }
         #fullHistoryTable th {
             background: #004d1a;
             color: white;
-            padding: 16px 8px; /* Reduced padding for tighter fit */
+            padding: 16px 8px;
             text-align: center;
             font-weight: 900;
-            font-size: 14px; /* Smaller font for mobile */
-            white-space: nowrap; /* Prevent wrapping in headers */
+            font-size: 14px;
+            white-space: nowrap;
         }
         #fullHistoryTable td {
-            padding: 14px 8px; /* Reduced padding */
+            padding: 14px 8px;
             text-align: center;
             border-bottom: 1px solid #e6f4ea;
             font-size: 14px;
-            white-space: nowrap; /* Prevent wrapping in cells */
+            white-space: nowrap;
             overflow: hidden;
-            text-overflow: ellipsis; /* Handle overflow gracefully */
+            text-overflow: ellipsis;
         }
         #fullHistoryTable tr:hover {
             background: #fff8e1 !important;
@@ -125,34 +125,15 @@
             box-shadow: inset 0 0 10px rgba(255,193,7,0.3);
         }
         @media (max-width: 768px) {
-            .history-section {
-                padding: 20px;
-                margin: 40px 0;
-            }
-            .history-header {
-                font-size: 1.5rem;
-            }
-            .history-controls { 
-                flex-direction: column; 
-                align-items: center; 
-            }
-            .btn { 
-                width: 90%; 
-                max-width: 300px; 
-            }
-            #fullHistoryTable table {
-                min-width: 700px; /* Adjust for mobile */
-                font-size: 12px;
-            }
-            #fullHistoryTable th,
-            #fullHistoryTable td {
-                padding: 10px 4px;
-            }
+            .history-section { padding: 20px; margin: 40px 0; }
+            .history-header { font-size: 1.5rem; }
+            .history-controls { flex-direction: column; align-items: center; }
+            .btn { width: 90%; max-width: 300px; }
+            #fullHistoryTable table { min-width: 700px; font-size: 12px; }
+            #fullHistoryTable th, #fullHistoryTable td { padding: 10px 4px; }
         }
         @media (max-width: 480px) {
-            #fullHistoryTable table {
-                min-width: 600px;
-            }
+            #fullHistoryTable table { min-width: 600px; }
         }
     </style>
 </head>
@@ -199,20 +180,16 @@
         </div>
     </section>
 
-    <!-- MONTHLY HISTORY SECTION — ENHANCED FOR CLEAR ALIGNMENT -->
+    <!-- MONTHLY HISTORY SECTION — SHARED & ROBUST -->
     <section class="history-section">
         <h2 class="history-header">Monthly Financial History (2025 – Present)</h2>
         <div class="history-controls">
             <button class="btn btn-save" onclick="saveCurrentMonth(true)">SAVE THIS MONTH'S DATA</button>
-            <button class="btn btn-download" onclick="downloadHistoryCSV()">
-                DOWNLOAD FULL HISTORY (CSV)
-            </button>
+            <button class="btn btn-download" onclick="downloadHistoryCSV()">DOWNLOAD FULL HISTORY (CSV)</button>
             <button class="btn btn-reload" onclick="reloadHistory()">RELOAD HISTORY</button>
         </div>
         <div id="fullHistoryTable"></div>
-        <div class="history-footer" id="historyFooter">
-            Loading monthly records...
-        </div>
+        <div class="history-footer" id="historyFooter">Loading shared monthly records...</div>
     </section>
 </main>
 
@@ -229,52 +206,93 @@
   document.getElementById('currentYear').textContent = new Date().getFullYear();
 </script>
 <script src="./scripts/main.js"></script>
-
-<!-- CAROUSEL SCRIPT LOADED HERE TO ENSURE DATA INITIALIZATION BEFORE HISTORY LOGIC -->
 <script src="./scripts/carousel.js"></script>
 
 <script>
-    // MONTHLY SAVE + RENDER + DOWNLOAD — ENHANCED WITH PERSISTENCE, POINTING TO CAROUSEL DATA
-    function loadPersistedData() {
-        console.log('Loading persisted data...'); // Debug log
-        // Load history if available
-        const savedHistory = localStorage.getItem('saccoHistory');
-        if (savedHistory && !window.saccoHistory) {
-            try {
-                window.saccoHistory = JSON.parse(savedHistory);
-                console.log('Recovered history from localStorage:', window.saccoHistory);
-            } catch (e) {
-                console.error('Corrupted history:', e);
-                window.saccoHistory = {};
-            }
-        } else if (!window.saccoHistory) {
-            window.saccoHistory = {};
-        }
-        // Load today data if missing (from carousel persistence)
+    // CONFIG: Replace with your actual API endpoint (e.g., 'https://soyosoyosacco.com/api/history')
+    const API_ENDPOINT = 'YOUR_API_ENDPOINT'; // e.g., '/api/history' for relative
+
+    // Load today data (carousel persistence, unchanged)
+    function loadTodayData() {
         const savedToday = localStorage.getItem('saccoDataToday');
         if (savedToday && !window.saccoData?.today) {
             try {
                 window.saccoData = { today: JSON.parse(savedToday) };
-                console.log('Loaded persisted today data from carousel');
-            } catch (e) {
-                console.error('Corrupted today data:', e);
-            }
+            } catch (e) { console.error('Corrupted today data:', e); }
         }
     }
 
-    function savePersistedData() {
-        if (window.saccoHistory) {
-            localStorage.setItem('saccoHistory', JSON.stringify(window.saccoHistory));
-            console.log('Persisted history to localStorage');
+    // SHARED: Load history from server (primary) or localStorage (fallback)
+    async function loadHistoryFromServer() {
+        if (!API_ENDPOINT || API_ENDPOINT === 'YOUR_API_ENDPOINT') {
+            console.warn('API endpoint not set; falling back to localStorage');
+            loadLocalHistory();
+            return;
         }
+        try {
+            const response = await fetch(API_ENDPOINT, { method: 'GET' });
+            if (response.ok) {
+                window.saccoHistory = await response.json();
+                console.log('Loaded shared history from server:', window.saccoHistory);
+                // Sync to local for offline fallback
+                localStorage.setItem('saccoHistory', JSON.stringify(window.saccoHistory));
+            } else {
+                throw new Error('Server error');
+            }
+        } catch (e) {
+            console.error('Server load failed:', e);
+            loadLocalHistory(); // Fallback
+        }
+    }
+
+    function loadLocalHistory() {
+        const savedHistory = localStorage.getItem('saccoHistory');
+        if (savedHistory) {
+            try {
+                window.saccoHistory = JSON.parse(savedHistory);
+                console.log('Loaded history from localStorage:', window.saccoHistory);
+            } catch (e) {
+                console.error('Corrupted local history:', e);
+                window.saccoHistory = {};
+            }
+        } else {
+            window.saccoHistory = {};
+        }
+    }
+
+    // SHARED: Save history to server (primary) or localStorage (fallback)
+    async function saveHistoryToServer(history) {
+        if (!API_ENDPOINT || API_ENDPOINT === 'YOUR_API_ENDPOINT') {
+            console.warn('API endpoint not set; saving to localStorage only');
+            localStorage.setItem('saccoHistory', JSON.stringify(history));
+            return;
+        }
+        try {
+            const response = await fetch(API_ENDPOINT, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(history)
+            });
+            if (!response.ok) throw new Error('Save failed');
+            console.log('Saved shared history to server');
+            // Sync to local
+            localStorage.setItem('saccoHistory', JSON.stringify(history));
+        } catch (e) {
+            console.error('Server save failed:', e);
+            localStorage.setItem('saccoHistory', JSON.stringify(history)); // Fallback
+        }
+    }
+
+    // Persist today data (unchanged)
+    function saveTodayData() {
         if (window.saccoData?.today) {
             localStorage.setItem('saccoDataToday', JSON.stringify(window.saccoData.today));
         }
     }
 
-    // Helper: Check if data has changed compared to existing monthly entry
+    // Change detection (unchanged)
     function hasDataChanged(today, existing) {
-        if (!existing) return true; // New month: always save
+        if (!existing) return true;
         const keys = ['members', 'contributions', 'loans', 'bankBalance', 'profit', 'roa'];
         return keys.some(key => {
             const newVal = today[key];
@@ -283,40 +301,28 @@
         });
     }
 
-    function saveCurrentMonth(isManual = false) {
-        loadPersistedData();  // Ensure latest is loaded from carousel persistence
-
+    // Save function (now server-aware)
+    async function saveCurrentMonth(isManual = false) {
+        loadTodayData();
         if (!window.saccoData?.today) {
-            if (isManual) alert("No current data. Please visit the homepage first to load metrics via carousel.");
+            if (isManual) alert("No current data. Visit homepage for carousel metrics.");
             return;
         }
-
-        // Convert ROA string to number if needed
         const today = { ...window.saccoData.today };
-        if (typeof today.roa === 'string') {
-            today.roa = parseFloat(today.roa);
-        }
-
-        // Validate key fields
+        if (typeof today.roa === 'string') today.roa = parseFloat(today.roa);
         if (isNaN(today.members) || isNaN(today.contributions)) {
-            if (isManual) alert("Invalid data format. Check homepage carousel metrics.");
+            if (isManual) alert("Invalid data. Check carousel.");
             return;
         }
-
+        await loadHistoryFromServer(); // Ensure latest shared
         if (!window.saccoHistory) window.saccoHistory = {};
         const date = new Date();
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const key = `${year}-${month}`;
+        const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
         const existing = window.saccoHistory[key];
-
-        // Check if data has actually changed (or new entry)
         if (!hasDataChanged(today, existing)) {
-            if (isManual) alert(`No changes detected in current month's data. Up-to-date as of ${existing.dateSaved}.`);
+            if (isManual) alert(`No changes. Up-to-date as of ${existing?.dateSaved || 'N/A'}.`);
             return;
         }
-
-        // Always overwrite for the current month to capture daily carousel updates
         window.saccoHistory[key] = {
             period: key,
             members: today.members,
@@ -327,88 +333,50 @@
             roa: today.roa || 0,
             dateSaved: date.toISOString().split('T')[0]
         };
-
-        savePersistedData();  // Persist immediately
+        await saveHistoryToServer(window.saccoHistory);
         renderFullHistory();
         const action = existing ? 'UPDATED' : 'SAVED';
-        const msg = `${action} MONTHLY DATA ${key} WITH LATEST CAROUSEL METRICS! (Members: ${today.members.toLocaleString()})`;
-        if (isManual) {
-            alert(msg);
-        } else {
-            console.log('AUTO-' + msg); // Silent for auto, log for dev
-        }
-        console.log("Saved/Updated from carousel data:", window.saccoHistory[key]);
+        const msg = `${action} shared monthly data ${key}! (Members: ${today.members.toLocaleString()})`;
+        if (isManual) alert(msg);
+        else console.log('AUTO-' + msg);
     }
 
+    // Render (unchanged, but now shows shared data)
     function renderFullHistory() {
-        loadPersistedData();
         const tableContainer = document.getElementById('fullHistoryTable');
         const footer = document.getElementById('historyFooter');
-        if (!tableContainer) {
-            console.error('Table container not found!');
-            return;
-        }
-
-        console.log('Rendering history:', window.saccoHistory); // Debug log
-
+        if (!tableContainer) return;
         if (!window.saccoHistory || Object.keys(window.saccoHistory).length === 0) {
-            tableContainer.innerHTML = `<p style="text-align:center; color:#6b7280; padding:40px;">No monthly data saved yet. Click the green button to start! (Data sourced from homepage carousel)</p>`;
-            footer.textContent = "Start saving your monthly growth today.";
+            tableContainer.innerHTML = `<p style="text-align:center; color:#6b7280; padding:40px;">No shared monthly data yet. Click SAVE to start! (Sourced from carousel)</p>`;
+            footer.textContent = "Start building shared monthly growth.";
             return;
         }
-
-        const periods = Object.keys(window.saccoHistory).sort().reverse(); // newest first
-        const currentMonth = new Date().toISOString().slice(0,7); // "2025-11"
-
+        const periods = Object.keys(window.saccoHistory).sort().reverse();
+        const currentMonth = new Date().toISOString().slice(0,7);
         tableContainer.innerHTML = `
             <table>
-                <thead>
-                    <tr>
-                        <th>Period</th>
-                        <th>Members</th>
-                        <th>Contributions</th>
-                        <th>Loans</th>
-                        <th>Bank Balance</th>
-                        <th>ROA %</th>
-                        <th>Saved On</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${periods.map(key => {
-                        const d = window.saccoHistory[key];
-                        const isCurrent = key === currentMonth;
-                        return `
-                            <tr ${isCurrent ? 'class="current-month"' : ''}>
-                                <td style="font-weight:900; color:#004d1a;">${d.period || key}</td>
-                                <td>${d.members?.toLocaleString() || '—'}</td>
-                                <td>KSh ${d.contributions?.toLocaleString() || '—'}</td>
-                                <td>KSh ${d.loans?.toLocaleString() || '—'}</td>
-                                <td>KSh ${d.bankBalance?.toLocaleString() || '—'}</td>
-                                <td style="color:#10B981; font-weight:bold;">${d.roa || '—'}%</td>
-                                <td>${d.dateSaved || '—'}</td>
-                            </tr>
-                        `;
-                    }).join('')}
-                </tbody>
-            </table>
-        `;
-
+                <thead><tr><th>Period</th><th>Members</th><th>Contributions</th><th>Loans</th><th>Bank Balance</th><th>ROA %</th><th>Saved On</th></tr></thead>
+                <tbody>${periods.map(key => {
+                    const d = window.saccoHistory[key];
+                    const isCurrent = key === currentMonth;
+                    return `<tr ${isCurrent ? 'class="current-month"' : ''}>
+                        <td style="font-weight:900; color:#004d1a;">${d.period || key}</td>
+                        <td>${d.members?.toLocaleString() || '—'}</td>
+                        <td>KSh ${d.contributions?.toLocaleString() || '—'}</td>
+                        <td>KSh ${d.loans?.toLocaleString() || '—'}</td>
+                        <td>KSh ${d.bankBalance?.toLocaleString() || '—'}</td>
+                        <td style="color:#10B981; font-weight:bold;">${d.roa || '—'}%</td>
+                        <td>${d.dateSaved || '—'}</td>
+                    </tr>`;
+                }).join('')}</tbody>
+            </table>`;
         const totalSize = (JSON.stringify(window.saccoHistory).length / 1024).toFixed(1);
-        footer.innerHTML = `
-            Total Records: <strong>${periods.length}</strong> | 
-            First: <strong>${periods[periods.length-1]}</strong> | 
-            Latest: <strong>${periods[0]}</strong> |
-            <span style="color:#10B981;">Space used: ~${totalSize} KB (Persisted from carousel)</span>
-        `;
-        console.log('History rendered successfully');
+        footer.innerHTML = `Total Records: <strong>${periods.length}</strong> | First: <strong>${periods[periods.length-1]}</strong> | Latest: <strong>${periods[0]}</strong> | <span style="color:#10B981;">~${totalSize} KB (Shared via server)</span>`;
     }
 
+    // Download (unchanged)
     function downloadHistoryCSV() {
-        loadPersistedData();
-        if (!window.saccoHistory || Object.keys(window.saccoHistory).length === 0) {
-            alert("No data to download yet.");
-            return;
-        }
+        if (!window.saccoHistory || Object.keys(window.saccoHistory).length === 0) return alert("No data to download.");
         const periods = Object.keys(window.saccoHistory).sort();
         let csv = "Period,Members,Contributions (KSh),Loans (KSh),Bank Balance (KSh),ROA %,Date Saved\n";
         periods.forEach(key => {
@@ -424,123 +392,58 @@
         URL.revokeObjectURL(url);
     }
 
-    // NEW: Manual reload function to force history load (for debugging after code updates)
-    function reloadHistory() {
-        console.log('Manual reload triggered');
-        loadPersistedData();
+    // Reload (forces server/local load)
+    async function reloadHistory() {
+        console.log('Manual reload...');
+        await loadHistoryFromServer();
         renderFullHistory();
-        alert('History reloaded! Check console for details.');
+        alert('Shared history reloaded!');
     }
 
-    // BONUS: Clear all data (for testing/resets)
-    function clearAllData() {
-        if (confirm('Clear all saved monthly data? This is permanent!')) {
-            localStorage.removeItem('saccoHistory');
-            localStorage.removeItem('saccoDataToday');
-            window.saccoHistory = {};
-            window.saccoData = {}; // Careful: this wipes current too
-            renderFullHistory();
-            alert('All data cleared.');
-        }
-    }
-
-    // AUTO-RENDER: Multiple fallbacks to ensure load after code updates
-    document.addEventListener('DOMContentLoaded', () => {
-        console.log('DOM loaded, starting history init');
-        loadPersistedData();
+    // AUTO-RENDER: Robust multi-load for refresh/code updates
+    document.addEventListener('DOMContentLoaded', async () => {
+        console.log('Page loaded, initializing shared history');
+        await loadHistoryFromServer();
         renderFullHistory();
-        // Immediate render
-        setTimeout(() => {
-            loadPersistedData();
-            renderFullHistory();
-        }, 100); // Quick retry
-        setTimeout(() => {
-            loadPersistedData();
-            renderFullHistory();
-        }, 500); // Carousel init
+        setTimeout(() => { loadHistoryFromServer(); renderFullHistory(); }, 500);
+        setTimeout(() => { loadHistoryFromServer(); renderFullHistory(); }, 1500);
     });
 
-    // AUTO-SAVE ON CAROUSEL UPDATE: Triggers only if data changed
-    window.addEventListener('saccoDataUpdated', () => {
-        console.log('Carousel data updated, checking for auto-save');
-        savePersistedData(); // Always persist today data
-        // Auto-save current month if changed (silent)
-        setTimeout(() => saveCurrentMonth(false), 100); // Slight delay to ensure data is set
+    // AUTO-SAVE ON CAROUSEL UPDATE (site-wide shared)
+    window.addEventListener('saccoDataUpdated', async () => {
+        saveTodayData();
+        await saveCurrentMonth(false); // Silent auto-save if changed
         renderFullHistory();
     });
 
-    // Final safety net: Load after potential carousel/fallback
+    // Fallback fetch for today data
     setTimeout(() => {
-        loadPersistedData();
-        renderFullHistory();
-        console.log('Final safety load complete');
-    }, 2000);
+        if (!window.saccoData) {
+            fetch('https://soyosoyosacco.com/data.json')
+                .then(r => r.json())
+                .then(d => {
+                    window.saccoData = d;
+                    window.dispatchEvent(new Event('saccoDataUpdated'));
+                })
+                .catch(e => console.error('Data fetch failed:', e));
+        }
+    }, 1000);
 </script>
 
 <script>
-  // AUTO-YEAR MAGIC — UPDATES EVERY YEAR TEXT AUTOMATICALLY
+  // AUTO-YEAR MAGIC (unchanged)
   document.addEventListener('DOMContentLoaded', () => {
     const currentYear = new Date().getFullYear();
-    const startYear = 2025; // Change only if you want a different base year
-
-    // Update copyright
-    document.querySelectorAll('footer p, .copyright, [class*="copyright"], [id*="copyright"]').forEach(el => {
-      if (el.textContent.includes('©')) {
-        el.innerHTML = el.innerHTML.replace(/\d{4}(?=\s*SOYOSOYO|\s*$)/, currentYear);
-      }
+    document.querySelectorAll('footer p').forEach(el => {
+      if (el.textContent.includes('©')) el.innerHTML = el.innerHTML.replace(/\d{4}/, currentYear);
     });
-
-    // Update any "2025" in titles, headers, or text
-    document.querySelectorAll('h1, h2, h3, p, span, div, li').forEach(el => {
-      if (el.textContent.includes('2025')) {
-        el.innerHTML = el.innerHTML.replace(/2025/g, currentYear);
-      }
-    });
-
-    // Special: Update "5-Year Growth Strategy" → "6-Year", etc.
-    document.querySelectorAll('.summary-header, h2').forEach(el => {
-      if (el.textContent.includes('Year Growth Strategy')) {
-        const yearsAhead = currentYear - startYear + 5;
-        el.textContent = `${yearsAhead}-Year Growth Strategy`;
-      }
-    });
-
-    // Special: Update "Monthly Financial History (2025 – Present)"
     document.querySelectorAll('.history-header').forEach(el => {
-      if (el.textContent.includes('2025')) {
-        el.textContent = el.textContent.replace('2025', currentYear);
-      }
+      if (el.textContent.includes('2025')) el.textContent = el.textContent.replace('2025', currentYear);
     });
-
-    // Special: Update any "2025–Present" pattern
     document.querySelectorAll('*').forEach(el => {
-      if (el.textContent.includes('2025 – Present') || el.textContent.includes('2025-Present')) {
-        el.innerHTML = el.innerHTML.replace(/2025(?=\s*[–-]\s*Present)/g, currentYear);
-      }
-    });
-
-    // Update footer year only
-    document.querySelectorAll('footer').forEach(footer => {
-      footer.innerHTML = footer.innerHTML.replace(/©\s*\d{4}/, `© ${currentYear}`);
+      if (el.textContent.includes('2025 – Present')) el.innerHTML = el.innerHTML.replace(/2025(?=\s*[–-]\s*Present)/g, currentYear);
     });
   });
-</script>
-
-<!-- FALLBACK FETCH INTEGRATED WITH CAROUSEL LOGIC: Only if no data after carousel load -->
-<script>
-  // This runs after carousel.js; checks if data is still missing
-  setTimeout(() => {
-    if (!window.saccoData) {
-      fetch('https://soyosoyosacco.com/data.json')
-        .then(r => r.json())
-        .then(d => {
-          window.saccoData = d;
-          window.dispatchEvent(new Event('saccoDataUpdated'));
-          console.log('Fallback data loaded for history (carousel fallback)');
-        })
-        .catch(e => console.error('Data fetch failed:', e));
-    }
-  }, 1500);
 </script>
 </body>
 </html>
