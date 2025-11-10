@@ -36,30 +36,27 @@
       gtag('config', 'G-05M38MYK0G');
     </script>
 
-    <!-- YOUR FINAL MASTERPIECE CSS — 100% INTEGRATED -->
+    <!-- YOUR FINAL WINNING CSS — 100% INTEGRATED -->
     <style id="final-working-fix">
       /* ========================================
-         CHART.JS FINANCIAL CARDS (ISOLATED)
+         CHART.JS FINANCIAL CARDS
          ======================================== */
       .chart-card {
         position: relative;
-        width: 100%;
-        height: 380px;
+        height: 320px;
         display: flex;
         flex-direction: column;
         background: #fff;
         border-radius: 12px;
-        padding: 1.5rem;
+        padding: 1rem;
         box-shadow: 0 4px 12px rgba(0,0,0,0.05);
       }
       
       .chart-card canvas {
-        flex: 1 1 auto !important;
+        flex: 1 1 auto;
         width: 100% !important;
         height: 100% !important;
-        max-width: 100% !important;
-        max-height: 100% !important;
-        min-height: 250px !important;
+        max-height: none !important;
         display: block !important;
       }
       
@@ -68,21 +65,14 @@
         text-align: center;
         font-weight: bold;
         color: #1a1a1a;
-        flex-shrink: 0;
       }
-
+      
       @media (max-width: 768px) {
-        .chart-card { 
-          height: 360px;
-          padding: 1rem;
-        }
-        .chart-card canvas {
-          min-height: 200px !important;
-        }
+        .chart-card { height: 360px; }
       }
 
       /* ========================================
-         PLOTLY PROJECTIONS (FULLY ISOLATED)
+         PLOTLY PROJECTIONS — ISOLATED
          ======================================== */
       #projectionsChart {
         isolation: isolate;
@@ -214,16 +204,14 @@
       }
 
       /* ========================================
-         GROWTH INDICATORS & GRID (ISOLATED)
+         GROWTH INDICATORS & GRID
          ======================================== */
       .growth-indicator {
         text-align: center;
         margin-top: 0.5rem;
         font-weight: bold;
         font-size: 1rem;
-        flex-shrink: 0;
       }
-      
       .growth-indicator.positive { color: #10B981; }
       .growth-indicator.negative { color: #EF4444; }
       .growth-indicator i { margin-right: 4px; font-size: 0.9em; }
@@ -231,19 +219,14 @@
       .growth-charts-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-        gap: 1.5rem;
+        gap: 1rem;
         margin: 2rem 0;
-        width: 100%;
       }
 
       /* ========================================
-         RESET GLOBAL CANVAS (CRITICAL FIX)
+         NO GLOBAL CANVAS RULES!
+         Each chart system controls its own canvas
          ======================================== */
-      canvas { 
-        height: auto !important; 
-        min-height: unset !important; 
-        max-height: none !important; 
-      }
     </style>
 
 
