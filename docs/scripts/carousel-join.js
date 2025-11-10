@@ -65,4 +65,13 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   window.addEventListener('resize', update);
   update();
+  // Force immediate animation on page load
+setTimeout(() => {
+  document.querySelectorAll('.carousel-item').forEach(item => {
+    const btn = item.querySelector('.carousel-button');
+    if (btn && btn.dataset.target) {
+      animateCounter(btn, btn.dataset.target);
+    }
+  });
+}, 500);
 });
