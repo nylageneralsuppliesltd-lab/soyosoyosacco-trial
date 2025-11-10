@@ -605,21 +605,73 @@
             el.className = `growth-indicator ${cls}`;
         };
 
-        const createChart = (id, j, t, label, color, gid, isPercent = false, isMoney = false) => {
-            const g = growth(j, t);
-            updateIndicator(gid, g);
+    const createChart = (id, j, t, label, color, gid, isPercent = false, isMoney = false) => {
+    const g = growth(j, t);
+    updateIndicator(gid, g);
+    
+    // YOUR MATHEMATICAL MASTERPIECE
+    const maxDataValue = Math.max(j, t);
+    const yMax = maxDataValue * 1.15; // 15% headroom = arrows land perfectly
 
-            new Chart(document.getElementById(id).getContext('2d'), {
-                type: 'bar',
-                data: {
-                    labels: ['Jan 2025', 'Today'],
-                    datasets: [{
-                        data: [j, t],
-                        backgroundColor: [color.jan, color.today],
-                        borderRadius: 10,
-                        maxBarThickness: 60
-                    }]
+    new Chart(document.getElementById(id).getContext('2d'), {
+        type: 'bar',
+        data: {
+            labels: ['Jan 2025', 'Today'],
+            datasets: [{
+                data: [j, t],
+                backgroundColor: [color.jan, color.today],
+                borderRadius: 10,
+                maxBarThickness: 80
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: { 
+                        label: ctx => {
+                            const val = ctx.raw;
+                            if (isPercent) return val.toFixed(2) + '%';
+                            if (isMoney) return 'KES ' + val.toLocaleString();
+                            return val.toLocaleString();
+                        }
+                    }
                 },
+                datalabels: {
+                    anchor: 'end',
+                    align: 'end',
+                    offset: -2,
+                    clamp: true,
+                    color: '#1a1a1a',
+                    font: { weight: '900', size: 13 },
+                    formatter: v => {
+                        if (isPercent) return v.toFixed(2) + '%';
+                        if (isMoney) return 'KES ' + v.toLocaleString();
+                        return v.toLocaleString();
+                    },
+                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                    borderRadius: 6,
+                    padding: { top: 5, bottom: 5, left: 8, right: 8 }
+                }
+            },
+            scales: {
+                x: { 
+                    grid: { display: false }, 
+                    ticks: { color: '#1a1a1a', font: { weight: 'bold', size: 12 } } 
+                },
+                y: { 
+                    display: false, 
+                    beginAtZero: true,
+                    max: yMax
+                }
+            },
+            layout: { padding: { top: 45, left: 10, right: 10, bottom: 5 } }
+        },
+        plugins: [ChartDataLabels]
+    });
+};
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
