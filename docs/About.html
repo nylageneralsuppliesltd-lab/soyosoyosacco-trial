@@ -283,7 +283,6 @@
   window.saccoHistory = {};
   window.saccoData = window.saccoData || {};
 
-  // 1. Load from localStorage if API is down
   function loadPersistedData() {
     const saved = localStorage.getItem('saccoHistoryBackup');
     if (saved) {
@@ -295,7 +294,6 @@
     }
   }
 
-  // 2. Render beautiful table (desktop + mobile)
   function renderFullHistory() {
     const container = document.getElementById('fullHistoryTable');
     const footer = document.getElementById('historyFooter');
@@ -323,7 +321,7 @@
         <tbody>
     `;
 
-    const currentMonthKey = new Date().toISOString().slice(0, 7); // YYYY-MM
+    const currentMonthKey = new Date().toISOString().slice(0, 7);
 
     history.forEach(row => {
       const isCurrent = row.period === currentMonthKey;
@@ -346,10 +344,10 @@
     footer.innerHTML = `
       <strong>${history.length}</strong> months saved 
       <span style="color:#10B981;">| Latest: ${history[0].period}</span>
+      ${history[0].period === currentMonthKey ? '<span style="color:#f59e0b;"> Live updating this month</span>' : ''}
     `;
   }
 
-  // 3. Load from Neon DB (with timeout + fallback)
   async function loadLiveHistory() {
     try {
       const controller = new AbortController();
@@ -378,17 +376,16 @@
 
       localStorage.setItem('saccoHistoryBackup', JSON.stringify(data));
     } catch (err) {
-      console.warn('Server sleeping or offline → using local backup', err);
+      console.warn('Server sleeping → using local backup', err);
       loadPersistedData();
     } finally {
       renderFullHistory();
     }
   }
 
-  // 4. Save current month
   async function saveCurrentMonth() {
     if (!window.saccoData?.today) {
-      alert("Carousel data not ready!\n\nPlease go to HOMEPAGE first, wait 10 seconds for numbers to load, then come back and try again.");
+      alert("Carousel data not ready!\n\nPlease go to HOMEPAGE first, wait 10 seconds, then try again.");
       return;
     }
 
@@ -414,14 +411,13 @@
       }
 
       const result = await res.json();
-      alert(`SAVED SUCCESSFULLY!\nMonth: ${result.data.period}\nMembers: ${today.members.toLocaleString()}\nTime: ${new Date().toLocaleString('en-KE')}`);
+      alert(`SAVED SUCCESSFULLY!\nMonth: ${result.data.period}\nMembers: ${today.members.toLocaleString()}`);
       loadLiveHistory();
     } catch (err) {
-      alert(`Save failed. Your server is probably sleeping.\n\nFix: Open HOMEPAGE in another tab → wait 30 seconds → try again.\n\nError: ${err.message}`);
+      alert(`Save failed – server sleeping.\nOpen HOMEPAGE in another tab → wait 30 seconds → try again.\nError: ${err.message}`);
     }
   }
 
-  // 5. Download CSV
   function downloadHistoryCSV() {
     const history = Object.values(window.saccoHistory);
     if (history.length === 0) {
@@ -443,12 +439,22 @@
     URL.revokeObjectURL(url);
   }
 
-  // Auto-run everything
+  // MAIN AUTO-RUN
   document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('currentYear').textContent = new Date().getFullYear();
-    setTimeout(loadLiveHistory, 1000);
+    loadLiveHistory();
+
+    // LIVE AUTO-UPDATE EVERY 5 SECONDS
+    let lastKnownMembers = 0;
+    setInterval(() => {
+      if (window.saccoData?.today && window.saccoData.today.members !== lastKnownMembers) {
+        lastKnownMembers = window.saccoData.today.members;
+        renderFullHistory();
+        const footer = document.getElementById('historyFooter');
+        if (footer) footer.innerHTML += ' <span style="color:#10B981;">Live updated just now</span>';
+      }
+    }, 5000);
   });
 </script>
-
 </body>
 </html>
