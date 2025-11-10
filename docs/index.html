@@ -294,6 +294,40 @@
             .member-activities-carousel .slide { height: 250px; }
         }
     </style>
+    <!-- FINAL SURGICAL FIX — CHART.JS BARS FULL SIZE | PROJECTIONS 100% UNTOUCHED -->
+<style id="surgical-chart-fix">
+  /* 1. Kill ONLY the rule that squeezes Chart.js (from your style.css) */
+  .chart-card canvas {
+    height: 260px !important;
+    min-height: 260px !important;
+    max-height: 270px !important;
+    flex-grow: 1 !important;
+  }
+
+  /* 2. Ensure Plotly canvas stays exactly as projections.js wants it */
+  #projectionsChart .plotly-projection-div,
+  #projectionsChart .plotly-projection-div > div,
+  #projectionsChart canvas {
+    height: 420px !important;
+    min-height: 420px !important;
+    max-height: none !important;
+  }
+
+  @media (min-width: 769px) {
+    #projectionsChart .plotly-projection-div { height: 440px !important; }
+  }
+  @media (max-width: 768px) {
+    #projectionsChart .plotly-projection-div { height: 460px !important; }
+  }
+
+  /* 3. Block any future global canvas poisoning */
+  canvas { 
+    height: auto !important; 
+  }
+  .chart-card canvas { 
+    height: 260px !important; 
+  }
+</style>
 </head>
 <body>
 
