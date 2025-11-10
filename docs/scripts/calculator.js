@@ -1,8 +1,38 @@
-// scripts/calculator.js
-let loanData = null;
-let chartLoaded = false;
-let finesData = null;
-let paymentData = {};
+// scripts/calculator.js — GLOBAL GOOGLE CHARTS FIX (NO HTML CHANGE NEEDED)
+(() => {
+  'use strict';
+
+  let loanData = null;
+  let chartLoaded = false;
+  let finesData = null;
+  let paymentData = {};
+
+  // AUTO-LOAD GOOGLE CHARTS IF NOT ALREADY LOADED
+  if (typeof google === 'undefined' || !google.charts) {
+    const script = document.createElement('script');
+    script.src = 'https://www.gstatic.com/charts/loader.js';
+    script.async = true;
+    script.onload = () => {
+      google.charts.load('current', { packages: ['corechart'] });
+      google.charts.setOnLoadCallback(() => {
+        chartLoaded = true;
+        console.log('Google Charts loaded globally');
+        if (loanData) drawChart();
+      });
+    };
+    script.onerror = () => {
+      console.error('Failed to load Google Charts loader');
+      chartLoaded = false;
+    };
+    document.head.appendChild(script);
+  } else {
+    // Already loaded (rare case)
+    google.charts.load('current', { packages: ['corechart'] });
+    google.charts.setOnLoadCallback(() => {
+      chartLoaded = true;
+      if (loanData) drawChart();
+    });
+  }
 
 const loanConfigurations = {
     'emergency': { 
