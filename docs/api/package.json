@@ -1,9 +1,9 @@
 {
   "name": "soyosoyo-sacco-api",
   "version": "1.0.0",
-  "main": "docs/api/index.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node docs/api/index.js"
+    "start": "index.js"
   },
   "dependencies": {
     "express": "^4.19.2",
