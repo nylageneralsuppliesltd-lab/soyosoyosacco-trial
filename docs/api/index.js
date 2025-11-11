@@ -35,10 +35,22 @@ function saveJSON(file, data) {
 app.get("/api/history", async (req, res) => {
   try {
     const { rows } = await pool.query("SELECT * FROM sacco_history ORDER BY period DESC");
-    res.json(rows);
+    const parsedRows = rows.map(row => ({
+      ...row,
+      extra_fields: typeof row.extra_fields === 'string' 
+        ? JSON.parse(row.extra_fields) 
+        : (row.extra_fields || {})
+    }));
+    res.json(parsedRows);
   } catch (err) {
     console.warn("DB unavailable, using local JSON fallback:", err.message);
-    res.json(loadJSON(DB_FILE));
+    const fallback = loadJSON(DB_FILE);
+    res.json(fallback.map(item => ({
+      ...item,
+      extra_fields: typeof item.extra_fields === 'string' 
+        ? JSON.parse(item.extra_fields) 
+        : (item.extra_fields || {})
+    })));
   }
 });
 
@@ -69,7 +81,7 @@ async function saveToDB(entry) {
     entry.profit,
     entry.roa,
     entry.date_saved,
-    entry.extra_fields
+    JSON.stringify(entry.extra_fields)
   ];
   await pool.query(query, values);
 }
@@ -78,67 +90,76 @@ async function saveToDB(entry) {
 app.post("/api/history/save", async (req, res) => {
   const payload = req.body;
 
-  // Ensure all numeric fields are properly mapped and converted
+  // Map camelCase from carousel.js → snake_case for DB
   const newEntry = {
-    period: new Date().toISOString().slice(0,7) + "-01",  // YYYY-MM-01
+    period: new Date().toISOString().slice(0,7) + "-01",
     date_saved: new Date().toISOString(),
     members: Number(payload.members || 0),
     contributions: Number(payload.contributions || 0),
-    loans_disbursed: Number(payload.loans_disbursed || 0),
-    loans_balance: Number(payload.loans_balance || 0),
-    total_bank_balance: Number(payload.total_bank_balance || 0),
-    coop_bank: Number(payload.coop_bank || 0),
-    chama_soft: Number(payload.chama_soft || 0),
-    cytonn: Number(payload.cytonn || 0),
-    total_assets: Number(payload.total_assets || 0),
+    loans_disbursed: Number(payload.loans_disbursed || payload.loansDisbursed || 0),
+    loans_balance: Number(payload.loans_balance || payload.loansBalance || 0),
+    total_bank_balance: Number(payload.total_bank_balance || payload.totalBankBalance || payload.bankBalance || 0),
+    coop_bank: Number(payload.coop_bank || payload.coopBank || 0),
+    chama_soft: Number(payload.chama_soft || payload.chamaSoft || 0),
+    cytonn: Number(payload.cytonn || payload.cytonnBank || 0),
+    total_assets: Number(payload.total_assets || payload.bookValue || 0),
     profit: Number(payload.profit || 0),
     roa: Number(payload.roa || 0),
-    extra_fields: payload.extra_fields || "{}"
+    extra_fields: typeof payload.extra_fields === 'object' 
+      ? payload.extra_fields 
+      : (payload.extraFields || {})
   };
+
+  // Ensure extra_fields is stringified
+  newEntry.extra_fields = JSON.stringify(newEntry.extra_fields);
 
   try {
     await saveToDB(newEntry);
 
-    const history = loadJSON(DB_FILE).filter(h => h.period!==newEntry.period);
+    const history = loadJSON(DB_FILE).filter(h => h.period !== newEntry.period);
     history.push(newEntry);
     saveJSON(DB_FILE, history);
     saveJSON(PENDING_FILE, []);
 
-    console.log("✅ Saved successfully to DB:", newEntry.period);
+    console.log("Saved successfully to DB:", newEntry.period);
     res.json({ success: true, data: newEntry });
-  } catch(err) {
-    console.warn("⚠️ DB save failed, storing to pending.json:", err.message);
+  } catch (err) {
+    console.warn("DB save failed, storing to pending.json:", err.message);
     const pending = loadJSON(PENDING_FILE);
     pending.push(newEntry);
     saveJSON(PENDING_FILE, pending);
 
-    const history = loadJSON(DB_FILE).filter(h => h.period!==newEntry.period);
+    const history = loadJSON(DB_FILE).filter(h => h.period !== newEntry.period);
     history.push(newEntry);
     saveJSON(DB_FILE, history);
 
-    res.json({ success:false, message:"DB unavailable, saved temporarily", data:newEntry });
+    res.json({ success: false, message: "DB unavailable, saved temporarily", data: newEntry });
   }
 });
 
 // Retry pending entries every 30s
 async function retryPending() {
   const pending = loadJSON(PENDING_FILE);
-  if(!pending.length) return;
+  if (!pending.length) return;
 
-  for(let attempt=1; attempt<=10; attempt++){
-    console.log(`🔄 Retry attempt ${attempt} for pending saves`);
+  for (let attempt = 1; attempt <= 10; attempt++) {
+    console.log(`Retry attempt ${attempt} for pending saves`);
     const remaining = [];
-    for(const entry of pending){
-      try { await saveToDB(entry); } 
-      catch(err){ console.warn("Retry failed for period", entry.period, err.message); remaining.push(entry);}
+    for (const entry of pending) {
+      try { 
+        await saveToDB(entry); 
+      } catch (err) { 
+        console.warn("Retry failed for period", entry.period, err.message); 
+        remaining.push(entry);
+      }
     }
     saveJSON(PENDING_FILE, remaining);
-    if(!remaining.length) break;
-    await new Promise(r=>setTimeout(r,30000));
+    if (!remaining.length) break;
+    await new Promise(r => setTimeout(r, 30000));
   }
 }
 
 setInterval(retryPending, 30000);
 
 const PORT = process.env.PORT || 10000;
-app.listen(PORT, ()=>console.log(`🚀 SACCO API running on port ${PORT}`));
+app.listen(PORT, () => console.log(`SACCO API running on port ${PORT}`));
