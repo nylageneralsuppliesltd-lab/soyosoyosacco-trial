@@ -21,12 +21,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
     
-    <!-- MAIN SITE CSS -->
+    <!-- MAIN CSS -->
     <link rel="stylesheet" href="./style.css?v=206">
 
-    <!-- Plotly.js -->
-    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
-    
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-05M38MYK0G"></script>
     <script>
@@ -36,170 +33,87 @@
       gtag('config', 'G-05M38MYK0G');
     </script>
 
-    <!-- FULLY ISOLATED STYLES: CHART.JS + PLOTLY -->
-    <style id="final-working-fix">
-      /* FINANCIAL CHARTS */
+    <!-- PERFECT CHARTS + PROJECTIONS STYLES -->
+    <style id="final-working-styles">
       .growth-charts-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
         gap: 1.5rem;
         margin: 2rem 0;
-        width: 100%;
       }
       #final-charts-section .chart-card {
-        position: relative !important;
-        width: 100% !important;
-        height: 440px !important;
-        display: flex !important;
-        flex-direction: column !important;
-        background: #fff !important;
-        border-radius: 12px !important;
-        padding: 1.5rem !important;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
-        overflow: visible !important;
+        position: relative;
+        height: 440px;
+        display: flex;
+        flex-direction: column;
+        background: #fff;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        overflow: hidden;
+        border: 1px solid #f0f0f0;
       }
       #final-charts-section .chart-card canvas {
-        flex: 1 1 auto !important;
+        flex: 1;
         width: 100% !important;
         height: 100% !important;
-        max-width: 100% !important;
-        min-height: 320px !important;
-        display: block !important;
-        margin: 0 !important;
-      }
-      #final-charts-section .chart-card p {
-        margin: 0.75rem 0 0 0 !important;
-        text-align: center !important;
-        font-weight: bold !important;
-        color: #1a1a1a !important;
-        font-size: 1rem !important;
-        flex-shrink: 0 !important;
-      }
-      #final-charts-section .growth-indicator {
-        text-align: center !important;
-        margin-top: 0.5rem !important;
-        font-weight: bold !important;
-        font-size: 1rem !important;
-        flex-shrink: 0 !important;
-      }
-      #final-charts-section .growth-indicator.positive { color: #10B981 !important; }
-      #final-charts-section .growth-indicator.negative { color: #EF4444 !important; }
-      #final-charts-section .growth-indicator i { margin-right: 4px !important; font-size: 0.9em !important; }
-      @media (max-width: 768px) {
-        #final-charts-section .chart-card { height: 400px !important; }
-        #final-charts-section .chart-card canvas { min-height: 280px !important; }
-      }
-
-      /* PLOTLY PROJECTIONS - RESTORED ORIGINAL BEAUTY */
-      #projectionsChart {
-        isolation: isolate;
-        contain: layout style paint;
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 0 10px;
-        font-family: 'Lato', sans-serif;
-      }
-      #projectionsChart > .kpi-card,
-      #projectionsChart > .summary-card {
-        background: white;
-        border-radius: 20px;
-        overflow: hidden;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        border: 1px solid #f0fdf4;
-        margin: 16px 8px;
-        max-width: calc(100% - 16px);
-      }
-      #projectionsChart .kpi-title {
-        padding: 16px;
-        background: #f8fdfa;
-        text-align: center;
-        font-size: 16px;
-        font-weight: 900;
-        color: #004d1a;
-      }
-      #projectionsChart .plotly-projection-div {
-        height: 420px !important;
-        width: 100% !important;
-      }
-      #projectionsChart .summary-header {
-        background: linear-gradient(90deg,#004d1a,#10B981);
-        color: white;
-        padding: 16px;
-        text-align: center;
-        font-size: 17px;
-        font-weight: 900;
-      }
-      #projectionsChart .summary-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 14px;
-        padding: 16px;
-      }
-      #projectionsChart .summary-item {
-        background: #f0fdf4;
-        border-radius: 14px;
-        padding: 12px;
-        border: 1px solid #86efac;
-        text-align: center;
-      }
-      #projectionsChart .summary-label {
-        font-size: 13.5px;
-        font-weight: 900;
-        color: #166534;
-      }
-      #projectionsChart .summary-values {
-        display: flex;
-        justify-content: space-between;
-        font-size: 13px;
-        margin: 8px 0;
-      }
-      #projectionsChart .summary-values span {
-        color: #6b7280;
-        font-size: 11.5px;
+        min-height: 320px;
         display: block;
       }
-      #projectionsChart .summary-values strong {
-        font-size: 15px;
-        color: #004d1a;
+      #final-charts-section .chart-card p {
+        margin: 0.75rem 0 0 0;
+        text-align: center;
+        font-weight: bold;
+        color: #1a1a1a;
+        font-size: 1rem;
       }
-      #projectionsChart .summary-growth {
-        background: #10B981;
-        color: white;
-        padding: 6px 14px;
-        border-radius: 50px;
-        font-size: 12.5px;
-        font-weight: 900;
+      #final-charts-section .growth-indicator {
+        text-align: center;
+        margin-top: 0.5rem;
+        font-weight: bold;
+        font-size: 1rem;
       }
+      #final-charts-section .growth-indicator.positive { color: #10B981; }
+      #final-charts-section .growth-indicator.negative { color: #EF4444; }
+      #final-charts-section .growth-indicator i { margin-right: 4px; font-size: 0.9em; }
+      @media (max-width: 768px) {
+        #final-charts-section .chart-card { height: 400px; }
+        #final-charts-section .chart-card canvas { min-height: 280px; }
+      }
+
+      /* PROJECTIONS (Plotly) */
+      #projectionsChart { isolation: isolate; max-width: 1400px; margin: 0 auto; padding: 0 10px; }
+      #projectionsChart > .kpi-card, #projectionsChart > .summary-card {
+        background: white; border-radius: 20px; overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid #f0fdf4;
+        margin: 16px 8px; max-width: calc(100% - 16px);
+      }
+      #projectionsChart .kpi-title { padding: 16px; background: #f8fdfa; text-align: center; font-size: 16px; font-weight: 900; color: #004d1a; }
+      #projectionsChart .plotly-projection-div { height: 420px !important; width: 100% !important; }
       @media (min-width: 769px) {
         #projectionsChart { display: flex; flex-wrap: wrap; justify-content: space-between; }
         #projectionsChart > .kpi-card { flex: 1 1 calc(50% - 20px); max-width: 48%; }
-        #projectionsChart .plotly-projection-div { height: 440px !important; }
         #projectionsChart > .summary-card { flex: 1 1 100%; max-width: 100%; margin: 30px 8px 10px; }
-        #projectionsChart .summary-grid { grid-template-columns: repeat(4, 1fr); gap: 20px; padding: 20px; }
-        #projectionsChart .summary-values strong { font-size: 17px; }
-        #projectionsChart .summary-growth { padding: 8px 16px; font-size: 13px; }
-      }
-      @media (max-width: 768px) {
-        #projectionsChart .plotly-projection-div { height: 460px !important; }
       }
     </style>
 
     <!-- MEMBER CAROUSEL -->
     <style>
-        .member-activities-section { margin-top: 3rem; padding: 2rem 0; background-color: #f8f9fa; }
-        .member-activities-carousel { position: relative; max-width: 1000px; margin: 0 auto; overflow: hidden; border-radius: 12px; }
-        .member-activities-carousel .slides { display: flex; transition: transform 0.5s ease-in-out; height: 400px; }
-        .member-activities-carousel .slide { min-width: 100%; height: 400px; flex-shrink: 0; }
-        .member-activities-carousel .slide img { width: 100%; height: 100%; object-fit: cover; }
-        .member-activities-carousel .nav-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; padding: 10px; cursor: pointer; font-size: 18px; z-index: 10; }
-        .member-activities-carousel .prev { left: 10px; }
-        .member-activities-carousel .next { right: 10px; }
-        .member-activities-carousel .dots { display: flex; justify-content: center; gap: 8px; margin-top: 1rem; }
-        .member-activities-carousel .dot { width: 10px; height: 10px; border-radius: 50%; background: #ccc; cursor: pointer; }
-        .member-activities-carousel .dot.active { background: #10B981; }
-        @media (max-width: 768px) {
-            .member-activities-carousel .slides, .member-activities-carousel .slide { height: 250px; }
-        }
+      .member-activities-section { margin-top: 3rem; padding: 2rem 0; background-color: #f8f9fa; }
+      .member-activities-carousel { position: relative; max-width: 1000px; margin: 0 auto; overflow: hidden; border-radius: 12px; }
+      .member-activities-carousel .slides { display: flex; transition: transform 0.5s ease-in-out; height: 400px; }
+      .member-activities-carousel .slide { min-width: 100%; height: 400px; flex-shrink: 0; }
+      .member-activities-carousel .slide img { width: 100%; height: 100%; object-fit: cover; }
+      .member-activities-carousel .nav-btn { position: absolute; top: 50%; transform: translateY(-50%);
+        background: rgba(0,0,0,0.5); color: white; border: none; padding: 10px; cursor: pointer; font-size: 18px; z-index: 10; }
+      .member-activities-carousel .prev { left: 10px; }
+      .member-activities-carousel .next { right: 10px; }
+      .member-activities-carousel .dots { display: flex; justify-content: center; gap: 8px; margin-top: 1rem; }
+      .member-activities-carousel .dot { width: 10px; height: 10px; border-radius: 50%; background: #ccc; cursor: pointer; }
+      .member-activities-carousel .dot.active { background: #10B981; }
+      @media (max-width: 768px) {
+        .member-activities-carousel .slides, .member-activities-carousel .slide { height: 250px; }
+      }
     </style>
 </head>
 <body>
@@ -207,13 +121,9 @@
 <!-- HEADER -->
 <header class="site-header">
     <div class="navbar">
-        <a href="index.html">
-            <img class="brand-logo round" src="./assets/141dd3faa98da9737b591161deac509a.jpg" alt="Soyosoyo Sacco Logo">
-        </a>
+        <a href="index.html"><img class="brand-logo round" src="./assets/141dd3faa98da9737b591161deac509a.jpg" alt="Soyosoyo Sacco Logo"></a>
         <a href="https://chamasoft.com/login" class="member-portal">Member Portal</a>
-        <button id="menu-toggle" aria-label="Toggle Menu">
-            <span></span><span></span><span></span>
-        </button>
+        <button id="menu-toggle" aria-label="Toggle Menu"><span></span><span></span><span></span></button>
         <nav class="nav-links">
             <a href="index.html">Home</a>
             <a href="Products.html">Products</a>
@@ -233,7 +143,6 @@
 
 <!-- MAIN -->
 <main class="container">
-
     <!-- HISTORY TEASER -->
     <section class="section">
         <h2 style="text-align: center; font-size: 1.6rem; margin-bottom: 1rem;">Our Journey</h2>
@@ -248,58 +157,25 @@
     <!-- MISSION / VISION / CORE VALUES -->
     <div class="mission-vision-container">
         <img src="./assets/0065564ad0f92baf9be886b031073979.jpg" alt="Mission" class="round">
-        <div>
-            <h2>Our Mission</h2>
-            <p>Empower members with accessible, affordable credit for healthcare, education, agriculture, growth and development.</p>
-        </div>
+        <div><h2>Our Mission</h2><p>Empower members with accessible, affordable credit for healthcare, education, agriculture, growth and development.</p></div>
     </div>
-
     <div class="mission-vision-container">
         <img src="./assets/d8c3d49708ed9831ff753b3548c717aa.jpg" alt="Vision" class="round">
-        <div>
-            <h2>Our Vision</h2>
-            <p>To lead financial transformation and sustainable prosperity across Kenya.</p>
-        </div>
+        <div><h2>Our Vision</h2><p>To lead financial transformation and sustainable prosperity across Kenya.</p></div>
     </div>
-
     <div class="core-values-container">
         <img src="./assets/8119c4ebd64ccbe641d0563d23444c34.jpg" alt="Core Values" class="round">
-        <div>
-            <h2>Core Values</h2>
-            <ul>
-                <li>Empowerment</li>
-                <li>Integrity</li>
-                <li>Community</li>
-                <li>Accessibility</li>
-                <li>Growth</li>
-            </ul>
-        </div>
+        <div><h2>Core Values</h2><ul><li>Empowerment</li><li>Integrity</li><li>Community</li><li>Accessibility</li><li>Growth</li></ul></div>
     </div>
 
     <!-- LEADERSHIP -->
     <section class="section">
         <h2 style="text-align: center;">Leadership</h2>
         <div class="leadership-grid">
-            <div class="leader-profile">
-                <img src="./assets/judi.jpg" alt="Judith Malombo Mramba" class="round">
-                <h3>Judith Malombo Mramba</h3>
-                <p>Chairperson</p>
-            </div>
-            <div class="leader-profile">
-                <img src="./assets/jere.jpg" alt="Jeremiah Kalama Lewa" class="round">
-                <h3>Jeremiah Kalama Lewa</h3>
-                <p>Vice-Chairperson</p>
-            </div>
-            <div class="leader-profile">
-                <img src="./assets/sidi.jpg" alt="Sidi Saro Ngowa" class="round">
-                <h3>Sidi Saro Ngowa</h3>
-                <p>Secretary</p>
-            </div>
-            <div class="leader-profile">
-                <img src="./assets/thoya.jpg" alt="Thomas Thoya Kitsao" class="round">
-                <h3>Thomas Thoya Kitsao</h3>
-                <p>Treasurer</p>
-            </div>
+            <div class="leader-profile"><img src="./assets/judi.jpg" alt="Judith" class="round"><h3>Judith Malombo Mramba</h3><p>Chairperson</p></div>
+            <div class="leader-profile"><img src="./assets/jere.jpg" alt="Jeremiah" class="round"><h3>Jeremiah Kalama Lewa</h3><p>Vice-Chairperson</p></div>
+            <div class="leader-profile"><img src="./assets/sidi.jpg" alt="Sidi" class="round"><h3>Sidi Saro Ngowa</h3><p>Secretary</p></div>
+            <div class="leader-profile"><img src="./assets/thoya.jpg" alt="Thomas" class="round"><h3>Thomas Thoya Kitsao</h3><p>Treasurer</p></div>
         </div>
     </section>
 
@@ -320,12 +196,10 @@
     <section class="section">
         <h2 style="text-align: center;">Financial Highlights</h2>
         <p style="text-align: center; margin-bottom: 1.5rem;">Our impact in numbers.</p>
-        <div class="carousel-wrapper">
-            <div class="carousel" aria-label="Financial Metrics Carousel"></div>
-        </div>
+        <div class="carousel-wrapper"><div class="carousel" aria-label="Financial Metrics Carousel"></div></div>
     </section>
 
-    <!-- GROWTH CHARTS (Chart.js) -->
+    <!-- GROWTH CHARTS -->
     <section class="section" id="final-charts-section">
         <h2 style="text-align: center; margin-bottom: 1.5rem;">Growth Since January 2025</h2>
         <div class="growth-charts-grid">
@@ -342,8 +216,8 @@
     <!-- PROJECTIONS -->
     <section style="margin: 60px 0; padding: 0 10px;">
         <div style="text-align:center; margin-bottom: 30px;">
-            <h2 style="font-size: 28px; color: #004d1a; font-weight: 900; margin: 0;">5-Year Growth Projections</h2>
-            <p style="color: #6b7280; font-size: 16px; margin: 10px 0 0;">Smart forecasting based on our current performance trajectory</p>
+            <h2 style="font-size: 28px; color: #004d1a; font-weight: 900;">5-Year Growth Projections</h2>
+            <p style="color: #6b7280; font-size: 16px;">Smart forecasting based on our current performance trajectory</p>
         </div>
         <div id="projectionsChart"></div>
     </section>
@@ -473,9 +347,10 @@
 <script>
   document.getElementById('autoYearNow').textContent = new Date().getFullYear();
 </script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+<!-- SCRIPTS - EXACT ORDER, NO CONFLICTS -->
 <script src="./scripts/carousel.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 <script src="./scripts/projections.js"></script>
 <script src="./scripts/member-carousel.js"></script>
 
@@ -495,7 +370,7 @@
     { name: "Api Culture", value: 5 }
   ];
 
-  // Arrow plugin
+  // 2. Clean arrow plugin
   const cleanGrowthArrowPlugin = {
     id: 'cleanGrowthArrow',
     afterDraw: function(chart) {
@@ -508,7 +383,6 @@
 
       const xScale = scales.x;
       const yScale = scales.y;
-
       const x1 = xScale.getPixelForValue(0);
       const x2 = xScale.getPixelForValue(1);
       const y1 = yScale.getPixelForValue(janVal);
@@ -548,8 +422,16 @@
   };
   Chart.register(cleanGrowthArrowPlugin);
 
-  // Main render function
+  // 3. Render charts
   function renderGrowthCharts() {
+    if (window.growthChartsRendered) return;
+    window.growthChartsRendered = true;
+
+    // Destroy old charts
+    document.querySelectorAll('#final-charts-section canvas').forEach(canvas => {
+      if (Chart.getChart(canvas)) Chart.getChart(canvas).destroy();
+    });
+
     if (!window.saccoData) return;
 
     const { jan, today } = window.saccoData;
@@ -571,12 +453,9 @@
       el.className = `growth-indicator ${cls}`;
     };
 
-    const createChart = (id, j, t, label, color, gid, isPercent = false, isMoney = false) => {
+    const createChart = (id, j, t, color, gid, isPercent = false, isMoney = false) => {
       const g = growth(j, t);
       updateIndicator(gid, g);
-
-      const maxVal = Math.max(j, t);
-      const yMax = maxVal * 1.45; // Smart headroom for arrows
 
       new Chart(document.getElementById(id).getContext('2d'), {
         type: 'bar',
@@ -601,7 +480,7 @@
               return val.toLocaleString();
             }}},
             datalabels: {
-              anchor: 'end', align: 'end', offset: 10, clamp: true,
+              anchor: 'end', align: 'end', offset: 10,
               color: '#1a1a1a', font: { weight: '900', size: 14 },
               formatter: v => isPercent ? v.toFixed(2)+'%' : (isMoney ? 'KES '+v.toLocaleString() : v.toLocaleString()),
               backgroundColor: 'rgba(255,255,255,0.95)', borderRadius: 8, padding: 8
@@ -609,7 +488,7 @@
           },
           scales: {
             x: { grid: { display: false }, ticks: { color: '#1a1a1a', font: { weight: 'bold', size: 13 } } },
-            y: { display: false, beginAtZero: true, max: yMax }
+            y: { display: false, beginAtZero: true, grace: '20%' }
           },
           layout: { padding: { top: 70, left: 10, right: 10, bottom: 10 } }
         },
@@ -622,12 +501,12 @@
     const janLiquidity = jan.contributions > 0 ? (jan.bankBalance / jan.contributions) * 100 : 0;
     const todayLiquidity = today.contributions > 0 ? (today.bankBalance / today.contributions) * 100 : 0;
 
-    createChart('chartMembers', jan.members, today.members, 'Members', colors.members, 'growthMembers');
-    createChart('chartLoans', jan.loans, today.loans, 'Loans', colors.loans, 'growthLoans', false, true);
-    createChart('chartContributions', jan.contributions, today.contributions, 'Contributions', colors.contributions, 'growthContributions', false, true);
-    createChart('chartProfit', jan.profit, today.profit, 'Profit', colors.profit, 'growthProfit', false, true);
-    createChart('chartROA', janROA, todayROA, 'ROA', colors.roa, 'growthROA', true);
-    createChart('chartLiquidity', janLiquidity, todayLiquidity, 'Liquidity', colors.liquidity, 'growthLiquidity', true);
+    createChart('chartMembers', jan.members, today.members, colors.members, 'growthMembers');
+    createChart('chartLoans', jan.loans, today.loans, colors.loans, 'growthLoans', false, true);
+    createChart('chartContributions', jan.contributions, today.contributions, colors.contributions, 'growthContributions', false, true);
+    createChart('chartProfit', jan.profit, today.profit, colors.profit, 'growthProfit', false, true);
+    createChart('chartROA', janROA, todayROA, colors.roa, 'growthROA', true);
+    createChart('chartLiquidity', janLiquidity, todayLiquidity, colors.liquidity, 'growthLiquidity', true);
 
     // Pie chart
     if (window.loanTypes) {
@@ -641,7 +520,7 @@
           options: {
             responsive: true, maintainAspectRatio: false,
             plugins: {
-              legend: { position: 'bottom', labels: { font: { size: 12, weight: 'bold' }, padding: 20 } },
+              legend: { position: 'bottom', labels: { font: { size: 12, weight: 'bold' } } },
               datalabels: { formatter: v => v > 5 ? v.toFixed(1)+'%' : '', color: '#fff', font: { weight: 'bold', size: 13 } }
             }
           },
@@ -651,50 +530,20 @@
     }
   }
 
-  // DATA LOADING + INITIALIZATION
-  const API_BASE = 'https://soyosoyo-sacco-api.onrender.com/api';
-  let retries = 0;
-  const MAX_RETRIES = 20;
-
-  async function loadLiveData() {
-    try {
-      const [janRes, todayRes] = await Promise.all([
-        fetch(`${API_BASE}/jan`), fetch(`${API_BASE}/today`)
-      ]);
-      const janText = await janRes.text();
-      const todayText = await todayRes.text();
-      if (janText.includes('<title>') || todayText.includes('<title>')) throw new Error('cold start');
-
-      const jan = JSON.parse(janText);
-      const today = JSON.parse(todayText);
-      window.saccoData = { jan, today };
-      window.dispatchEvent(new Event('saccoDataUpdated'));
-    } catch (err) {
-      if (retries < MAX_RETRIES) {
-        retries++;
-        setTimeout(loadLiveData, 1000 * retries);
-      } else {
-        window.saccoData = { jan: { members: 8500, loans: 680000000, contributions: 450000000, profit: 120000000, bankBalance: 120000000, roa: "12" },
-                           today: { members: 12500, loans: 1200000000, contributions: 820000000, profit: 210000000, bankBalance: 210000000, roa: "15" } };
-        window.dispatchEvent(new Event('saccoDataUpdated'));
-      }
-    }
-  }
-
+  // 4. Initialize everything
   document.addEventListener('DOMContentLoaded', () => {
-    if (!window.saccoData) loadLiveData();
+    document.getElementById('autoYearNow').textContent = new Date().getFullYear();
 
-    const initAll = () => {
+    const init = () => {
       if (window.saccoData) {
         renderGrowthCharts();
         if (typeof window.refreshProjections === 'function') window.refreshProjections();
-        else if (typeof initProjections === 'function') setTimeout(initProjections, 300);
       } else {
-        setTimeout(initAll, 500);
+        setTimeout(init, 500);
       }
     };
-    window.addEventListener('saccoDataUpdated', initAll);
-    initAll();
+    window.addEventListener('saccoDataUpdated', init);
+    init();
 
     if (typeof initMemberCarousel === 'function') initMemberCarousel();
   });
