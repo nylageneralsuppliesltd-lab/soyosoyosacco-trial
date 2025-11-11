@@ -21,92 +21,100 @@ const saveHistory = (history) => { try { localStorage.setItem('soyosoyoSaccoHist
 
 let saccoHistory = getHistory();
 
-// === TODAY'S DATA (UPDATE DAILY) ===
-const loanTypesToday = [
+// === TODAY'S DATA (UPDATE DAILY) – These are the hardcoded dailies you change ===
+let loanTypesToday = [
   { name: 'Emergency', value: 1217900 }, { name: 'Medicare', value: 15000 },
   { name: 'Development', value: 553000 }, { name: 'Education', value: 275000 }
 ];
-const loansDisbursedThisMonth = loanTypesToday.reduce((sum, l) => sum + l.value, 0);
-const cumulativeLoansDisbursedSinceInception = 5000000;
-const loansBalanceToday = 788357.66;
-const bankBreakdownToday = [
+let loansBalanceToday = 788357.66;
+let bankBreakdownToday = [
   { name: 'Co-operative Bank', value: 2120.65 }, { name: 'Chamasoft', value: 51954 }, { name: 'Cytonn', value: 186550 }
 ];
-const totalBankBalanceToday = bankBreakdownToday.reduce((sum, b) => sum + b.value, 0);
-const bookValueToday = loansBalanceToday + totalBankBalanceToday;
-const externalLoansToday = 66784;
+let externalLoansToday = 66784;
+const cumulativeLoansDisbursedSinceInception = 5000000; // Static, but can be dynamic if needed
 
-// Carousel base data
-const carouselDataWithoutROA = [
-  { number: 144, description: "Total Members" },
-  { number: 907515, description: "Member Savings" },
-  { number: totalBankBalanceToday, description: "Total Bank Balance" },
-  { number: 106, description: "Number of Loans Given" },
-  { number: loansDisbursedThisMonth, description: "Loans Disbursed This Month" },
-  { number: 51728, description: "Profit" },
-  { number: 71, description: "Active Members" }
-];
+// Function to recompute all dynamic data (for refresh)
+const recomputeData = () => {
+  const loansDisbursedThisMonth = loanTypesToday.reduce((sum, l) => sum + l.value, 0);
+  const totalBankBalanceToday = bankBreakdownToday.reduce((sum, b) => sum + b.value, 0);
+  const bookValueToday = loansBalanceToday + totalBankBalanceToday;
 
-// Calc ROA
-const assets = carouselDataWithoutROA[1].number + externalLoansToday;
-const roaToday = assets > 0 ? ((carouselDataWithoutROA[5].number / assets) * 100).toFixed(2) : 0;
-carouselDataWithoutROA.push({ number: roaToday, description: "ROA (%)" });
-const carouselData = carouselDataWithoutROA;
+  const carouselDataWithoutROA = [
+    { number: 144, description: "Total Members" },
+    { number: 907515, description: "Member Savings" },
+    { number: totalBankBalanceToday, description: "Total Bank Balance" },
+    { number: 106, description: "Number of Loans Given" },
+    { number: loansDisbursedThisMonth, description: "Loans Disbursed This Month" },
+    { number: 51728, description: "Profit" },
+    { number: 71, description: "Active Members" }
+  ];
 
-window.loanTypes = loanTypesToday;
-window.bankBreakdown = bankBreakdownToday;
+  // Calc ROA
+  const assets = carouselDataWithoutROA[1].number + externalLoansToday;
+  const roaToday = assets > 0 ? ((carouselDataWithoutROA[5].number / assets) * 100).toFixed(2) : 0;
+  carouselDataWithoutROA.push({ number: roaToday, description: "ROA (%)" });
+  const carouselData = carouselDataWithoutROA;
 
-// Current month (uses Date for real-time, e.g., 2025-11 today)
-const now = new Date();
-const currentPeriod = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-const currentMonthData = saccoHistory[currentPeriod] || janFallback;
-const roaCurrent = (currentMonthData.contributions + currentMonthData.externalLoans > 0)
-  ? ((currentMonthData.profit / (currentMonthData.contributions + currentMonthData.externalLoans)) * 100).toFixed(2) : 0;
+  window.loanTypes = loanTypesToday;
+  window.bankBreakdown = bankBreakdownToday;
 
-// Final data
-const todayData = {
-  members: carouselData[0].number, contributions: carouselData[1].number,
-  loansDisbursed: loansDisbursedThisMonth, loansBalance: loansBalanceToday,
-  profit: carouselData[5].number, totalBankBalance: totalBankBalanceToday,
-  externalLoans: externalLoansToday, roa: roaToday,
-  extraFields: { bankBreakdown: bankBreakdownToday, cumulativeLoansDisbursed: cumulativeLoansDisbursedSinceInception, bookValue: bookValueToday }
-};
+  // Current month
+  const now = new Date();
+  const currentPeriod = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  const currentMonthData = saccoHistory[currentPeriod] || janFallback;
+  const roaCurrent = (currentMonthData.contributions + currentMonthData.externalLoans > 0)
+    ? ((currentMonthData.profit / (currentMonthData.contributions + currentMonthData.externalLoans)) * 100).toFixed(2) : 0;
 
-// Expose globals (update fallback now that todayData exists)
-window.SOYOSOYO = {
-  current: todayData, baseline: janFallback,
-  counters: carouselData.map(item => ({ value: item.number, suffix: item.description.includes('ROA') ? '%' : '', label: item.description }))
-};
-window.saccoData = { [currentPeriod]: { ...currentMonthData, roa: roaCurrent }, today: todayData };
-localStorage.setItem('saccoDataToday', JSON.stringify(todayData));
-
-// === MONTHLY AUTO-SAVE (Your Original Style) ===
-if (!saccoHistory[currentPeriod]) {
-  saccoHistory[currentPeriod] = {
-    period: currentPeriod,
-    members: todayData.members,
-    contributions: todayData.contributions,
-    loansDisbursed: todayData.loansDisbursed,
-    loansBalance: todayData.loansBalance,
-    profit: todayData.profit,
-    totalBankBalance: todayData.totalBankBalance,
-    bankBreakdown: todayData.extraFields.bankBreakdown,
-    cumulativeLoansDisbursed: todayData.extraFields.cumulativeLoansDisbursed,
-    bookValue: todayData.extraFields.bookValue,
-    roa: todayData.roa,
-    dateSaved: now.toISOString()
+  // Final data
+  const todayData = {
+    members: carouselData[0].number, contributions: carouselData[1].number,
+    loansDisbursed: loansDisbursedThisMonth, loansBalance: loansBalanceToday,
+    profit: carouselData[5].number, totalBankBalance: totalBankBalanceToday,
+    externalLoans: externalLoansToday, roa: roaToday,
+    extraFields: { bankBreakdown: bankBreakdownToday, cumulativeLoansDisbursed: cumulativeLoansDisbursedSinceInception, bookValue: bookValueToday }
   };
-  saveHistory(saccoHistory);
-  console.log(`SOYOSOYO SACCO ${currentPeriod} DATA SAVED TO HISTORY`);
-} else {
-  const existing = saccoHistory[currentPeriod];
-  if (!existing.loansBalance) existing.loansBalance = todayData.loansBalance;
-  if (!existing.profit) existing.profit = todayData.profit;
-  if (!existing.bankBreakdown) existing.bankBreakdown = todayData.extraFields.bankBreakdown;
-  if (!existing.cumulativeLoansDisbursed) existing.cumulativeLoansDisbursed = todayData.extraFields.cumulativeLoansDisbursed;
-  if (!existing.bookValue) existing.bookValue = todayData.extraFields.bookValue;
-  saveHistory(saccoHistory);
-}
+
+  // Expose globals
+  window.SOYOSOYO = {
+    current: todayData, baseline: janFallback,
+    counters: carouselData.map(item => ({ value: item.number, suffix: item.description.includes('ROA') ? '%' : '', label: item.description }))
+  };
+  window.saccoData = { [currentPeriod]: { ...currentMonthData, roa: roaCurrent }, today: todayData };
+  localStorage.setItem('saccoDataToday', JSON.stringify(todayData));
+
+  // === MONTHLY AUTO-SAVE (Your Original Style) ===
+  if (!saccoHistory[currentPeriod]) {
+    saccoHistory[currentPeriod] = {
+      period: currentPeriod,
+      members: todayData.members,
+      contributions: todayData.contributions,
+      loansDisbursed: todayData.loansDisbursed,
+      loansBalance: todayData.loansBalance,
+      profit: todayData.profit,
+      totalBankBalance: todayData.totalBankBalance,
+      bankBreakdown: todayData.extraFields.bankBreakdown,
+      cumulativeLoansDisbursed: todayData.extraFields.cumulativeLoansDisbursed,
+      bookValue: todayData.extraFields.bookValue,
+      roa: todayData.roa,
+      dateSaved: now.toISOString()
+    };
+    saveHistory(saccoHistory);
+    console.log(`SOYOSOYO SACCO ${currentPeriod} DATA SAVED TO HISTORY`);
+  } else {
+    const existing = saccoHistory[currentPeriod];
+    if (!existing.loansBalance) existing.loansBalance = todayData.loansBalance;
+    if (!existing.profit) existing.profit = todayData.profit;
+    if (!existing.bankBreakdown) existing.bankBreakdown = todayData.extraFields.bankBreakdown;
+    if (!existing.cumulativeLoansDisbursed) existing.cumulativeLoansDisbursed = todayData.extraFields.cumulativeLoansDisbursed;
+    if (!existing.bookValue) existing.bookValue = todayData.extraFields.bookValue;
+    saveHistory(saccoHistory);
+  }
+
+  return { todayData, carouselData, currentPeriod };
+};
+
+// Initial compute
+const { todayData, carouselData } = recomputeData();
 
 // === DOM-READY LOGIC ===
 document.addEventListener('DOMContentLoaded', () => {
@@ -204,6 +212,35 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('resize', updateCarousel);
   updateCarousel();
 
-  // Expose refresh
-  window.updateCarouselData = () => { console.log('Carousel data refreshed'); updateCarousel(); };
+  // Expose refresh – NOW FULLY UPDATES DATA FOR PROJECTIONS
+  window.updateCarouselData = () => {
+    console.log('Carousel data refreshed');
+    // Recompute everything (dailies, sums, ROA, history, globals)
+    const refreshed = recomputeData();
+    // Re-render carousel if needed (update HTML with new targets)
+    if (carousel) {
+      const newItemHTML = refreshed.carouselData.map(item =>
+        `<article class="carousel-item" role="listitem">
+          <h3 class="carousel-button" data-target="${item.number}">0</h3>
+          <p class="carousel-description">${item.description}</p>
+        </article>`
+      ).join('');
+      carousel.innerHTML = newItemHTML + newItemHTML;
+      // Re-observe new items
+      document.querySelectorAll('.carousel-item').forEach(item => observer.observe(item));
+      updateCarousel(); // Refresh CSS vars
+    }
+    // Re-setup counters with new data
+    document.querySelectorAll('.counter').forEach(el => {
+      const idx = el.dataset.index;
+      if (idx !== undefined && refreshed.carouselData[idx]) {
+        const item = refreshed.carouselData[idx];
+        el.dataset.target = item.number;
+        el.dataset.suffix = item.description.includes('ROA') ? '%' : '';
+        el.textContent = '0';
+        observer.observe(el);
+      }
+    });
+    console.log('Projections data updated:', refreshed.todayData);
+  };
 });
