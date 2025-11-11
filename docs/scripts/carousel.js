@@ -30,6 +30,7 @@ let loanTypesToday = [
   { name: 'Emergency', value: 1217900 }, { name: 'Medicare', value: 15000 },
   { name: 'Development', value: 553000 }, { name: 'Education', value: 275000 }
 ];
+window.loanTypesToday = loanTypesToday;  // PATCH: Expose global for pie chart in charts script
 let loansBalanceToday = 788357.66;
 let bankBreakdownToday = [
   { name: 'Co-operative Bank', value: 2120.65 }, { name: 'Chamasoft', value: 51954 }, { name: 'Cytonn', value: 186550 }
@@ -60,6 +61,7 @@ const recomputeData = () => {
   const carouselData = carouselDataWithoutROA;
 
   window.loanTypes = loanTypesToday;
+  window.loanTypesToday = loanTypesToday;  // PATCH: Re-expose on recompute for updates
   window.bankBreakdown = bankBreakdownToday;
 
   // Current month
@@ -120,6 +122,10 @@ const recomputeData = () => {
     if (!existing.bookValue) existing.bookValue = todayData.extraFields.bookValue;
     saveHistory(saccoHistory);
   }
+
+  // PATCH: Trigger charts update after recompute
+  window.dispatchEvent(new CustomEvent('saccoDataUpdated'));
+  console.log('saccoDataUpdated event dispatched after recompute');
 
   return { todayData, carouselData, currentPeriod };
 };
@@ -283,6 +289,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.SOYOSOYO.baseline = refreshedJanWithAliases;
     window.saccoData.jan = refreshedJanWithAliases;
     window.saccoData.today = refreshedTodayWithAliases;
+    window.loanTypesToday = loanTypesToday;  // PATCH: Re-expose on update
     // Re-trigger charts after update
     if (typeof renderGrowthCharts === 'function') {
       renderGrowthCharts();
