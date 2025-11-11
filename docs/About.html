@@ -198,29 +198,7 @@
     }
   }
 
-  function updateCurrentMonthInHistory(today, saveType = 'auto') {
-    const currentPeriod = new Date().toISOString().slice(0, 7);
-    const ef = today.extraFields || {};
-    const bb = ef.bankBreakdown || [];
-    window.saccoHistory[currentPeriod] = {
-      period: currentPeriod,
-      members: Number(today.members || 0),
-      contributions: Number(today.contributions || 0),
-      loansDisbursed: Number(today.loansDisbursed || 0),
-      loansBalance: Number(today.loansBalance || 0),
-      totalBankBalance: Number(today.totalBankBalance || 0),
-      profit: Number(today.profit || 0),
-      roa: Number(today.roa || 0),
-      coopBank: getBankValue(bb, 'Co-operative'),
-      chamasoft: getBankValue(bb, 'Chamasoft'),
-      cytonn: getBankValue(bb, 'Cytonn'),
-      totalAssets: Number(ef.bookValue || 0),
-      extraFields: ef,
-      dateSaved: new Date().toISOString(),
-      saveType: saveType
-    };
-  }
-
+ 
   function renderFullHistory() {
     const container = document.getElementById('fullHistoryTable');
     const footer = document.getElementById('historyFooter');
