@@ -456,7 +456,7 @@
           if (janVal === undefined || todayVal === undefined) return;
 
           const growthPercent = janVal === 0 ? (todayVal === 0 ? 0 : 100) : ((todayVal - janVal) / Math.abs(janVal)) * 100;
-          const isPositive = growthPercent >= 0;  // Always positive for recovery, but color green if improving
+          const isPositive = growthPercent >= 0;
 
           const xScale = chart.scales.x;
           const yScale = chart.scales.y;
@@ -471,7 +471,7 @@
 
           const ctx = chart.ctx;
           ctx.save();
-          ctx.strokeStyle = (todayVal > janVal) ? '#10B981' : '#EF4444';  // Green if improving (even from negative)
+          ctx.strokeStyle = (todayVal > janVal) ? '#10B981' : '#EF4444';
           ctx.lineWidth = 5;
           ctx.lineCap = 'round';
 
@@ -506,28 +506,7 @@
     }
   }
 
-  // Loan types data (global)
-  window.loanTypes = [
-    { name: "Emergency", value: 38 },
-    { name: "Education", value: 25 },
-    { name: "Development", value: 20 },
-    { name: "Medicare", value: 12 },
-    { name: "Api Culture", value: 5 }
-  ];
-
-  // Fallback saccoData (updated with negative Jan profit example)
-  function ensureSaccoData() {
-    if (!window.saccoData) {
-      window.saccoData = {
-        jan: { members: 1000, loans: 5000000, contributions: 2000000, profit: -500000, bankBalance: 1000000 },  // Negative profit
-        today: { members: 1200, loans: 6000000, contributions: 2500000, profit: 600000, bankBalance: 1200000 }
-      };
-      console.log('✅ Fallback saccoData loaded (with negative Jan profit for testing)');
-    }
-    return window.saccoData;
-  }
-
-  // Enhanced growth calc with negative handling
+  // Enhanced growth calc with negative handling (pure math, no hardcoding)
   function calculateGrowth(janVal, todayVal, metric) {
     if (janVal === 0) return todayVal === 0 ? 0 : 100;
     const rawChange = ((todayVal - janVal) / Math.abs(janVal)) * 100;
@@ -540,23 +519,96 @@
     return { percent: rawChange, label, isImproving };
   }
 
-  // Render charts function
+  // Render/update pie chart from carousel.js data ONLY
+  function renderLoanTypesPie() {
+    // Lift directly from carousel.js (window.loanTypesToday) – no fallback, no hardcoding
+    const loanTypes = window.loanTypesToday;
+    const canvas = document.getElementById('chartLoanTypes');
+    if (!canvas || !loanTypes || loanTypes.length === 0) {
+      console.warn('Pie chart skipped: No canvas or loanTypesToday from carousel.js');
+      return;
+    }
+
+    // Destroy existing pie
+    if (Chart.getChart(canvas)) Chart.getChart(canvas).destroy();
+
+    const total = loanTypes.reduce((sum, type) => sum + type.value, 0);
+    console.log(`Pie Chart Data from carousel.js: Total Loans=${total.toLocaleString()} KES → Percentages = (Value / Total) × 100%`);
+
+    const labels = loanTypes.map(type => type.name);
+    const data = loanTypes.map(type => (type.value / total) * 100);
+
+    // Log individual % (mathematical verification)
+    loanTypes.forEach(type => {
+      const pct = (type.value / total) * 100;
+      console.log(`${type.name}: ${type.value.toLocaleString()} KES → ${(pct).toFixed(2)}%`);
+    });
+
+    new Chart(canvas.getContext('2d'), {
+      type: 'pie',
+      data: { 
+        labels, 
+        datasets: [{ 
+          data, 
+          backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],  // Adaptive colors
+          borderWidth: 3, 
+          borderColor: '#fff' 
+        }] 
+      },
+      options: {
+        responsive: true, 
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom', labels: { font: { size: 12, weight: 'bold' } } },
+          tooltip: {
+            callbacks: {
+              label: ctx => {
+                const type = loanTypes[ctx.dataIndex];
+                const pct = ctx.raw;
+                return `${type.name}: KES ${type.value.toLocaleString()} (${pct.toFixed(2)}%) \nFormula: (${type.value} / ${total.toLocaleString()} × 100%)`;
+              }
+            }
+          },
+          datalabels: { 
+            formatter: (v, ctx) => {
+              const pct = v;
+              return pct > 5 ? `${pct.toFixed(1)}%` : '';  // Hide tiny slices
+            }, 
+            color: '#fff', 
+            font: { weight: 'bold', size: 13 } 
+          }
+        }
+      },
+      plugins: [ChartDataLabels]
+    });
+
+    console.log(' Loan Types Pie Chart rendered (purely from carousel.js loanTypesToday)');
+  }
+
+  // Render growth charts from carousel.js data ONLY
   function renderGrowthCharts() {
+    // Lift directly from carousel.js (window.saccoData) – no fallback, no hardcoding
+    const saccoData = window.saccoData;
+    if (!saccoData || !saccoData.jan || !saccoData.today) {
+      console.warn('Growth charts skipped: No saccoData from carousel.js');
+      return;
+    }
+
     if (window.growthChartsRendered) return;
     window.growthChartsRendered = true;
 
+    // Destroy existing charts
     document.querySelectorAll('#final-charts-section canvas').forEach(canvas => {
       if (Chart.getChart(canvas)) Chart.getChart(canvas).destroy();
     });
 
-    const saccoData = ensureSaccoData();
     const { jan, today } = saccoData;
     const colors = {
       members: { jan: '#8B5CF6', today: '#C4B5FD' },
       loans: { jan: '#F59E0B', today: '#FBBF24' },
       contributions: { jan: '#10B981', today: '#34D399' },
       profit: { jan: '#EF4444', today: '#F87171' },
-      roa: { jan: '#0EA5E9', today: '#7DD3FC' },  // For Profit/Contributions % (as ROA proxy)
+      roa: { jan: '#0EA5E9', today: '#7DD3FC' },
       liquidity: { jan: '#6366F1', today: '#A5B4FC' }
     };
 
@@ -602,12 +654,12 @@
                 const display = isPercent ? `${v < 0 ? '-' : ''}${Math.abs(v).toFixed(2)}%` : (isMoney ? (v < 0 ? '-KES ' : 'KES ') + Math.abs(v).toLocaleString() : v.toLocaleString());
                 return display;
               },
-              backgroundColor: 'rgba(255,255,255,0.95)', borderRadius: 8, padding: 8, color: v => v < 0 ? '#EF4444' : '#10B981'  // Red for negative
+              backgroundColor: 'rgba(255,255,255,0.95)', borderRadius: 8, padding: 8, color: v => v < 0 ? '#EF4444' : '#10B981'
             }
           },
           scales: {
             x: { grid: { display: false }, ticks: { color: '#1a1a1a', font: { weight: 'bold', size: 13 } } },
-            y: { display: false, beginAtZero: false, grace: '20%' }  // Allow negatives
+            y: { display: false, beginAtZero: false, grace: '20%' }
           },
           layout: { padding: { top: 70, left: 10, right: 10, bottom: 10 } }
         },
@@ -615,7 +667,7 @@
       });
     };
 
-    // Compute Profit/Contributions % (ROA proxy)
+    // Compute ROA as Profit/Contributions % from carousel data (handles negatives)
     const janROA = jan.contributions > 0 ? (jan.profit / jan.contributions) * 100 : 0;
     const todayROA = today.contributions > 0 ? (today.profit / today.contributions) * 100 : 0;
     const roaGrowth = calculateGrowth(janROA, todayROA, 'ROA (Profit/Contributions %)');
@@ -624,7 +676,7 @@
     const todayLiquidity = today.contributions > 0 ? (today.bankBalance / today.contributions) * 100 : 0;
     const liquidityGrowth = calculateGrowth(janLiquidity, todayLiquidity, 'Liquidity');
 
-    // Standard charts
+    // Bar charts from saccoData
     createChart('chartMembers', jan.members, today.members, colors.members, 'growthMembers', false, false, 'Members', '(Today - Jan) / |Jan| × 100%');
     createChart('chartLoans', jan.loans, today.loans, colors.loans, 'growthLoans', false, true, 'Loans', '(Today - Jan) / |Jan| × 100%');
     createChart('chartContributions', jan.contributions, today.contributions, colors.contributions, 'growthContributions', false, true, 'Contributions', '(Today - Jan) / |Jan| × 100%');
@@ -632,49 +684,48 @@
     createChart('chartROA', janROA, todayROA, colors.roa, 'growthROA', true, false, 'ROA (Profit/Contributions %)', '(Profit / Contributions) × 100%');
     createChart('chartLiquidity', janLiquidity, todayLiquidity, colors.liquidity, 'growthLiquidity', true, false, 'Liquidity', '(Bank / Contributions) × 100%');
 
-    // Pie chart unchanged...
-    if (window.loanTypes) {
-      const total = window.loanTypes.reduce((s, l) => s + l.value, 0);
-      if (total > 0 && document.getElementById('chartLoanTypes')) {
-        const labels = window.loanTypes.map(l => l.name);
-        const data = window.loanTypes.map(l => (l.value / total) * 100);
-        new Chart(document.getElementById('chartLoanTypes').getContext('2d'), {
-          type: 'pie',
-          data: { labels, datasets: [{ data, backgroundColor: ['#FF6384','#36A2EB','#FFCE56','#4BC0C0','#9966FF'], borderWidth: 3, borderColor: '#fff' }] },
-          options: {
-            responsive: true, maintainAspectRatio: false,
-            plugins: {
-              legend: { position: 'bottom', labels: { font: { size: 12, weight: 'bold' } } },
-              datalabels: { formatter: v => v > 5 ? v.toFixed(1)+'%' : '', color: '#fff', font: { weight: 'bold', size: 13 } }
-            }
-          },
-          plugins: [ChartDataLabels]
-        });
-      }
-    }
+    // Render pie from loanTypesToday
+    renderLoanTypesPie();
 
-    console.log('✅ Charts rendered with negative handling (ROA as Profit/Contributions %)');
+    console.log(' All charts rendered (purely from carousel.js – saccoData & loanTypesToday)');
   }
 
-  // Initialize
+  // Initialize (wait for carousel.js to load data)
   document.addEventListener('DOMContentLoaded', () => {
     registerPlugins();
+
+    // Retry loop: Wait for carousel.js to set window.saccoData & window.loanTypesToday
     const init = () => {
+      if (!window.saccoData || !window.loanTypesToday) {
+        console.log('Waiting for carousel.js data... (saccoData:', !!window.saccoData, 'loanTypesToday:', !!window.loanTypesToday, ')');
+        setTimeout(init, 500);  // Retry every 500ms
+        return;
+      }
+
+      // Restore from localStorage if needed (as carousel.js does)
       if (!window.saccoData && localStorage.getItem('saccoData')) {
         try {
           window.saccoData = JSON.parse(localStorage.getItem('saccoData'));
-          console.log('saccoData restored:', window.saccoData);
+          console.log('saccoData restored from storage:', window.saccoData);
         } catch (e) { console.warn('Restore failed:', e); }
       }
-      ensureSaccoData();
+
       renderGrowthCharts();
       if (typeof window.refreshProjections === 'function') window.refreshProjections();
       if (typeof initMemberCarousel === 'function') initMemberCarousel();
     };
-    window.addEventListener('saccoDataUpdated', init);
-    init();
+
+    // Auto-update on carousel.js changes
+    window.addEventListener('saccoDataUpdated', () => {
+      window.growthChartsRendered = false;  // Force re-render
+      renderGrowthCharts();
+    });
+
+    init();  // Start waiting
   });
 </script>
+
+
 <script src="./scripts/main.js"></script>
 <script src="./scripts/calculator.js"></script>
 <script src="./scripts/dividendscalculator.js"></script>
