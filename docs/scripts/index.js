@@ -341,4 +341,15 @@ document.addEventListener('DOMContentLoaded',()=>{
         updateCurrentMonthInHistory(window.saccoData.today,'auto');
         renderFullHistory();
         lastDataHash=hash;
-        if(autoSaveEnabled)setTimeout(()=>saveCurrentMonth(true),
+        if(autoSaveEnabled)setTimeout(()=>saveCurrentMonth(true),5000);
+      }
+    }
+  },2000);
+});
+
+// --- EXPORT ---
+window.saveCurrentMonth=saveCurrentMonth;
+window.toggleAutoSave=toggleAutoSave;
+window.downloadHistoryCSV=downloadHistoryCSV;
+window.postToSocials=postToSocials;
+window.loadLiveHistory=loadLiveHistory;
