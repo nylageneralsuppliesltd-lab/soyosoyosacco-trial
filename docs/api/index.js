@@ -62,11 +62,13 @@ function loadPersistedData() {
   if (saved) {
     const data = JSON.parse(saved);
     window.saccoHistory = {};
-    data.forEach(row => { window.saccoHistory[row.period] = row; });
+    data.forEach(row => { 
+      window.saccoHistory[row.period] = { ...row, saveType: row.saveType || 'manual' };
+    });
   }
 }
 
-function updateCurrentMonthInHistory(today, isUnsaved = false) {
+function updateCurrentMonthInHistory(today, saveType = 'auto') {
   const currentPeriod = new Date().toISOString().slice(0, 7);
   window.saccoHistory[currentPeriod] = {
     period: currentPeriod,
@@ -75,8 +77,8 @@ function updateCurrentMonthInHistory(today, isUnsaved = false) {
     loans: Number(today.loans || 0),
     bankBalance: Number(today.bankBalance || 0),
     roa: Number(today.roa || 0),
-    dateSaved: isUnsaved ? null : window.saccoHistory[currentPeriod]?.dateSaved || new Date().toISOString(),
-    unsaved: isUnsaved
+    dateSaved: new Date().toISOString(),
+    saveType: saveType
   };
 }
 
@@ -101,15 +103,15 @@ function renderFullHistory() {
 
   history.forEach(row => {
     const isCurrent = row.period === currentMonthKey;
-    const unsavedIndicator = row.unsaved ? '<span class="unsaved-indicator">Unsaved Changes</span>' : '';
+    const saveTypeLabel = row.saveType === 'auto' ? '(Auto)' : '(Manual)';
     tableHTML += `<tr ${isCurrent?'class="current-month"':''}>
-      <td data-label="Period">${formatMonth(row.period)}${unsavedIndicator}</td>
+      <td data-label="Period">${formatMonth(row.period)}</td>
       <td data-label="Members">${Number(row.members).toLocaleString()}</td>
       <td data-label="Contributions">KSh ${Number(row.contributions).toLocaleString()}</td>
       <td data-label="Loans">KSh ${Number(row.loans).toLocaleString()}</td>
       <td data-label="Bank Balance">KSh ${Number(row.bankBalance).toLocaleString()}</td>
       <td data-label="ROA" class="roa">${Number(row.roa).toFixed(1)}</td>
-      <td data-label="Saved On">${row.unsaved ? 'Draft' : formatDisplayDate(row.dateSaved)}</td>
+      <td data-label="Saved On">${formatDisplayDate(row.dateSaved)} ${saveTypeLabel}</td>
     </tr>`;
   });
 
@@ -122,8 +124,8 @@ function renderFullHistory() {
     if (tbody) {
       tbody.innerHTML = history.map(row => {
         const isCurrent = row.period === currentMonthKey;
-        const unsavedIndicator = row.unsaved ? '<span class="unsaved-indicator">Unsaved</span>' : '';
-        const periodHtml = `<div class="period-header ${isCurrent ? 'current-month' : ''}">${formatMonth(row.period)} ${unsavedIndicator}</div>`;
+        const saveTypeLabel = row.saveType === 'auto' ? '(Auto)' : '(Manual)';
+        const periodHtml = `<div class="period-header ${isCurrent ? 'current-month' : ''}">${formatMonth(row.period)}</div>`;
         const metricsHtml = `
           <div class="metrics-grid">
             <div class="metric-item"><span class="metric-label">Members</span><span class="metric-value">${Number(row.members).toLocaleString()}</span></div>
@@ -132,7 +134,7 @@ function renderFullHistory() {
             <div class="metric-item"><span class="metric-label">Bank Bal.</span><span class="metric-value">KSh ${Number(row.bankBalance).toLocaleString()}</span></div>
           </div>
           <div class="saved-on">
-            <span class="metric-label">ROA:</span> <span class="roa-value">${Number(row.roa).toFixed(1)}%</span> | ${row.unsaved ? 'Draft' : `Saved: ${formatDisplayDate(row.dateSaved)}`}
+            <span class="metric-label">ROA:</span> <span class="roa-value">${Number(row.roa).toFixed(1)}%</span> | Saved: ${formatDisplayDate(row.dateSaved)} ${saveTypeLabel}
           </div>
         `;
         return `<tr class="${isCurrent ? 'current-month' : ''}">${periodHtml}${metricsHtml}</tr>`;
@@ -141,10 +143,11 @@ function renderFullHistory() {
   }
 
   const latest = history[0];
+  const saveTypeLabel = latest.saveType === 'auto' ? '(Auto)' : '(Manual)';
   footer.innerHTML = `
     <strong>${history.length}</strong> months saved 
     <span style="color:#10B981;">| Latest: ${formatMonth(latest.period)}</span>
-    <span style="color:#004d1a;">| Saved: ${latest.unsaved ? 'Draft' : formatDisplayDate(latest.dateSaved)}</span>
+    <span style="color:#004d1a;">| Saved: ${formatDisplayDate(latest.dateSaved)} ${saveTypeLabel}</span>
   `;
 }
 
@@ -167,25 +170,28 @@ async function loadLiveHistory() {
         bankBalance: Number(row.bankBalance || 0),
         roa: Number(row.roa || 0),
         dateSaved: row.dateSaved,
-        unsaved: false
+        saveType: 'manual' // Default for DB-loaded data
       };
     });
-    localStorage.setItem('saccoHistoryBackup', JSON.stringify(data));
+    localStorage.setItem('saccoHistoryBackup', JSON.stringify(Object.values(window.saccoHistory)));
   } catch (err) {
     console.warn('Server sleeping → using local backup', err);
     loadPersistedData();
   } finally {
-    // Ensure current month is shown even if unsaved
+    // Ensure current month is shown and updated
     if (window.saccoData?.today) {
       const currentHash = computeDataHash(window.saccoData.today);
       const isDataChanged = currentHash !== lastDataHash;
-      updateCurrentMonthInHistory(window.saccoData.today, isDataChanged);
+      if (isDataChanged) {
+        updateCurrentMonthInHistory(window.saccoData.today, 'auto');
+        lastDataHash = currentHash;
+      }
     }
     renderFullHistory();
   }
 }
 
-async function attemptSave(payload) {
+async function attemptSave(payload, saveType = 'auto') {
   try {
     const res = await fetch(`${API_BASE}/history/save`, {
       method: 'POST',
@@ -194,7 +200,7 @@ async function attemptSave(payload) {
     });
     if (!res.ok) { const text = await res.text(); throw new Error(text || res.status); }
     const result = await res.json();
-    return { success: true, data: result.data };
+    return { success: true, data: { ...result.data, saveType } };
   } catch (err) {
     return { success: false, error: err.message };
   }
@@ -206,6 +212,7 @@ async function saveCurrentMonth(auto = false) {
     return;
   }
   const today = window.saccoData.today;
+  const saveType = auto ? 'auto' : 'manual';
   const payload = {
     members: today.members,
     contributions: today.contributions,
@@ -213,12 +220,12 @@ async function saveCurrentMonth(auto = false) {
     bank_balance: today.bankBalance || 0,
     roa: parseFloat(today.roa) || 0
   };
-  const saveAttempt = await attemptSave(payload);
+  const saveAttempt = await attemptSave(payload, saveType);
   if (saveAttempt.success) {
     clearRetryInterval();
     localStorage.removeItem('pendingSave');
     lastDataHash = computeDataHash(today);
-    updateCurrentMonthInHistory(today, false); // Mark as saved
+    updateCurrentMonthInHistory(today, saveType);
     renderFullHistory();
     if (!auto) {
       alert(`SAVED SUCCESSFULLY!\nMonth: ${formatMonth(saveAttempt.data.period)}\nSaved at: ${formatDateTime(saveAttempt.data.dateSaved)}`);
@@ -228,26 +235,26 @@ async function saveCurrentMonth(auto = false) {
     loadLiveHistory();
   } else {
     // Queue locally and start retry
-    localStorage.setItem('pendingSave', JSON.stringify({ ...payload, queuedAt: new Date().toISOString() }));
+    localStorage.setItem('pendingSave', JSON.stringify({ ...payload, queuedAt: new Date().toISOString(), saveType }));
     if (!auto) {
-      startRetry(payload);
+      startRetry(payload, saveType);
       alert(`Save queued – server sleeping. Retrying automatically every 30s...\nError: ${saveAttempt.error}`);
     }
   }
 }
 
-function startRetry(payload) {
+function startRetry(payload, saveType) {
   if (retryInterval) clearRetryInterval();
   let retryCount = 0;
   const maxRetries = 10; // Safety limit
   retryInterval = setInterval(async () => {
     retryCount++;
-    const saveAttempt = await attemptSave(payload);
+    const saveAttempt = await attemptSave(payload, saveType);
     if (saveAttempt.success) {
       clearRetryInterval();
       localStorage.removeItem('pendingSave');
       lastDataHash = computeDataHash(window.saccoData?.today);
-      updateCurrentMonthInHistory(window.saccoData.today, false);
+      updateCurrentMonthInHistory(window.saccoData.today, saveType);
       renderFullHistory();
       console.log(`Auto-retry saved after ${retryCount} attempts`);
       loadLiveHistory();
@@ -280,19 +287,20 @@ function toggleAutoSave() {
 function checkPendingSave() {
   const pending = localStorage.getItem('pendingSave');
   if (pending) {
-    const payload = JSON.parse(pending);
+    const { saveType, ...payload } = JSON.parse(pending);
     console.log('Pending save detected – retrying now...');
-    startRetry(payload);
+    startRetry(payload, saveType);
   }
 }
 
 function downloadHistoryCSV() {
-  const history = Object.values(window.saccoHistory).filter(row => !row.unsaved);
+  const history = Object.values(window.saccoHistory);
   if (history.length === 0) { alert("No data to download yet."); return; }
 
-  let csv = "Period,Members,Contributions,Loans,Bank Balance,ROA %,Saved On\n";
+  let csv = "Period,Members,Contributions,Loans,Bank Balance,ROA %,Saved On,Save Type\n";
   history.sort((a,b)=>a.period.localeCompare(b.period)).forEach(d => {
-    csv += `${formatMonth(d.period)},${d.members},${d.contributions},${d.loans},${d.bankBalance},${d.roa},${formatDateTime(d.dateSaved)}\n`;
+    const saveTypeLabel = d.saveType === 'auto' ? 'Auto' : 'Manual';
+    csv += `${formatMonth(d.period)},${d.members},${d.contributions},${d.loans},${d.bankBalance},${d.roa},"${formatDateTime(d.dateSaved)}",${saveTypeLabel}\n`;
   });
 
   const blob = new Blob([csv], {type:'text/csv'});
@@ -305,7 +313,7 @@ function downloadHistoryCSV() {
 }
 
 function postToSocials() {
-  const history = Object.values(window.saccoHistory).filter(row => !row.unsaved);
+  const history = Object.values(window.saccoHistory);
   if (history.length === 0) {
     alert("No data saved yet! Click SAVE first.");
     return;
@@ -355,7 +363,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const isDataChanged = currentHash !== lastDataHash;
       if (isDataChanged) {
         console.log('Data changed detected');
-        updateCurrentMonthInHistory(window.saccoData.today, true); // Mark as unsaved
+        updateCurrentMonthInHistory(window.saccoData.today, 'auto');
         renderFullHistory();
         lastDataHash = currentHash;
         if (autoSaveEnabled) {
