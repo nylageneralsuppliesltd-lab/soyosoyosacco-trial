@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const cumulativeLoansDisbursedToday = 5000000; // Since inception (hidden, not displayed)
 
-  const loanBalanceToday = 1800000; // Outstanding loan balance (hidden)
+  const loanBalanceToday = 788357.66; // Outstanding loan balance (hidden)
 
   const bankBreakdownToday = [
     { name: 'Co-operative Bank', value: 2120.65 },
