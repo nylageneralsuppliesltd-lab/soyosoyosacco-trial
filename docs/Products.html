@@ -488,24 +488,6 @@
     });
   });
 </script>
-    <!-- DATA LOADER FOR ALL PAGES -->
-<script>
-  const API_BASE = 'https://soyosoyo-sacco-api.onrender.com/api';
-  async function loadLiveData() {
-    try {
-      const [janRes, todayRes] = await Promise.all([
-        fetch(`${API_BASE}/jan`),
-        fetch(`${API_BASE}/today`)
-      ]);
-      const jan = await janRes.json();
-      const today = await todayRes.json();
-      window.saccoData = { jan, today };
-      window.dispatchEvent(new Event('saccoDataUpdated'));
-    } catch (err) {
-      console.warn('API sleeping, will retry...', err);
-    }
-  }
-  if (!window.saccoData) loadLiveData();
-</script>
+
 </body>
 </html>
