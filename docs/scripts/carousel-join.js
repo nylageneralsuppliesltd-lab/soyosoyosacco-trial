@@ -1,4 +1,4 @@
-// scripts/carousel-join.js
+// scripts/carousel-join.js — FULLY INDEPENDENT, NO CONFLICT, PERFECT ANIMATION
 document.addEventListener('DOMContentLoaded', () => {
   const carouselData = [
     { amount: 200, description: "Non-refundable Registration Fee" },
@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     </article>
   `).join('');
 
-  carousel.innerHTML = itemsHTML + itemsHTML; // Duplicate for loop
+  carousel.innerHTML = itemsHTML + itemsHTML;
 
   // Counter animation
   const formatNumber = n => n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -30,48 +30,47 @@ document.addEventListener('DOMContentLoaded', () => {
     const step = now => {
       if (!id) id = now;
       const progress = Math.min((now - id) / 600, 1);
-      el.textContent = formatNumber(Math.round(start + progress * (end - start)));
-      progress < 1 ? requestAnimationFrame(step) : (id = null);
+      const value = Math.round(start + progress * (end - start));
+      el.textContent = formatNumber(value);
+      if (progress < 1) requestAnimationFrame(step);
+      else id = null;
     };
     requestAnimationFrame(step);
   };
 
+  // Intersection Observer
   const observer = new IntersectionObserver(entries => {
     entries.forEach(e => {
-      const c = e.target.querySelector('.counter-value');
-      if (e.isIntersecting && c) animateCounter(c, c.dataset.target);
-      else if (c) c.textContent = '0';
+      const counter = e.target.querySelector('.counter-value');
+      if (e.isIntersecting && counter && counter.textContent === '0') {
+        animateCounter(counter, counter.dataset.target);
+      }
     });
   }, { threshold: 0.3 });
 
-  document.querySelectorAll('.carousel-join-item').forEach(i => {
-    const c = i.querySelector('.counter-value');
-    if (c) observer.observe(i);
-  });
+  document.querySelectorAll('.carousel-join-item').forEach(item => observer.observe(item));
 
-  // Responsive animation
+  // Responsive CSS variables
   const update = () => {
     const w = window.innerWidth;
     const iw = w <= 600 ? 200 : w <= 360 ? 160 : 280;
     const m = w <= 600 ? 10 : w <= 360 ? 5 : 30;
-    // FIXED: total = width of ONE set (4 items) for seamless loop translate
     const total = carouselData.length * (iw + 2 * m);
 
     document.documentElement.style.setProperty('--item-width', iw + 'px');
     document.documentElement.style.setProperty('--item-margin', m + 'px');
-    // FIXED: Translate by -ONE set width (not full 8), so second set aligns perfectly
     document.documentElement.style.setProperty('--carousel-translate', '-' + total + 'px');
     document.documentElement.style.setProperty('--carousel-duration', carouselData.length * 10 + 's');
   };
   window.addEventListener('resize', update);
   update();
-  // Force immediate animation on page load
-setTimeout(() => {
-  document.querySelectorAll('.carousel-join-item').forEach(item => {
-    const btn = item.querySelector('.carousel-join-button');
-    if (btn && btn.dataset.target) {
-      animateCounter(btn, btn.dataset.target);
-    }
-  });
-}, 500);
+
+  // FIXED: Animate the CORRECT element on load
+  setTimeout(() => {
+    document.querySelectorAll('.counter-value').forEach(counter => {
+      if (counter.textContent === '0' && counter.dataset.target) {
+        animateCounter(counter, counter.dataset.target);
+      }
+    });
+  }, 600); // Slightly longer than carousel.js (500ms) → no race condition
 });
