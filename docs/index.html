@@ -22,7 +22,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
     
     <!-- MAIN CSS -->
-    <link rel="stylesheet" href="./style.css?v=206">
+    <link rel="stylesheet" href="./style.css?v=207">
 
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-05M38MYK0G"></script>
@@ -80,98 +80,98 @@
         #final-charts-section .chart-card { height: 400px; }
         #final-charts-section .chart-card canvas { min-height: 280px; }
       }
- /* === PLOTLY PROJECTIONS === */
-  #projectionsChart {
-    isolation: isolate;
-    contain: layout style paint;
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 10px;
-    font-family: 'Lato', sans-serif;
-  }
-  #projectionsChart > .kpi-card,
-  #projectionsChart > .summary-card {
-    background: white;
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    border: 1px solid #f0fdf4;
-    margin: 16px 8px;
-    max-width: calc(100% - 16px);
-  }
-  #projectionsChart .kpi-title {
-    padding: 16px;
-    background: #f8fdfa;
-    text-align: center;
-    font-size: 16px;
-    font-weight: 900;
-    color: #004d1a;
-  }
-  #projectionsChart .plotly-projection-div {
-    height: 420px !important;
-    width: 100% !important;
-  }
-  #projectionsChart .summary-header {
-    background: linear-gradient(90deg,#004d1a,#10B981);
-    color: white;
-    padding: 16px;
-    text-align: center;
-    font-size: 17px;
-    font-weight: 900;
-  }
-  #projectionsChart .summary-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 14px;
-    padding: 16px;
-  }
-  #projectionsChart .summary-item {
-    background: #f0fdf4;
-    border-radius: 14px;
-    padding: 12px;
-    border: 1px solid #86efac;
-    text-align: center;
-  }
-  #projectionsChart .summary-label {
-    font-size: 13.5px;
-    font-weight: 900;
-    color: #166534;
-  }
-  #projectionsChart .summary-values {
-    display: flex;
-    justify-content: space-between;
-    font-size: 13px;
-    margin: 8px 0;
-  }
-  #projectionsChart .summary-values span {
-    color: #6b7280;
-    font-size: 11.5px;
-    display: block;
-  }
-  #projectionsChart .summary-values strong {
-    font-size: 15px;
-    color: #004d1a;
-  }
-  #projectionsChart .summary-growth {
-    background: #10B981;
-    color: white;
-    padding: 6px 14px;
-    border-radius: 50px;
-    font-size: 12.5px;
-    font-weight: 900;
-  }
-  @media (min-width: 769px) {
-    #projectionsChart { display: flex; flex-wrap: wrap; justify-content: space-between; }
-    #projectionsChart > .kpi-card { flex: 1 1 calc(50% - 20px); max-width: 48%; }
-    #projectionsChart .plotly-projection-div { height: 440px !important; }
-    #projectionsChart > .summary-card { flex: 1 1 100%; max-width: 100%; margin: 30px 8px 10px; }
-    #projectionsChart .summary-grid { grid-template-columns: repeat(4, 1fr); gap: 20px; padding: 20px; }
-    #projectionsChart .summary-values strong { font-size: 17px; }
-    #projectionsChart .summary-growth { padding: 8px 16px; font-size: 13px; }
-  }
-  @media (max-width: 768px) {
-    #projectionsChart .plotly-projection-div { height: 460px !important; }
-  }
+      /* === PLOTLY PROJECTIONS === */
+      #projectionsChart {
+        isolation: isolate;
+        contain: layout style paint;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 10px;
+        font-family: 'Lato', sans-serif;
+      }
+      #projectionsChart > .kpi-card,
+      #projectionsChart > .summary-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        border: 1px solid #f0fdf4;
+        margin: 16px 8px;
+        max-width: calc(100% - 16px);
+      }
+      #projectionsChart .kpi-title {
+        padding: 16px;
+        background: #f8fdfa;
+        text-align: center;
+        font-size: 16px;
+        font-weight: 900;
+        color: #004d1a;
+      }
+      #projectionsChart .plotly-projection-div {
+        height: 420px !important;
+        width: 100% !important;
+      }
+      #projectionsChart .summary-header {
+        background: linear-gradient(90deg,#004d1a,#10B981);
+        color: white;
+        padding: 16px;
+        text-align: center;
+        font-size: 17px;
+        font-weight: 900;
+      }
+      #projectionsChart .summary-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 14px;
+        padding: 16px;
+      }
+      #projectionsChart .summary-item {
+        background: #f0fdf4;
+        border-radius: 14px;
+        padding: 12px;
+        border: 1px solid #86efac;
+        text-align: center;
+      }
+      #projectionsChart .summary-label {
+        font-size: 13.5px;
+        font-weight: 900;
+        color: #166534;
+      }
+      #projectionsChart .summary-values {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+        margin: 8px 0;
+      }
+      #projectionsChart .summary-values span {
+        color: #6b7280;
+        font-size: 11.5px;
+        display: block;
+      }
+      #projectionsChart .summary-values strong {
+        font-size: 15px;
+        color: #004d1a;
+      }
+      #projectionsChart .summary-growth {
+        background: #10B981;
+        color: white;
+        padding: 6px 14px;
+        border-radius: 50px;
+        font-size: 12.5px;
+        font-weight: 900;
+      }
+      @media (min-width: 769px) {
+        #projectionsChart { display: flex; flex-wrap: wrap; justify-content: space-between; }
+        #projectionsChart > .kpi-card { flex: 1 1 calc(50% - 20px); max-width: 48%; }
+        #projectionsChart .plotly-projection-div { height: 440px !important; }
+        #projectionsChart > .summary-card { flex: 1 1 100%; max-width: 100%; margin: 30px 8px 10px; }
+        #projectionsChart .summary-grid { grid-template-columns: repeat(4, 1fr); gap: 20px; padding: 20px; }
+        #projectionsChart .summary-values strong { font-size: 17px; }
+        #projectionsChart .summary-growth { padding: 8px 16px; font-size: 13px; }
+      }
+      @media (max-width: 768px) {
+        #projectionsChart .plotly-projection-div { height: 460px !important; }
+      }
     </style>
 
     <!-- MEMBER CAROUSEL -->
@@ -424,6 +424,7 @@
 <script>
   document.getElementById('autoYearNow').textContent = new Date().getFullYear();
 </script>
+
 <!-- SCRIPTS - EXACT ORDER, NO CONFLICTS -->
 <script src="./scripts/carousel.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
@@ -431,9 +432,9 @@
 <script src="./scripts/projections.js"></script>
 <script src="./scripts/member-carousel.js"></script>
 
-<!-- PERFECT GROWTH CHARTS + ARROW PLUGIN -->
+<!-- FINAL BULLETPROOF CHARTS + ARROW PLUGIN (NO ERRORS) -->
 <script>
-  // Register plugins early
+  // Register plugins
   if (typeof Chart !== 'undefined' && typeof ChartDataLabels !== 'undefined') {
     Chart.register(ChartDataLabels);
   }
@@ -447,64 +448,76 @@
     { name: "Api Culture", value: 5 }
   ];
 
-  // 2. Clean arrow plugin
-  const cleanGrowthArrowPlugin = {
-    id: 'cleanGrowthArrow',
+  // FINAL BULLETPROOF ARROW + LABEL PLUGIN
+  const finalGrowthArrowPlugin = {
+    id: 'finalGrowthArrow',
     afterDraw: function(chart) {
-      const { ctx, scales, data } = chart;
-      const dataset = data.datasets[0];
+      if (!chart || !chart.ctx || !chart.scales || !chart.data || !chart.data.datasets || chart.data.datasets.length === 0) return;
+      
+      const dataset = chart.data.datasets[0];
+      if (!dataset || !dataset.data || dataset.data.length < 2) return;
+      
       const janVal = dataset.data[0];
       const todayVal = dataset.data[1];
-      const growthPercent = janVal === 0 ? 0 : ((todayVal - janVal) / Math.abs(janVal)) * 100;
-      const isPositive = growthPercent > 0;
+      if (janVal === undefined || todayVal === undefined) return;
 
-      const xScale = scales.x;
-      const yScale = scales.y;
+      const growthPercent = janVal === 0 ? (todayVal === 0 ? 0 : 100) : ((todayVal - janVal) / Math.abs(janVal)) * 100;
+      const isPositive = growthPercent >= 0;
+
+      const xScale = chart.scales.x;
+      const yScale = chart.scales.y;
+      if (!xScale || !yScale) return;
+
       const x1 = xScale.getPixelForValue(0);
       const x2 = xScale.getPixelForValue(1);
       const y1 = yScale.getPixelForValue(janVal);
       const y2 = yScale.getPixelForValue(todayVal);
 
-      const headLength = 16;
-      const angle = Math.atan2(y2 - y1, x2 - x1);
-      const color = isPositive ? '#10B981' : '#EF4444';
+      if (!Number.isFinite(x1) || !Number.isFinite(x2) || !Number.isFinite(y1) || !Number.isFinite(y2)) return;
 
+      const ctx = chart.ctx;
       ctx.save();
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 4;
+      ctx.strokeStyle = isPositive ? '#10B981' : '#EF4444';
+      ctx.lineWidth = 5;
       ctx.lineCap = 'round';
+
+      // Main line
       ctx.beginPath();
       ctx.moveTo(x1, y1);
       ctx.lineTo(x2, y2);
       ctx.stroke();
 
+      // Arrowhead
+      const headLength = 18;
+      const angle = Math.atan2(y2 - y1, x2 - x1);
       ctx.beginPath();
       ctx.moveTo(x2, y2);
       ctx.lineTo(x2 - headLength * Math.cos(angle - Math.PI / 6), y2 - headLength * Math.sin(angle - Math.PI / 6));
       ctx.lineTo(x2 - headLength * Math.cos(angle + Math.PI / 6), y2 - headLength * Math.sin(angle + Math.PI / 6));
       ctx.closePath();
-      ctx.fillStyle = color;
+      ctx.fillStyle = isPositive ? '#10B981' : '#EF4444';
       ctx.fill();
 
-      if (Math.abs(growthPercent) > 0.05) {
+      // Percentage label
+      if (Math.abs(growthPercent) > 0.1) {
         const midX = (x1 + x2) / 2;
-        const midY = (y1 + y2) / 2 - 18;
-        ctx.font = 'bold 14px Lato';
-        ctx.fillStyle = color;
+        const midY = (y1 + y2) / 2 - 25;
+        ctx.font = 'bold 16px Lato';
+        ctx.fillStyle = isPositive ? '#10B981' : '#EF4444';
         ctx.textAlign = 'center';
         ctx.fillText(`${isPositive ? '+' : ''}${growthPercent.toFixed(1)}%`, midX, midY);
       }
+
       ctx.restore();
     }
   };
-  Chart.register(cleanGrowthArrowPlugin);
+  Chart.register(finalGrowthArrowPlugin);
 
-  // 3. Render charts
+  // Render charts
   function renderGrowthCharts() {
     if (window.growthChartsRendered) return;
     window.growthChartsRendered = true;
 
-    // Destroy old charts
     document.querySelectorAll('#final-charts-section canvas').forEach(canvas => {
       if (Chart.getChart(canvas)) Chart.getChart(canvas).destroy();
     });
@@ -607,7 +620,7 @@
     }
   }
 
-  // 4. Initialize everything
+  // Initialize
   document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('autoYearNow').textContent = new Date().getFullYear();
 
@@ -635,15 +648,6 @@
 <!-- SCHEMA & YEAR UPDATE -->
 <script type="application/ld+json">
 { "@context": "https://schema.org", "@type": "FinancialService", "name": "SOYOSOYO SACCO", "url": "https://soyosoyosacco.com", "logo": "https://soyosoyosacco.com/assets/141dd3faa98da9737b591161deac509a.jpg", "description": "Affordable 1% monthly loans and high dividends in Coastal Kenya.", "address": { "@type": "PostalAddress", "addressLocality": "Kilifi", "addressRegion": "Coast", "addressCountry": "KE" }, "email": "info@soyosoyosacco.com", "areaServed": ["Kilifi", "Mombasa", "Kwale"] }
-</script>
-
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const currentYear = new Date().getFullYear();
-    document.querySelectorAll('[id*="Year"], footer, h2, p').forEach(el => {
-      el.innerHTML = el.innerHTML.replace(/2025/g, currentYear);
-    });
-  });
 </script>
 
 </body>
