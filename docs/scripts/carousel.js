@@ -5,7 +5,10 @@ const janFallback = {
   members: 101, contributions: 331263, loansDisbursed: 283500, cumulativeLoansDisbursed: 1000000,
   loansBalance: 250000, profit: -60056, totalBankBalance: 113742,
   bankBreakdown: [{ name: 'Co-operative Bank', value: 50000 }, { name: 'Chamasoft', value: 20000 }, { name: 'Cytonn', value: 43742 }],
-  bookValue: 250000 + 113742, externalLoans: 0
+  bookValue: 250000 + 113742, externalLoans: 0,
+  // Aliases for charts in index.html
+  loans: 283500,
+  bankBalance: 113742
 };
 
 window.saccoData = window.saccoData || {
@@ -71,7 +74,10 @@ const recomputeData = () => {
     loansDisbursed: loansDisbursedThisMonth, loansBalance: loansBalanceToday,
     profit: carouselData[5].number, totalBankBalance: totalBankBalanceToday,
     externalLoans: externalLoansToday, roa: roaToday,
-    extraFields: { bankBreakdown: bankBreakdownToday, cumulativeLoansDisbursed: cumulativeLoansDisbursedSinceInception, bookValue: bookValueToday }
+    extraFields: { bankBreakdown: bankBreakdownToday, cumulativeLoansDisbursed: cumulativeLoansDisbursedSinceInception, bookValue: bookValueToday },
+    // Aliases for charts in index.html
+    loans: loansDisbursedThisMonth,
+    bankBalance: totalBankBalanceToday
   };
 
   // Expose globals
@@ -79,7 +85,11 @@ const recomputeData = () => {
     current: todayData, baseline: janFallback,
     counters: carouselData.map(item => ({ value: item.number, suffix: item.description.includes('ROA') ? '%' : '', label: item.description }))
   };
-  window.saccoData = { [currentPeriod]: { ...currentMonthData, roa: roaCurrent }, today: todayData };
+  window.saccoData = { 
+    jan: janFallback,  // Use fallback with aliases
+    today: todayData,  // Use today with aliases
+    [currentPeriod]: { ...currentMonthData, roa: roaCurrent } 
+  };
   localStorage.setItem('saccoDataToday', JSON.stringify(todayData));
 
   // === MONTHLY AUTO-SAVE (Your Original Style) ===
@@ -120,9 +130,12 @@ const { todayData, carouselData } = recomputeData();
 document.addEventListener('DOMContentLoaded', () => {
   document.body.classList.add('js-enabled');
 
-  // Backward compat for charts
+  // Backward compat for charts – now with aliases
   if (window.SOYOSOYO) {
-    window.saccoData = { jan: window.SOYOSOYO.baseline, today: window.SOYOSOYO.current };
+    window.saccoData = { 
+      jan: window.SOYOSOYO.baseline, 
+      today: window.SOYOSOYO.current 
+    };
     console.log('saccoData restored for legacy charts:', window.saccoData);
   }
 
@@ -241,6 +254,21 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(el);
       }
     });
-    console.log('Projections data updated:', refreshed.todayData);
+    // Update aliases in exposed data
+    const refreshedTodayWithAliases = {
+      ...refreshed.todayData,
+      loans: refreshed.todayData.loansDisbursed,
+      bankBalance: refreshed.todayData.totalBankBalance
+    };
+    const refreshedJanWithAliases = {
+      ...janFallback,
+      loans: janFallback.loansDisbursed,
+      bankBalance: janFallback.totalBankBalance
+    };
+    window.SOYOSOYO.current = refreshedTodayWithAliases;
+    window.SOYOSOYO.baseline = refreshedJanWithAliases;
+    window.saccoData.jan = refreshedJanWithAliases;
+    window.saccoData.today = refreshedTodayWithAliases;
+    console.log('Projections data updated:', refreshedTodayWithAliases);
   };
 });
