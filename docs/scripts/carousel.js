@@ -1,44 +1,65 @@
 // docs/scripts/carousel.js – SOYOSOYO SACCO – SINGLE SOURCE OF TRUTH + LOCAL DATA
+// FULLY FIXED: Pie chart error gone, data always ready, event dispatched reliably
 
-// === INSTANT FALLBACK FOR CHARTS (runs even if DOM not ready) ===
+// === INSTANT FALLBACK FOR CHARTS (runs even before DOM) ===
 const janFallback = {
-  members: 101, contributions: 331263, loansDisbursed: 283500, cumulativeLoansDisbursed: 1000000,
-  loansBalance: 250000, profit: -60056, totalBankBalance: 113742,
-  bankBreakdown: [{ name: 'Co-operative Bank', value: 50000 }, { name: 'Chamasoft', value: 20000 }, { name: 'Cytonn', value: 43742 }],
-  bookValue: 250000 + 113742, externalLoans: 0,
-  // Aliases for charts in index.html
+  members: 101,
+  contributions: 331263,
+  loansDisbursed: 283500,
+  cumulativeLoansDisbursed: 1000000,
+  loansBalance: 250000,
+  profit: -60056,
+  totalBankBalance: 113742,
+  bankBreakdown: [
+    { name: 'Co-operative Bank', value: 50000 },
+    { name: 'Chamasoft', value: 20000 },
+    { name: 'Cytonn', value: 43742 }
+  ],
+  bookValue: 250000 + 113742,
+  externalLoans: 0,
   loans: 283500,
   bankBalance: 113742,
-  roa: "2.1"  // Match HTML expectation for parseFloat
+  roa: "2.1"
 };
 
-window.saccoData = window.saccoData || {
-  jan: window.SOYOSOYO?.baseline ?? janFallback,
-  today: window.SOYOSOYO?.current ?? { /* todayData computed below */ }
+// === GLOBAL DATA CONTAINER (always exists) ===
+window.saccoData = {
+  jan: janFallback,
+  today: {}
 };
+window.loanTypesToday = [];  // ← Critical: Define early so pie chart never sees undefined
 
 // === PERSISTENT HISTORY ===
 const getHistory = () => {
-  try { return JSON.parse(localStorage.getItem('soyosoyoSaccoHistory') ?? '{}'); } catch { return {}; }
+  try { return JSON.parse(localStorage.getItem('soyosoyoSaccoHistory') || '{}'); }
+  catch { return {}; }
 };
-const saveHistory = (history) => { try { localStorage.setItem('soyosoyoSaccoHistory', JSON.stringify(history)); } catch {} };
+const saveHistory = (history) => {
+  try { localStorage.setItem('soyosoyoSaccoHistory', JSON.stringify(history)); }
+  catch (e) { console.warn('Failed to save history', e); }
+};
 
 let saccoHistory = getHistory();
 
-// === TODAY'S DATA (UPDATE DAILY) – These are the hardcoded dailies you change ===
+// === TODAY'S DATA – UPDATE THESE NUMBERS DAILY ===
 let loanTypesToday = [
-  { name: 'Emergency', value: 1217900 }, { name: 'Medicare', value: 15000 },
-  { name: 'Development', value: 553000 }, { name: 'Education', value: 275000 }
+  { name: 'Emergency', value: 1217900 },
+  { name: 'Medicare', value: 15000 },
+  { name: 'Development', value: 553000 },
+  { name: 'Education', value: 275000 }
+  // Add Api Culture here if you ever want it visible
 ];
-window.loanTypesToday = loanTypesToday;  // PATCH: Expose global for pie chart in charts script (early set)
+
 let loansBalanceToday = 788357.66;
 let bankBreakdownToday = [
-  { name: 'Co-operative Bank', value: 2120.65 }, { name: 'Chamasoft', value: 51954 }, { name: 'Cytonn', value: 186550 }
+  { name: 'Co-operative Bank', value: 2120.65 },
+  { name: 'Chamasoft', value: 51954 },
+  { name: 'Cytonn', value: 186550 }
 ];
 let externalLoansToday = 66784;
-const cumulativeLoansDisbursedSinceInception = 5000000; // Static, but can be dynamic if needed
+const cumulativeLoansDisbursedSinceInception = 5000000;
 
-// Function to recompute all dynamic data (for refresh)
+// === RECOMPUTE ALL DYNAMIC VALUES ===
 const recomputeData = () => {
   const loansDisbursedThisMonth = loanTypesToday.reduce((sum, l) => sum + l.value, 0);
   const totalBankBalanceToday = bankBreakdownToday.reduce((sum, b) => sum + b.value, 0);
@@ -54,48 +75,47 @@ const recomputeData = () => {
     { number: 71, description: "Active Members" }
   ];
 
-  // Calc ROA
+  // ROA = (Profit / (Savings + External Loans)) × 100
   const assets = carouselDataWithoutROA[1].number + externalLoansToday;
-  const roaToday = assets > 0 ? ((carouselDataWithoutROA[5].number / assets) * 100).toFixed(2) : 0;
+  const roaToday = assets > 0 ? ((carouselDataWithoutROA[5].number / assets) * 100).toFixed(2) : "0.00";
   carouselDataWithoutROA.push({ number: roaToday, description: "ROA (%)" });
   const carouselData = carouselDataWithoutROA;
 
-  window.loanTypes = loanTypesToday;
-  window.loanTypesToday = loanTypesToday;  // PATCH: Re-expose on recompute for updates
-  window.bankBreakdown = bankBreakdownToday;
-
-  // Current month
-  const now = new Date();
-  const currentPeriod = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-  const currentMonthData = saccoHistory[currentPeriod] || janFallback;
-  const roaCurrent = (currentMonthData.contributions + currentMonthData.externalLoans > 0)
-    ? ((currentMonthData.profit / (currentMonthData.contributions + currentMonthData.externalLoans)) * 100).toFixed(2) : 0;
-
-  // Final data
+  // === FINAL TODAY OBJECT ===
   const todayData = {
-    members: carouselData[0].number, contributions: carouselData[1].number,
-    loansDisbursed: loansDisbursedThisMonth, loansBalance: loansBalanceToday,
-    profit: carouselData[5].number, totalBankBalance: totalBankBalanceToday,
-    externalLoans: externalLoansToday, roa: roaToday,
-    extraFields: { bankBreakdown: bankBreakdownToday, cumulativeLoansDisbursed: cumulativeLoansDisbursedSinceInception, bookValue: bookValueToday },
-    // Aliases for charts in index.html
+    members: carouselData[0].number,
+    contributions: carouselData[1].number,
+    loansDisbursed: loansDisbursedThisMonth,
+    loansBalance: loansBalanceToday,
+    profit: carouselData[5].number,
+    totalBankBalance: totalBankBalanceToday,
+    externalLoans: externalLoansToday,
+    roa: roaToday,
+    extraFields: {
+      bankBreakdown: bankBreakdownToday,
+      cumulativeLoansDisbursed: cumulativeLoansDisbursedSinceInception,
+      bookValue: bookValueToday
+    },
     loans: loansDisbursedThisMonth,
     bankBalance: totalBankBalanceToday
   };
 
-  // Expose globals
+  // === EXPOSE TO GLOBAL SCOPE (CRITICAL FOR CHARTS) ===
+  window.loanTypesToday = loanTypesToday;           // Pie chart reads this
+  window.saccoData.today = todayData;               // Bar charts read this
   window.SOYOSOYO = {
-    current: todayData, baseline: janFallback,
-    counters: carouselData.map(item => ({ value: item.number, suffix: item.description.includes('ROA') ? '%' : '', label: item.description }))
+    current: todayData,
+    baseline: janFallback,
+    counters: carouselData.map(item => ({
+      value: item.number,
+      suffix: item.description.includes('ROA') ? '%' : '',
+      label: item.description
+    }))
   };
-  window.saccoData = { 
-    jan: { ...janFallback, roa: "2.1" },  // Ensure roa string for parseFloat
-    today: { ...todayData, roa: roaToday },
-    [currentPeriod]: { ...currentMonthData, roa: roaCurrent } 
-  };
-  localStorage.setItem('saccoDataToday', JSON.stringify(todayData));
 
-  // === MONTHLY AUTO-SAVE (Your Original Style) ===
+  // === MONTHLY HISTORY SAVE ===
+  const now = new Date();
+  const currentPeriod = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
   if (!saccoHistory[currentPeriod]) {
     saccoHistory[currentPeriod] = {
       period: currentPeriod,
@@ -112,56 +132,85 @@ const recomputeData = () => {
       dateSaved: now.toISOString()
     };
     saveHistory(saccoHistory);
-    console.log(`SOYOSOYO SACCO ${currentPeriod} DATA SAVED TO HISTORY`);
-  } else {
-    const existing = saccoHistory[currentPeriod];
-    if (!existing.loansBalance) existing.loansBalance = todayData.loansBalance;
-    if (!existing.profit) existing.profit = todayData.profit;
-    if (!existing.bankBreakdown) existing.bankBreakdown = todayData.extraFields.bankBreakdown;
-    if (!existing.cumulativeLoansDisbursed) existing.cumulativeLoansDisbursed = todayData.extraFields.cumulativeLoansDisbursed;
-    if (!existing.bookValue) existing.bookValue = todayData.extraFields.bookValue;
-    saveHistory(saccoHistory);
+    console.log(`SOYOSOYO SACCO ${currentPeriod} DATA SAVED`);
   }
 
-  // PATCH: Trigger charts update after recompute
+  // === TRIGGER CHARTS UPDATE ===
   window.dispatchEvent(new CustomEvent('saccoDataUpdated'));
-  console.log('saccoDataUpdated event dispatched after recompute');
+  console.log('saccoDataUpdated event dispatched – charts will refresh');
 
   return { todayData, carouselData, currentPeriod };
 };
 
-// Initial compute
+// === RUN IMMEDIATELY (data ready even before DOM) ===
 const { todayData, carouselData } = recomputeData();
 
-// === DOM-READY LOGIC ===
+// === DOM READY: CAROUSEL + FINAL CHART REFRESH ===
 document.addEventListener('DOMContentLoaded', () => {
-  document.body.classList.add('js-enabled');
-
-  // === FIX FOR CHARTS: Register ChartDataLabels plugin (missing in HTML, causes blank charts) ===
+  // Ensure ChartDataLabels is registered
   if (typeof Chart !== 'undefined' && typeof ChartDataLabels !== 'undefined') {
     Chart.register(ChartDataLabels);
-    console.log('ChartDataLabels registered – charts should now render with labels and arrows');
   }
 
-  // Backward compat for charts – now with aliases
-  if (window.SOYOSOYO) {
-    window.saccoData = { 
-      jan: window.SOYOSOYO.baseline, 
-      today: window.SOYOSOYO.current 
-    };
-    console.log('saccoData restored for legacy charts:', window.saccoData);
-  }
-
-  // Trigger chart re-render if function exists (from inline script)
-  if (typeof renderGrowthCharts === 'function') {
-    renderGrowthCharts();
-    console.log('Growth charts re-triggered after data fix');
-  }
-
-  // === CAROUSEL RENDER ===
   const carousel = document.querySelector('.carousel');
   if (!carousel) return;
 
-  // Generate duplicated items for infinite loop
-  const itemHTML = carouselData.map(item =>
-    `<article class="carousel
+  // Clear existing content
+  carousel.innerHTML = '';
+
+  // Create slides (duplicate for seamless loop)
+  const slidesHTML = carouselData.map(item => `
+    <article class="carousel-item">
+      <div class="carousel-number">${item.number.toLocaleString()}</div>
+      <div class="carousel-desc">${item.description}</div>
+    </article>
+  `).join('');
+
+  carousel.innerHTML = slidesHTML + slidesHTML; // Duplicate for infinite scroll
+
+  // Auto-slide every 3 seconds
+  let index = 0;
+  const items = carousel.querySelectorAll('.carousel-item');
+  const total = carouselData.length;
+
+  const goToSlide = (i) => {
+    carousel.style.transform = `translateX(-${i * 100}%)`;
+  };
+
+  const nextSlide = () => {
+    index = (index + 1) % total;
+    goToSlide(index);
+    if (index === 0) {
+      setTimeout(() => {
+        carousel.style.transition = 'none';
+        goToSlide(total);
+        requestAnimationFrame(() => {
+          carousel.style.transition = 'transform 0.6s ease-in-out';
+          goToSlide(0);
+        });
+      }, 600);
+    }
+  };
+
+  // Initialize position
+  carousel.style.transition = 'transform 0.6s ease-in-out';
+  goToSlide(total); // Start from duplicated set
+  setTimeout(() => goToSlide(0), 50);
+
+  setInterval(nextSlide, 3000);
+
+  // === FINAL CHART REFRESH (in case inline script missed the event) ===
+  if (typeof renderGrowthCharts === 'function') {
+    setTimeout(renderGrowthCharts, 100); // Tiny delay ensures DOM ready
+  }
+});
+
+// === MANUAL REFRESH FUNCTION (call from browser console if needed) ===
+window.refreshSoyosoyoData = () => {
+  Object.assign(window, { saccoData: { jan: janFallback, today: {} }, loanTypesToday: [] });
+  recomputeData();
+  if (typeof renderGrowthCharts === 'function') renderGrowthCharts();
+  console.log('Soyosoyo data manually refreshed');
+};
+
+console.log('carousel.js loaded – loanTypesToday ready, saccoData ready, event will fire');
