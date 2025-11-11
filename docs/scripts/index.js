@@ -6,57 +6,37 @@ const RETRY_DELAY = 30000;
 let autoSaveEnabled = localStorage.getItem('autoSaveEnabled') === 'true';
 let lastDataHash = '';
 
-// Helpers
-function safeDate(input) {
-  if (!input) return new Date();
-  const d = typeof input === 'number' || !isNaN(input) ? new Date(Number(input)) : new Date(input);
-  return isNaN(d.getTime()) ? new Date() : d;
-}
-
-function formatMonth(period) {
-  const [y, m] = period.split('-');
-  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  return `${months[parseInt(m)-1]}-${y}`;
-}
-
-function formatDisplayDate(d) {
-  const date = safeDate(d);
-  return date.toLocaleString('en-KE', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }).replace(',', '');
+// Helper: convert period to full date YYYY-MM-01
+function periodToDate(period) {
+  const [y,m] = period.split('-');
+  return `${y}-${m}-01`;
 }
 
 // Compute hash for change detection
 function computeDataHash(today) {
-  if (!today) return '';
   return JSON.stringify({
     members: today.members,
     contributions: today.contributions,
-    loans_disbursed: today.loansDisbursed,
-    loans_balance: today.loansBalance,
-    total_bank_balance: today.totalBankBalance,
-    coop_bank: today.coopBank,
-    chama_soft: today.chamaSoft,
-    cytonn: today.cytonn,
-    total_assets: today.totalAssets,
+    loans_disbursed: today.loansDisbursed || today.loans || 0,
+    loans_balance: today.loansBalance || 0,
+    total_bank_balance: today.totalBankBalance || today.bankBalance || 0,
+    coop_bank: today.coopBank || 0,
+    chama_soft: today.chamaSoft || 0,
+    cytonn: today.cytonn || 0,
+    total_assets: today.totalAssets || 0,
     profit: today.profit,
-    roa: today.roa
+    roa: today.roa,
+    ...today.extraFields
   });
-}
-
-// Persisted data
-function loadPersistedData() {
-  const saved = localStorage.getItem('saccoHistoryBackup');
-  if (saved) {
-    const data = JSON.parse(saved);
-    window.saccoHistory = {};
-    data.forEach(row => { window.saccoHistory[row.period] = { ...row, saveType: row.saveType || 'manual' }; });
-  }
 }
 
 // Update current month in memory
 function updateCurrentMonthInHistory(today, saveType='auto') {
-  const currentPeriod = new Date().toISOString().slice(0,7) + "-01";
-  window.saccoHistory[currentPeriod] = {
-    period: currentPeriod,
+  const currentPeriod = new Date();
+  const period = `${currentPeriod.getFullYear()}-${String(currentPeriod.getMonth()+1).padStart(2,'0')}-01`;
+
+  window.saccoHistory[period] = {
+    period,
     members: Number(today.members || 0),
     contributions: Number(today.contributions || 0),
     loans_disbursed: Number(today.loansDisbursed || today.loans || 0),
@@ -66,173 +46,63 @@ function updateCurrentMonthInHistory(today, saveType='auto') {
     chama_soft: Number(today.chamaSoft || 0),
     cytonn: Number(today.cytonn || 0),
     total_assets: Number(today.totalAssets || 0),
-    profit: Number(today.profit || 0),
-    roa: Number(today.roa || 0),
+    profit: Number(today.profit),
+    roa: Number(today.roa),
     extra_fields: today.extraFields || {},
     date_saved: new Date().toISOString(),
     saveType
   };
 }
 
-// Render full history table
-function renderFullHistory() {
-  const container = document.getElementById('fullHistoryTable');
-  const footer = document.getElementById('historyFooter');
-  if (!container || !footer) return;
-
-  const history = Object.values(window.saccoHistory).sort((a,b)=>b.period.localeCompare(a.period));
-  if (!history.length && !window.saccoData?.today) {
-    container.innerHTML = '<p style="text-align:center;color:#666;padding:20px;">No history yet. Click SAVE to start.</p>';
-    footer.innerHTML = 'No records found.';
-    return;
-  }
-
-  let html = `<table><thead><tr>
-    <th>Period</th><th>Members</th><th>Contributions</th><th>Loans Disbursed</th>
-    <th>Loans Balance</th><th>Total Bank Balance</th><th>Co-op Bank</th>
-    <th>Chamasoft</th><th>Cytonn</th><th>Total Assets</th>
-    <th>Profit</th><th>ROA</th><th>Saved On</th>
-  </tr></thead><tbody>`;
-
-  const currentMonthKey = new Date().toISOString().slice(0,7) + "-01";
-
-  history.forEach(r => {
-    const isCurrent = r.period === currentMonthKey;
-    const saveTypeLabel = r.saveType==='auto'?'(Auto)':'(Manual)';
-    html += `<tr ${isCurrent?'class="current-month"':''}>
-      <td>${formatMonth(r.period)}</td>
-      <td>${Number(r.members).toLocaleString()}</td>
-      <td>KSh ${Number(r.contributions).toLocaleString()}</td>
-      <td>KSh ${Number(r.loans_disbursed).toLocaleString()}</td>
-      <td>KSh ${Number(r.loans_balance).toLocaleString()}</td>
-      <td>KSh ${Number(r.total_bank_balance).toLocaleString()}</td>
-      <td>KSh ${Number(r.coop_bank).toLocaleString()}</td>
-      <td>KSh ${Number(r.chama_soft).toLocaleString()}</td>
-      <td>KSh ${Number(r.cytonn).toLocaleString()}</td>
-      <td>KSh ${Number(r.total_assets).toLocaleString()}</td>
-      <td>KSh ${Number(r.profit).toLocaleString()}</td>
-      <td>${Number(r.roa).toFixed(1)}</td>
-      <td>${formatDisplayDate(r.date_saved)} ${saveTypeLabel}</td>
-    </tr>`;
-  });
-
-  html += '</tbody></table>';
-  container.innerHTML = html;
-
-  const latest = history[0];
-  footer.innerHTML = `<strong>${history.length}</strong> months saved | Latest: ${formatMonth(latest.period)} | Saved: ${formatDisplayDate(latest.date_saved)} (${latest.saveType==='auto'?'Auto':'Manual'})`;
-}
-
-// ------------------------
-// Load live history from backend
-// ------------------------
-async function loadLiveHistory() {
-  try {
-    const controller = new AbortController();
-    const timeout = setTimeout(()=>controller.abort(),15000);
-    const res = await fetch(`${API_BASE}/history`, { signal: controller.signal, cache:'no-store' });
-    clearTimeout(timeout);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-
-    window.saccoHistory = {};
-    data.forEach(r => {
-      window.saccoHistory[r.period] = {
-        period: r.period,
-        members: Number(r.members || 0),
-        contributions: Number(r.contributions || 0),
-        loans_disbursed: Number(r.loans_disbursed || 0),
-        loans_balance: Number(r.loans_balance || 0),
-        total_bank_balance: Number(r.total_bank_balance || 0),
-        coop_bank: Number(r.coop_bank || 0),
-        chama_soft: Number(r.chama_soft || 0),
-        cytonn: Number(r.cytonn || 0),
-        total_assets: Number(r.total_assets || 0),
-        profit: Number(r.profit || 0),
-        roa: Number(r.roa || 0),
-        extra_fields: r.extra_fields ? JSON.parse(r.extra_fields) : {},
-        date_saved: r.date_saved,
-        saveType: 'manual'
-      };
-    });
-
-    localStorage.setItem('saccoHistoryBackup', JSON.stringify(Object.values(window.saccoHistory)));
-  } catch(e) {
-    console.warn("Server asleep → using local backup", e);
-    loadPersistedData();
-  } finally {
-    if(window.saccoData?.today){
-      const hash = computeDataHash(window.saccoData.today);
-      if(hash !== lastDataHash){
-        updateCurrentMonthInHistory(window.saccoData.today, 'auto');
-        lastDataHash = hash;
-      }
-    }
-    renderFullHistory();
-  }
-}
-
-// ------------------------
-// Save logic
-// ------------------------
-async function attemptSave(payload, saveType='auto'){
-  try {
-    const res = await fetch(`${API_BASE}/history/save`, {
-      method:'POST',
-      headers:{ 'Content-Type':'application/json' },
-      body: JSON.stringify(payload)
-    });
-
-    if(!res.ok){
-      localStorage.setItem('pendingSave', JSON.stringify({...payload, queuedAt: new Date().toISOString(), saveType}));
-      return { success:false, data:payload, error:"Server sleeping" };
-    }
-    const data = await res.json();
-    return { success:true, data:{...data.data, saveType} };
-  } catch(e){
-    localStorage.setItem('pendingSave', JSON.stringify({...payload, queuedAt: new Date().toISOString(), saveType}));
-    return { success:false, error:e.message };
-  }
-}
-
-async function saveCurrentMonth(auto=false){
-  if(!window.saccoData?.today){ if(!auto) alert("Data not ready"); return; }
+// Save current month
+async function saveCurrentMonth(auto=false) {
+  if(!window.saccoData?.today) { if(!auto) alert('Data not ready'); return; }
   const t = window.saccoData.today;
+  const currentPeriod = `${new Date().getFullYear()}-${String(new Date().getMonth()+1).padStart(2,'0')}-01`;
   const payload = {
-    members: t.members,
-    contributions: t.contributions,
-    loans_disbursed: t.loansDisbursed || t.loans || 0,
-    loans_balance: t.loansBalance || 0,
-    total_bank_balance: t.totalBankBalance || t.bankBalance || 0,
-    coop_bank: t.coopBank || 0,
-    chama_soft: t.chamaSoft || 0,
-    cytonn: t.cytonn || 0,
-    total_assets: t.totalAssets || 0,
-    profit: t.profit,
-    roa: parseFloat(t.roa) || 0,
+    period: currentPeriod,
+    members:t.members,
+    contributions:t.contributions,
+    loans_disbursed:t.loansDisbursed || t.loans || 0,
+    loans_balance:t.loansBalance || 0,
+    total_bank_balance:t.totalBankBalance || t.bankBalance || 0,
+    coop_bank:t.coopBank || 0,
+    chama_soft:t.chamaSoft || 0,
+    cytonn:t.cytonn || 0,
+    total_assets:t.totalAssets || 0,
+    profit:t.profit,
+    roa:parseFloat(t.roa) || 0,
     extra_fields: JSON.stringify(t.extraFields || {})
   };
 
-  const result = await attemptSave(payload, auto?'auto':'manual');
-  if(result.success){
-    clearRetryInterval();
-    localStorage.removeItem('pendingSave');
-    lastDataHash = computeDataHash(t);
-    updateCurrentMonthInHistory(t,result.data.saveType);
-    renderFullHistory();
-    loadLiveHistory();
-  } else if(!auto){
-    startRetry(payload, auto?'auto':'manual');
-    alert(`Save queued, retrying every 30s\nError: ${result.error}`);
+  try {
+    const res = await fetch(`${API_BASE}/history/save`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if(data.success){
+      lastDataHash = computeDataHash(t);
+      updateCurrentMonthInHistory(t, auto?'auto':'manual');
+      renderFullHistory();
+      if(!auto) alert(`Saved successfully\nMonth: ${currentPeriod}\nSaved at: ${new Date().toLocaleString()}`);
+    } else {
+      throw new Error(data.message || 'Failed save');
+    }
+  } catch(err){
+    console.warn('Save failed → pending', err.message);
+    localStorage.setItem('pendingSave', JSON.stringify({...payload, queuedAt:new Date().toISOString(), saveType: auto?'auto':'manual'}));
+    if(!auto) startRetry(payload, auto?'auto':'manual');
   }
 }
 
-// Retry logic
+// Retry pending saves
 function startRetry(payload, saveType){
   clearRetryInterval();
   let count = 0;
-  retryInterval = setInterval(async ()=>{
-    if(++count > 10) return clearRetryInterval();
+  retryInterval = setInterval(async()=>{
+    if(++count>10) return clearRetryInterval();
     const r = await attemptSave(payload, saveType);
     if(r.success){
       clearRetryInterval();
@@ -240,48 +110,35 @@ function startRetry(payload, saveType){
       lastDataHash = computeDataHash(window.saccoData.today);
       updateCurrentMonthInHistory(window.saccoData.today, saveType);
       renderFullHistory();
-      loadLiveHistory();
     }
   }, RETRY_DELAY);
 }
+
 function clearRetryInterval(){ if(retryInterval) clearInterval(retryInterval); retryInterval=null; }
 
-// Auto-save toggle
-function toggleAutoSave(){
-  autoSaveEnabled = !autoSaveEnabled;
-  localStorage.setItem('autoSaveEnabled', autoSaveEnabled);
-  document.getElementById('autoSaveText')?.replaceChildren(autoSaveEnabled?'AUTO-SAVE ON':'AUTO-SAVE OFF');
-  const btn = document.getElementById('autoSaveToggle');
-  if(btn) btn.style.background = autoSaveEnabled?'#10B981':'#f59e0b';
-  if(autoSaveEnabled) saveCurrentMonth(true);
-}
-
 // DOM ready
-document.addEventListener('DOMContentLoaded', ()=>{
-  document.getElementById('currentYear')?.replaceChildren(new Date().getFullYear());
-  const pending = localStorage.getItem('pendingSave');
-  if(pending){ const { saveType, ...payload } = JSON.parse(pending); startRetry(payload, saveType); }
-
-  loadLiveHistory();
-
-  document.getElementById('autoSaveText')?.replaceChildren(autoSaveEnabled?'AUTO-SAVE ON':'AUTO-SAVE OFF');
-  const btn = document.getElementById('autoSaveToggle'); 
-  if(btn) btn.style.background = autoSaveEnabled?'#10B981':'#f59e0b';
-
-  // Watch carousel changes
+document.addEventListener('DOMContentLoaded',()=>{
+  const pending = localStorage.getItem('pendingSave'); 
+  if(pending){ const {saveType,...payload}=JSON.parse(pending); startRetry(payload,saveType); }
+  
   setInterval(()=>{
     if(window.saccoData?.today){
       const hash = computeDataHash(window.saccoData.today);
-      if(hash !== lastDataHash){
+      if(hash!==lastDataHash){
         updateCurrentMonthInHistory(window.saccoData.today,'auto');
         renderFullHistory();
         lastDataHash = hash;
-        if(autoSaveEnabled) setTimeout(()=>saveCurrentMonth(true), 5000);
+        if(autoSaveEnabled) setTimeout(()=>saveCurrentMonth(true),5000);
       }
     }
-  }, 2000);
+  },2000);
+  
+  document.getElementById('autoSaveToggle')?.addEventListener('click', ()=>{
+    autoSaveEnabled = !autoSaveEnabled;
+    localStorage.setItem('autoSaveEnabled', autoSaveEnabled);
+    if(autoSaveEnabled) saveCurrentMonth(true);
+  });
 });
 
-// Export for buttons
+// Export functions
 window.saveCurrentMonth = saveCurrentMonth;
-window.toggleAutoSave = toggleAutoSave;
