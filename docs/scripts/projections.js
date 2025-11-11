@@ -1,4 +1,4 @@
-// docs/scripts/projections.js — FINAL: No "KES", clean commas, conservative 30%, visible text
+// docs/scripts/projections.js — FINAL TRUE INDEPENDENT GROWTH (each KPI has its own rate)
 (function () {
   'use strict';
 
@@ -34,7 +34,24 @@
       bankBalance: current.totalBankBalance || 240624.65
     };
 
-    const ANNUAL_GROWTH = 1.30; // Conservative 30% per year
+    // Calculate REAL historical growth rates (from baseline → today)
+    const daysSinceBaseline = 315; // ~10.5 months of real data
+    const yearsFraction = daysSinceBaseline / 365;
+
+    const realRates = {
+      members: start.members > 0 ? Math.pow(end.members / start.members, 1 / yearsFraction) : 1.25,
+      contributions: start.contributions > 0 ? Math.pow(end.contributions / start.contributions, 1 / yearsFraction) : 1.35,
+      loans: start.loans > 0 ? Math.pow(end.loans / start.loans, 1 / yearsFraction) : 1.45,
+      bankBalance: start.bankBalance > 0 ? Math.pow(end.bankBalance / start.bankBalance, 1 / yearsFraction) : 1.30
+    };
+
+    // Cap aggressive rates at 40%, boost slow ones to min 20%
+    const cappedRates = {
+      members: Math.max(1.20, Math.min(1.40, realRates.members)),
+      contributions: Math.max(1.20, Math.min(1.40, realRates.contributions)),
+      loans: Math.max(1.25, Math.min(1.45, realRates.loans)),
+      bankBalance: Math.max(1.20, Math.min(1.40, realRates.bankBalance))
+    };
 
     const years = [];
     for (let y = currentYear + 1; y <= currentYear + 5; y++) years.push(y);
@@ -45,39 +62,38 @@
     years.forEach(year => {
       const projected = {
         year,
-        members: Math.round(last.members * ANNUAL_GROWTH),
-        contributions: Math.round(last.contributions * ANNUAL_GROWTH),
-        loans: Math.round(last.loans * ANNUAL_GROWTH),
-        bankBalance: Math.round(last.bankBalance * ANNUAL_GROWTH)
+        members: Math.round(last.members * cappedRates.members),
+        contributions: Math.round(last.contributions * cappedRates.contributions),
+        loans: Math.round(last.loans * cappedRates.loans),
+        bankBalance: Math.round(last.bankBalance * cappedRates.bankBalance)
       };
       projections.push(projected);
       last = projected;
     });
 
-    return { current: end, projections, years };
+    return { current: end, projections, years, rates: cappedRates };
   }
 
   function fmt(num) {
-    const n = Math.round(num);
-    return n.toLocaleString(); // e.g., 1,234,567
+    return Math.round(num).toLocaleString();
   }
 
   function createCharts() {
     const container = document.getElementById('projectionsChart');
     if (!container || typeof Plotly === 'undefined') return;
 
-    container.innerHTML = '<div class="text-center"><h3>Loading 5-Year Growth Projections...</h3></div>';
+    container.innerHTML = '<div class="text-center"><h3>Loading Smart Projections...</h3></div>';
 
     setTimeout(() => {
-      const { current, projections } = generateProjections();
+      const { current, projections, rates } = generateProjections();
       const allYears = [new Date().getFullYear(), ...projections.map(p => p.year)];
       container.innerHTML = '';
 
       const kpis = [
-        { name: 'Members', key: 'members', color: '#8B5CF6' },
-        { name: 'Contributions', key: 'contributions', color: '#10B981' },
-        { name: 'Loans Disbursed', key: 'loans', color: '#F59E0B' },
-        { name: 'Bank Balance', key: 'bankBalance', color: '#0EA5E9' }
+        { name: 'Members', key: 'members' },
+        { name: 'Contributions', key: 'contributions' },
+        { name: 'Loans Disbursed', key: 'loans' },
+        { name: 'Bank Balance', key: 'bankBalance' }
       ];
 
       const yearColors = {
@@ -87,7 +103,7 @@
 
       kpis.forEach((kpi, i) => {
         const values = [current[kpi.key], ...projections.map(p => p[kpi.key])];
-        const maxVal = Math.max(...values) * 1.1;
+        const maxVal = Math.max(...values) * 1.15;
 
         const card = document.createElement('div');
         card.className = 'kpi-card';
@@ -97,16 +113,13 @@
         `;
         container.appendChild(card);
 
-        const chartId = `chart-${i}`;
-
-        Plotly.newPlot(chartId, [{
+        Plotly.newPlot(`chart-${i}`, [{
           type: 'bar',
           orientation: 'h',
           y: allYears.map(y => y.toString()),
           x: values,
           text: values.map(v => fmt(v)),
           textposition: 'outside',
-          insidetextanchor: 'end',
           textfont: { size: 13, color: '#004d1a', family: 'Lato, sans-serif', weight: 'bold' },
           marker: {
             color: allYears.map(y => yearColors[y] || '#10B981'),
@@ -117,15 +130,15 @@
         }], {
           autosize: true,
           bargap: 0.3,
-          margin: { l: 70, r: 120, t: 30, b: 50 },
+          margin: { l: 70, r: 130, t: 30, b: 50 },
           paper_bgcolor: 'rgba(0,0,0,0)',
           plot_bgcolor: 'rgba(0,0,0,0)',
           xaxis: { visible: false, range: [0, maxVal], fixedrange: true },
           yaxis: { automargin: true, autorange: 'reversed', fixedrange: true, tickfont: { size: 15, color: '#004d1a', weight: 'bold' } }
         }, { responsive: true, displayModeBar: false });
 
-        const resizeObserver = new ResizeObserver(() => Plotly.Plots.resize(chartId));
-        resizeObserver.observe(document.getElementById(chartId));
+        const resizeObserver = new ResizeObserver(() => Plotly.Plots.resize(`chart-${i}`));
+        resizeObserver.observe(document.getElementById(`chart-${i}`));
       });
 
       const last = projections[projections.length - 1];
@@ -134,7 +147,7 @@
       const summary = document.createElement('div');
       summary.className = 'summary-card';
       summary.innerHTML = `
-        <div class="summary-header">5-Year Growth Strategy (30% p.a.)</div>
+        <div class="summary-header">5-Year Smart Growth Forecast</div>
         <div class="summary-grid">
           <div class="summary-item">
             <div class="summary-label">Members</div>
@@ -172,7 +185,7 @@
       `;
       container.appendChild(summary);
 
-      // ORIGINAL BEAUTIFUL STYLES (unchanged)
+      // YOUR ORIGINAL STYLES — UNTOUCHED
       const style = document.createElement('style');
       style.textContent = `
         #projectionsChart { isolation: isolate; contain: layout style paint; max-width: 1400px; margin: 0 auto; padding: 0 10px; }
