@@ -31,11 +31,11 @@ document.addEventListener('DOMContentLoaded', () => {
     { name: 'Education', value: 275000 }
   ];
 
-  const totalLoansDisbursedToday = loanTypesToday.reduce((sum, l) => sum + l.value, 0); // Monthly disbursed
+  const loansDisbursedThisMonth = loanTypesToday.reduce((sum, l) => sum + l.value, 0); // Monthly total (displayed)
 
-  const cumulativeLoansDisbursedToday = 5000000; // Since inception (hidden, not displayed)
+  const cumulativeLoansDisbursedSinceInception = 5000000; // All-time total (hidden, existing cumulative)
 
-  const loanBalanceToday = 788357.66; // Outstanding loan balance (hidden)
+  const loansBalanceToday = 788357.66; // Outstanding loan balance (new, hidden)
 
   const bankBreakdownToday = [
     { name: 'Co-operative Bank', value: 2120.65 },
@@ -43,18 +43,18 @@ document.addEventListener('DOMContentLoaded', () => {
     { name: 'Cytonn', value: 186550 }
   ];
 
-  const totalBankBalanceToday = bankBreakdownToday.reduce((sum, b) => sum + b.value, 0);
+  const totalBankBalanceToday = bankBreakdownToday.reduce((sum, b) => sum + b.value, 0); // Total (displayed)
 
-  const bookValueToday = loanBalanceToday + totalBankBalanceToday; // Total assets/book value (hidden)
+  const bookValueToday = loansBalanceToday + totalBankBalanceToday; // Assets/book value (hidden)
 
   const externalLoansToday = 66784;
 
   const carouselDataWithoutROA = [
     { number: 144, description: "Total Members" },
     { number: 907515, description: "Member Savings" },
-    { number: totalBankBalanceToday, description: "Total Bank Balance" }, // Updated title, total only (breakdown hidden)
+    { number: totalBankBalanceToday, description: "Total Bank Balance" }, // Total only (breakdown hidden)
     { number: 106, description: "Number of Loans Given" },
-    { number: totalLoansDisbursedToday, description: "Loans Disbursed This Month" }, // Clarified as monthly
+    { number: loansDisbursedThisMonth, description: "Loans Disbursed This Month" }, // Monthly (clarified)
     { number: 51728, description: "Profit" },
     { number: 71, description: "Active Members" }
   ];
@@ -68,20 +68,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const carouselData = carouselDataWithoutROA;
 
   window.loanTypes = loanTypesToday;
-  window.bankBreakdown = bankBreakdownToday; // For editing, like loanTypes
+  window.bankBreakdown = bankBreakdownToday; // For editing totals
 
   // === JAN 2025 BASELINE (fallback if not in history) ===
   const janFallback = {
     members: 101,
     contributions: 331263,
-    loansDisbursed: 283500,
-    loansBalance: 250000, // Example baseline
+    loansDisbursed: 283500, // Monthly
+    cumulativeLoansDisbursed: 1000000, // Since inception
+    loansBalance: 250000, // Outstanding
     profit: -60056,
     totalBankBalance: 113742,
     bankBreakdown: [{ name: 'Co-operative Bank', value: 50000 }, { name: 'Chamasoft', value: 20000 }, { name: 'Cytonn', value: 43742 }],
     bookValue: 250000 + 113742,
-    externalLoans: 0,
-    cumulativeLoansDisbursed: 1000000 // Example
+    externalLoans: 0
   };
 
   const currentDate = new Date();
@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const currentMonth = currentDate.getMonth() + 1; // 1-12
   const currentPeriod = `${currentYear}-${String(currentMonth).padStart(2, '0')}`;
 
-  const currentMonthData = saccoHistory[currentPeriod] || janFallback; // Use jan as fallback for first month
+  const currentMonthData = saccoHistory[currentPeriod] || janFallback;
   const roaCurrent = (currentMonthData.contributions + currentMonthData.externalLoans > 0)
     ? ((currentMonthData.profit / (currentMonthData.contributions + currentMonthData.externalLoans)) * 100).toFixed(2)
     : 0;
@@ -98,16 +98,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const todayData = {
     members: carouselData[0].number,
     contributions: carouselData[1].number, // Member Savings
-    loansDisbursed: totalLoansDisbursedToday, // Monthly
-    loansBalance: loanBalanceToday,
+    loansDisbursed: loansDisbursedThisMonth, // Monthly (displayed)
+    loansBalance: loansBalanceToday, // Hidden
     profit: carouselData[5].number,
-    totalBankBalance: totalBankBalanceToday,
+    totalBankBalance: totalBankBalanceToday, // Total (displayed)
     externalLoans: externalLoansToday,
     roa: roaToday,
-    extraFields: { // Hidden fields for history/About (not in carousel display)
+    extraFields: { // Hidden fields for history/About
       bankBreakdown: bankBreakdownToday,
-      bookValue: bookValueToday,
-      cumulativeLoansDisbursed: cumulativeLoansDisbursedToday
+      cumulativeLoansDisbursed: cumulativeLoansDisbursedSinceInception, // Since inception
+      bookValue: bookValueToday
     }
   };
 
@@ -119,27 +119,37 @@ document.addEventListener('DOMContentLoaded', () => {
   // Persist current data for About page fetch
   localStorage.setItem('saccoDataToday', JSON.stringify(todayData));
 
-  // === MONTHLY AUTO-SAVE IF NOT EXISTS ===
+  // === MONTHLY AUTO-SAVE IF NOT EXISTS (maintain existing data) ===
   if (!saccoHistory[currentPeriod]) {
     saccoHistory[currentPeriod] = {
       period: currentPeriod,
       members: todayData.members,
       contributions: todayData.contributions,
-      loansDisbursed: todayData.loansDisbursed,
+      loansDisbursed: todayData.loansDisbursed, // Monthly
       loansBalance: todayData.loansBalance,
       profit: todayData.profit,
       totalBankBalance: todayData.totalBankBalance,
       bankBreakdown: todayData.extraFields.bankBreakdown,
-      bookValue: todayData.extraFields.bookValue,
       cumulativeLoansDisbursed: todayData.extraFields.cumulativeLoansDisbursed,
+      bookValue: todayData.extraFields.bookValue,
       roa: todayData.roa,
       dateSaved: currentDate.toISOString()
     };
     saveHistory(saccoHistory);
     console.log(`SOYOSOYO SACCO ${currentPeriod} DATA SAVED TO HISTORY`);
+  } else {
+    // For existing data, merge new fields if missing (to maintain amended figures)
+    const existing = saccoHistory[currentPeriod];
+    if (!existing.loansBalance) existing.loansBalance = todayData.loansBalance;
+    if (!existing.profit) existing.profit = todayData.profit;
+    if (!existing.bankBreakdown) existing.bankBreakdown = todayData.extraFields.bankBreakdown;
+    if (!existing.cumulativeLoansDisbursed) existing.cumulativeLoansDisbursed = todayData.extraFields.cumulativeLoansDisbursed;
+    if (!existing.bookValue) existing.bookValue = todayData.extraFields.bookValue;
+    saveHistory(saccoHistory);
+    console.log(`SOYOSOYO SACCO ${currentPeriod} DATA UPDATED WITH NEW FIELDS`);
   }
 
-  // === CAROUSEL RENDERING (unchanged, just moved below) ===
+  // === CAROUSEL RENDERING ===
   const carousel = document.querySelector('.carousel');
   if (!carousel) return;
 
@@ -218,7 +228,14 @@ document.addEventListener('DOMContentLoaded', () => {
   setTimeout(animateVisible, 300);
 
   // Expose for About page (if loaded separately)
-  if (typeof window.updateCarouselData === 'function') {
-    window.updateCarouselData = () => { /* Refresh logic if needed */ };
-  }
+  window.updateCarouselData = () => {
+    // Refresh logic: Re-calculate totals if edits made
+    const updatedLoansDisbursed = loanTypesToday.reduce((sum, l) => sum + l.value, 0);
+    const updatedBankBalance = bankBreakdownToday.reduce((sum, b) => sum + b.value, 0);
+    todayData.loansDisbursed = updatedLoansDisbursed;
+    todayData.totalBankBalance = updatedBankBalance;
+    todayData.extraFields.bankBreakdown = bankBreakdownToday;
+    localStorage.setItem('saccoDataToday', JSON.stringify(todayData));
+    console.log('Carousel data updated');
+  };
 });
