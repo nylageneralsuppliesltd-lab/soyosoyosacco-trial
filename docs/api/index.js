@@ -45,7 +45,7 @@ function formatDisplayDate(dateInput) {
   }).replace(',','');
 }
 
-// Compute data hash for change detection
+// Compute data hash for change detection (now includes extra fields)
 function computeDataHash(today) {
   if (!today) return '';
   return JSON.stringify({
@@ -53,10 +53,13 @@ function computeDataHash(today) {
     contributions: today.contributions,
     loans: today.loans,
     bankBalance: today.bankBalance,
-    roa: today.roa
+    roa: today.roa,
+    // Include extra fields in hash for change detection
+    ...today.extraFields // e.g., { totalAssets: 12345, expenses: 6789 }
   });
 }
 
+// Load persisted history
 function loadPersistedData() {
   const saved = localStorage.getItem('saccoHistoryBackup');
   if (saved) {
@@ -68,6 +71,7 @@ function loadPersistedData() {
   }
 }
 
+// Update current month in history with extra fields
 function updateCurrentMonthInHistory(today, saveType = 'auto') {
   const currentPeriod = new Date().toISOString().slice(0, 7);
   window.saccoHistory[currentPeriod] = {
@@ -77,11 +81,14 @@ function updateCurrentMonthInHistory(today, saveType = 'auto') {
     loans: Number(today.loans || 0),
     bankBalance: Number(today.bankBalance || 0),
     roa: Number(today.roa || 0),
+    // Store extra fields as JSON for flexibility
+    extraFields: today.extraFields || {},
     dateSaved: new Date().toISOString(),
     saveType: saveType
   };
 }
 
+// Render full history table (extra fields not displayed, but saved)
 function renderFullHistory() {
   const container = document.getElementById('fullHistoryTable');
   const footer = document.getElementById('historyFooter');
@@ -118,7 +125,7 @@ function renderFullHistory() {
   tableHTML += '</tbody></table>';
   container.innerHTML = tableHTML;
 
-  // Mobile compact render
+  // Mobile compact render (extra fields hidden)
   if (window.innerWidth <= 768) {
     const tbody = container.querySelector('tbody');
     if (tbody) {
@@ -169,6 +176,8 @@ async function loadLiveHistory() {
         loans: Number(row.loans || 0),
         bankBalance: Number(row.bankBalance || 0),
         roa: Number(row.roa || 0),
+        // Load extraFields from DB if stored (e.g., as JSON column)
+        extraFields: row.extraFields ? JSON.parse(row.extraFields) : {},
         dateSaved: row.dateSaved,
         saveType: 'manual' // Default for DB-loaded data
       };
@@ -178,7 +187,8 @@ async function loadLiveHistory() {
     console.warn('Server sleeping → using local backup', err);
     loadPersistedData();
   } finally {
-    // Ensure current month is shown and updated
+    // Ensure current month data is loaded from carousel.js or localStorage
+    initCarouselData();
     if (window.saccoData?.today) {
       const currentHash = computeDataHash(window.saccoData.today);
       const isDataChanged = currentHash !== lastDataHash;
@@ -188,6 +198,34 @@ async function loadLiveHistory() {
       }
     }
     renderFullHistory();
+  }
+}
+
+// New: Initialize data directly from carousel.js logic or localStorage (independent of index.html)
+function initCarouselData() {
+  // If carousel.js populates window.saccoData.today, use it
+  // Otherwise, load from localStorage (set by carousel.js on home)
+  if (!window.saccoData?.today) {
+    const savedData = localStorage.getItem('saccoDataToday');
+    if (savedData) {
+      window.saccoData.today = JSON.parse(savedData);
+      console.log('Loaded current data from localStorage');
+    } else {
+      // Fallback: Simulate/init minimal data if needed (customize based on carousel.js)
+      window.saccoData.today = {
+        members: 0,
+        contributions: 0,
+        loans: 0,
+        bankBalance: 0,
+        roa: 0,
+        extraFields: {} // Placeholder for hidden fields like { totalAssets: 0, expenses: 0 }
+      };
+      console.log('Initialized empty data - visit home to populate');
+    }
+  }
+  // Trigger any carousel.js update logic if exposed (e.g., window.updateCarouselData?.())
+  if (typeof window.updateCarouselData === 'function') {
+    window.updateCarouselData(); // Assume carousel.js exposes this for About page
   }
 }
 
@@ -208,7 +246,7 @@ async function attemptSave(payload, saveType = 'auto') {
 
 async function saveCurrentMonth(auto = false) {
   if (!window.saccoData?.today) {
-    if (!auto) alert("Carousel data not ready!\n\nPlease go to HOMEPAGE first, wait 10 seconds, then try again.");
+    if (!auto) alert("Data not ready!\n\nVisit HOMEPAGE to populate, then return.");
     return;
   }
   const today = window.saccoData.today;
@@ -218,7 +256,9 @@ async function saveCurrentMonth(auto = false) {
     contributions: today.contributions,
     loans: today.loans || 0,
     bank_balance: today.bankBalance || 0,
-    roa: parseFloat(today.roa) || 0
+    roa: parseFloat(today.roa) || 0,
+    // Include extraFields for saving (not displayed on home/carousel)
+    extraFields: JSON.stringify(today.extraFields || {})
   };
   const saveAttempt = await attemptSave(payload, saveType);
   if (saveAttempt.success) {
@@ -297,10 +337,11 @@ function downloadHistoryCSV() {
   const history = Object.values(window.saccoHistory);
   if (history.length === 0) { alert("No data to download yet."); return; }
 
-  let csv = "Period,Members,Contributions,Loans,Bank Balance,ROA %,Saved On,Save Type\n";
+  let csv = "Period,Members,Contributions,Loans,Bank Balance,ROA %,Saved On,Save Type,Extra Fields\n";
   history.sort((a,b)=>a.period.localeCompare(b.period)).forEach(d => {
     const saveTypeLabel = d.saveType === 'auto' ? 'Auto' : 'Manual';
-    csv += `${formatMonth(d.period)},${d.members},${d.contributions},${d.loans},${d.bankBalance},${d.roa},"${formatDateTime(d.dateSaved)}",${saveTypeLabel}\n`;
+    const extra = JSON.stringify(d.extraFields || {});
+    csv += `${formatMonth(d.period)},${d.members},${d.contributions},${d.loans},${d.bankBalance},${d.roa},"${formatDateTime(d.dateSaved)}",${saveTypeLabel},"${extra}"\n`;
   });
 
   const blob = new Blob([csv], {type:'text/csv'});
@@ -356,8 +397,9 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('autoSaveText').textContent = autoSaveEnabled ? 'AUTO-SAVE ON' : 'AUTO-SAVE OFF';
   document.getElementById('autoSaveToggle').style.background = autoSaveEnabled ? '#10B981' : '#f59e0b';
 
-  // Polling for changes and auto-save
+  // Polling for changes and auto-save (now independent of index.html)
   setInterval(() => {
+    initCarouselData(); // Ensure data is always fresh
     if (window.saccoData?.today) {
       const currentHash = computeDataHash(window.saccoData.today);
       const isDataChanged = currentHash !== lastDataHash;
