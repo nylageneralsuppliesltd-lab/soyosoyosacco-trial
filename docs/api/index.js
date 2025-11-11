@@ -1,4 +1,3 @@
-// docs/api/index.js - Soyosoyo SACCO API with PostgreSQL + JSON fallback
 require('dotenv').config();
 const express = require("express");
 const fs = require("fs");
@@ -19,9 +18,7 @@ for (const file of [DB_FILE, PENDING_FILE]) {
 }
 
 // PostgreSQL connection
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL
-});
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
 // Helper functions
 function loadJSON(file) {
@@ -79,60 +76,43 @@ async function saveToDB(entry) {
 
 // POST: Save current month
 app.post("/api/history/save", async (req, res) => {
-  // Use snake_case to match DB
-  const {
-    members=0, contributions=0, loans_disbursed=0, loans_balance=0, total_bank_balance=0,
-    coop_bank=0, chama_soft=0, cytonn=0, total_assets=0, profit=0, roa=0,
-    extra_fields="{}"
-  } = req.body;
+  const payload = req.body;
 
-  // Force period to first day of month for PostgreSQL date
-  const now = new Date();
-  const period = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-01`;
-
-  const date_saved = new Date().toISOString();
-
+  // Ensure all numeric fields are properly mapped and converted
   const newEntry = {
-    period,
-    date_saved,
-    members: Number(members),
-    contributions: Number(contributions),
-    loans_disbursed: Number(loans_disbursed),
-    loans_balance: Number(loans_balance),
-    total_bank_balance: Number(total_bank_balance),
-    coop_bank: Number(coop_bank),
-    chama_soft: Number(chama_soft),
-    cytonn: Number(cytonn),
-    total_assets: Number(total_assets),
-    profit: Number(profit),
-    roa: Number(roa),
-    extra_fields
+    period: new Date().toISOString().slice(0,7) + "-01",  // YYYY-MM-01
+    date_saved: new Date().toISOString(),
+    members: Number(payload.members || 0),
+    contributions: Number(payload.contributions || 0),
+    loans_disbursed: Number(payload.loans_disbursed || 0),
+    loans_balance: Number(payload.loans_balance || 0),
+    total_bank_balance: Number(payload.total_bank_balance || 0),
+    coop_bank: Number(payload.coop_bank || 0),
+    chama_soft: Number(payload.chama_soft || 0),
+    cytonn: Number(payload.cytonn || 0),
+    total_assets: Number(payload.total_assets || 0),
+    profit: Number(payload.profit || 0),
+    roa: Number(payload.roa || 0),
+    extra_fields: payload.extra_fields || "{}"
   };
 
   try {
-    // Save to DB
     await saveToDB(newEntry);
 
-    // Save locally
-    const history = loadJSON(DB_FILE).filter(h => h.period!==period);
+    const history = loadJSON(DB_FILE).filter(h => h.period!==newEntry.period);
     history.push(newEntry);
     saveJSON(DB_FILE, history);
-
-    // Clear pending
     saveJSON(PENDING_FILE, []);
 
-    console.log("✅ Saved successfully to DB:", period);
+    console.log("✅ Saved successfully to DB:", newEntry.period);
     res.json({ success: true, data: newEntry });
   } catch(err) {
     console.warn("⚠️ DB save failed, storing to pending.json:", err.message);
-
-    // Save to pending
     const pending = loadJSON(PENDING_FILE);
     pending.push(newEntry);
     saveJSON(PENDING_FILE, pending);
 
-    // Update local JSON
-    const history = loadJSON(DB_FILE).filter(h => h.period!==period);
+    const history = loadJSON(DB_FILE).filter(h => h.period!==newEntry.period);
     history.push(newEntry);
     saveJSON(DB_FILE, history);
 
@@ -145,10 +125,9 @@ async function retryPending() {
   const pending = loadJSON(PENDING_FILE);
   if(!pending.length) return;
 
-  const retryLimit = 10;
-  for(let attempt=1; attempt<=retryLimit; attempt++){
+  for(let attempt=1; attempt<=10; attempt++){
     console.log(`🔄 Retry attempt ${attempt} for pending saves`);
-    const remaining=[];
+    const remaining = [];
     for(const entry of pending){
       try { await saveToDB(entry); } 
       catch(err){ console.warn("Retry failed for period", entry.period, err.message); remaining.push(entry);}
@@ -162,4 +141,4 @@ async function retryPending() {
 setInterval(retryPending, 30000);
 
 const PORT = process.env.PORT || 10000;
-app.listen(PORT, ()=>console.log(`🚀 Soyosoyo SACCO API running on port ${PORT}`));
+app.listen(PORT, ()=>console.log(`🚀 SACCO API running on port ${PORT}`));
