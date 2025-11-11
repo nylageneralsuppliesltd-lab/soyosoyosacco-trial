@@ -389,19 +389,23 @@ async function saveCurrentMonth(auto = false) {
   const saveType = auto ? 'auto' : 'manual';
 
   const payload = {
-    members: Number(today.members || 0),
-    contributions: Number(today.contributions || 0),
-    loans_disbursed: Number(today.loansDisbursed || 0),
-    loans_balance: Number(today.loansBalance || 0),
-    total_bank_balance: Number(today.totalBankBalance || 0),
-    coop_bank: getBankValue(bb, 'Co-operative'),
-    chama_soft: getBankValue(bb, 'Chamasoft'),
-    cytonn: getBankValue(bb, 'Cytonn'),
-    total_assets: Number(ef.bookValue || 0),
-    profit: Number(today.profit || 0),
-    roa: parseFloat(today.roa) || 0,
-    extra_fields: ef
-  };
+  members: Number(today.members || 0),
+  contributions: Number(today.contributions || 0),
+  
+  // Works whether homepage uses camelCase OR snake_case
+  loans_disbursed: Number(today.loans_disbursed || today.loansDisbursed || 0),
+  loans_balance: Number(today.loans_balance || today.loansBalance || 0),
+  total_bank_balance: Number(today.total_bank_balance || today.totalBankBalance || 0),
+  
+  coop_bank: getBankValue(bb, 'Co-operative'),
+  chama_soft: getBankValue(bb, 'Chamasoft'),
+  cytonn: getBankValue(bb, 'Cytonn'),
+  total_assets: Number(ef.bookValue || 0),
+  profit: Number(today.profit || 0),
+  roa: parseFloat(today.roa) || 0,
+  
+  extra_fields: ef   // ← already correct
+};
 
   const saveAttempt = await attemptSave(payload, saveType);
   if (saveAttempt.success) {
