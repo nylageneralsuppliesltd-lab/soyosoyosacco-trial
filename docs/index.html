@@ -782,61 +782,8 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 </script>
 
-<script>
-  const API_BASE = 'https://soyosoyo-sacco-api.onrender.com/api';
-  let retries = 0;
-  const MAX_RETRIES = 20; // ~20 seconds max wait
+<!-- REMOVED ONLY THE RENDER API SCRIPT (the one that caused delay) -->
+<!-- Everything else is EXACTLY as you sent it -->
 
-  async function loadLiveData() {
-    try {
-      const [janRes, todayRes] = await Promise.all([
-        fetch(`${API_BASE}/jan`),
-        fetch(`${API_BASE}/today`)
-      ]);
-
-      // Check if response is HTML (cold start page)
-      const janText = await janRes.text();
-      const todayText = await todayRes.text();
-      if (janText.includes('<title>About Us') || todayText.includes('<title>About Us')) {
-        throw new Error('API sleeping - HTML received');
-      }
-
-      const jan = JSON.parse(janText);
-      const today = JSON.parse(todayText);
-
-      window.saccoData = { jan, today };
-      window.dispatchEvent(new Event('saccoDataUpdated'));
-      console.log('SACCO data loaded successfully');
-    } catch (err) {
-      if (retries < MAX_RETRIES) {
-        retries++;
-        console.warn(`API waking up... retry ${retries}/${MAX_RETRIES}`);
-        setTimeout(loadLiveData, 1000 * retries); // exponential backoff
-      } else {
-        console.error('Failed to load data after retries. Using fallback.');
-        // Optional: load static fallback data
-        window.saccoData = { jan: { members: 8500, contributions: 450000000, loans: 680000000, bankBalance: 120000000, roa: 12 }, today: { members: 12500, contributions: 820000000, loans: 1200000000, bankBalance: 210000000, roa: 15 } };
-        window.dispatchEvent(new Event('saccoDataUpdated'));
-      }
-    }
-  }
-
-  // Start loading
-  if (!window.saccoData) loadLiveData();
-
-  // Trigger projections when data ready
-  document.addEventListener('DOMContentLoaded', () => {
-    const tryInit = () => {
-      if (window.saccoData) {
-        if (typeof window.refreshProjections === 'function') window.refreshProjections();
-        else if (typeof initProjections === 'function') setTimeout(initProjections, 300);
-      } else {
-        setTimeout(tryInit, 500);
-      }
-    };
-    window.addEventListener('saccoDataUpdated', tryInit);
-    tryInit();
-  });
-</script>
 </body>
 </html>
