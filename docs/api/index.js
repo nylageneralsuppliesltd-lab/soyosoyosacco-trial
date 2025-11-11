@@ -1,4 +1,4 @@
-// docs/api/index.js  ← FINAL WITH CASE FIX + HARD CODED PATH
+// docs/api/index.js  ← UPDATED WITH TIMESTAMP FIX (TIMESTAMP + NOW()) + HARD CODED PATH
 const express = require('express');
 const { Pool } = require('pg');
 const cors = require('cors');
@@ -17,7 +17,7 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false }
 });
 
-// Create table
+// Create/Alter table for timestamp support
 pool.query(`
   CREATE TABLE IF NOT EXISTS sacco_history (
     id SERIAL PRIMARY KEY,
@@ -27,9 +27,22 @@ pool.query(`
     loans BIGINT,
     bank_balance BIGINT,
     roa DECIMAL(5,2),
-    date_saved DATE DEFAULT CURRENT_DATE
+    date_saved TIMESTAMP DEFAULT NOW()
   )
-`).catch(err => console.error('Table error:', err));
+`).catch(err => console.error('Table creation error:', err));
+
+// If table exists with old DATE type, alter it (idempotent)
+pool.query(`
+  DO $$
+  BEGIN
+    IF EXISTS (
+      SELECT 1 FROM information_schema.columns 
+      WHERE table_name = 'sacco_history' AND column_name = 'date_saved' AND data_type = 'date'
+    ) THEN
+      ALTER TABLE sacco_history ALTER COLUMN date_saved TYPE TIMESTAMP USING date_saved::TIMESTAMP;
+    END IF;
+  END $$;
+`).catch(err => console.error('Table alteration error:', err));
 
 // API ROUTES
 const apiRouter = express.Router();
@@ -64,7 +77,7 @@ apiRouter.post('/history/save', async (req, res) => {
         loans = EXCLUDED.loans,
         bank_balance = EXCLUDED.bank_balance,
         roa = EXCLUDED.roa,
-        date_saved = CURRENT_DATE
+        date_saved = NOW()
       RETURNING *
     `;
     const values = [period, members, contributions, loans || 0, bank_balance || 0, roa || 0];
