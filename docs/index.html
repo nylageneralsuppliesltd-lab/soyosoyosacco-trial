@@ -36,7 +36,7 @@
       gtag('config', 'G-05M38MYK0G');
     </script>
 
-    <!-- FINAL FIX — CHART.JS + PLOTLY FULLY ISOLATED -->
+    <!-- FIXED CSS — SOFTENED !IMPORTANT TO AVOID CHART.JS CONFLICTS -->
     <style id="final-working-fix">
       .growth-charts-grid {
         display: grid;
@@ -46,49 +46,47 @@
         width: 100%;
       }
       #final-charts-section .chart-card {
-        position: relative !important;
-        width: 100% !important;
-        height: 420px !important;
-        display: flex !important;
-        flex-direction: column !important;
-        background: #fff !important;
-        border-radius: 12px !important;
-        padding: 1.5rem !important;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
-        overflow: visible !important;
+        position: relative; /* For arrow z-index */
+        width: 100%;
+        height: 420px;
+        display: flex;
+        flex-direction: column;
+        background: #fff;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        overflow: visible;
       }
       #final-charts-section .chart-card canvas {
-        flex: 1 1 auto !important;
-        width: 100% !important;
-        height: 100% !important;
-        max-width: 100% !important;
-        max-height: none !important;
-        min-height: 280px !important;
-        display: block !important;
-        transform: none !important;
-        margin: 0 !important;
+        flex: 1 1 auto;
+        width: 100%;
+        height: 100%; /* Let Chart.js set px attrs */
+        max-width: 100%;
+        display: block;
+        margin: 0;
+        min-height: 300px; /* Increased for visibility */
       }
       #final-charts-section .chart-card p {
-        margin: 0.75rem 0 0 0 !important;
-        text-align: center !important;
-        font-weight: bold !important;
-        color: #1a1a1a !important;
-        font-size: 1rem !important;
-        flex-shrink: 0 !important;
+        margin: 0.75rem 0 0 0;
+        text-align: center;
+        font-weight: bold;
+        color: #1a1a1a;
+        font-size: 1rem;
+        flex-shrink: 0;
       }
       #final-charts-section .growth-indicator {
-        text-align: center !important;
-        margin-top: 0.5rem !important;
-        font-weight: bold !important;
-        font-size: 1rem !important;
-        flex-shrink: 0 !important;
+        text-align: center;
+        margin-top: 0.5rem;
+        font-weight: bold;
+        font-size: 1rem;
+        flex-shrink: 0;
       }
-      #final-charts-section .growth-indicator.positive { color: #10B981 !important; }
-      #final-charts-section .growth-indicator.negative { color: #EF4444 !important; }
-      #final-charts-section .growth-indicator i { margin-right: 4px !important; font-size: 0.9em !important; }
+      #final-charts-section .growth-indicator.positive { color: #10B981; }
+      #final-charts-section .growth-indicator.negative { color: #EF4444; }
+      #final-charts-section .growth-indicator i { margin-right: 4px; font-size: 0.9em; }
       @media (max-width: 768px) {
-        #final-charts-section .chart-card { height: 380px !important; padding: 1.2rem !important; }
-        #final-charts-section .chart-card canvas { min-height: 240px !important; }
+        #final-charts-section .chart-card { height: 400px; padding: 1.2rem; }
+        #final-charts-section .chart-card canvas { min-height: 260px; }
       }
     </style>
 
@@ -387,29 +385,24 @@
 <script src="./scripts/projections.js"></script>
 <script src="./scripts/member-carousel.js"></script>
 
-<!-- ONLY THIS BLOCK WAS REPLACED — CHARTS NOW WORK INSTANTLY -->
+<!-- FIXED CHARTS SCRIPT — PLUGIN REGISTER EARLY + POST-CAROUSEL RETRIGGER -->
 <script>
-  // === HARD-CODED REAL DATA — NO API NEEDED EVER AGAIN ===
-  window.saccoData = {
-    jan: {
-      members: 842,
-      loans: 28475000,
-      contributions: 15680000,
-      profit: 3120000,
-      bankBalance: 18940000,
-      roa: "2.1"
-    },
-    today: {
-      members: 1289,
-      loans: 48730000,
-      contributions: 24320000,
-      profit: 5840000,
-      bankBalance: 29870000,
-      roa: "3.8"
-    }
-  };
+  // Register datalabels EARLY (before any new Chart())
+  if (typeof Chart !== 'undefined' && typeof ChartDataLabels !== 'undefined') {
+    Chart.register(ChartDataLabels);
+    console.log('ChartDataLabels registered early – fixing blank canvases');
+  }
 
-  window.loanTypes = [
+  // === OPTIONAL: HARDCODE LARGE DATA FOR BIG VISUALS (uncomment to override small dailies) ===
+  /*
+  window.saccoData = {
+    jan: { members: 842, loans: 28475000, contributions: 15680000, profit: 3120000, bankBalance: 18940000, roa: "2.1" },
+    today: { members: 1289, loans: 48730000, contributions: 24320000, profit: 5840000, bankBalance: 29870000, roa: "3.8" }
+  };
+  window.loanTypes = [{ name: "Emergency", value: 38 }, { name: "Education", value: 25 }, { name: "Development", value: 20 }, { name: "Medicare", value: 12 }, { name: "Api Culture", value: 5 }];
+  */
+
+  window.loanTypes = [  // Default small % pie – or uncomment above for 38% Emergency
     { name: "Emergency", value: 38 },
     { name: "Education", value: 25 },
     { name: "Development", value: 20 },
@@ -417,7 +410,7 @@
     { name: "Api Culture", value: 5 }
   ];
 
-  // === RESTORE ORIGINAL ARROW PLUGIN (unchanged) ===
+  // === RESTORE ORIGINAL ARROW PLUGIN ===
   const cleanGrowthArrowPlugin = {
     id: 'cleanGrowthArrow',
     afterDraw: function(chart) {
@@ -471,7 +464,7 @@
   };
   Chart.register(cleanGrowthArrowPlugin);
 
-  // === EXACT SAME renderGrowthCharts() YOU HAD BEFORE ===
+  // === renderGrowthCharts() – UNCHANGED ===
   function renderGrowthCharts() {
     if (!window.saccoData) return;
 
@@ -605,9 +598,12 @@
     }
   }
 
-  // Run immediately
+  // FIXED: Run after carousel.js + short delay for safety
   document.addEventListener('DOMContentLoaded', () => {
-    renderGrowthCharts();
+    setTimeout(() => {
+      renderGrowthCharts();
+      console.log('Growth charts rendered post-plugins');
+    }, 100);  // Ensures register from carousel.js fires first
     if (typeof initMemberCarousel === 'function') initMemberCarousel();
   });
 </script>
