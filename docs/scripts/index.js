@@ -161,7 +161,12 @@ async function attemptSave(payload, saveType='auto') {
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify(payload)
     });
-    if (!res.ok) throw new Error(await res.text() || res.status);
+   if (!res.ok) {
+  console.warn("API asleep — saving locally only.");
+  localStorage.setItem('pendingSave', JSON.stringify({ ...payload, queuedAt: new Date().toISOString() }));
+  return { success: false, data: payload, error: "Server sleeping" };
+}
+
     return { success:true, data:{...(await res.json()).data, saveType} };
   } catch(err) {
     return { success:false, error:err.message };
