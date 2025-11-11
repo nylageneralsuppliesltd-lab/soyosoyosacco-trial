@@ -434,108 +434,102 @@
 
 <!-- FINAL BULLETPROOF CHARTS + ARROW PLUGIN (NO ERRORS) -->
 <script>
-  // Register plugins
-  if (typeof Chart !== 'undefined' && typeof ChartDataLabels !== 'undefined') {
-    Chart.register(ChartDataLabels);
-  }
-
-  // Loan types data
-  window.loanTypes = [
-    { name: "Emergency", value: 38 },
-    { name: "Education", value: 25 },
-    { name: "Development", value: 20 },
-    { name: "Medicare", value: 12 },
-    { name: "Api Culture", value: 5 }
-  ];
-
-  <!-- FINAL BULLETPROOF CHARTS + ARROW PLUGIN (NO ERRORS) -->
-<script>
-  // Register plugins
-  if (typeof Chart !== 'undefined' && typeof ChartDataLabels !== 'undefined') {
-    Chart.register(ChartDataLabels);
-  }
-
-  // Loan types data
-  window.loanTypes = [
-    { name: "Emergency", value: 38 },
-    { name: "Education", value: 25 },
-    { name: "Development", value: 20 },
-    { name: "Medicare", value: 12 },
-    { name: "Api Culture", value: 5 }
-  ];
-
-  // FINAL BULLETPROOF ARROW + LABEL PLUGIN — THIS KILLS THE ERROR
-  const finalGrowthArrowPlugin = {
-    id: 'finalGrowthArrow',
-    afterDraw: function(chart) {
-      if (!chart || !chart.ctx || !chart.scales || !chart.data || !chart.data.datasets || chart.data.datasets.length === 0) return;
-      
-      const dataset = chart.data.datasets[0];
-      if (!dataset || !dataset.data || dataset.data.length < 2) return;
-      
-      const janVal = dataset.data[0];
-      const todayVal = dataset.data[1];
-      if (janVal === undefined || todayVal === undefined) return;
-
-      const growthPercent = janVal === 0 ? (todayVal === 0 ? 0 : 100) : ((todayVal - janVal) / Math.abs(janVal)) * 100;
-      const isPositive = growthPercent >= 0;
-
-      const xScale = chart.scales.x;
-      const yScale = chart.scales.y;
-      if (!xScale || !yScale) return;
-
-      const x1 = xScale.getPixelForValue(0);
-      const x2 = xScale.getPixelForValue(1);
-      const y1 = yScale.getPixelForValue(janVal);
-      const y2 = yScale.getPixelForValue(todayVal);
-
-      if (!Number.isFinite(x1) || !Number.isFinite(x2) || !Number.isFinite(y1) || !Number.isFinite(y2)) return;
-
-      const ctx = chart.ctx;
-      ctx.save();
-      ctx.strokeStyle = isPositive ? '#10B981' : '#EF4444';
-      ctx.lineWidth = 5;
-      ctx.lineCap = 'round';
-
-      ctx.beginPath();
-      ctx.moveTo(x1, y1);
-      ctx.lineTo(x2, y2);
-      ctx.stroke();
-
-      const headLength = 18;
-      const angle = Math.atan2(y2 - y1, x2 - x1);
-      ctx.beginPath();
-      ctx.moveTo(x2, y2);
-      ctx.lineTo(x2 - headLength * Math.cos(angle - Math.PI / 6), y2 - headLength * Math.sin(angle - Math.PI / 6));
-      ctx.lineTo(x2 - headLength * Math.cos(angle + Math.PI / 6), y2 - headLength * Math.sin(angle + Math.PI / 6));
-      ctx.closePath();
-      ctx.fillStyle = isPositive ? '#10B981' : '#EF4444';
-      ctx.fill();
-
-      if (Math.abs(growthPercent) > 0.1) {
-        const midX = (x1 + x2) / 2;
-        const midY = (y1 + y2) / 2 - 25;
-        ctx.font = 'bold 16px Lato';
-        ctx.fillStyle = isPositive ? '#10B981' : '#EF4444';
-        ctx.textAlign = 'center';
-        ctx.fillText(`${isPositive ? '+' : ''}${growthPercent.toFixed(1)}%`, midX, midY);
+  // Safely register plugins (wait for Chart.js to load)
+  function registerPlugins() {
+    if (typeof Chart !== 'undefined') {
+      if (typeof ChartDataLabels !== 'undefined') {
+        Chart.register(ChartDataLabels);
+        console.log('ChartDataLabels registered – charts should now render with labels and arrows');
       }
+      
+      // Custom arrow plugin for growth indicators
+      const finalGrowthArrowPlugin = {
+        id: 'finalGrowthArrow',
+        afterDraw: function(chart) {
+          if (!chart || !chart.ctx || !chart.scales || !chart.data || !chart.data.datasets || chart.data.datasets.length === 0) return;
+          
+          const dataset = chart.data.datasets[0];
+          if (!dataset || !dataset.data || dataset.data.length < 2) return;
+          
+          const janVal = dataset.data[0];
+          const todayVal = dataset.data[1];
+          if (janVal === undefined || todayVal === undefined) return;
 
-      ctx.restore();
+          const growthPercent = janVal === 0 ? (todayVal === 0 ? 0 : 100) : ((todayVal - janVal) / Math.abs(janVal)) * 100;
+          const isPositive = growthPercent >= 0;
+
+          const xScale = chart.scales.x;
+          const yScale = chart.scales.y;
+          if (!xScale || !yScale) return;
+
+          const x1 = xScale.getPixelForValue(0);
+          const x2 = xScale.getPixelForValue(1);
+          const y1 = yScale.getPixelForValue(janVal);
+          const y2 = yScale.getPixelForValue(todayVal);
+
+          if (!Number.isFinite(x1) || !Number.isFinite(x2) || !Number.isFinite(y1) || !Number.isFinite(y2)) return;
+
+          const ctx = chart.ctx;
+          ctx.save();
+          ctx.strokeStyle = isPositive ? '#10B981' : '#EF4444';
+          ctx.lineWidth = 5;
+          ctx.lineCap = 'round';
+
+          ctx.beginPath();
+          ctx.moveTo(x1, y1);
+          ctx.lineTo(x2, y2);
+          ctx.stroke();
+
+          const headLength = 18;
+          const angle = Math.atan2(y2 - y1, x2 - x1);
+          ctx.beginPath();
+          ctx.moveTo(x2, y2);
+          ctx.lineTo(x2 - headLength * Math.cos(angle - Math.PI / 6), y2 - headLength * Math.sin(angle - Math.PI / 6));
+          ctx.lineTo(x2 - headLength * Math.cos(angle + Math.PI / 6), y2 - headLength * Math.sin(angle + Math.PI / 6));
+          ctx.closePath();
+          ctx.fillStyle = isPositive ? '#10B981' : '#EF4444';
+          ctx.fill();
+
+          if (Math.abs(growthPercent) > 0.1) {
+            const midX = (x1 + x2) / 2;
+            const midY = (y1 + y2) / 2 - 25;
+            ctx.font = 'bold 16px Lato';
+            ctx.fillStyle = isPositive ? '#10B981' : '#EF4444';
+            ctx.textAlign = 'center';
+            ctx.fillText(`${isPositive ? '+' : ''}${growthPercent.toFixed(1)}%`, midX, midY);
+          }
+
+          ctx.restore();
+        }
+      };
+      Chart.register(finalGrowthArrowPlugin);
     }
-  };
-  Chart.register(finalGrowthArrowPlugin);
+  }
 
-  // Render charts
+  // Loan types data (global)
+  window.loanTypes = [
+    { name: "Emergency", value: 38 },
+    { name: "Education", value: 25 },
+    { name: "Development", value: 20 },
+    { name: "Medicare", value: 12 },
+    { name: "Api Culture", value: 5 }
+  ];
+
+  // Render charts function (unchanged logic, but with safeguards)
   function renderGrowthCharts() {
     if (window.growthChartsRendered) return;
     window.growthChartsRendered = true;
 
+    // Destroy existing charts to avoid overlaps
     document.querySelectorAll('#final-charts-section canvas').forEach(canvas => {
       if (Chart.getChart(canvas)) Chart.getChart(canvas).destroy();
     });
 
-    if (!window.saccoData) return;
+    if (!window.saccoData) {
+      console.warn('saccoData not loaded yet—retrying in 500ms');
+      setTimeout(renderGrowthCharts, 500);
+      return;
+    }
 
     const { jan, today } = window.saccoData;
     const colors = {
@@ -550,6 +544,7 @@
     const growth = (j, t) => j === 0 ? (t === 0 ? 0 : 100) : ((t - j) / Math.abs(j)) * 100;
     const updateIndicator = (id, g) => {
       const el = document.getElementById(id);
+      if (!el) return;
       const arrow = g > 0 ? 'up' : g < 0 ? 'down' : 'right';
       const cls = g > 0 ? 'positive' : g < 0 ? 'negative' : '';
       el.innerHTML = `<i class="fas fa-arrow-${arrow}"></i> ${Math.abs(g).toFixed(1)}%`;
@@ -557,6 +552,7 @@
     };
 
     const createChart = (id, j, t, color, gid, isPercent = false, isMoney = false) => {
+      if (!document.getElementById(id)) return;
       const g = growth(j, t);
       updateIndicator(gid, g);
 
@@ -576,12 +572,16 @@
           maintainAspectRatio: false,
           plugins: {
             legend: { display: false },
-            tooltip: { callbacks: { label: ctx => {
-              const val = ctx.raw;
-              if (isPercent) return val.toFixed(2) + '%';
-              if (isMoney) return 'KES ' + val.toLocaleString();
-              return val.toLocaleString();
-            }}},
+            tooltip: { 
+              callbacks: { 
+                label: ctx => {
+                  const val = ctx.raw;
+                  if (isPercent) return val.toFixed(2) + '%';
+                  if (isMoney) return 'KES ' + val.toLocaleString();
+                  return val.toLocaleString();
+                }
+              }
+            },
             datalabels: {
               anchor: 'end', align: 'end', offset: 10,
               color: '#1a1a1a', font: { weight: '900', size: 14 },
@@ -593,17 +593,19 @@
             x: { grid: { display: false }, ticks: { color: '#1a1a1a', font: { weight: 'bold', size: 13 } } },
             y: { display: false, beginAtZero: true, grace: '20%' }
           },
-          layout: { padding: { top: 70, left: 10, right: 10, bottom: 10 } }
-        },
-        plugins: [ChartDataLabels]
+          layout: { padding: { top: 70, left: 10, right: 10, bottom: 10 } },
+          plugins: [finalGrowthArrowPlugin]  // Use the registered plugin
+        }
       });
     };
 
+    // Calculate derived metrics
     const janROA = parseFloat(jan.roa) || 0;
     const todayROA = parseFloat(today.roa) || 0;
     const janLiquidity = jan.contributions > 0 ? (jan.bankBalance / jan.contributions) * 100 : 0;
     const todayLiquidity = today.contributions > 0 ? (today.bankBalance / today.contributions) * 100 : 0;
 
+    // Create bar charts
     createChart('chartMembers', jan.members, today.members, colors.members, 'growthMembers');
     createChart('chartLoans', jan.loans, today.loans, colors.loans, 'growthLoans', false, true);
     createChart('chartContributions', jan.contributions, today.contributions, colors.contributions, 'growthContributions', false, true);
@@ -611,46 +613,73 @@
     createChart('chartROA', janROA, todayROA, colors.roa, 'growthROA', true);
     createChart('chartLiquidity', janLiquidity, todayLiquidity, colors.liquidity, 'growthLiquidity', true);
 
-    // Pie chart
+    // Pie chart for loan types
     if (window.loanTypes) {
       const total = window.loanTypes.reduce((s, l) => s + l.value, 0);
-      if (total > 0) {
+      if (total > 0 && document.getElementById('chartLoanTypes')) {
         const labels = window.loanTypes.map(l => l.name);
         const data = window.loanTypes.map(l => (l.value / total) * 100);
         new Chart(document.getElementById('chartLoanTypes').getContext('2d'), {
           type: 'pie',
-          data: { labels, datasets: [{ data, backgroundColor: ['#FF6384','#36A2EB','#FFCE56','#4BC0C0','#9966FF'], borderWidth: 3, borderColor: '#fff' }] },
+          data: { 
+            labels, 
+            datasets: [{ 
+              data, 
+              backgroundColor: ['#FF6384','#36A2EB','#FFCE56','#4BC0C0','#9966FF'], 
+              borderWidth: 3, 
+              borderColor: '#fff' 
+            }] 
+          },
           options: {
-            responsive: true, maintainAspectRatio: false,
+            responsive: true, 
+            maintainAspectRatio: false,
             plugins: {
               legend: { position: 'bottom', labels: { font: { size: 12, weight: 'bold' } } },
-              datalabels: { formatter: v => v > 5 ? v.toFixed(1)+'%' : '', color: '#fff', font: { weight: 'bold', size: 13 } }
+              datalabels: { 
+                formatter: v => v > 5 ? v.toFixed(1)+'%' : '', 
+                color: '#fff', 
+                font: { weight: 'bold', size: 13 } 
+              }
             }
           },
           plugins: [ChartDataLabels]
         });
       }
     }
+
+    console.log('✅ Growth charts rendered successfully');
   }
 
-  // Initialize
+  // Initialize everything on DOM ready
   document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('autoYearNow').textContent = new Date().getFullYear();
+    registerPlugins();  // Ensure plugins are ready
 
     const init = () => {
+      // Restore saccoData if from localStorage (as per your carousel.js)
+      if (!window.saccoData && localStorage.getItem('saccoData')) {
+        try {
+          window.saccoData = JSON.parse(localStorage.getItem('saccoData'));
+          console.log('saccoData restored for legacy charts:', window.saccoData);
+        } catch (e) {
+          console.warn('Failed to restore saccoData:', e);
+        }
+      }
+
       if (window.saccoData) {
         renderGrowthCharts();
         if (typeof window.refreshProjections === 'function') window.refreshProjections();
       } else {
-        setTimeout(init, 500);
+        setTimeout(init, 500);  // Retry if data not ready
       }
     };
-    window.addEventListener('saccoDataUpdated', init);
-    init();
 
+    // Listen for data updates (e.g., from external scripts)
+    window.addEventListener('saccoDataUpdated', init);
     if (typeof initMemberCarousel === 'function') initMemberCarousel();
+    init();
   });
 </script>
+
 <script src="./scripts/main.js"></script>
 <script src="./scripts/calculator.js"></script>
 <script src="./scripts/dividendscalculator.js"></script>
@@ -659,8 +688,22 @@
 
 <!-- SCHEMA & YEAR UPDATE -->
 <script type="application/ld+json">
-{ "@context": "https://schema.org", "@type": "FinancialService", "name": "SOYOSOYO SACCO", "url": "https://soyosoyosacco.com", "logo": "https://soyosoyosacco.com/assets/141dd3faa98da9737b591161deac509a.jpg", "description": "Affordable 1% monthly loans and high dividends in Coastal Kenya.", "address": { "@type": "PostalAddress", "addressLocality": "Kilifi", "addressRegion": "Coast", "addressCountry": "KE" }, "email": "info@soyosoyosacco.com", "areaServed": ["Kilifi", "Mombasa", "Kwale"] }
+{
+  "@context": "https://schema.org",
+  "@type": "FinancialService",
+  "name": "SOYOSOYO SACCO",
+  "url": "https://soyosoyosacco.com",
+  "logo": "https://soyosoyosacco.com/assets/141dd3faa98da9737b591161deac509a.jpg",
+  "description": "Affordable 1% monthly loans and high dividends in Coastal Kenya.",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Kilifi",
+    "addressRegion": "Coast",
+    "addressCountry": "KE"
+  },
+  "email": "info@soyosoyosacco.com",
+  "areaServed": ["Kilifi", "Mombasa", "Kwale"]
+}
 </script>
-
 </body>
 </html>
