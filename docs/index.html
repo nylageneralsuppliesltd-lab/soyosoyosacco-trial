@@ -593,9 +593,9 @@
             x: { grid: { display: false }, ticks: { color: '#1a1a1a', font: { weight: 'bold', size: 13 } } },
             y: { display: false, beginAtZero: true, grace: '20%' }
           },
-          layout: { padding: { top: 70, left: 10, right: 10, bottom: 10 } },
-          plugins: [finalGrowthArrowPlugin]  // Use the registered plugin
-        }
+          layout: { padding: { top: 70, left: 10, right: 10, bottom: 10 } }
+        },
+        plugins: [ChartDataLabels]
       });
     };
 
@@ -679,7 +679,6 @@
     init();
   });
 </script>
-
 <script src="./scripts/main.js"></script>
 <script src="./scripts/calculator.js"></script>
 <script src="./scripts/dividendscalculator.js"></script>
@@ -705,5 +704,6 @@
   "areaServed": ["Kilifi", "Mombasa", "Kwale"]
 }
 </script>
+
 </body>
 </html>
