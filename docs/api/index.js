@@ -15,38 +15,47 @@ if (!fs.existsSync(DB_FILE)) {
   fs.writeFileSync(DB_FILE, '[]', 'utf8');
 }
 
-// GET: Load full history
-app.get('/api/history', (req, res) => {
+// Helper: load history
+function loadHistory() {
   try {
-    const data = JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
-    res.json(data);
+    return JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
   } catch (err) {
     console.error('Read error:', err);
-    res.json([]);
+    return [];
   }
+}
+
+// GET: Load full history
+app.get('/api/history', (req, res) => {
+  res.json(loadHistory());
 });
 
 // POST: Save current month
 app.post('/api/history/save', (req, res) => {
   try {
-    let history = [];
-    if (fs.existsSync(DB_FILE)) {
-      history = JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
-    }
+    let history = loadHistory();
 
     const {
-      members=0,
-      contributions=0,
-      loansDisbursed=0,
-      loansBalance=0,
-      total_bank_balance=0,
-      profit=0,
-      roa=0,
-      extraFields='{}'
+      members = 0,
+      contributions = 0,
+      loansDisbursed = 0,
+      loansBalance = 0,
+      total_bank_balance = 0,
+      profit = 0,
+      roa = 0,
+      extraFields = '{}'
     } = req.body;
 
+    const currentMonth = new Date().toISOString().slice(0, 7);
+
+    // Merge with previous same-month entry if exists
+    const prevEntry = history.find(h => h.period === currentMonth);
+    const mergedExtraFields = prevEntry
+      ? { ...JSON.parse(prevEntry.extraFields || '{}'), ...JSON.parse(extraFields || '{}') }
+      : JSON.parse(extraFields || '{}');
+
     const newEntry = {
-      period: new Date().toISOString().slice(0,7),
+      period: currentMonth,
       dateSaved: new Date().toISOString(),
       members: Number(members),
       contributions: Number(contributions),
@@ -55,15 +64,15 @@ app.post('/api/history/save', (req, res) => {
       totalBankBalance: Number(total_bank_balance),
       profit: Number(profit),
       roa: Number(roa),
-      extraFields: typeof extraFields === 'string' ? extraFields : JSON.stringify(extraFields)
+      extraFields: JSON.stringify(mergedExtraFields)
     };
 
     // Remove old entry for same month
-    history = history.filter(h => h.period !== newEntry.period);
+    history = history.filter(h => h.period !== currentMonth);
     history.push(newEntry);
 
     fs.writeFileSync(DB_FILE, JSON.stringify(history, null, 2));
-    console.log('Saved:', newEntry.period);
+    console.log('Saved:', currentMonth);
 
     res.json({ success: true, data: newEntry });
   } catch (err) {
