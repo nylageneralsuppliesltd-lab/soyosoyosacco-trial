@@ -265,4 +265,12 @@ document.addEventListener('DOMContentLoaded', () => {
   window.updateCarouselData = () => {
     console.log('Carousel data refreshed');
   };
+  // === BACKWARD COMPATIBILITY FOR index.html CHARTS ===
+if (window.SOYOSOYO) {
+  window.saccoData = {
+    jan: window.SOYOSOYO.baseline,
+    today: window.SOYOSOYO.current
+  };
+  console.log('saccoData restored for legacy charts:', window.saccoData);
+}
 });
