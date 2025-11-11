@@ -1,5 +1,4 @@
-// docs/api/index.js - Soyosoyo SACCO API with PostgreSQL + JSON fallback
-require('dotenv').config(); // load .env
+require('dotenv').config(); // Load .env
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
@@ -18,12 +17,12 @@ for (const file of [DB_FILE, PENDING_FILE]) {
   if (!fs.existsSync(file)) fs.writeFileSync(file, "[]", "utf8");
 }
 
-// PostgreSQL connection from .env
+// PostgreSQL connection using environment variable
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL
 });
 
-// Helpers
+// Helper functions
 function loadJSON(file) {
   try { return JSON.parse(fs.readFileSync(file, "utf8")); } 
   catch (err) { console.error(`Error reading ${file}:`, err); return []; }
@@ -33,17 +32,6 @@ function saveJSON(file, data) {
   try { fs.writeFileSync(file, JSON.stringify(data, null, 2)); return true; } 
   catch (err) { console.error(`Error writing ${file}:`, err); return false; }
 }
-
-// GET: Fetch all history
-app.get("/api/history", async (req, res) => {
-  try {
-    const { rows } = await pool.query("SELECT * FROM sacco_history ORDER BY period DESC");
-    res.json(rows);
-  } catch (err) {
-    console.warn("DB unavailable, using local JSON fallback:", err.message);
-    res.json(loadJSON(DB_FILE));
-  }
-});
 
 // Save to PostgreSQL
 async function saveToDB(entry) {
@@ -79,10 +67,20 @@ async function saveToDB(entry) {
 
 // POST: Save current month
 app.post("/api/history/save", async (req, res) => {
+  // Map frontend camelCase to DB snake_case
   const {
-    members=0, contributions=0, loans_disbursed=0, loans_balance=0, total_bank_balance=0,
-    coop_bank=0, chama_soft=0, cytonn=0, total_assets=0, profit=0, roa=0,
-    extra_fields="{}"
+    members=0,
+    contributions=0,
+    loansDisbursed=0,
+    loansBalance=0,
+    totalBankBalance=0,
+    coopBank=0,
+    chamaSoft=0,
+    cytonn=0,
+    totalAssets=0,
+    profit=0,
+    roa=0,
+    extraFields={}
   } = req.body;
 
   const currentPeriod = new Date().toISOString().slice(0,7) + "-01"; // store as YYYY-MM-01
@@ -93,16 +91,16 @@ app.post("/api/history/save", async (req, res) => {
     date_saved,
     members: Number(members),
     contributions: Number(contributions),
-    loans_disbursed: Number(loans_disbursed),
-    loans_balance: Number(loans_balance),
-    total_bank_balance: Number(total_bank_balance),
-    coop_bank: Number(coop_bank),
-    chama_soft: Number(chama_soft),
+    loans_disbursed: Number(loansDisbursed),
+    loans_balance: Number(loansBalance),
+    total_bank_balance: Number(totalBankBalance),
+    coop_bank: Number(coopBank),
+    chama_soft: Number(chamaSoft),
     cytonn: Number(cytonn),
-    total_assets: Number(total_assets),
+    total_assets: Number(totalAssets),
     profit: Number(profit),
     roa: Number(roa),
-    extra_fields: typeof extra_fields === "string" ? extra_fields : JSON.stringify(extra_fields)
+    extra_fields: JSON.stringify(extraFields)
   };
 
   try {
@@ -113,25 +111,32 @@ app.post("/api/history/save", async (req, res) => {
     history.push(newEntry);
     saveJSON(DB_FILE, history);
 
-    // Clear pending
     saveJSON(PENDING_FILE, []);
 
-    console.log("✅ Saved successfully to DB:", currentPeriod);
     res.json({ success: true, data: newEntry });
   } catch(err) {
     console.warn("⚠️ DB save failed, storing to pending.json:", err.message);
 
-    // Save to pending
     const pending = loadJSON(PENDING_FILE);
     pending.push(newEntry);
     saveJSON(PENDING_FILE, pending);
 
-    // Save locally
     const history = loadJSON(DB_FILE).filter(h => h.period!==currentPeriod);
     history.push(newEntry);
     saveJSON(DB_FILE, history);
 
     res.json({ success:false, message:"DB unavailable, saved temporarily", data:newEntry });
+  }
+});
+
+// GET: Fetch all history
+app.get("/api/history", async (req, res) => {
+  try {
+    const { rows } = await pool.query("SELECT * FROM sacco_history ORDER BY period DESC");
+    res.json(rows);
+  } catch (err) {
+    console.warn("DB unavailable, using local JSON fallback:", err.message);
+    res.json(loadJSON(DB_FILE));
   }
 });
 
