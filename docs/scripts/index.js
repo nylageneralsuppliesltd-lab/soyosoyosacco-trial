@@ -27,22 +27,32 @@ function formatDisplayDate(d) {
   return date.toLocaleString('en-KE',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}).replace(',','');
 }
 
+// --- Helper to get bank breakdown ---
+function getBankValue(breakdown, name) {
+  if (!Array.isArray(breakdown)) return 0;
+  const item = breakdown.find(b => b.name?.toLowerCase().includes(name.toLowerCase()));
+  return item ? Number(item.value || 0) : 0;
+}
+
 // --- Compute hash for change detection ---
 function computeDataHash(today) {
   if (!today) return '';
+  const bb = today.extraFields?.bankBreakdown || [];
+  const loansDisbursed = (today.loanTypes || []).reduce((sum,l)=>sum+Number(l.value||0),0);
+  const totalAssets = Number(today.loansBalance || 0) + Number(today.totalBankBalance || 0);
   return JSON.stringify({
-    members: today.members,
-    contributions: today.contributions,
-    loansDisbursed: today.loansDisbursed,
-    loansBalance: today.loansBalance,
-    totalBankBalance: today.totalBankBalance,
-    coopBank: today.coopBank,
-    chamaSoft: today.chamaSoft,
-    cytonn: today.cytonn,
-    totalAssets: today.totalAssets,
-    profit: today.profit,
-    roa: today.roa,
-    extraFields: today.extraFields
+    members: Number(today.members || 0),
+    contributions: Number(today.contributions || 0),
+    loans_disbursed: loansDisbursed,
+    loans_balance: Number(today.loansBalance || 0),
+    total_bank_balance: Number(today.totalBankBalance || 0),
+    coop_bank: getBankValue(bb,'Co-operative'),
+    chama_soft: getBankValue(bb,'Chamasoft'),
+    cytonn: getBankValue(bb,'Cytonn'),
+    total_assets: totalAssets,
+    profit: Number(today.profit || 0),
+    roa: parseFloat(today.roa) || 0,
+    extra_fields: today.extraFields || {}
   });
 }
 
@@ -60,20 +70,23 @@ function loadPersistedData() {
 
 // --- Update memory ---
 function updateCurrentMonthInHistory(today, saveType='auto') {
-  const currentPeriod = new Date().toISOString().slice(0,7) + "-01"; // YYYY-MM-01
+  const currentPeriod = new Date().toISOString().slice(0,7) + "-01";
+  const bb = today.extraFields?.bankBreakdown || [];
+  const loansDisbursed = (today.loanTypes || []).reduce((sum,l)=>sum+Number(l.value||0),0);
+  const totalAssets = Number(today.loansBalance || 0) + Number(today.totalBankBalance || 0);
   window.saccoHistory[currentPeriod] = {
     period: currentPeriod,
     members: Number(today.members || 0),
     contributions: Number(today.contributions || 0),
-    loans_disbursed: Number(today.loansDisbursed || today.loans || 0),
+    loans_disbursed: loansDisbursed,
     loans_balance: Number(today.loansBalance || 0),
-    total_bank_balance: Number(today.totalBankBalance || today.bankBalance || 0),
-    coop_bank: Number(today.coopBank || 0),
-    chama_soft: Number(today.chamaSoft || 0),
-    cytonn: Number(today.cytonn || 0),
-    total_assets: Number(today.totalAssets || 0),
+    total_bank_balance: Number(today.totalBankBalance || 0),
+    coop_bank: getBankValue(bb,'Co-operative'),
+    chama_soft: getBankValue(bb,'Chamasoft'),
+    cytonn: getBankValue(bb,'Cytonn'),
+    total_assets: totalAssets,
     profit: Number(today.profit || 0),
-    roa: Number(today.roa || 0),
+    roa: parseFloat(today.roa) || 0,
     extra_fields: today.extraFields || {},
     date_saved: new Date().toISOString(),
     saveType
@@ -139,6 +152,7 @@ async function loadLiveHistory() {
     const data = await res.json();
     window.saccoHistory = {};
     data.forEach(r => {
+      const extraFields = r.extra_fields ? JSON.parse(r.extra_fields) : {};
       window.saccoHistory[r.period] = {
         period: r.period,
         members: Number(r.members || 0),
@@ -152,7 +166,7 @@ async function loadLiveHistory() {
         total_assets: Number(r.total_assets || 0),
         profit: Number(r.profit || 0),
         roa: Number(r.roa || 0),
-        extra_fields: r.extra_fields ? JSON.parse(r.extra_fields) : {},
+        extra_fields,
         date_saved: r.date_saved,
         saveType:'manual'
       };
@@ -197,18 +211,22 @@ async function attemptSave(payload, saveType='auto') {
 async function saveCurrentMonth(auto=false) {
   if (!window.saccoData?.today) { if(!auto) alert('Data not ready'); return; }
   const t = window.saccoData.today;
+  const bb = t.extraFields?.bankBreakdown || [];
+  const loansDisbursed = (t.loanTypes || []).reduce((sum,l)=>sum+Number(l.value||0),0);
+  const totalAssets = Number(t.loansBalance || 0) + Number(t.totalBankBalance || 0);
   const payload = {
-    members:t.members, contributions:t.contributions,
-    loans_disbursed:t.loansDisbursed || t.loans || 0,
-    loans_balance:t.loansBalance || 0,
-    total_bank_balance:t.totalBankBalance || t.bankBalance || 0,
-    coop_bank:t.coopBank || 0,
-    chama_soft:t.chamaSoft || 0,
-    cytonn:t.cytonn || 0,
-    total_assets:t.totalAssets || 0,
-    profit:t.profit,
-    roa:parseFloat(t.roa) || 0,
-    extra_fields: JSON.stringify(t.extraFields || {})
+    members: Number(t.members || 0),
+    contributions: Number(t.contributions || 0),
+    loans_disbursed: loansDisbursed,
+    loans_balance: Number(t.loansBalanceToday || t.loansBalance || 0),
+    total_bank_balance: Number(t.totalBankBalance || 0),
+    coop_bank: getBankValue(bb,'Co-operative'),
+    chama_soft: getBankValue(bb,'Chamasoft'),
+    cytonn: getBankValue(bb,'Cytonn'),
+    total_assets: totalAssets,
+    profit: Number(t.profit || 0),
+    roa: parseFloat(t.roa) || 0,
+    extra_fields: t.extraFields || {}
   };
   const result = await attemptSave(payload, auto?'auto':'manual');
   if(result.success){
