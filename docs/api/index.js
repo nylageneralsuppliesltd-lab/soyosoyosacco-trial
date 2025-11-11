@@ -16,7 +16,7 @@ for (const file of [DB_FILE, PENDING_FILE]) {
   if (!fs.existsSync(file)) fs.writeFileSync(file, "[]", "utf8");
 }
 
-// Load helpers
+// Helper to read JSON file safely
 function loadJSON(file) {
   try {
     return JSON.parse(fs.readFileSync(file, "utf8"));
@@ -26,6 +26,7 @@ function loadJSON(file) {
   }
 }
 
+// Helper to save JSON file safely
 function saveJSON(file, data) {
   try {
     fs.writeFileSync(file, JSON.stringify(data, null, 2));
@@ -36,12 +37,13 @@ function saveJSON(file, data) {
   }
 }
 
-// GET: All saved history
+// GET: Return all saved history
 app.get("/api/history", (req, res) => {
-  res.json(loadJSON(DB_FILE));
+  const history = loadJSON(DB_FILE);
+  res.json(history);
 });
 
-// POST: Save entry (safe mode)
+// POST: Save current month (manual or auto)
 app.post("/api/history/save", (req, res) => {
   try {
     const {
@@ -74,31 +76,28 @@ app.post("/api/history/save", (req, res) => {
       extraFields: extraFields,
     };
 
-    // Merge any pending entries first
+    // Merge pending entries first
     let mergedHistory = [...history];
     pending.forEach((p) => {
       const existing = mergedHistory.find((h) => h.period === p.period);
-      if (existing) {
-        Object.assign(existing, p);
-      } else {
-        mergedHistory.push(p);
-      }
+      if (existing) Object.assign(existing, p);
+      else mergedHistory.push(p);
     });
 
-    // Replace current month
+    // Replace current month entry
     mergedHistory = mergedHistory.filter((h) => h.period !== currentPeriod);
     mergedHistory.push(newEntry);
 
-    // Try saving
+    // Try saving to main history
     const success = saveJSON(DB_FILE, mergedHistory);
 
     if (success) {
-      // Clear pending if we succeeded
+      // Clear pending.json if main save succeeded
       saveJSON(PENDING_FILE, []);
       console.log("✅ Saved successfully:", currentPeriod);
       res.json({ success: true, data: newEntry });
     } else {
-      // Fallback: store to pending
+      // Fallback: save to pending.json
       pending.push(newEntry);
       saveJSON(PENDING_FILE, pending);
       console.warn("⚠️ Saved temporarily to pending.json:", currentPeriod);
@@ -115,4 +114,6 @@ app.post("/api/history/save", (req, res) => {
 });
 
 const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => console.log(`🚀 Soyosoyo SACCO API running on port ${PORT}`));
+app.listen(PORT, () =>
+  console.log(`🚀 Soyosoyo SACCO API running on port ${PORT}`)
+);
