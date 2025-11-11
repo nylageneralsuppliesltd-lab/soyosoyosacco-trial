@@ -36,21 +36,23 @@
             #fullHistoryTable{overflow-x:hidden}
             #fullHistoryTable table{min-width:auto;font-size:12px;border:0}
             #fullHistoryTable thead{display:none}
-            #fullHistoryTable tbody,#fullHistoryTable tr,#fullHistoryTable td{display:block;width:100%}
-            #fullHistoryTable tr{margin-bottom:12px;border:1px solid #e6f4ea;border-radius:12px;overflow:hidden;background:white;box-shadow:0 2px 8px rgba(0,0,0,0.05);transition:transform .2s}
+            /* Compact mobile cards: 3-4 lines per record */
+            #fullHistoryTable tbody{display:flex;flex-direction:column;gap:8px}
+            #fullHistoryTable tr{display:block;width:100%;margin-bottom:0;border:1px solid #e6f4ea;border-radius:12px;overflow:hidden;background:white;box-shadow:0 2px 8px rgba(0,0,0,0.05);transition:transform .2s;padding:8px}
             #fullHistoryTable tr:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,0.1)}
             #fullHistoryTable tr.current-month{border-color:#fbbf24;box-shadow:inset 0 0 10px rgba(255,193,7,0.3),0 2px 8px rgba(0,0,0,0.05)}
-            #fullHistoryTable td{padding:12px;text-align:left !important;border:none;border-bottom:1px solid #f0f9f0;position:relative;font-size:13px}
-            #fullHistoryTable td:before{content:attr(data-label) ": ";font-weight:bold;color:#004d1a;display:block;font-size:11px;text-transform:uppercase;margin-bottom:4px;letter-spacing:.5px}
-            #fullHistoryTable td:last-child{border-bottom:none}
-            #fullHistoryTable td:nth-of-type(1):before{content:"Period: "}
-            #fullHistoryTable td:nth-of-type(2):before{content:"Members: "}
-            #fullHistoryTable td:nth-of-type(3):before{content:"Contributions: "}
-            #fullHistoryTable td:nth-of-type(4):before{content:"Loans: "}
-            #fullHistoryTable td:nth-of-type(5):before{content:"Bank Balance: "}
-            #fullHistoryTable td:nth-of-type(6):before{content:"ROA: ";color:#10B981}
-            #fullHistoryTable td:nth-of-type(7):before{content:"Saved On: "}
-            #fullHistoryTable .roa::after{content:"%"}
+            /* Period as header */
+            #fullHistoryTable .period-header{padding:8px 12px;background:#f0fdf4;font-weight:700;color:#004d1a;font-size:14px;border-bottom:1px solid #e6f4ea;text-align:center}
+            /* Metrics in 2-column grid */
+            #fullHistoryTable .metrics-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px 12px;font-size:12px}
+            #fullHistoryTable .metric-item{display:flex;justify-content:space-between;align-items:center;padding:2px 0;border-bottom:1px solid #f9f9f9}
+            #fullHistoryTable .metric-label{font-weight:600;color:#666;font-size:10px;text-transform:uppercase;letter-spacing:0.5px}
+            #fullHistoryTable .metric-value{font-weight:500;color:#004d1a}
+            #fullHistoryTable .roa-value{color:#10B981}
+            #fullHistoryTable .saved-on{display:block;width:100%;padding:6px 12px;text-align:center;background:#f8fdfa;color:#666;font-size:11px;border-top:1px solid #e6f4ea;margin-top:4px}
+            /* Hide original td's, use custom structure */
+            #fullHistoryTable td{display:none}
+            #fullHistoryTable td:nth-of-type(1){display:block} /* Only period shows as .period-header via JS */
         }
     </style>
 </head>
@@ -125,6 +127,8 @@
   const API_BASE = 'https://soyosoyo-sacco-api.onrender.com/api';
   window.saccoHistory = {};
   window.saccoData = window.saccoData || {};
+  let retryInterval = null;
+  const RETRY_DELAY = 30000; // 30 seconds
 
   // SUPER-ROBUST DATE PARSER — works with ANY format
   function safeDate(dateInput) {
@@ -208,6 +212,29 @@
     tableHTML += '</tbody></table>';
     container.innerHTML = tableHTML;
 
+    // Mobile compact render
+    if (window.innerWidth <= 768) {
+      const tbody = container.querySelector('tbody');
+      if (tbody) {
+        tbody.innerHTML = history.map(row => {
+          const isCurrent = row.period === currentMonthKey;
+          const periodHtml = `<div class="period-header ${isCurrent ? 'current-month' : ''}">${formatMonth(row.period)}</div>`;
+          const metricsHtml = `
+            <div class="metrics-grid">
+              <div class="metric-item"><span class="metric-label">Members</span><span class="metric-value">${Number(row.members).toLocaleString()}</span></div>
+              <div class="metric-item"><span class="metric-label">Loans</span><span class="metric-value">KSh ${Number(row.loans).toLocaleString()}</span></div>
+              <div class="metric-item"><span class="metric-label">Contributions</span><span class="metric-value">KSh ${Number(row.contributions).toLocaleString()}</span></div>
+              <div class="metric-item"><span class="metric-label">Bank Bal.</span><span class="metric-value">KSh ${Number(row.bankBalance).toLocaleString()}</span></div>
+            </div>
+            <div class="saved-on">
+              <span class="metric-label">ROA:</span> ${Number(row.roa).toFixed(1)}% | Saved: ${formatDisplayDate(row.dateSaved)}
+            </div>
+          `;
+          return `<tr class="${isCurrent ? 'current-month' : ''}">${periodHtml}${metricsHtml}</tr>`;
+        }).join('');
+      }
+    }
+
     const latest = history[0];
     footer.innerHTML = `
       <strong>${history.length}</strong> months saved 
@@ -246,6 +273,21 @@
     }
   }
 
+  async function attemptSave(payload) {
+    try {
+      const res = await fetch(`${API_BASE}/history/save`, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) { const text = await res.text(); throw new Error(text || res.status); }
+      const result = await res.json();
+      return { success: true, data: result.data };
+    } catch (err) {
+      return { success: false, error: err.message };
+    }
+  }
+
   async function saveCurrentMonth() {
     if (!window.saccoData?.today) {
       alert("Carousel data not ready!\n\nPlease go to HOMEPAGE first, wait 10 seconds, then try again.");
@@ -259,19 +301,53 @@
       bank_balance: today.bankBalance || 0,
       roa: parseFloat(today.roa) || 0
     };
-
-    try {
-      const res = await fetch(`${API_BASE}/history/save`, {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify(payload)
-      });
-      if (!res.ok) { const text = await res.text(); throw new Error(text || res.status); }
-      const result = await res.json();
-      alert(`SAVED SUCCESSFULLY!\nMonth: ${formatMonth(result.data.period)}\nSaved at: ${formatDateTime(result.data.dateSaved)}`);
+    const saveAttempt = await attemptSave(payload);
+    if (saveAttempt.success) {
+      clearRetryInterval();
+      localStorage.removeItem('pendingSave');
+      alert(`SAVED SUCCESSFULLY!\nMonth: ${formatMonth(saveAttempt.data.period)}\nSaved at: ${formatDateTime(saveAttempt.data.dateSaved)}`);
       loadLiveHistory();
-    } catch (err) {
-      alert(`Save failed – server sleeping.\nOpen HOMEPAGE → wait 30 sec → try again.\nError: ${err.message}`);
+    } else {
+      // Queue locally and start retry
+      localStorage.setItem('pendingSave', JSON.stringify({ ...payload, queuedAt: new Date().toISOString() }));
+      startRetry(payload);
+      alert(`Save queued – server sleeping. Retrying automatically every 30s...\nError: ${saveAttempt.error}`);
+    }
+  }
+
+  function startRetry(payload) {
+    if (retryInterval) clearRetryInterval();
+    let retryCount = 0;
+    const maxRetries = 10; // Safety limit
+    retryInterval = setInterval(async () => {
+      retryCount++;
+      const saveAttempt = await attemptSave(payload);
+      if (saveAttempt.success) {
+        clearRetryInterval();
+        localStorage.removeItem('pendingSave');
+        alert(`SAVED SUCCESSFULLY after ${retryCount} retries!\nMonth: ${formatMonth(saveAttempt.data.period)}\nSaved at: ${formatDateTime(saveAttempt.data.dateSaved)}`);
+        loadLiveHistory();
+      } else if (retryCount >= maxRetries) {
+        clearRetryInterval();
+        alert(`Max retries reached. Data queued locally. Reload page later to retry.`);
+      }
+    }, RETRY_DELAY);
+  }
+
+  function clearRetryInterval() {
+    if (retryInterval) {
+      clearInterval(retryInterval);
+      retryInterval = null;
+    }
+  }
+
+  // Check for pending on load
+  function checkPendingSave() {
+    const pending = localStorage.getItem('pendingSave');
+    if (pending) {
+      const payload = JSON.parse(pending);
+      alert('Pending save detected – retrying now...');
+      startRetry(payload);
     }
   }
 
@@ -331,6 +407,7 @@ https://soyosoyo-sacco-api.onrender.com`;
 
   document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('currentYear').textContent = new Date().getFullYear();
+    checkPendingSave();
     loadLiveHistory();
 
     let lastMembers = 0;
