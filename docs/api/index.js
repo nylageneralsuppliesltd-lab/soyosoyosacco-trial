@@ -15,7 +15,7 @@ if (!fs.existsSync(DB_FILE)) {
   fs.writeFileSync(DB_FILE, '[]', 'utf8');
 }
 
-// Helper: load history
+// Load full history
 function loadHistory() {
   try {
     return JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
@@ -25,7 +25,7 @@ function loadHistory() {
   }
 }
 
-// GET: Load full history
+// GET: Fetch full history
 app.get('/api/history', (req, res) => {
   res.json(loadHistory());
 });
@@ -48,7 +48,7 @@ app.post('/api/history/save', (req, res) => {
 
     const currentMonth = new Date().toISOString().slice(0, 7);
 
-    // Merge with previous same-month entry if exists
+    // Merge extraFields if previous entry exists
     const prevEntry = history.find(h => h.period === currentMonth);
     const mergedExtraFields = prevEntry
       ? { ...JSON.parse(prevEntry.extraFields || '{}'), ...JSON.parse(extraFields || '{}') }
@@ -67,7 +67,7 @@ app.post('/api/history/save', (req, res) => {
       extraFields: JSON.stringify(mergedExtraFields)
     };
 
-    // Remove old entry for same month
+    // Replace same-month record
     history = history.filter(h => h.period !== currentMonth);
     history.push(newEntry);
 
