@@ -442,7 +442,7 @@
         console.log('ChartDataLabels registered – charts should now render with labels and arrows');
       }
       
-      // Custom arrow plugin for growth indicators
+      // Custom arrow plugin for growth indicators (color based on direction, even for negatives)
       const finalGrowthArrowPlugin = {
         id: 'finalGrowthArrow',
         afterDraw: function(chart) {
@@ -456,7 +456,7 @@
           if (janVal === undefined || todayVal === undefined) return;
 
           const growthPercent = janVal === 0 ? (todayVal === 0 ? 0 : 100) : ((todayVal - janVal) / Math.abs(janVal)) * 100;
-          const isPositive = growthPercent >= 0;
+          const isPositive = growthPercent >= 0;  // Always positive for recovery, but color green if improving
 
           const xScale = chart.scales.x;
           const yScale = chart.scales.y;
@@ -471,7 +471,7 @@
 
           const ctx = chart.ctx;
           ctx.save();
-          ctx.strokeStyle = isPositive ? '#10B981' : '#EF4444';
+          ctx.strokeStyle = (todayVal > janVal) ? '#10B981' : '#EF4444';  // Green if improving (even from negative)
           ctx.lineWidth = 5;
           ctx.lineCap = 'round';
 
@@ -487,16 +487,16 @@
           ctx.lineTo(x2 - headLength * Math.cos(angle - Math.PI / 6), y2 - headLength * Math.sin(angle - Math.PI / 6));
           ctx.lineTo(x2 - headLength * Math.cos(angle + Math.PI / 6), y2 - headLength * Math.sin(angle + Math.PI / 6));
           ctx.closePath();
-          ctx.fillStyle = isPositive ? '#10B981' : '#EF4444';
+          ctx.fillStyle = (todayVal > janVal) ? '#10B981' : '#EF4444';
           ctx.fill();
 
           if (Math.abs(growthPercent) > 0.1) {
             const midX = (x1 + x2) / 2;
             const midY = (y1 + y2) / 2 - 25;
             ctx.font = 'bold 16px Lato';
-            ctx.fillStyle = isPositive ? '#10B981' : '#EF4444';
+            ctx.fillStyle = (todayVal > janVal) ? '#10B981' : '#EF4444';
             ctx.textAlign = 'center';
-            ctx.fillText(`${isPositive ? '+' : ''}${growthPercent.toFixed(1)}%`, midX, midY);
+            ctx.fillText(`${growthPercent >= 0 ? '+' : ''}${growthPercent.toFixed(1)}%`, midX, midY);
           }
 
           ctx.restore();
@@ -506,7 +506,7 @@
     }
   }
 
-  // Loan types data (global) - already mathematical (sums to 100%)
+  // Loan types data (global)
   window.loanTypes = [
     { name: "Emergency", value: 38 },
     { name: "Education", value: 25 },
@@ -515,24 +515,36 @@
     { name: "Api Culture", value: 5 }
   ];
 
-  // Fallback saccoData if not loaded (realistic for Jan–Nov 2025 growth; includes profit/contributions for new metric)
+  // Fallback saccoData (updated with negative Jan profit example)
   function ensureSaccoData() {
     if (!window.saccoData) {
       window.saccoData = {
-        jan: { members: 1000, loans: 5000000, contributions: 2000000, profit: 500000, roa: '5.2', bankBalance: 1000000 },
-        today: { members: 1200, loans: 6000000, contributions: 2500000, profit: 600000, roa: '6.1', bankBalance: 1200000 }
+        jan: { members: 1000, loans: 5000000, contributions: 2000000, profit: -500000, bankBalance: 1000000 },  // Negative profit
+        today: { members: 1200, loans: 6000000, contributions: 2500000, profit: 600000, bankBalance: 1200000 }
       };
-      console.log('✅ Fallback saccoData loaded for charts (Jan–Nov 2025 simulation)');
+      console.log('✅ Fallback saccoData loaded (with negative Jan profit for testing)');
     }
     return window.saccoData;
   }
 
-  // Render charts function with math logging & formula tooltips
+  // Enhanced growth calc with negative handling
+  function calculateGrowth(janVal, todayVal, metric) {
+    if (janVal === 0) return todayVal === 0 ? 0 : 100;
+    const rawChange = ((todayVal - janVal) / Math.abs(janVal)) * 100;
+    const isImproving = todayVal > janVal;
+    const label = janVal < 0 && todayVal >= 0 ? `Recovery: +${rawChange.toFixed(1)}%` : 
+                  (janVal < 0 ? `${rawChange >= 0 ? '+' : ''}${rawChange.toFixed(1)}% (from loss)` : 
+                   `${rawChange >= 0 ? '+' : ''}${rawChange.toFixed(1)}%`);
+    console.log(`${metric} Handling: Jan=${janVal < 0 ? '-' : ''}${Math.abs(janVal).toLocaleString()} → Today=${todayVal.toLocaleString()} → ${label} [Raw: ${rawChange.toFixed(1)}%]`);
+
+    return { percent: rawChange, label, isImproving };
+  }
+
+  // Render charts function
   function renderGrowthCharts() {
     if (window.growthChartsRendered) return;
     window.growthChartsRendered = true;
 
-    // Destroy existing charts
     document.querySelectorAll('#final-charts-section canvas').forEach(canvas => {
       if (Chart.getChart(canvas)) Chart.getChart(canvas).destroy();
     });
@@ -544,42 +556,29 @@
       loans: { jan: '#F59E0B', today: '#FBBF24' },
       contributions: { jan: '#10B981', today: '#34D399' },
       profit: { jan: '#EF4444', today: '#F87171' },
-      profitOverContributions: { jan: '#0EA5E9', today: '#7DD3FC' },  // New color for Profit/Contributions %
+      roa: { jan: '#0EA5E9', today: '#7DD3FC' },  // For Profit/Contributions % (as ROA proxy)
       liquidity: { jan: '#6366F1', today: '#A5B4FC' }
     };
 
-    const growth = (j, t, metric) => {
-      const g = j === 0 ? (t === 0 ? 0 : 100) : ((t - j) / Math.abs(j)) * 100;
-      console.log(`${metric}: Jan=${j.toLocaleString()} → Today=${t.toLocaleString()} → Growth = ${(t - j) / Math.abs(j) * 100 || 0}% = ${g.toFixed(1)}%`);
-      return g;
-    };
-
-    const updateIndicator = (id, g) => {
+    const updateIndicator = (id, growthObj) => {
       const el = document.getElementById(id);
       if (!el) return;
-      const arrow = g > 0 ? 'up' : g < 0 ? 'down' : 'right';
-      const cls = g > 0 ? 'positive' : g < 0 ? 'negative' : '';
-      el.innerHTML = `<i class="fas fa-arrow-${arrow}"></i> ${Math.abs(g).toFixed(1)}%`;
+      const arrow = growthObj.isImproving ? 'up' : 'down';
+      const cls = growthObj.isImproving ? 'positive' : 'negative';
+      el.innerHTML = `<i class="fas fa-arrow-${arrow}"></i> ${growthObj.label}`;
       el.className = `growth-indicator ${cls}`;
     };
 
     const createChart = (id, j, t, color, gid, isPercent = false, isMoney = false, metric = '', formula = '') => {
       if (!document.getElementById(id)) return;
-      const g = growth(j, t, metric);
-      updateIndicator(gid, g);
-
-      const tooltipFormula = formula ? `${formula} = ${g.toFixed(1)}%` : '';
+      const growthObj = calculateGrowth(j, t, metric);
+      updateIndicator(gid, growthObj);
 
       new Chart(document.getElementById(id).getContext('2d'), {
         type: 'bar',
         data: {
           labels: ['Jan 2025', 'Nov 2025'],
-          datasets: [{
-            data: [j, t],
-            backgroundColor: [color.jan, color.today],
-            borderRadius: 12,
-            maxBarThickness: 100
-          }]
+          datasets: [{ data: [j, t], backgroundColor: [color.jan, color.today], borderRadius: 12, maxBarThickness: 100 }]
         },
         options: {
           responsive: true,
@@ -590,23 +589,25 @@
               callbacks: { 
                 label: ctx => {
                   const val = ctx.raw;
-                  let label = isPercent ? val.toFixed(2) + '%' : (isMoney ? 'KES ' + val.toLocaleString() : val.toLocaleString());
-                  if (ctx.dataIndex === 1 && tooltipFormula) label += `\n${tooltipFormula}`;
+                  let label = isPercent ? `${val < 0 ? '-' : ''}${Math.abs(val).toFixed(2)}%` : (isMoney ? (val < 0 ? '-KES ' : 'KES ') + Math.abs(val).toLocaleString() : val.toLocaleString());
+                  if (ctx.dataIndex === 1) label += `\n${growthObj.label}\nFormula: ${formula}`;
                   return label;
-                },
-                title: ctx => ctx[0].label + (tooltipFormula ? `\nFormula: ${formula}` : '')
+                }
               }
             },
             datalabels: {
               anchor: 'end', align: 'end', offset: 10,
               color: '#1a1a1a', font: { weight: '900', size: 14 },
-              formatter: v => isPercent ? v.toFixed(2)+'%' : (isMoney ? 'KES '+v.toLocaleString() : v.toLocaleString()),
-              backgroundColor: 'rgba(255,255,255,0.95)', borderRadius: 8, padding: 8
+              formatter: v => {
+                const display = isPercent ? `${v < 0 ? '-' : ''}${Math.abs(v).toFixed(2)}%` : (isMoney ? (v < 0 ? '-KES ' : 'KES ') + Math.abs(v).toLocaleString() : v.toLocaleString());
+                return display;
+              },
+              backgroundColor: 'rgba(255,255,255,0.95)', borderRadius: 8, padding: 8, color: v => v < 0 ? '#EF4444' : '#10B981'  // Red for negative
             }
           },
           scales: {
             x: { grid: { display: false }, ticks: { color: '#1a1a1a', font: { weight: 'bold', size: 13 } } },
-            y: { display: false, beginAtZero: true, grace: '20%' }
+            y: { display: false, beginAtZero: false, grace: '20%' }  // Allow negatives
           },
           layout: { padding: { top: 70, left: 10, right: 10, bottom: 10 } }
         },
@@ -614,63 +615,37 @@
       });
     };
 
-    // Calculate & log standard metrics (ROA kept as-is, but now with Profit/Contributions as new metric)
-    const janROA = parseFloat(jan.roa) || 0;
-    const todayROA = parseFloat(today.roa) || 0;
-    console.log(`ROA: Jan=${janROA}% → Today=${todayROA}% → Growth = ((6.1 - 5.2) / 5.2) × 100% = ${growth(janROA, todayROA, 'ROA').toFixed(1)}%`);
-
-    // New: Profit / Contributions % (data available for Jan & Today)
-    const janProfitOverContributions = jan.contributions > 0 ? (jan.profit / jan.contributions) * 100 : 0;
-    const todayProfitOverContributions = today.contributions > 0 ? (today.profit / today.contributions) * 100 : 0;
-    console.log(`Profit/Contributions % ((Profit / Contributions) × 100%): Jan=${janProfitOverContributions.toFixed(2)}% → Today=${todayProfitOverContributions.toFixed(2)}% → Growth = ${growth(janProfitOverContributions, todayProfitOverContributions, 'Profit/Contributions').toFixed(1)}%`);
+    // Compute Profit/Contributions % (ROA proxy)
+    const janROA = jan.contributions > 0 ? (jan.profit / jan.contributions) * 100 : 0;
+    const todayROA = today.contributions > 0 ? (today.profit / today.contributions) * 100 : 0;
+    const roaGrowth = calculateGrowth(janROA, todayROA, 'ROA (Profit/Contributions %)');
 
     const janLiquidity = jan.contributions > 0 ? (jan.bankBalance / jan.contributions) * 100 : 0;
     const todayLiquidity = today.contributions > 0 ? (today.bankBalance / today.contributions) * 100 : 0;
-    console.log(`Liquidity (Bank / Contributions × 100%): Jan=${janLiquidity.toFixed(1)}% → Today=${todayLiquidity.toFixed(1)}% → Growth = ${growth(janLiquidity, todayLiquidity, 'Liquidity').toFixed(1)}%`);
+    const liquidityGrowth = calculateGrowth(janLiquidity, todayLiquidity, 'Liquidity');
 
-    // Create bar charts with formulas (ROA unchanged; Profit/Contributions replaces or adds as new chart)
+    // Standard charts
     createChart('chartMembers', jan.members, today.members, colors.members, 'growthMembers', false, false, 'Members', '(Today - Jan) / |Jan| × 100%');
     createChart('chartLoans', jan.loans, today.loans, colors.loans, 'growthLoans', false, true, 'Loans', '(Today - Jan) / |Jan| × 100%');
     createChart('chartContributions', jan.contributions, today.contributions, colors.contributions, 'growthContributions', false, true, 'Contributions', '(Today - Jan) / |Jan| × 100%');
     createChart('chartProfit', jan.profit, today.profit, colors.profit, 'growthProfit', false, true, 'Profit', '(Today - Jan) / |Jan| × 100%');
-    createChart('chartROA', janROA, todayROA, colors.profitOverContributions, 'growthROA', true, false, 'ROA', '(Today - Jan) / |Jan| × 100%');  // Reused color for consistency
-    createChart('chartProfitOverContributions', janProfitOverContributions, todayProfitOverContributions, colors.profitOverContributions, 'growthProfitOverContributions', true, false, 'Profit/Contributions %', '((Profit / Contributions) × 100%) Growth');  // New chart
-    createChart('chartLiquidity', janLiquidity, todayLiquidity, colors.liquidity, 'growthLiquidity', true, false, 'Liquidity', '(Today - Jan) / |Jan| × 100%');
+    createChart('chartROA', janROA, todayROA, colors.roa, 'growthROA', true, false, 'ROA (Profit/Contributions %)', '(Profit / Contributions) × 100%');
+    createChart('chartLiquidity', janLiquidity, todayLiquidity, colors.liquidity, 'growthLiquidity', true, false, 'Liquidity', '(Bank / Contributions) × 100%');
 
-    // Update HTML for new chart (add this canvas to #final-charts-section in index.html: <div class="chart-card"><canvas id="chartProfitOverContributions"></canvas><p>Profit / Contributions (%)</p><div id="growthProfitOverContributions" class="growth-indicator"></div></div>)
-    // Pie chart for loan types (distribution math: value / total × 100%)
+    // Pie chart unchanged...
     if (window.loanTypes) {
       const total = window.loanTypes.reduce((s, l) => s + l.value, 0);
-      console.log(`Loan Types Distribution: Total=${total}, % = (Value / Total) × 100% →`, window.loanTypes.map(l => `${l.name}: ${(l.value / total * 100).toFixed(1)}%`));
       if (total > 0 && document.getElementById('chartLoanTypes')) {
         const labels = window.loanTypes.map(l => l.name);
         const data = window.loanTypes.map(l => (l.value / total) * 100);
         new Chart(document.getElementById('chartLoanTypes').getContext('2d'), {
           type: 'pie',
-          data: { 
-            labels, 
-            datasets: [{ 
-              data, 
-              backgroundColor: ['#FF6384','#36A2EB','#FFCE56','#4BC0C0','#9966FF'], 
-              borderWidth: 3, 
-              borderColor: '#fff' 
-            }] 
-          },
+          data: { labels, datasets: [{ data, backgroundColor: ['#FF6384','#36A2EB','#FFCE56','#4BC0C0','#9966FF'], borderWidth: 3, borderColor: '#fff' }] },
           options: {
-            responsive: true, 
-            maintainAspectRatio: false,
+            responsive: true, maintainAspectRatio: false,
             plugins: {
               legend: { position: 'bottom', labels: { font: { size: 12, weight: 'bold' } } },
-              tooltip: {
-                callbacks: {
-                  label: ctx => `${ctx.label}: ${ctx.raw.toFixed(1)}% (Value / ${total} × 100%)`
-                }
-              },
-              datalabels: { 
-                formatter: v => v > 5 ? v.toFixed(1)+'%' : '', 
-                color: '#fff', 
-                font: { weight: 'bold', size: 13 } 
-              }
+              datalabels: { formatter: v => v > 5 ? v.toFixed(1)+'%' : '', color: '#fff', font: { weight: 'bold', size: 13 } }
             }
           },
           plugins: [ChartDataLabels]
@@ -678,31 +653,24 @@
       }
     }
 
-    console.log('✅ Growth charts rendered with mathematical logging & tooltips (incl. Profit/Contributions %)');
+    console.log('✅ Charts rendered with negative handling (ROA as Profit/Contributions %)');
   }
 
-  // Initialize everything on DOM ready
+  // Initialize
   document.addEventListener('DOMContentLoaded', () => {
     registerPlugins();
-
     const init = () => {
-      // Restore or ensure data
       if (!window.saccoData && localStorage.getItem('saccoData')) {
         try {
           window.saccoData = JSON.parse(localStorage.getItem('saccoData'));
-          console.log('saccoData restored from storage:', window.saccoData);
-        } catch (e) {
-          console.warn('Failed to restore saccoData:', e);
-        }
+          console.log('saccoData restored:', window.saccoData);
+        } catch (e) { console.warn('Restore failed:', e); }
       }
-      ensureSaccoData();  // Fallback if still missing
-
+      ensureSaccoData();
       renderGrowthCharts();
       if (typeof window.refreshProjections === 'function') window.refreshProjections();
-
       if (typeof initMemberCarousel === 'function') initMemberCarousel();
     };
-
     window.addEventListener('saccoDataUpdated', init);
     init();
   });
