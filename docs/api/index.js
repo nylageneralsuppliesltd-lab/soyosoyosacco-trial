@@ -48,7 +48,8 @@ app.get("/api/history", async (req, res) => {
 async function saveToDB(entry) {
   const query = `
     INSERT INTO sacco_history
-    (period, members, contributions, loans_disbursed, loans_balance, total_bank_balance, coop_bank, chama_soft, cytonn, total_assets, profit, roa, date_saved, extra_fields)
+    (period, members, contributions, loans_disbursed, loans_balance, total_bank_balance,
+     coop_bank, chama_soft, cytonn, total_assets, profit, roa, date_saved, extra_fields)
     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
     ON CONFLICT (period)
     DO UPDATE SET 
@@ -57,38 +58,58 @@ async function saveToDB(entry) {
       date_saved=$13, extra_fields=$14
   `;
   const values = [
-    entry.period, entry.members, entry.contributions, entry.loansDisbursed, entry.loansBalance,
-    entry.totalBankBalance, entry.coopBank, entry.chamaSoft, entry.cytonn, entry.totalAssets,
-    entry.profit, entry.roa, entry.dateSaved, entry.extraFields
+    entry.period,
+    entry.members,
+    entry.contributions,
+    entry.loans_disbursed,
+    entry.loans_balance,
+    entry.total_bank_balance,
+    entry.coop_bank,
+    entry.chama_soft,
+    entry.cytonn,
+    entry.total_assets,
+    entry.profit,
+    entry.roa,
+    entry.date_saved,
+    entry.extra_fields
   ];
   await pool.query(query, values);
 }
 
 // POST: Save current month
 app.post("/api/history/save", async (req, res) => {
+  // Use snake_case to match DB
   const {
-    members=0, contributions=0, loansDisbursed=0, loansBalance=0, totalBankBalance=0,
-    coopBank=0, chamaSoft=0, cytonn=0, totalAssets=0, profit=0, roa=0,
-    extraFields="{}"
+    members=0, contributions=0, loans_disbursed=0, loans_balance=0, total_bank_balance=0,
+    coop_bank=0, chama_soft=0, cytonn=0, total_assets=0, profit=0, roa=0,
+    extra_fields="{}"
   } = req.body;
 
   const currentPeriod = new Date().toISOString().slice(0,7);
-  const dateSaved = new Date().toISOString();
+  const date_saved = new Date().toISOString();
 
   const newEntry = {
-    period: currentPeriod, dateSaved,
-    members: Number(members), contributions: Number(contributions),
-    loansDisbursed: Number(loansDisbursed), loansBalance: Number(loansBalance),
-    totalBankBalance: Number(totalBankBalance), coopBank: Number(coopBank),
-    chamaSoft: Number(chamaSoft), cytonn: Number(cytonn), totalAssets: Number(totalAssets),
-    profit: Number(profit), roa: Number(roa), extraFields
+    period: currentPeriod,
+    date_saved,
+    members: Number(members),
+    contributions: Number(contributions),
+    loans_disbursed: Number(loans_disbursed),
+    loans_balance: Number(loans_balance),
+    total_bank_balance: Number(total_bank_balance),
+    coop_bank: Number(coop_bank),
+    chama_soft: Number(chama_soft),
+    cytonn: Number(cytonn),
+    total_assets: Number(total_assets),
+    profit: Number(profit),
+    roa: Number(roa),
+    extra_fields
   };
 
   try {
-    // Try saving to DB
+    // Save to DB
     await saveToDB(newEntry);
 
-    // Save to local JSON
+    // Save locally
     const history = loadJSON(DB_FILE).filter(h => h.period!==currentPeriod);
     history.push(newEntry);
     saveJSON(DB_FILE, history);
@@ -101,12 +122,12 @@ app.post("/api/history/save", async (req, res) => {
   } catch(err) {
     console.warn("⚠️ DB save failed, storing to pending.json:", err.message);
 
-    // Save to pending.json
+    // Save to pending
     const pending = loadJSON(PENDING_FILE);
     pending.push(newEntry);
     saveJSON(PENDING_FILE, pending);
 
-    // Save to local history JSON
+    // Update local JSON
     const history = loadJSON(DB_FILE).filter(h => h.period!==currentPeriod);
     history.push(newEntry);
     saveJSON(DB_FILE, history);
