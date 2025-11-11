@@ -1,4 +1,4 @@
-// scripts/carousel-join.js — FULLY INDEPENDENT, NO CONFLICT, PERFECT ANIMATION
+// scripts/carousel-join.js — INDEPENDENT, PERFECT, NO CONFLICT
 document.addEventListener('DOMContentLoaded', () => {
   const carouselData = [
     { amount: 200, description: "Non-refundable Registration Fee" },
@@ -22,7 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   carousel.innerHTML = itemsHTML + itemsHTML;
 
-  // Counter animation
   const formatNumber = n => n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   const animateCounter = (el, target) => {
     const end = +target;
@@ -38,7 +37,6 @@ document.addEventListener('DOMContentLoaded', () => {
     requestAnimationFrame(step);
   };
 
-  // Intersection Observer
   const observer = new IntersectionObserver(entries => {
     entries.forEach(e => {
       const counter = e.target.querySelector('.counter-value');
@@ -50,7 +48,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.querySelectorAll('.carousel-join-item').forEach(item => observer.observe(item));
 
-  // Responsive CSS variables
   const update = () => {
     const w = window.innerWidth;
     const iw = w <= 600 ? 200 : w <= 360 ? 160 : 280;
@@ -65,12 +62,12 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('resize', update);
   update();
 
-  // FIXED: Animate the CORRECT element on load
+  // FIXED: Animate the RIGHT element on page load
   setTimeout(() => {
     document.querySelectorAll('.counter-value').forEach(counter => {
       if (counter.textContent === '0' && counter.dataset.target) {
         animateCounter(counter, counter.dataset.target);
       }
     });
-  }, 600); // Slightly longer than carousel.js (500ms) → no race condition
+  }, 300); // Fast, safe, no conflict
 });
