@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // === DAILY UPDATED VALUES (CHANGE THESE DAILY) ===
   const loanTypesToday = [
-    { name: 'Emergency', value: 1214900 },
+    { name: 'Emergency', value: 1217900 },
     { name: 'Medicare', value: 15000 },
     { name: 'Development', value: 553000 },
     { name: 'Education', value: 275000 }
@@ -36,11 +36,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const carouselDataWithoutROA = [
     { number: 144, description: "Total Members" },
-    { number: 906815, description: "Member Savings" },
-    { number: 242999, description: "Bank Balance" },
-    { number: 105, description: "Number of Loans Given" },
+    { number: 907515, description: "Member Savings" },
+    { number: 240624, description: "Bank Balance" },
+    { number: 106, description: "Number of Loans Given" },
     { number: totalLoansToday, description: "Value of Loans Given" },
-    { number: 51803, description: "Profit" },
+    { number: 51728, description: "Profit" },
     { number: 71, description: "Active Members" }
   ];
 
