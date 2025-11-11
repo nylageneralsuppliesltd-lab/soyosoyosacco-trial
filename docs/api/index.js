@@ -19,7 +19,9 @@ for (const file of [DB_FILE, PENDING_FILE]) {
 
 // PostgreSQL connection
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL || "postgresql://neondb_owner:npg_rZ1nWU9TEHet@ep-shiny-flower-ah1r0fzo-pooler.c-3.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+  connectionString:
+    process.env.DATABASE_URL ||
+    "postgresql://neondb_owner:npg_rZ1nWU9TEHet@ep-shiny-flower-ah1r0fzo-pooler.c-3.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require",
 });
 
 // Helpers to read/write local JSON files
@@ -45,7 +47,9 @@ function saveJSON(file, data) {
 // GET: Fetch full history from DB or fallback
 app.get("/api/history", async (req, res) => {
   try {
-    const { rows } = await pool.query("SELECT * FROM sacco_history ORDER BY period DESC");
+    const { rows } = await pool.query(
+      "SELECT * FROM sacco_history ORDER BY period DESC"
+    );
     res.json(rows);
   } catch (err) {
     console.warn("DB unavailable, using local JSON fallback:", err.message);
@@ -81,13 +85,13 @@ async function saveToDB(entry) {
     entry.profit,
     entry.roa,
     entry.dateSaved,
-    entry.extraFields
+    entry.extraFields,
   ];
 
   await pool.query(query, values);
 }
 
-// POST: Save current month
+// POST: Save current month (manual or auto)
 app.post("/api/history/save", async (req, res) => {
   const {
     members = 0,
@@ -121,16 +125,20 @@ app.post("/api/history/save", async (req, res) => {
     await saveToDB(newEntry);
 
     // Update local JSON too
-    const history = loadJSON(DB_FILE).filter(h => h.period !== currentPeriod);
+    const history = loadJSON(DB_FILE).filter((h) => h.period !== currentPeriod);
     history.push(newEntry);
     saveJSON(DB_FILE, history);
 
     // Clear any pending entries
     saveJSON(PENDING_FILE, []);
+
     console.log("✅ Saved successfully to DB:", currentPeriod);
     res.json({ success: true, data: newEntry });
   } catch (err) {
-    console.warn("⚠️ DB save failed, storing to pending.json:", err.message);
+    console.warn(
+      "⚠️ DB save failed, storing to pending.json:",
+      err.message
+    );
 
     // Fallback: save to pending.json
     const pending = loadJSON(PENDING_FILE);
@@ -138,19 +146,19 @@ app.post("/api/history/save", async (req, res) => {
     saveJSON(PENDING_FILE, pending);
 
     // Update local history JSON
-    const history = loadJSON(DB_FILE).filter(h => h.period !== currentPeriod);
+    const history = loadJSON(DB_FILE).filter((h) => h.period !== currentPeriod);
     history.push(newEntry);
     saveJSON(DB_FILE, history);
 
     res.json({
       success: false,
       message: "DB unavailable, saved temporarily in pending.json",
-      data: newEntry
+      data: newEntry,
     });
   }
 });
 
-// Function to retry pending entries every 30s
+// Function to retry pending entries every 30s (up to 10 attempts)
 async function retryPending() {
   const pending = loadJSON(PENDING_FILE);
   if (!pending.length) return;
@@ -163,13 +171,17 @@ async function retryPending() {
       try {
         await saveToDB(entry);
       } catch (err) {
-        console.warn("Retry failed for period", entry.period, err.message);
+        console.warn(
+          "Retry failed for period",
+          entry.period,
+          err.message
+        );
         remaining.push(entry);
       }
     }
     saveJSON(PENDING_FILE, remaining);
     if (!remaining.length) break; // all done
-    await new Promise(r => setTimeout(r, 30000)); // wait 30s
+    await new Promise((r) => setTimeout(r, 30000)); // wait 30s
   }
 }
 
