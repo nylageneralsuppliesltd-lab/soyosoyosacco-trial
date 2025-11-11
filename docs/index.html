@@ -448,7 +448,23 @@
     { name: "Api Culture", value: 5 }
   ];
 
-  // FINAL BULLETPROOF ARROW + LABEL PLUGIN
+  <!-- FINAL BULLETPROOF CHARTS + ARROW PLUGIN (NO ERRORS) -->
+<script>
+  // Register plugins
+  if (typeof Chart !== 'undefined' && typeof ChartDataLabels !== 'undefined') {
+    Chart.register(ChartDataLabels);
+  }
+
+  // Loan types data
+  window.loanTypes = [
+    { name: "Emergency", value: 38 },
+    { name: "Education", value: 25 },
+    { name: "Development", value: 20 },
+    { name: "Medicare", value: 12 },
+    { name: "Api Culture", value: 5 }
+  ];
+
+  // FINAL BULLETPROOF ARROW + LABEL PLUGIN — THIS KILLS THE ERROR
   const finalGrowthArrowPlugin = {
     id: 'finalGrowthArrow',
     afterDraw: function(chart) {
@@ -481,13 +497,11 @@
       ctx.lineWidth = 5;
       ctx.lineCap = 'round';
 
-      // Main line
       ctx.beginPath();
       ctx.moveTo(x1, y1);
       ctx.lineTo(x2, y2);
       ctx.stroke();
 
-      // Arrowhead
       const headLength = 18;
       const angle = Math.atan2(y2 - y1, x2 - x1);
       ctx.beginPath();
@@ -498,7 +512,6 @@
       ctx.fillStyle = isPositive ? '#10B981' : '#EF4444';
       ctx.fill();
 
-      // Percentage label
       if (Math.abs(growthPercent) > 0.1) {
         const midX = (x1 + x2) / 2;
         const midY = (y1 + y2) / 2 - 25;
@@ -586,8 +599,8 @@
       });
     };
 
-    const janROA = parseFloat(jan.roa);
-    const todayROA = parseFloat(today.roa);
+    const janROA = parseFloat(jan.roa) || 0;
+    const todayROA = parseFloat(today.roa) || 0;
     const janLiquidity = jan.contributions > 0 ? (jan.bankBalance / jan.contributions) * 100 : 0;
     const todayLiquidity = today.contributions > 0 ? (today.bankBalance / today.contributions) * 100 : 0;
 
@@ -638,7 +651,6 @@
     if (typeof initMemberCarousel === 'function') initMemberCarousel();
   });
 </script>
-
 <script src="./scripts/main.js"></script>
 <script src="./scripts/calculator.js"></script>
 <script src="./scripts/dividendscalculator.js"></script>
