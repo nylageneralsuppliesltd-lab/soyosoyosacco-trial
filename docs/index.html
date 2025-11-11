@@ -506,7 +506,7 @@
     }
   }
 
-  // Enhanced growth calc with negative handling (pure math, no hardcoding)
+  // Enhanced growth calc with negative handling (pure math)
   function calculateGrowth(janVal, todayVal, metric) {
     if (janVal === 0) return todayVal === 0 ? 0 : 100;
     const rawChange = ((todayVal - janVal) / Math.abs(janVal)) * 100;
@@ -519,13 +519,15 @@
     return { percent: rawChange, label, isImproving };
   }
 
-  // Render/update pie chart from carousel.js data ONLY
+  // Render/update pie chart from carousel.js data ONLY (no extras like Api Culture)
   function renderLoanTypesPie() {
-    // Lift directly from carousel.js (window.loanTypesToday) – no fallback, no hardcoding
-    const loanTypes = window.loanTypesToday;
+    // Lift directly from carousel.js – filter out any invalid entries (e.g., no Api Culture if not present)
+    let loanTypes = window.loanTypesToday || [];
+    loanTypes = loanTypes.filter(type => type && type.name && type.value >= 0 && type.name !== 'Api Culture');  // Strict: Exclude Api Culture & invalids
+
     const canvas = document.getElementById('chartLoanTypes');
-    if (!canvas || !loanTypes || loanTypes.length === 0) {
-      console.warn('Pie chart skipped: No canvas or loanTypesToday from carousel.js');
+    if (!canvas || loanTypes.length === 0) {
+      console.warn('Pie chart skipped: No valid loanTypesToday from carousel.js (or empty after filter)');
       return;
     }
 
@@ -533,16 +535,19 @@
     if (Chart.getChart(canvas)) Chart.getChart(canvas).destroy();
 
     const total = loanTypes.reduce((sum, type) => sum + type.value, 0);
-    console.log(`Pie Chart Data from carousel.js: Total Loans=${total.toLocaleString()} KES → Percentages = (Value / Total) × 100%`);
+    console.log(`Pie Chart Data from carousel.js (filtered): ${loanTypes.length} types, Total Loans=${total.toLocaleString()} KES → Percentages = (Value / Total) × 100%`);
 
     const labels = loanTypes.map(type => type.name);
     const data = loanTypes.map(type => (type.value / total) * 100);
 
-    // Log individual % (mathematical verification)
+    // Log individual % (verifies math)
     loanTypes.forEach(type => {
       const pct = (type.value / total) * 100;
       console.log(`${type.name}: ${type.value.toLocaleString()} KES → ${(pct).toFixed(2)}%`);
     });
+
+    // Colors for up to 4 types (matches your data)
+    const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'];
 
     new Chart(canvas.getContext('2d'), {
       type: 'pie',
@@ -550,7 +555,7 @@
         labels, 
         datasets: [{ 
           data, 
-          backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],  // Adaptive colors
+          backgroundColor: colors.slice(0, loanTypes.length), 
           borderWidth: 3, 
           borderColor: '#fff' 
         }] 
@@ -559,7 +564,23 @@
         responsive: true, 
         maintainAspectRatio: false,
         plugins: {
-          legend: { position: 'bottom', labels: { font: { size: 12, weight: 'bold' } } },
+          legend: { 
+            position: 'bottom', 
+            labels: { 
+              font: { size: 12, weight: 'bold' },
+              // NEW: Include % in legend key (e.g., "Emergency (59.1%)")
+              generateLabels: (chart) => {
+                return chart.data.labels.map((label, i) => ({
+                  text: `${label} (${chart.data.datasets[0].data[i].toFixed(1)}%)`,
+                  fillStyle: chart.data.datasets[0].backgroundColor[i],
+                  strokeStyle: chart.data.datasets[0].borderColor[i],
+                  lineWidth: chart.data.datasets[0].borderWidth,
+                  hidden: false,
+                  index: i
+                }));
+              }
+            } 
+          },
           tooltip: {
             callbacks: {
               label: ctx => {
@@ -582,12 +603,11 @@
       plugins: [ChartDataLabels]
     });
 
-    console.log(' Loan Types Pie Chart rendered (purely from carousel.js loanTypesToday)');
+    console.log('✅ Loan Types Pie Chart rendered (from carousel.js, with % in legend keys, no Api Culture)');
   }
 
   // Render growth charts from carousel.js data ONLY
   function renderGrowthCharts() {
-    // Lift directly from carousel.js (window.saccoData) – no fallback, no hardcoding
     const saccoData = window.saccoData;
     if (!saccoData || !saccoData.jan || !saccoData.today) {
       console.warn('Growth charts skipped: No saccoData from carousel.js');
@@ -684,10 +704,10 @@
     createChart('chartROA', janROA, todayROA, colors.roa, 'growthROA', true, false, 'ROA (Profit/Contributions %)', '(Profit / Contributions) × 100%');
     createChart('chartLiquidity', janLiquidity, todayLiquidity, colors.liquidity, 'growthLiquidity', true, false, 'Liquidity', '(Bank / Contributions) × 100%');
 
-    // Render pie from loanTypesToday
+    // Render pie (filtered, with % in legend)
     renderLoanTypesPie();
 
-    console.log(' All charts rendered (purely from carousel.js – saccoData & loanTypesToday)');
+    console.log('✅ All charts rendered (purely from carousel.js – saccoData & loanTypesToday, filtered for no Api Culture)');
   }
 
   // Initialize (wait for carousel.js to load data)
