@@ -523,8 +523,7 @@
   function renderLoanTypesPie() {
     // Lift directly from carousel.js – filter out any invalid entries (e.g., no Api Culture if not present)
     let loanTypes = window.loanTypesToday || [];
-    loanTypes = loanTypes.filter(type => type && type.name && type.value >= 0 && type.name !== 'Api Culture');  // Strict: Exclude Api Culture & invalids
-
+  
     const canvas = document.getElementById('chartLoanTypes');
     if (!canvas || loanTypes.length === 0) {
       console.warn('Pie chart skipped: No valid loanTypesToday from carousel.js (or empty after filter)');
