@@ -1,4 +1,4 @@
-// docs/api/index.js - Soyosoyo SACCO API (Robust JSON Save + Retry Friendly)
+// docs/api/index.js - Soyosoyo SACCO API with Safe Offline Fallback
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
@@ -9,46 +9,41 @@ app.use(cors());
 app.use(express.json({ limit: "10mb" }));
 
 const DB_FILE = path.join(__dirname, "history.json");
+const PENDING_FILE = path.join(__dirname, "pending.json");
 
-// Ensure local file exists
-if (!fs.existsSync(DB_FILE)) {
-  fs.writeFileSync(DB_FILE, "[]", "utf8");
+// Ensure files exist
+for (const file of [DB_FILE, PENDING_FILE]) {
+  if (!fs.existsSync(file)) fs.writeFileSync(file, "[]", "utf8");
 }
 
-// Load local history
-function loadHistory() {
+// Load helpers
+function loadJSON(file) {
   try {
-    return JSON.parse(fs.readFileSync(DB_FILE, "utf8"));
+    return JSON.parse(fs.readFileSync(file, "utf8"));
   } catch (err) {
-    console.error("Read error:", err);
+    console.error(`Error reading ${file}:`, err);
     return [];
   }
 }
 
-// Save to local file
-function saveHistory(history) {
+function saveJSON(file, data) {
   try {
-    fs.writeFileSync(DB_FILE, JSON.stringify(history, null, 2));
+    fs.writeFileSync(file, JSON.stringify(data, null, 2));
+    return true;
   } catch (err) {
-    console.error("Write error:", err);
+    console.error(`Error writing ${file}:`, err);
+    return false;
   }
 }
 
-// ✅ GET: Return full history
+// GET: All saved history
 app.get("/api/history", (req, res) => {
-  try {
-    res.json(loadHistory());
-  } catch (err) {
-    console.error("Load failed:", err);
-    res.status(500).json({ error: "Failed to load history" });
-  }
+  res.json(loadJSON(DB_FILE));
 });
 
-// ✅ POST: Save or update current month entry
+// POST: Save entry (safe mode)
 app.post("/api/history/save", (req, res) => {
   try {
-    let history = loadHistory();
-
     const {
       members = 0,
       contributions = 0,
@@ -63,10 +58,8 @@ app.post("/api/history/save", (req, res) => {
     const currentPeriod = new Date().toISOString().slice(0, 7);
     const dateSaved = new Date().toISOString();
 
-    const prev = history.find((h) => h.period === currentPeriod);
-    const mergedExtras = prev
-      ? { ...JSON.parse(prev.extraFields || "{}"), ...JSON.parse(extraFields || "{}") }
-      : JSON.parse(extraFields || "{}");
+    const history = loadJSON(DB_FILE);
+    const pending = loadJSON(PENDING_FILE);
 
     const newEntry = {
       period: currentPeriod,
@@ -78,24 +71,48 @@ app.post("/api/history/save", (req, res) => {
       totalBankBalance: Number(total_bank_balance),
       profit: Number(profit),
       roa: Number(roa),
-      extraFields: JSON.stringify(mergedExtras),
+      extraFields: extraFields,
     };
 
-    // Replace any previous record for this month
-    history = history.filter((h) => h.period !== currentPeriod);
-    history.push(newEntry);
+    // Merge any pending entries first
+    let mergedHistory = [...history];
+    pending.forEach((p) => {
+      const existing = mergedHistory.find((h) => h.period === p.period);
+      if (existing) {
+        Object.assign(existing, p);
+      } else {
+        mergedHistory.push(p);
+      }
+    });
 
-    saveHistory(history);
-    console.log("✅ Saved locally:", currentPeriod);
+    // Replace current month
+    mergedHistory = mergedHistory.filter((h) => h.period !== currentPeriod);
+    mergedHistory.push(newEntry);
 
-    res.json({ success: true, data: newEntry });
+    // Try saving
+    const success = saveJSON(DB_FILE, mergedHistory);
+
+    if (success) {
+      // Clear pending if we succeeded
+      saveJSON(PENDING_FILE, []);
+      console.log("✅ Saved successfully:", currentPeriod);
+      res.json({ success: true, data: newEntry });
+    } else {
+      // Fallback: store to pending
+      pending.push(newEntry);
+      saveJSON(PENDING_FILE, pending);
+      console.warn("⚠️ Saved temporarily to pending.json:", currentPeriod);
+      res.json({
+        success: false,
+        message: "Server write failed, saved temporarily.",
+        data: newEntry,
+      });
+    }
   } catch (err) {
-    console.error("Save error:", err);
+    console.error("❌ Save error:", err);
     res.status(500).json({ error: err.message });
   }
 });
 
 const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => {
-  console.log(`🚀 Soyosoyo SACCO API running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`🚀 Soyosoyo SACCO API running on port ${PORT}`));
