@@ -67,8 +67,8 @@ document.addEventListener('DOMContentLoaded', () => {
   update();
   // Force immediate animation on page load
 setTimeout(() => {
-  document.querySelectorAll('.carousel-item').forEach(item => {
-    const btn = item.querySelector('.carousel-button');
+  document.querySelectorAll('.carousel-join-item').forEach(item => {
+    const btn = item.querySelector('.carousel-join-button');
     if (btn && btn.dataset.target) {
       animateCounter(btn, btn.dataset.target);
     }
