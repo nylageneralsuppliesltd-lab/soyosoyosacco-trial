@@ -64,13 +64,11 @@
             .tag{padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;background:#10B981;color:white;letter-spacing:0.5px}
             .tag.live{background:#fbbf24;color:#004d1a}
             .tag.db{background:#6b7280;color:white}
-            .card-grid{padding:0;gap:0}
-            .card-grid > div{padding:12px 8px;border-bottom:1px solid #f0f9ff;text-align:center}
-            .card-grid > div:nth-child(3n){border-right:1px solid #e6f4ea}
-            .card-grid > div:nth-child(3n-2), .card-grid > div:nth-child(3n-1){border-right:1px solid #e6f4ea}
-            .card-grid > div:last-of-type{border-bottom:none}
-            .card-grid span{display:block;font-size:10px;font-weight:600;color:#374151;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.3px}
-            .card-grid strong{display:block;font-size:14px;font-weight:900;color:#004d1a;letter-spacing:0.2px}
+            .card-grid{display:grid;grid-template-columns:repeat(3, 1fr);gap:8px;padding:16px}
+            .card-grid > div{display:flex;flex-direction:column;justify-content:center;align-items:center;padding:8px 4px;border:1px solid #e6f4ea;border-radius:8px;background:#f8fdfa;transition:all .2s;font-weight:700;text-align:center}
+            .card-grid > div:hover{transform:scale(1.02);background:#fff8e1;border-color:#fbbf24;box-shadow:0 2px 8px rgba(251,191,36,0.15)}
+            .card-grid span{font-size:10px;font-weight:600;color:#374151;margin-bottom:2px;text-transform:uppercase;letter-spacing:0.3px}
+            .card-grid strong{font-size:12px;font-weight:900;color:#004d1a;letter-spacing:0.2px}
             .card-grid .roa-value strong{color:#d97706}
             .card-footer{padding:12px 20px;background:#f8fdfa;border-top:1px solid #e6f4ea;text-align:center;font-size:12px;color:#6b7280;font-style:italic}
             .card-footer strong{color:#004d1a}
@@ -300,7 +298,7 @@
             <div><span>Cytonn</span><strong>KSh ${r.cytonn.toFixed(0)}</strong></div>
             <div><span>Assets</span><strong>KSh ${r.totalAssets.toFixed(0)}</strong></div>
             <div><span>Profit</span><strong>KSh ${r.profit.toLocaleString()}</strong></div>
-            <div><span class="roa-value">ROA</span><strong class="roa-value">${r.roa.toFixed(1)}%</strong></div>
+            <div class="roa-value"><span>ROA</span><strong>${r.roa.toFixed(1)}%</strong></div>
           </div>
           <div class="card-footer">
             <strong>Saved:</strong> ${formatDisplayDate(r.dateSaved)}
