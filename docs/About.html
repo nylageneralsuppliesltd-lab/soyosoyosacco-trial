@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Us | Soyosoyo SACCO</title>
     <meta name="description" content="From 1998 Medicare roots to modern financial empowerment. The full story of Soyosoyo SACCO.">
-    <link rel="stylesheet" href="style.css?v=45">
+    <link rel="stylesheet" href="style.css?v=46">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -22,14 +22,14 @@
         .btn-auto-save{background:#f59e0b;color:white;margin-left:10px}
         .btn-auto-save:hover{background:#d97706;transform:translateY(-2px)}
         #fullHistoryTable{overflow-x:auto;margin-top:20px;border-radius:16px;box-shadow:0 8px 25px rgba(0,0,0,0.1);-webkit-overflow-scrolling:touch}
-        #fullHistoryTable table{width:100%;min-width:1200px;border-collapse:collapse;background:white;table-layout:fixed}
+        #fullHistoryTable table{width:100%;min-width:1300px;border-collapse:collapse;background:white;table-layout:fixed}
         #fullHistoryTable th{background:#004d1a;color:white;padding:16px 8px;text-align:center;font-weight:900;font-size:14px;white-space:nowrap}
         #fullHistoryTable td{padding:14px 8px;text-align:center;border-bottom:1px solid #e6f4ea;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
         #fullHistoryTable tr:hover{background:#fff8e1 !important}
         #fullHistoryTable tr:nth-child(even){background:#f0fdf4}
         #fullHistoryTable td:nth-child(2),#fullHistoryTable td:nth-child(3),#fullHistoryTable td:nth-child(4),#fullHistoryTable td:nth-child(5),
         #fullHistoryTable td:nth-child(6),#fullHistoryTable td:nth-child(7),#fullHistoryTable td:nth-child(8),#fullHistoryTable td:nth-child(9),
-        #fullHistoryTable td:nth-child(10),#fullHistoryTable td:nth-child(11),#fullHistoryTable td:nth-child(12){text-align:right}
+        #fullHistoryTable td:nth-child(10),#fullHistoryTable td:nth-child(11),#fullHistoryTable td:nth-child(12),#fullHistoryTable td:nth-child(13){text-align:right}
         .history-footer{text-align:center;margin-top:20px;color:#004d1a;font-weight:bold;font-size:15px}
         .current-month{background:#fff8e1 !important;font-weight:bold;box-shadow:inset 0 0 10px rgba(255,193,7,0.3)}
         @media (max-width:768px){
@@ -52,7 +52,7 @@
             #fullHistoryTable .roa-value{color:#10B981}
             #fullHistoryTable .saved-on{display:block;width:100%;padding:6px 12px;text-align:center;background:#f8fdfa;color:#666;font-size:11px;border-top:1px solid #e6f4ea;margin-top:4px}
             #fullHistoryTable td{display:none}
-            #fullHistoryTable td:nth-of-type(1){display:block}
+            #TfullHistoryTable td:nth-of-type(1){display:block}
         }
     </style>
 </head>
@@ -131,15 +131,13 @@
   window.saccoHistory = {};
   window.saccoData = window.saccoData || {};
   let retryInterval = null;
-  const RETRY_DELAY = 30000; // 30 seconds
+  const RETRY_DELAY = 30000;
   let autoSaveEnabled = localStorage.getItem('autoSaveEnabled') === 'true';
   let lastDataHash = '';
 
   function safeDate(dateInput) {
     if (!dateInput) return new Date();
-    if (typeof dateInput === 'number' || !isNaN(dateInput)) {
-      return new Date(Number(dateInput));
-    }
+    if (typeof dateInput === 'number' || !isNaN(dateInput)) return new Date(Number(dateInput));
     const d = new Date(dateInput);
     return isNaN(d.getTime()) ? new Date() : d;
   }
@@ -161,14 +159,19 @@
 
   function formatDisplayDate(dateInput) {
     const d = safeDate(dateInput);
-    return d.toLocaleString('en-KE', {
-      day:'numeric', month:'short', year:'numeric',
-      hour:'2-digit', minute:'2-digit'
-    }).replace(',','');
+    return d.toLocaleString('en-KE', {day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'}).replace(',','');
+  }
+
+  function getBankValue(breakdown, name) {
+    if (!Array.isArray(breakdown)) return 0;
+    const item = breakdown.find(b => b.name.includes(name) || b.name.toLowerCase().includes(name.toLowerCase()));
+    return item ? Number(item.value || 0) : 0;
   }
 
   function computeDataHash(today) {
     if (!today) return '';
+    const ef = today.extraFields || {};
+    const bb = ef.bankBreakdown || [];
     return JSON.stringify({
       members: today.members,
       contributions: today.contributions,
@@ -177,11 +180,10 @@
       totalBankBalance: today.totalBankBalance,
       profit: today.profit,
       roa: today.roa,
-      coopBank: today.extraFields?.coopBank || 0,
-      chamasoft: today.extraFields?.chamasoft || 0,
-      cytonn: today.extraFields?.cytonn || 0,
-      totalAssets: today.extraFields?.totalAssets || 0,
-      ...today.extraFields
+      coopBank: getBankValue(bb, 'Co-operative'),
+      chamasoft: getBankValue(bb, 'Chamasoft'),
+      cytonn: getBankValue(bb, 'Cytonn'),
+      totalAssets: Number(ef.bookValue || 0)
     });
   }
 
@@ -199,6 +201,7 @@
   function updateCurrentMonthInHistory(today, saveType = 'auto') {
     const currentPeriod = new Date().toISOString().slice(0, 7);
     const ef = today.extraFields || {};
+    const bb = ef.bankBreakdown || [];
     window.saccoHistory[currentPeriod] = {
       period: currentPeriod,
       members: Number(today.members || 0),
@@ -208,10 +211,10 @@
       totalBankBalance: Number(today.totalBankBalance || 0),
       profit: Number(today.profit || 0),
       roa: Number(today.roa || 0),
-      coopBank: Number(ef.coopBank || 0),
-      chamasoft: Number(ef.chamasoft || 0),
-      cytonn: Number(ef.cytonn || 0),
-      totalAssets: Number(ef.totalAssets || 0),
+      coopBank: getBankValue(bb, 'Co-operative'),
+      chamasoft: getBankValue(bb, 'Chamasoft'),
+      cytonn: getBankValue(bb, 'Cytonn'),
+      totalAssets: Number(ef.bookValue || 0),
       extraFields: ef,
       dateSaved: new Date().toISOString(),
       saveType: saveType
@@ -261,7 +264,7 @@
     tableHTML += '</tbody></table>';
     container.innerHTML = tableHTML;
 
-    // Mobile compact view
+    // Mobile view
     if (window.innerWidth <= 768) {
       const tbody = container.querySelector('tbody');
       if (tbody) {
@@ -311,6 +314,7 @@
       window.saccoHistory = {};
       data.forEach(row => {
         const ef = row.extraFields ? JSON.parse(row.extraFields) : {};
+        const bb = ef.bankBreakdown || [];
         window.saccoHistory[row.period] = {
           period: row.period,
           members: Number(row.members || 0),
@@ -320,10 +324,10 @@
           totalBankBalance: Number(row.totalBankBalance || 0),
           profit: Number(row.profit || 0),
           roa: Number(row.roa || 0),
-          coopBank: Number(ef.coopBank || 0),
-          chamasoft: Number(ef.chamasoft || 0),
-          cytonn: Number(ef.cytonn || 0),
-          totalAssets: Number(ef.totalAssets || 0),
+          coopBank: getBankValue(bb, 'Co-operative'),
+          chamasoft: getBankValue(bb, 'Chamasoft'),
+          cytonn: getBankValue(bb, 'Cytonn'),
+          totalAssets: Number(ef.bookValue || 0),
           extraFields: ef,
           dateSaved: row.dateSaved,
           saveType: 'manual'
@@ -352,11 +356,6 @@
       const savedData = localStorage.getItem('saccoDataToday');
       if (savedData) {
         window.saccoData.today = JSON.parse(savedData);
-      } else {
-        window.saccoData.today = {
-          members: 0, contributions: 0, loansDisbursed: 0, loansBalance: 0,
-          totalBankBalance: 0, profit: 0, roa: 0, extraFields: {}
-        };
       }
     }
     if (typeof window.updateCarouselData === 'function') {
@@ -386,6 +385,7 @@
     }
     const today = window.saccoData.today;
     const ef = today.extraFields || {};
+    const bb = ef.bankBreakdown || [];
     const saveType = auto ? 'auto' : 'manual';
     const payload = {
       members: today.members,
@@ -395,13 +395,7 @@
       total_bank_balance: today.totalBankBalance,
       profit: today.profit,
       roa: parseFloat(today.roa) || 0,
-      extraFields: JSON.stringify({
-        coopBank: Number(ef.coopBank || 0),
-        chamasoft: Number(ef.chamasoft || 0),
-        cytonn: Number(ef.cytonn || 0),
-        totalAssets: Number(ef.totalAssets || 0),
-        ...ef
-      })
+      extraFields: JSON.stringify(ef)
     };
     const saveAttempt = await attemptSave(payload, saveType);
     if (saveAttempt.success) {
@@ -420,7 +414,7 @@
       localStorage.setItem('pendingSave', JSON.stringify({ ...payload, queuedAt: new Date().toISOString(), saveType }));
       if (!auto) {
         startRetry(payload, saveType);
-        alert(`Save queued – server sleeping. Retrying automatically every 30s...\nError: ${saveAttempt.error}`);
+        alert(`Save queued – server sleeping. Retrying every 30s...\nError: ${saveAttempt.error}`);
       }
     }
   }
@@ -442,7 +436,6 @@
         loadLiveHistory();
       } else if (retryCount >= maxRetries) {
         clearRetryInterval();
-        console.warn('Max retries reached');
       }
     }, RETRY_DELAY);
   }
@@ -512,12 +505,12 @@ Contributions: KSh ${latest.contributions.toLocaleString()}${contribGrowth}
 Loans Disbursed: KSh ${latest.loansDisbursed.toLocaleString()}
 Loans Balance: KSh ${latest.loansBalance.toLocaleString()}
 Total Bank Balance: KSh ${latest.totalBankBalance.toLocaleString()}
-Cooperative Bank: KSh ${latest.coopBank.toLocaleString()}
+Co-operative Bank: KSh ${latest.coopBank.toLocaleString()}
 Chamasoft: KSh ${latest.chamasoft.toLocaleString()}
 Cytonn: KSh ${latest.cytonn.toLocaleString()}
 Total Assets: KSh ${latest.totalAssets.toLocaleString()}
 Profit: KSh ${latest.profit.toLocaleString()}
-ROA: ${latest.roa}%
+ROA: ${latest.roa.toFixed(1)}%
 
 Saved on ${savedTime}
 We are growing stronger every month!
