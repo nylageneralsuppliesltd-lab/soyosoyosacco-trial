@@ -1,4 +1,4 @@
-// scripts/carousel.js – SOYOSOYO SACCO – PERMANENT HISTORY + AUTO-SAVE
+// scripts/carousel.js – SOYOSOYO SACCO – MONTHLY HISTORY + AUTO-SAVE + BREAKDOWNS
 document.addEventListener('DOMContentLoaded', () => {
   document.body.classList.add('js-enabled');
 
@@ -31,15 +31,30 @@ document.addEventListener('DOMContentLoaded', () => {
     { name: 'Education', value: 275000 }
   ];
 
-  const totalLoansToday = loanTypesToday.reduce((sum, l) => sum + l.value, 0);
+  const totalLoansDisbursedToday = loanTypesToday.reduce((sum, l) => sum + l.value, 0); // Monthly disbursed
+
+  const cumulativeLoansDisbursedToday = 5000000; // Since inception (hidden, not displayed)
+
+  const loanBalanceToday = 1800000; // Outstanding loan balance (hidden)
+
+  const bankBreakdownToday = [
+    { name: 'Co-operative Bank', value: 2120.65 },
+    { name: 'Chamasoft', value: 51954 },
+    { name: 'Cytonn', value: 186550 }
+  ];
+
+  const totalBankBalanceToday = bankBreakdownToday.reduce((sum, b) => sum + b.value, 0);
+
+  const bookValueToday = loanBalanceToday + totalBankBalanceToday; // Total assets/book value (hidden)
+
   const externalLoansToday = 66784;
 
   const carouselDataWithoutROA = [
     { number: 144, description: "Total Members" },
     { number: 907515, description: "Member Savings" },
-    { number: 240624, description: "Bank Balance" },
+    { number: totalBankBalanceToday, description: "Total Bank Balance" }, // Updated title, total only (breakdown hidden)
     { number: 106, description: "Number of Loans Given" },
-    { number: totalLoansToday, description: "Value of Loans Given" },
+    { number: totalLoansDisbursedToday, description: "Loans Disbursed This Month" }, // Clarified as monthly
     { number: 51728, description: "Profit" },
     { number: 71, description: "Active Members" }
   ];
@@ -53,56 +68,75 @@ document.addEventListener('DOMContentLoaded', () => {
   const carouselData = carouselDataWithoutROA;
 
   window.loanTypes = loanTypesToday;
+  window.bankBreakdown = bankBreakdownToday; // For editing, like loanTypes
 
   // === JAN 2025 BASELINE (fallback if not in history) ===
   const janFallback = {
     members: 101,
     contributions: 331263,
-    loans: 283500,
+    loansDisbursed: 283500,
+    loansBalance: 250000, // Example baseline
     profit: -60056,
-    bankBalance: 113742,
-    externalLoans: 0
+    totalBankBalance: 113742,
+    bankBreakdown: [{ name: 'Co-operative Bank', value: 50000 }, { name: 'Chamasoft', value: 20000 }, { name: 'Cytonn', value: 43742 }],
+    bookValue: 250000 + 113742,
+    externalLoans: 0,
+    cumulativeLoansDisbursed: 1000000 // Example
   };
 
-  const janData = saccoHistory[2025]?.jan || janFallback;
-  const roaJan = janData.contributions + janData.externalLoans > 0
-    ? ((janData.profit / (janData.contributions + janData.externalLoans)) * 100).toFixed(2)
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+  const currentMonth = currentDate.getMonth() + 1; // 1-12
+  const currentPeriod = `${currentYear}-${String(currentMonth).padStart(2, '0')}`;
+
+  const currentMonthData = saccoHistory[currentPeriod] || janFallback; // Use jan as fallback for first month
+  const roaCurrent = (currentMonthData.contributions + currentMonthData.externalLoans > 0)
+    ? ((currentMonthData.profit / (currentMonthData.contributions + currentMonthData.externalLoans)) * 100).toFixed(2)
     : 0;
 
   // === FINAL DATA OBJECT ===
   const todayData = {
     members: carouselData[0].number,
-    contributions: carouselData[1].number,
-    loans: totalLoansToday,
+    contributions: carouselData[1].number, // Member Savings
+    loansDisbursed: totalLoansDisbursedToday, // Monthly
+    loansBalance: loanBalanceToday,
     profit: carouselData[5].number,
-    bankBalance: carouselData[2].number,
+    totalBankBalance: totalBankBalanceToday,
     externalLoans: externalLoansToday,
-    roa: roaToday
+    roa: roaToday,
+    extraFields: { // Hidden fields for history/About (not in carousel display)
+      bankBreakdown: bankBreakdownToday,
+      bookValue: bookValueToday,
+      cumulativeLoansDisbursed: cumulativeLoansDisbursedToday
+    }
   };
 
   window.saccoData = {
-    jan: { ...janData, roa: roaJan },
+    [currentPeriod]: { ...currentMonthData, roa: roaCurrent },
     today: todayData
   };
 
-  // === AUTO-SAVE IN DECEMBER OR IF YEAR NOT SAVED ===
-  const today = new Date();
-  const currentYear = today.getFullYear();
-  const currentMonth = today.getMonth();
+  // Persist current data for About page fetch
+  localStorage.setItem('saccoDataToday', JSON.stringify(todayData));
 
-  if ((currentMonth === 11 || !saccoHistory[currentYear]) && todayData) {
-    saccoHistory[currentYear] = {
-      year: currentYear,
+  // === MONTHLY AUTO-SAVE IF NOT EXISTS ===
+  if (!saccoHistory[currentPeriod]) {
+    saccoHistory[currentPeriod] = {
+      period: currentPeriod,
       members: todayData.members,
       contributions: todayData.contributions,
-      loans: todayData.loans,
-      bankBalance: todayData.bankBalance,
+      loansDisbursed: todayData.loansDisbursed,
+      loansBalance: todayData.loansBalance,
       profit: todayData.profit,
+      totalBankBalance: todayData.totalBankBalance,
+      bankBreakdown: todayData.extraFields.bankBreakdown,
+      bookValue: todayData.extraFields.bookValue,
+      cumulativeLoansDisbursed: todayData.extraFields.cumulativeLoansDisbursed,
       roa: todayData.roa,
-      dateSaved: today.toISOString().split('T')[0]
+      dateSaved: currentDate.toISOString()
     };
     saveHistory(saccoHistory);
-    console.log(`SOYOSOYO SACCO ${currentYear} DATA SAVED PERMANENTLY`);
+    console.log(`SOYOSOYO SACCO ${currentPeriod} DATA SAVED TO HISTORY`);
   }
 
   // === CAROUSEL RENDERING (unchanged, just moved below) ===
@@ -182,4 +216,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Final animation trigger
   setTimeout(animateVisible, 300);
+
+  // Expose for About page (if loaded separately)
+  if (typeof window.updateCarouselData === 'function') {
+    window.updateCarouselData = () => { /* Refresh logic if needed */ };
+  }
 });
