@@ -8,7 +8,8 @@ const janFallback = {
   bookValue: 250000 + 113742, externalLoans: 0,
   // Aliases for charts in index.html
   loans: 283500,
-  bankBalance: 113742
+  bankBalance: 113742,
+  roa: "2.1"  // Match HTML expectation for parseFloat
 };
 
 window.saccoData = window.saccoData || {
@@ -86,8 +87,8 @@ const recomputeData = () => {
     counters: carouselData.map(item => ({ value: item.number, suffix: item.description.includes('ROA') ? '%' : '', label: item.description }))
   };
   window.saccoData = { 
-    jan: janFallback,  // Use fallback with aliases
-    today: todayData,  // Use today with aliases
+    jan: { ...janFallback, roa: "2.1" },  // Ensure roa string for parseFloat
+    today: { ...todayData, roa: roaToday },
     [currentPeriod]: { ...currentMonthData, roa: roaCurrent } 
   };
   localStorage.setItem('saccoDataToday', JSON.stringify(todayData));
@@ -130,6 +131,12 @@ const { todayData, carouselData } = recomputeData();
 document.addEventListener('DOMContentLoaded', () => {
   document.body.classList.add('js-enabled');
 
+  // === FIX FOR CHARTS: Register ChartDataLabels plugin (missing in HTML, causes blank charts) ===
+  if (typeof Chart !== 'undefined' && typeof ChartDataLabels !== 'undefined') {
+    Chart.register(ChartDataLabels);
+    console.log('ChartDataLabels registered – charts should now render with labels and arrows');
+  }
+
   // Backward compat for charts – now with aliases
   if (window.SOYOSOYO) {
     window.saccoData = { 
@@ -137,6 +144,12 @@ document.addEventListener('DOMContentLoaded', () => {
       today: window.SOYOSOYO.current 
     };
     console.log('saccoData restored for legacy charts:', window.saccoData);
+  }
+
+  // Trigger chart re-render if function exists (from inline script)
+  if (typeof renderGrowthCharts === 'function') {
+    renderGrowthCharts();
+    console.log('Growth charts re-triggered after data fix');
   }
 
   // === CAROUSEL RENDER ===
@@ -263,12 +276,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const refreshedJanWithAliases = {
       ...janFallback,
       loans: janFallback.loansDisbursed,
-      bankBalance: janFallback.totalBankBalance
+      bankBalance: janFallback.totalBankBalance,
+      roa: "2.1"
     };
     window.SOYOSOYO.current = refreshedTodayWithAliases;
     window.SOYOSOYO.baseline = refreshedJanWithAliases;
     window.saccoData.jan = refreshedJanWithAliases;
     window.saccoData.today = refreshedTodayWithAliases;
+    // Re-trigger charts after update
+    if (typeof renderGrowthCharts === 'function') {
+      renderGrowthCharts();
+    }
     console.log('Projections data updated:', refreshedTodayWithAliases);
   };
 });
