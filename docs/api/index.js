@@ -12,41 +12,63 @@ app.use(express.json({ limit: "10mb" }));
 const DB_FILE = path.join(__dirname, "history.json");
 const PENDING_FILE = path.join(__dirname, "pending.json");
 
+// Ensure files exist
 for (const file of [DB_FILE, PENDING_FILE]) {
   if (!fs.existsSync(file)) fs.writeFileSync(file, "[]", "utf8");
 }
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
+// JSON helpers
 function loadJSON(file) {
   try { return JSON.parse(fs.readFileSync(file, "utf8")); } 
   catch (err) { console.error(`Error reading ${file}:`, err); return []; }
 }
-
 function saveJSON(file, data) {
   try { fs.writeFileSync(file, JSON.stringify(data, null, 2)); return true; } 
   catch (err) { console.error(`Error writing ${file}:`, err); return false; }
 }
 
+// GET history
 app.get("/api/history", async (req, res) => {
   try {
     const { rows } = await pool.query("SELECT * FROM sacco_history ORDER BY period DESC");
     const parsed = rows.map(r => ({
       ...r,
-      extra_fields: typeof r.extra_fields === 'string' ? JSON.parse(r.extra_fields) : r.extra_fields
+      extra_fields: typeof r.extra_fields === 'string' ? JSON.parse(r.extra_fields) : (r.extra_fields || {})
     }));
     res.json(parsed);
   } catch (err) {
-    console.warn("DB down, using JSON", err.message);
-    res.json(loadJSON(DB_FILE));
+    console.warn("DB unavailable, using JSON fallback:", err.message);
+    const fallback = loadJSON(DB_FILE);
+    res.json(fallback.map(r => ({
+      ...r,
+      extra_fields: typeof r.extra_fields === 'string' ? JSON.parse(r.extra_fields) : (r.extra_fields || {})
+    })));
   }
 });
 
+// Save to DB
 async function saveToDB(entry) {
   const query = `
-    INSERT INTO sacco_history (...)
+    INSERT INTO sacco_history
+    (period, members, contributions, loans_disbursed, loans_balance, total_bank_balance,
+     coop_bank, chama_soft, cytonn, total_assets, profit, roa, date_saved, extra_fields)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
-    ON CONFLICT (period) DO UPDATE SET ...
+    ON CONFLICT (period) DO UPDATE SET
+      members = $2,
+      contributions = $3,
+      loans_disbursed = $4,
+      loans_balance = $5,
+      total_bank_balance = $6,
+      coop_bank = $7,
+      chama_soft = $8,
+      cytonn = $9,
+      total_assets = $10,
+      profit = $11,
+      roa = $12,
+      date_saved = $13,
+      extra_fields = $14
   `;
   const values = [
     entry.period,
@@ -67,9 +89,9 @@ async function saveToDB(entry) {
   await pool.query(query, values);
 }
 
+// POST save
 app.post("/api/history/save", async (req, res) => {
   const p = req.body;
-  const ef = typeof p.extra_fields === 'object' ? p.extra_fields : {};
 
   const newEntry = {
     period: new Date().toISOString().slice(0,7) + "-01",
@@ -85,29 +107,57 @@ app.post("/api/history/save", async (req, res) => {
     total_assets: Number(p.total_assets || 0),
     profit: Number(p.profit || 0),
     roa: Number(p.roa || 0),
-    extra_fields: ef
+    extra_fields: p.extra_fields || {}
   };
 
   try {
     await saveToDB(newEntry);
-    const history = loadJSON(DB_FILE).filter(h => h.period !== newEntry.period);
+
+    // Update local JSON
+    let history = loadJSON(DB_FILE);
+    history = history.filter(h => h.period !== newEntry.period);
     history.push(newEntry);
     saveJSON(DB_FILE, history);
     saveJSON(PENDING_FILE, []);
+
+    console.log("Saved to DB:", newEntry.period);
     res.json({ success: true, data: newEntry });
   } catch (err) {
-    console.warn("DB save failed", err.message);
-    const pending = loadJSON(PENDING_FILE);
+    console.warn("DB save failed:", err.message);
+    let pending = loadJSON(PENDING_FILE);
     pending.push(newEntry);
     saveJSON(PENDING_FILE, pending);
-    res.json({ success: false, data: newEntry });
+
+    // Still update local JSON
+    let history = loadJSON(DB_FILE);
+    history = history.filter(h => h.period !== newEntry.period);
+    history.push(newEntry);
+    saveJSON(DB_FILE, history);
+
+    res.json({ success: false, message: "Saved locally, will retry", data: newEntry });
   }
 });
 
-setInterval(() => {
+// Retry pending every 30s
+async function retryPending() {
   const pending = loadJSON(PENDING_FILE);
-  if (pending.length) pending.forEach(entry => saveToDB(entry).catch(() => {}));
-}, 30000);
+  if (!pending.length) return;
+
+  console.log(`Retrying ${pending.length} pending entries...`);
+  const stillPending = [];
+  for (const entry of pending) {
+    try {
+      await saveToDB(entry);
+      console.log("Retry success:", entry.period);
+    } catch (err) {
+      console.warn("Retry failed:", entry.period, err.message);
+      stillPending.push(entry);
+    }
+  }
+  saveJSON(PENDING_FILE, stillPending);
+}
+
+setInterval(retryPending, 30000);
 
 const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => console.log(`API running on ${PORT}`));
+app.listen(PORT, () => console.log(`SACCO API live on port ${PORT}`));
