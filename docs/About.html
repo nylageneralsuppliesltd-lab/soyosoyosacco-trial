@@ -376,45 +376,50 @@
     }
   }
 
-  async function saveCurrentMonth(auto = false) {
-    if (!window.saccoData?.today) {
-      if (!auto) alert("Data not ready!\n\nVisit HOMEPAGE to populate, then return.");
-      return;
+async function saveCurrentMonth(auto = false) {
+  if (!window.saccoData?.today) {
+    if (!auto) alert("Data not ready!\n\nVisit HOMEPAGE to populate, then return.");
+    return;
+  }
+  const today = window.saccoData.today;
+  const ef = today.extraFields || {};
+  const bb = ef.bankBreakdown || [];
+  const saveType = auto ? 'auto' : 'manual';
+
+  const payload = {
+    members: Number(today.members || 0),
+    contributions: Number(today.contributions || 0),
+    loans_disbursed: Number(today.loansDisbursed || 0),
+    loans_balance: Number(today.loansBalance || 0),
+    total_bank_balance: Number(today.totalBankBalance || 0),
+    coop_bank: getBankValue(bb, 'Co-operative'),
+    chama_soft: getBankValue(bb, 'Chamasoft'),
+    cytonn: getBankValue(bb, 'Cytonn'),
+    total_assets: Number(ef.bookValue || 0),
+    profit: Number(today.profit || 0),
+    roa: parseFloat(today.roa) || 0,
+    extra_fields: ef
+  };
+
+  const saveAttempt = await attemptSave(payload, saveType);
+  if (saveAttempt.success) {
+    clearRetryInterval();
+    localStorage.removeItem('pendingSave');
+    lastDataHash = computeDataHash(today);
+    updateCurrentMonthInHistory(today, saveType);
+    renderFullHistory();
+    if (!auto) {
+      alert(`SAVED NOV 2025!\n\nCo-op Bank: KSh ${payload.coop_bank.toLocaleString()}\nChamasoft: KSh ${payload.chama_soft.toLocaleString()}\nCytonn: KSh ${payload.cytonn.toLocaleString()}\n\nAll values now in DB!`);
     }
-    const today = window.saccoData.today;
-    const ef = today.extraFields || {};
-    const bb = ef.bankBreakdown || [];
-    const saveType = auto ? 'auto' : 'manual';
-    const payload = {
-      members: today.members,
-      contributions: today.contributions,
-      loansDisbursed: today.loansDisbursed,
-      loansBalance: today.loansBalance,
-      total_bank_balance: today.totalBankBalance,
-      profit: today.profit,
-      roa: parseFloat(today.roa) || 0,
-      extraFields: JSON.stringify(ef)
-    };
-    const saveAttempt = await attemptSave(payload, saveType);
-    if (saveAttempt.success) {
-      clearRetryInterval();
-      localStorage.removeItem('pendingSave');
-      lastDataHash = computeDataHash(today);
-      updateCurrentMonthInHistory(today, saveType);
-      renderFullHistory();
-      if (!auto) {
-        alert(`SAVED SUCCESSFULLY!\nMonth: ${formatMonth(saveAttempt.data.period)}\nSaved at: ${formatDateTime(saveAttempt.data.dateSaved)}`);
-      }
-      loadLiveHistory();
-    } else {
-      localStorage.setItem('pendingSave', JSON.stringify({ ...payload, queuedAt: new Date().toISOString(), saveType }));
-      if (!auto) {
-        startRetry(payload, saveType);
-        alert(`Save queued – server sleeping. Retrying every 30s...\nError: ${saveAttempt.error}`);
-      }
+    loadLiveHistory();
+  } else {
+    localStorage.setItem('pendingSave', JSON.stringify({ ...payload, queuedAt: new Date().toISOString(), saveType }));
+    if (!auto) {
+      startRetry(payload, saveType);
+      alert(`Server sleeping — save queued. Will retry every 30s...\nError: ${saveAttempt.error}`);
     }
   }
-
+}
   function startRetry(payload, saveType) {
     if (retryInterval) clearRetryInterval();
     let retryCount = 0;
