@@ -315,7 +315,9 @@
 
       window.saccoHistory = {};
       data.forEach(row => {
-        const ef = row.extraFields ? JSON.parse(row.extraFields) : {};
+       const ef = row.extra_fields 
+  ? (typeof row.extra_fields === 'string' ? JSON.parse(row.extra_fields) : row.extra_fields)
+  : {};
         const bb = ef.bankBreakdown || [];
         window.saccoHistory[row.period] = {
           period: row.period,
