@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Us | Soyosoyo SACCO</title>
     <meta name="description" content="From 1998 Medicare roots to modern financial empowerment. The full story of Soyosoyo SACCO.">
-    <link rel="stylesheet" href="style.css?v=44">
+    <link rel="stylesheet" href="style.css?v=45">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -22,12 +22,14 @@
         .btn-auto-save{background:#f59e0b;color:white;margin-left:10px}
         .btn-auto-save:hover{background:#d97706;transform:translateY(-2px)}
         #fullHistoryTable{overflow-x:auto;margin-top:20px;border-radius:16px;box-shadow:0 8px 25px rgba(0,0,0,0.1);-webkit-overflow-scrolling:touch}
-        #fullHistoryTable table{width:100%;min-width:1000px;border-collapse:collapse;background:white;table-layout:fixed}
+        #fullHistoryTable table{width:100%;min-width:1200px;border-collapse:collapse;background:white;table-layout:fixed}
         #fullHistoryTable th{background:#004d1a;color:white;padding:16px 8px;text-align:center;font-weight:900;font-size:14px;white-space:nowrap}
         #fullHistoryTable td{padding:14px 8px;text-align:center;border-bottom:1px solid #e6f4ea;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
         #fullHistoryTable tr:hover{background:#fff8e1 !important}
         #fullHistoryTable tr:nth-child(even){background:#f0fdf4}
-        #fullHistoryTable td:nth-child(2),#fullHistoryTable td:nth-child(3),#fullHistoryTable td:nth-child(4),#fullHistoryTable td:nth-child(5),#fullHistoryTable td:nth-child(6),#fullHistoryTable td:nth-child(7),#fullHistoryTable td:nth-child(8){text-align:right}
+        #fullHistoryTable td:nth-child(2),#fullHistoryTable td:nth-child(3),#fullHistoryTable td:nth-child(4),#fullHistoryTable td:nth-child(5),
+        #fullHistoryTable td:nth-child(6),#fullHistoryTable td:nth-child(7),#fullHistoryTable td:nth-child(8),#fullHistoryTable td:nth-child(9),
+        #fullHistoryTable td:nth-child(10),#fullHistoryTable td:nth-child(11),#fullHistoryTable td:nth-child(12){text-align:right}
         .history-footer{text-align:center;margin-top:20px;color:#004d1a;font-weight:bold;font-size:15px}
         .current-month{background:#fff8e1 !important;font-weight:bold;box-shadow:inset 0 0 10px rgba(255,193,7,0.3)}
         @media (max-width:768px){
@@ -38,23 +40,19 @@
             #fullHistoryTable{overflow-x:hidden}
             #fullHistoryTable table{min-width:auto;font-size:12px;border:0}
             #fullHistoryTable thead{display:none}
-            /* Compact mobile cards: 3-4 lines per record */
             #fullHistoryTable tbody{display:flex;flex-direction:column;gap:8px}
             #fullHistoryTable tr{display:block;width:100%;margin-bottom:0;border:1px solid #e6f4ea;border-radius:12px;overflow:hidden;background:white;box-shadow:0 2px 8px rgba(0,0,0,0.05);transition:transform .2s;padding:8px}
             #fullHistoryTable tr:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,0.1)}
             #fullHistoryTable tr.current-month{border-color:#fbbf24;box-shadow:inset 0 0 10px rgba(255,193,7,0.3),0 2px 8px rgba(0,0,0,0.05)}
-            /* Period as header */
             #fullHistoryTable .period-header{padding:8px 12px;background:#f0fdf4;font-weight:700;color:#004d1a;font-size:14px;border-bottom:1px solid #e6f4ea;text-align:center}
-            /* Metrics in 2-column grid */
             #fullHistoryTable .metrics-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px 12px;font-size:12px}
             #fullHistoryTable .metric-item{display:flex;justify-content:space-between;align-items:center;padding:2px 0;border-bottom:1px solid #f9f9f9}
             #fullHistoryTable .metric-label{font-weight:600;color:#666;font-size:10px;text-transform:uppercase;letter-spacing:0.5px}
             #fullHistoryTable .metric-value{font-weight:500;color:#004d1a}
             #fullHistoryTable .roa-value{color:#10B981}
             #fullHistoryTable .saved-on{display:block;width:100%;padding:6px 12px;text-align:center;background:#f8fdfa;color:#666;font-size:11px;border-top:1px solid #e6f4ea;margin-top:4px}
-            /* Hide original td's, use custom structure */
             #fullHistoryTable td{display:none}
-            #fullHistoryTable td:nth-of-type(1){display:block} /* Only period shows as .period-header via JS */
+            #fullHistoryTable td:nth-of-type(1){display:block}
         }
     </style>
 </head>
@@ -137,26 +135,21 @@
   let autoSaveEnabled = localStorage.getItem('autoSaveEnabled') === 'true';
   let lastDataHash = '';
 
-  // SUPER-ROBUST DATE PARSER — works with ANY format
   function safeDate(dateInput) {
     if (!dateInput) return new Date();
-    // If it's a number (timestamp)
     if (typeof dateInput === 'number' || !isNaN(dateInput)) {
       return new Date(Number(dateInput));
     }
-    // If it's a string
     const d = new Date(dateInput);
     return isNaN(d.getTime()) ? new Date() : d;
   }
 
-  // Format: Nov-2025
   function formatMonth(period) {
     const [y, m] = period.split('-');
     const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     return `${months[parseInt(m)-1]}-${y}`;
   }
 
-  // Format: 10-Nov-2025 21:15
   function formatDateTime(dateInput) {
     const d = safeDate(dateInput);
     const day = String(d.getDate()).padStart(2,'0');
@@ -166,7 +159,6 @@
     return `${day}-${month}-${year} ${time}`;
   }
 
-  // Display: 10 Nov 2025, 21:15
   function formatDisplayDate(dateInput) {
     const d = safeDate(dateInput);
     return d.toLocaleString('en-KE', {
@@ -175,7 +167,6 @@
     }).replace(',','');
   }
 
-  // Compute data hash for change detection (includes new fields)
   function computeDataHash(today) {
     if (!today) return '';
     return JSON.stringify({
@@ -186,6 +177,10 @@
       totalBankBalance: today.totalBankBalance,
       profit: today.profit,
       roa: today.roa,
+      coopBank: today.extraFields?.coopBank || 0,
+      chamasoft: today.extraFields?.chamasoft || 0,
+      cytonn: today.extraFields?.cytonn || 0,
+      totalAssets: today.extraFields?.totalAssets || 0,
       ...today.extraFields
     });
   }
@@ -203,6 +198,7 @@
 
   function updateCurrentMonthInHistory(today, saveType = 'auto') {
     const currentPeriod = new Date().toISOString().slice(0, 7);
+    const ef = today.extraFields || {};
     window.saccoHistory[currentPeriod] = {
       period: currentPeriod,
       members: Number(today.members || 0),
@@ -212,7 +208,11 @@
       totalBankBalance: Number(today.totalBankBalance || 0),
       profit: Number(today.profit || 0),
       roa: Number(today.roa || 0),
-      extraFields: today.extraFields || {},
+      coopBank: Number(ef.coopBank || 0),
+      chamasoft: Number(ef.chamasoft || 0),
+      cytonn: Number(ef.cytonn || 0),
+      totalAssets: Number(ef.totalAssets || 0),
+      extraFields: ef,
       dateSaved: new Date().toISOString(),
       saveType: saveType
     };
@@ -231,8 +231,9 @@
     }
 
     let tableHTML = `<table><thead><tr>
-      <th>Period</th><th>Members</th><th>Contributions</th><th>Loans Disbursed</th><th>Loans Balance</th>
-      <th>Total Bank Balance</th><th>Profit</th><th>ROA</th><th>Saved On</th>
+      <th>Period</th><th>Members</th><th>Contributions</th><th>Loans Disb.</th><th>Loans Bal.</th>
+      <th>Total Bank Bal.</th><th>Coop Bank</th><th>Chamasoft</th><th>Cytonn</th><th>Total Assets</th>
+      <th>Profit</th><th>ROA</th><th>Saved On</th>
     </tr></thead><tbody>`;
 
     const currentMonthKey = new Date().toISOString().slice(0,7);
@@ -244,11 +245,15 @@
         <td data-label="Period">${formatMonth(row.period)}</td>
         <td data-label="Members">${Number(row.members).toLocaleString()}</td>
         <td data-label="Contributions">KSh ${Number(row.contributions).toLocaleString()}</td>
-        <td data-label="Loans Disbursed">KSh ${Number(row.loansDisbursed).toLocaleString()}</td>
-        <td data-label="Loans Balance">KSh ${Number(row.loansBalance).toLocaleString()}</td>
-        <td data-label="Total Bank Balance">KSh ${Number(row.totalBankBalance).toLocaleString()}</td>
+        <td data-label="Loans Disb.">KSh ${Number(row.loansDisbursed).toLocaleString()}</td>
+        <td data-label="Loans Bal.">KSh ${Number(row.loansBalance).toLocaleString()}</td>
+        <td data-label="Total Bank Bal.">KSh ${Number(row.totalBankBalance).toLocaleString()}</td>
+        <td data-label="Coop Bank">KSh ${Number(row.coopBank).toLocaleString()}</td>
+        <td data-label="Chamasoft">KSh ${Number(row.chamasoft).toLocaleString()}</td>
+        <td data-label="Cytonn">KSh ${Number(row.cytonn).toLocaleString()}</td>
+        <td data-label="Total Assets">KSh ${Number(row.totalAssets).toLocaleString()}</td>
         <td data-label="Profit">KSh ${Number(row.profit).toLocaleString()}</td>
-        <td data-label="ROA" class="roa">${Number(row.roa).toFixed(1)}</td>
+        <td data-label="ROA" class="roa">${Number(row.roa).toFixed(1)}%</td>
         <td data-label="Saved On">${formatDisplayDate(row.dateSaved)} ${saveTypeLabel}</td>
       </tr>`;
     });
@@ -256,7 +261,7 @@
     tableHTML += '</tbody></table>';
     container.innerHTML = tableHTML;
 
-    // Mobile compact render
+    // Mobile compact view
     if (window.innerWidth <= 768) {
       const tbody = container.querySelector('tbody');
       if (tbody) {
@@ -267,10 +272,13 @@
           const metricsHtml = `
             <div class="metrics-grid">
               <div class="metric-item"><span class="metric-label">Members</span><span class="metric-value">${Number(row.members).toLocaleString()}</span></div>
-              <div class="metric-item"><span class="metric-label">Loans Bal.</span><span class="metric-value">KSh ${Number(row.loansBalance).toLocaleString()}</span></div>
               <div class="metric-item"><span class="metric-label">Contributions</span><span class="metric-value">KSh ${Number(row.contributions).toLocaleString()}</span></div>
-              <div class="metric-item"><span class="metric-label">T. Bank Bal.</span><span class="metric-value">KSh ${Number(row.totalBankBalance).toLocaleString()}</span></div>
-              <div class="metric-item"><span class="metric-label">Loans Disb.</span><span class="metric-value">KSh ${Number(row.loansDisbursed).toLocaleString()}</span></div>
+              <div class="metric-item"><span class="metric-label">Loans Bal.</span><span class="metric-value">KSh ${Number(row.loansBalance).toLocaleString()}</span></div>
+              <div class="metric-item"><span class="metric-label">Total Bank</span><span class="metric-value">KSh ${Number(row.totalBankBalance).toLocaleString()}</span></div>
+              <div class="metric-item"><span class="metric-label">Coop Bank</span><span class="metric-value">KSh ${Number(row.coopBank).toLocaleString()}</span></div>
+              <div class="metric-item"><span class="metric-label">Chamasoft</span><span class="metric-value">KSh ${Number(row.chamasoft).toLocaleString()}</span></div>
+              <div class="metric-item"><span class="metric-label">Cytonn</span><span class="metric-value">KSh ${Number(row.cytonn).toLocaleString()}</span></div>
+              <div class="metric-item"><span class="metric-label">Total Assets</span><span class="metric-value">KSh ${Number(row.totalAssets).toLocaleString()}</span></div>
               <div class="metric-item"><span class="metric-label">Profit</span><span class="metric-value">KSh ${Number(row.profit).toLocaleString()}</span></div>
             </div>
             <div class="saved-on">
@@ -302,6 +310,7 @@
 
       window.saccoHistory = {};
       data.forEach(row => {
+        const ef = row.extraFields ? JSON.parse(row.extraFields) : {};
         window.saccoHistory[row.period] = {
           period: row.period,
           members: Number(row.members || 0),
@@ -311,7 +320,11 @@
           totalBankBalance: Number(row.totalBankBalance || 0),
           profit: Number(row.profit || 0),
           roa: Number(row.roa || 0),
-          extraFields: row.extraFields ? JSON.parse(row.extraFields) : {},
+          coopBank: Number(ef.coopBank || 0),
+          chamasoft: Number(ef.chamasoft || 0),
+          cytonn: Number(ef.cytonn || 0),
+          totalAssets: Number(ef.totalAssets || 0),
+          extraFields: ef,
           dateSaved: row.dateSaved,
           saveType: 'manual'
         };
@@ -321,7 +334,6 @@
       console.warn('Server sleeping → using local backup', err);
       loadPersistedData();
     } finally {
-      // Ensure current month is shown and updated from carousel/local
       initCarouselData();
       if (window.saccoData?.today) {
         const currentHash = computeDataHash(window.saccoData.today);
@@ -335,28 +347,18 @@
     }
   }
 
-  // Initialize data from carousel.js or localStorage
   function initCarouselData() {
     if (!window.saccoData?.today) {
       const savedData = localStorage.getItem('saccoDataToday');
       if (savedData) {
         window.saccoData.today = JSON.parse(savedData);
-        console.log('Loaded current data from localStorage');
       } else {
         window.saccoData.today = {
-          members: 0,
-          contributions: 0,
-          loansDisbursed: 0,
-          loansBalance: 0,
-          totalBankBalance: 0,
-          profit: 0,
-          roa: 0,
-          extraFields: {}
+          members: 0, contributions: 0, loansDisbursed: 0, loansBalance: 0,
+          totalBankBalance: 0, profit: 0, roa: 0, extraFields: {}
         };
-        console.log('Initialized empty data - visit home to populate');
       }
     }
-    // Trigger carousel update if available
     if (typeof window.updateCarouselData === 'function') {
       window.updateCarouselData();
     }
@@ -383,6 +385,7 @@
       return;
     }
     const today = window.saccoData.today;
+    const ef = today.extraFields || {};
     const saveType = auto ? 'auto' : 'manual';
     const payload = {
       members: today.members,
@@ -392,7 +395,13 @@
       total_bank_balance: today.totalBankBalance,
       profit: today.profit,
       roa: parseFloat(today.roa) || 0,
-      extraFields: JSON.stringify(today.extraFields || {})
+      extraFields: JSON.stringify({
+        coopBank: Number(ef.coopBank || 0),
+        chamasoft: Number(ef.chamasoft || 0),
+        cytonn: Number(ef.cytonn || 0),
+        totalAssets: Number(ef.totalAssets || 0),
+        ...ef
+      })
     };
     const saveAttempt = await attemptSave(payload, saveType);
     if (saveAttempt.success) {
@@ -433,7 +442,7 @@
         loadLiveHistory();
       } else if (retryCount >= maxRetries) {
         clearRetryInterval();
-        console.warn('Max retries reached for auto-save');
+        console.warn('Max retries reached');
       }
     }, RETRY_DELAY);
   }
@@ -450,16 +459,14 @@
     localStorage.setItem('autoSaveEnabled', autoSaveEnabled);
     document.getElementById('autoSaveText').textContent = autoSaveEnabled ? 'AUTO-SAVE ON' : 'AUTO-SAVE OFF';
     document.getElementById('autoSaveToggle').style.background = autoSaveEnabled ? '#10B981' : '#f59e0b';
-    if (autoSaveEnabled) {
-      saveCurrentMonth(true);
-    }
+    if (autoSaveEnabled) saveCurrentMonth(true);
   }
 
   function checkPendingSave() {
     const pending = localStorage.getItem('pendingSave');
     if (pending) {
       const { saveType, ...payload } = JSON.parse(pending);
-      console.log('Pending save detected – retrying now...');
+      console.log('Pending save detected – retrying...');
       startRetry(payload, saveType);
     }
   }
@@ -468,13 +475,10 @@
     const history = Object.values(window.saccoHistory);
     if (history.length === 0) { alert("No data to download yet."); return; }
 
-    let csv = "Period,Members,Contributions,Loans Disbursed,Loans Balance,Total Bank Balance,Profit,ROA %,Saved On,Save Type,Bank Breakdown,Cumulative Loans,Book Value\n";
+    let csv = "Period,Members,Contributions,Loans Disbursed,Loans Balance,Total Bank Balance,Coop Bank,Chamasoft,Cytonn,Total Assets,Profit,ROA %,Saved On,Save Type\n";
     history.sort((a,b)=>a.period.localeCompare(b.period)).forEach(d => {
       const saveTypeLabel = d.saveType === 'auto' ? 'Auto' : 'Manual';
-      const bankBreakdown = JSON.stringify(d.extraFields.bankBreakdown || []);
-      const cumLoans = d.extraFields.cumulativeLoansDisbursed || 0;
-      const bookValue = d.extraFields.bookValue || 0;
-      csv += `${formatMonth(d.period)},${d.members},${d.contributions},${d.loansDisbursed},${d.loansBalance},${d.totalBankBalance},${d.profit},${d.roa},"${formatDateTime(d.dateSaved)}",${saveTypeLabel},"${bankBreakdown}",${cumLoans},${bookValue}\n`;
+      csv += `${formatMonth(d.period)},${d.members},${d.contributions},${d.loansDisbursed},${d.loansBalance},${d.totalBankBalance},${d.coopBank},${d.chamasoft},${d.cytonn},${d.totalAssets},${d.profit},${d.roa},"${formatDateTime(d.dateSaved)}",${saveTypeLabel}\n`;
     });
 
     const blob = new Blob([csv], {type:'text/csv'});
@@ -508,11 +512,15 @@ Contributions: KSh ${latest.contributions.toLocaleString()}${contribGrowth}
 Loans Disbursed: KSh ${latest.loansDisbursed.toLocaleString()}
 Loans Balance: KSh ${latest.loansBalance.toLocaleString()}
 Total Bank Balance: KSh ${latest.totalBankBalance.toLocaleString()}
+Cooperative Bank: KSh ${latest.coopBank.toLocaleString()}
+Chamasoft: KSh ${latest.chamasoft.toLocaleString()}
+Cytonn: KSh ${latest.cytonn.toLocaleString()}
+Total Assets: KSh ${latest.totalAssets.toLocaleString()}
 Profit: KSh ${latest.profit.toLocaleString()}
 ROA: ${latest.roa}%
 
 Saved on ${savedTime}
-We are growing together!
+We are growing stronger every month!
 
 #SoyosoyoSACCO #CoopPower #Mombasa #KenyaCoast
 https://soyosoyo-sacco-api.onrender.com`;
@@ -528,11 +536,9 @@ https://soyosoyo-sacco-api.onrender.com`;
     checkPendingSave();
     loadLiveHistory();
 
-    // Update auto-save toggle UI
     document.getElementById('autoSaveText').textContent = autoSaveEnabled ? 'AUTO-SAVE ON' : 'AUTO-SAVE OFF';
     document.getElementById('autoSaveToggle').style.background = autoSaveEnabled ? '#10B981' : '#f59e0b';
 
-    // Polling for changes and auto-save
     setInterval(() => {
       initCarouselData();
       if (window.saccoData?.today) {
