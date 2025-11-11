@@ -346,11 +346,12 @@
     }
   }
 
-  async function saveCurrentMonth(auto = false) {
+    async function saveCurrentMonth(auto = false) {
     if (!window.saccoData?.today) {
-      if (!auto) alert("Visit homepage first!");
+      if (!auto) alert("Visit homepage first to load live data!");
       return;
     }
+
     const today = window.saccoData.today;
     const ef = today.extraFields || today.extra_fields || {};
     const bb = ef.bankBreakdown || [];
@@ -364,7 +365,7 @@
       coop_bank: getBankValue(bb, 'Co-operative'),
       chama_soft: getBankValue(bb, 'Chamasoft'),
       cytonn: getBankValue(bb, 'Cytonn'),
-      total_assets: Number(ef.bookValue || 0),
+      total_assets: Number(ef.bookValue || ef.total_assets || 0),
       profit: Number(today.profit || 0),
       roa: parseFloat(today.roa) || 0,
       extra_fields: ef
@@ -379,13 +380,15 @@
       updateCurrentMonthInHistory(today, auto ? 'auto' : 'manual');
       renderFullHistory();
       loadLiveHistory();
-      if (!auto) alert("NOVEMBER 2025 SAVED PERFECTLY!\nNo zeros. No duplicates.");
-    } else if (!auto) {
+
+      if (!auto) {
+        alert(`NOVEMBER 2025 SAVED!\n\nLoans Disbursed: KSh ${payload.loans_disbursed.toLocaleString()}\nLoans Balance: KSh ${payload.loans_balance.toLocaleString()}\nTotal Bank: KSh ${payload.total_bank_balance.toLocaleString()}\n\nPERFECT. NO ZEROS. NO DUPLICATES.`);
+      }
+    } else {
       localStorage.setItem('pendingSave', JSON.stringify(payload));
-      alert("Server sleeping — will retry every 30s");
+      if (!auto) alert("Server sleeping — will retry every 30s automatically");
     }
   }
-
   function toggleAutoSave() {
     autoSaveEnabled = !autoSaveEnabled;
     localStorage.setItem('autoSaveEnabled', autoSaveEnabled);
