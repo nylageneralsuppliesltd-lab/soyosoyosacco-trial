@@ -1,4 +1,5 @@
 // docs/api/index.js - Soyosoyo SACCO API with PostgreSQL + JSON fallback
+require('dotenv').config(); // load .env
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
@@ -19,7 +20,7 @@ for (const file of [DB_FILE, PENDING_FILE]) {
 
 // PostgreSQL connection
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL || "<your_neon_connection_string>"
+  connectionString: process.env.DATABASE_URL
 });
 
 // Helper functions
@@ -78,14 +79,23 @@ async function saveToDB(entry) {
 
 // POST: Save current month
 app.post("/api/history/save", async (req, res) => {
-  // Use snake_case to match DB
+  // Map frontend camelCase to backend snake_case
   const {
-    members=0, contributions=0, loans_disbursed=0, loans_balance=0, total_bank_balance=0,
-    coop_bank=0, chama_soft=0, cytonn=0, total_assets=0, profit=0, roa=0,
-    extra_fields="{}"
+    members = 0,
+    contributions = 0,
+    loansDisbursed = 0,
+    loansBalance = 0,
+    totalBankBalance = 0,
+    coopBank = 0,
+    chamaSoft = 0,
+    cytonn = 0,
+    totalAssets = 0,
+    profit = 0,
+    roa = 0,
+    extraFields = "{}"
   } = req.body;
 
-  const currentPeriod = new Date().toISOString().slice(0,7);
+  const currentPeriod = new Date().toISOString().slice(0,7) + "-01"; // YYYY-MM-01
   const date_saved = new Date().toISOString();
 
   const newEntry = {
@@ -93,16 +103,16 @@ app.post("/api/history/save", async (req, res) => {
     date_saved,
     members: Number(members),
     contributions: Number(contributions),
-    loans_disbursed: Number(loans_disbursed),
-    loans_balance: Number(loans_balance),
-    total_bank_balance: Number(total_bank_balance),
-    coop_bank: Number(coop_bank),
-    chama_soft: Number(chama_soft),
+    loans_disbursed: Number(loansDisbursed),
+    loans_balance: Number(loansBalance),
+    total_bank_balance: Number(totalBankBalance),
+    coop_bank: Number(coopBank),
+    chama_soft: Number(chamaSoft),
     cytonn: Number(cytonn),
-    total_assets: Number(total_assets),
+    total_assets: Number(totalAssets),
     profit: Number(profit),
     roa: Number(roa),
-    extra_fields
+    extra_fields: typeof extraFields === "string" ? extraFields : JSON.stringify(extraFields)
   };
 
   try {
@@ -110,7 +120,7 @@ app.post("/api/history/save", async (req, res) => {
     await saveToDB(newEntry);
 
     // Save locally
-    const history = loadJSON(DB_FILE).filter(h => h.period!==currentPeriod);
+    const history = loadJSON(DB_FILE).filter(h => h.period !== currentPeriod);
     history.push(newEntry);
     saveJSON(DB_FILE, history);
 
@@ -128,34 +138,38 @@ app.post("/api/history/save", async (req, res) => {
     saveJSON(PENDING_FILE, pending);
 
     // Update local JSON
-    const history = loadJSON(DB_FILE).filter(h => h.period!==currentPeriod);
+    const history = loadJSON(DB_FILE).filter(h => h.period !== currentPeriod);
     history.push(newEntry);
     saveJSON(DB_FILE, history);
 
-    res.json({ success:false, message:"DB unavailable, saved temporarily", data:newEntry });
+    res.json({ success: false, message: "DB unavailable, saved temporarily", data: newEntry });
   }
 });
 
 // Retry pending entries every 30s
 async function retryPending() {
   const pending = loadJSON(PENDING_FILE);
-  if(!pending.length) return;
+  if (!pending.length) return;
 
   const retryLimit = 10;
-  for(let attempt=1; attempt<=retryLimit; attempt++){
+  for (let attempt = 1; attempt <= retryLimit; attempt++) {
     console.log(`🔄 Retry attempt ${attempt} for pending saves`);
-    const remaining=[];
-    for(const entry of pending){
-      try { await saveToDB(entry); } 
-      catch(err){ console.warn("Retry failed for period", entry.period, err.message); remaining.push(entry);}
+    const remaining = [];
+    for (const entry of pending) {
+      try {
+        await saveToDB(entry);
+      } catch(err) {
+        console.warn("Retry failed for period", entry.period, err.message);
+        remaining.push(entry);
+      }
     }
     saveJSON(PENDING_FILE, remaining);
-    if(!remaining.length) break;
-    await new Promise(r=>setTimeout(r,30000));
+    if (!remaining.length) break;
+    await new Promise(r => setTimeout(r, 30000));
   }
 }
 
 setInterval(retryPending, 30000);
 
 const PORT = process.env.PORT || 10000;
-app.listen(PORT, ()=>console.log(`🚀 Soyosoyo SACCO API running on port ${PORT}`));
+app.listen(PORT, () => console.log(`🚀 Soyosoyo SACCO API running on port ${PORT}`));
