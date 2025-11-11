@@ -378,30 +378,47 @@
     }
   }
 
-async function saveCurrentMonth(auto = false) {
-  if (!window.saccoData?.today) {
-    if (!auto) alert("Data not ready!\n\nVisit HOMEPAGE first, then return.");
-    return;
-  }
-  const today = window.saccoData.today;
+function updateCurrentMonthInHistory(today, saveType = 'auto') {
+  const currentPeriod = new Date().toISOString().slice(0, 7);
   const ef = today.extraFields || today.extra_fields || {};
   const bb = ef.bankBreakdown || [];
 
-  const payload = {
+  window.saccoHistory[currentPeriod] = {
+    period: currentPeriod,
     members: Number(today.members || 0),
     contributions: Number(today.contributions || 0),
-    loans_disbursed: Number(today.loans_disbursed || today.loansDisbursed || today.loansdisbursed || 0),
-    loans_balance: Number(today.loans_balance || today.loansBalance || today.loansbalance || 0),
-    total_bank_balance: Number(today.total_bank_balance || today.totalBankBalance || today.totalbankbalance || 0),
-    coop_bank: getBankValue(bb, 'Co-operative'),
-    chama_soft: getBankValue(bb, 'Chamasoft'),
-    cytonn: getBankValue(bb, 'Cytonn'),
-    total_assets: Number(ef.bookValue || ef.total_assets || 0),
+    
+    // BULLETPROOF FIELD READING
+    loansDisbursed: Number(
+      today.loans_disbursed || 
+      today.loansDisbursed || 
+      today.loansdisbursed || 
+      0
+    ),
+    loansBalance: Number(
+      today.loans_balance || 
+      today.loansBalance || 
+      today.loansbalance || 
+      0
+    ),
+    totalBankBalance: Number(
+      today.total_bank_balance || 
+      today.totalBankBalance || 
+      today.totalbankbalance || 
+      0
+    ),
+    
     profit: Number(today.profit || 0),
-    roa: parseFloat(today.roa || 0) || 0,
-    extra_fields: ef
+    roa: Number(today.roa || 0),
+    coopBank: getBankValue(bb, 'Co-operative'),
+    chamasoft: getBankValue(bb, 'Chamasoft'),
+    cytonn: getBankValue(bb, 'Cytonn'),
+    totalAssets: Number(ef.bookValue || ef.total_assets || 0),
+    extraFields: ef,
+    dateSaved: new Date().toISOString(),
+    saveType: saveType
   };
-
+}
   const saveAttempt = await attemptSave(payload, auto ? 'auto' : 'manual');
   if (saveAttempt.success) {
     clearRetryInterval();
