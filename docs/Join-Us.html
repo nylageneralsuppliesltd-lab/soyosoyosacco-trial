@@ -42,8 +42,8 @@
         </a>
         <a href="https://chamasoft.com/login" class="member-portal">Member Portal</a>
         <button id="menu-toggle" aria-label="Toggle Menu">
-    <span></span><span></span><span></span>
-</button>
+            <span></span><span></span><span></span>
+        </button>
         <nav class="nav-links">
             <a href="index.html">Home</a>
             <a href="Products.html">Products</a>
@@ -146,19 +146,19 @@
 </footer>
 
 <!-- ==================== SCRIPTS ==================== -->
-    <script>
+<script>
   document.getElementById('currentYear').textContent = new Date().getFullYear();
 </script>
 <script src="./scripts/main.js"></script>
-
 <script src="./scripts/chatbot.js"></script>
 <script src="./scripts/carousel-join.js"></script>
 <script src="./scripts/seo.js"></script>
-    <script>
+
+<script>
   // AUTO-YEAR MAGIC — UPDATES EVERY YEAR TEXT AUTOMATICALLY
   document.addEventListener('DOMContentLoaded', () => {
     const currentYear = new Date().getFullYear();
-    const startYear = 2025; // Change only if you want a different base year
+    const startYear = 2025;
 
     // Update copyright
     document.querySelectorAll('footer p, .copyright, [class*="copyright"], [id*="copyright"]').forEach(el => {
@@ -242,4 +242,29 @@
       "@type": "Offer",
       "itemOffered": {
         "@type": "FinancialProduct",
-        "name
+        "name": "Soyosoyo SACCO Membership",
+        "description": "Join Soyosoyo SACCO with just KSh 200 via M-PESA. Instant access to 1% monthly loans, high dividends, and financial empowerment."
+      },
+      "price": "200",
+      "priceCurrency": "KES",
+      "availability": "https://schema.org/InStock",
+      "url": "https://soyosoyosacco.com/Join-Us.html"
+    }
+  ],
+  "potentialAction": {
+    "@type": "JoinAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": "https://soyosoyosacco.com/Join-Us.html",
+      "actionPlatform": [
+        "http://schema.org/DesktopWebPlatform",
+        "http://schema.org/MobileWebPlatform"
+      ]
+    },
+    "name": "Join Soyosoyo SACCO"
+  }
+}
+</script>
+
+</body>
+</html>
