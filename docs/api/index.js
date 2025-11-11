@@ -12,15 +12,12 @@ app.use(express.json({ limit: "10mb" }));
 const DB_FILE = path.join(__dirname, "history.json");
 const PENDING_FILE = path.join(__dirname, "pending.json");
 
-// Ensure local JSON files exist
 for (const file of [DB_FILE, PENDING_FILE]) {
   if (!fs.existsSync(file)) fs.writeFileSync(file, "[]", "utf8");
 }
 
-// PostgreSQL connection
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
-// Helper functions
 function loadJSON(file) {
   try { return JSON.parse(fs.readFileSync(file, "utf8")); } 
   catch (err) { console.error(`Error reading ${file}:`, err); return []; }
@@ -31,41 +28,25 @@ function saveJSON(file, data) {
   catch (err) { console.error(`Error writing ${file}:`, err); return false; }
 }
 
-// GET: Fetch all history
 app.get("/api/history", async (req, res) => {
   try {
     const { rows } = await pool.query("SELECT * FROM sacco_history ORDER BY period DESC");
-    const parsedRows = rows.map(row => ({
-      ...row,
-      extra_fields: typeof row.extra_fields === 'string' 
-        ? JSON.parse(row.extra_fields) 
-        : (row.extra_fields || {})
+    const parsed = rows.map(r => ({
+      ...r,
+      extra_fields: typeof r.extra_fields === 'string' ? JSON.parse(r.extra_fields) : r.extra_fields
     }));
-    res.json(parsedRows);
+    res.json(parsed);
   } catch (err) {
-    console.warn("DB unavailable, using local JSON fallback:", err.message);
-    const fallback = loadJSON(DB_FILE);
-    res.json(fallback.map(item => ({
-      ...item,
-      extra_fields: typeof item.extra_fields === 'string' 
-        ? JSON.parse(item.extra_fields) 
-        : (item.extra_fields || {})
-    })));
+    console.warn("DB down, using JSON", err.message);
+    res.json(loadJSON(DB_FILE));
   }
 });
 
-// Save to PostgreSQL
 async function saveToDB(entry) {
   const query = `
-    INSERT INTO sacco_history
-    (period, members, contributions, loans_disbursed, loans_balance, total_bank_balance,
-     coop_bank, chama_soft, cytonn, total_assets, profit, roa, date_saved, extra_fields)
-    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
-    ON CONFLICT (period)
-    DO UPDATE SET 
-      members=$2, contributions=$3, loans_disbursed=$4, loans_balance=$5, total_bank_balance=$6,
-      coop_bank=$7, chama_soft=$8, cytonn=$9, total_assets=$10, profit=$11, roa=$12,
-      date_saved=$13, extra_fields=$14
+    INSERT INTO sacco_history (...)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+    ON CONFLICT (period) DO UPDATE SET ...
   `;
   const values = [
     entry.period,
@@ -86,80 +67,47 @@ async function saveToDB(entry) {
   await pool.query(query, values);
 }
 
-// POST: Save current month
 app.post("/api/history/save", async (req, res) => {
-  const payload = req.body;
+  const p = req.body;
+  const ef = typeof p.extra_fields === 'object' ? p.extra_fields : {};
 
-  // Map camelCase from carousel.js → snake_case for DB
   const newEntry = {
     period: new Date().toISOString().slice(0,7) + "-01",
     date_saved: new Date().toISOString(),
-    members: Number(payload.members || 0),
-    contributions: Number(payload.contributions || 0),
-    loans_disbursed: Number(payload.loans_disbursed || payload.loansDisbursed || 0),
-    loans_balance: Number(payload.loans_balance || payload.loansBalance || 0),
-    total_bank_balance: Number(payload.total_bank_balance || payload.totalBankBalance || payload.bankBalance || 0),
-    coop_bank: Number(payload.coop_bank || payload.coopBank || 0),
-    chama_soft: Number(payload.chama_soft || payload.chamaSoft || 0),
-    cytonn: Number(payload.cytonn || payload.cytonnBank || 0),
-    total_assets: Number(payload.total_assets || payload.bookValue || 0),
-    profit: Number(payload.profit || 0),
-    roa: Number(payload.roa || 0),
-    extra_fields: typeof payload.extra_fields === 'object' 
-      ? payload.extra_fields 
-      : (payload.extraFields || {})
+    members: Number(p.members || 0),
+    contributions: Number(p.contributions || 0),
+    loans_disbursed: Number(p.loans_disbursed || 0),
+    loans_balance: Number(p.loans_balance || 0),
+    total_bank_balance: Number(p.total_bank_balance || 0),
+    coop_bank: Number(p.coop_bank || 0),
+    chama_soft: Number(p.chama_soft || 0),
+    cytonn: Number(p.cytonn || 0),
+    total_assets: Number(p.total_assets || 0),
+    profit: Number(p.profit || 0),
+    roa: Number(p.roa || 0),
+    extra_fields: ef
   };
-
-  // Ensure extra_fields is stringified
-  newEntry.extra_fields = JSON.stringify(newEntry.extra_fields);
 
   try {
     await saveToDB(newEntry);
-
     const history = loadJSON(DB_FILE).filter(h => h.period !== newEntry.period);
     history.push(newEntry);
     saveJSON(DB_FILE, history);
     saveJSON(PENDING_FILE, []);
-
-    console.log("Saved successfully to DB:", newEntry.period);
     res.json({ success: true, data: newEntry });
   } catch (err) {
-    console.warn("DB save failed, storing to pending.json:", err.message);
+    console.warn("DB save failed", err.message);
     const pending = loadJSON(PENDING_FILE);
     pending.push(newEntry);
     saveJSON(PENDING_FILE, pending);
-
-    const history = loadJSON(DB_FILE).filter(h => h.period !== newEntry.period);
-    history.push(newEntry);
-    saveJSON(DB_FILE, history);
-
-    res.json({ success: false, message: "DB unavailable, saved temporarily", data: newEntry });
+    res.json({ success: false, data: newEntry });
   }
 });
 
-// Retry pending entries every 30s
-async function retryPending() {
+setInterval(() => {
   const pending = loadJSON(PENDING_FILE);
-  if (!pending.length) return;
-
-  for (let attempt = 1; attempt <= 10; attempt++) {
-    console.log(`Retry attempt ${attempt} for pending saves`);
-    const remaining = [];
-    for (const entry of pending) {
-      try { 
-        await saveToDB(entry); 
-      } catch (err) { 
-        console.warn("Retry failed for period", entry.period, err.message); 
-        remaining.push(entry);
-      }
-    }
-    saveJSON(PENDING_FILE, remaining);
-    if (!remaining.length) break;
-    await new Promise(r => setTimeout(r, 30000));
-  }
-}
-
-setInterval(retryPending, 30000);
+  if (pending.length) pending.forEach(entry => saveToDB(entry).catch(() => {}));
+}, 30000);
 
 const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => console.log(`SACCO API running on port ${PORT}`));
+app.listen(PORT, () => console.log(`API running on ${PORT}`));
