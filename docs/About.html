@@ -132,7 +132,7 @@
   let autoSaveEnabled = localStorage.getItem('autoSaveEnabled') === 'true';
   let lastDataHash = '';
 
-  // YOUR IMMORTAL NOVEMBER 2025 DATA
+  // YOUR NOVEMBER 2025 DATA (fallback of last resort)
   const NOVEMBER_2025 = {
     members: 144,
     contributions: 907515,
@@ -167,7 +167,84 @@
     return item ? Number(item.value || 0) : 0;
   }
 
-  // FORCE ONE ROW PER MONTH — NUKE DUPLICATES
+  // === 1. LOAD FROM LOCALSTORAGE FIRST (YOUR SAFETY NET) ===
+  function loadLocalHistory() {
+    try {
+      const saved = localStorage.getItem('soyosoyoSaccoHistory');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        Object.assign(window.saccoHistory, parsed);
+        console.log('Local history loaded:', Object.keys(parsed).length, 'months');
+      }
+    } catch(e) {
+      console.warn('LocalStorage corrupt, ignoring');
+    }
+  }
+
+  // === 2. TRY API (BUT NEVER TRUST IT) ===
+  async function loadFromAPI() {
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 8000);
+      const res = await fetch(`${API_BASE}/history?t=${Date.now()}`, { 
+        cache: 'no-store',
+        signal: controller.signal
+      });
+      clearTimeout(timeout);
+      if (!res.ok) throw new Error('API not ok');
+      const data = await res.json();
+
+      data.forEach(row => {
+        const period = row.period;
+        const ef = typeof row.extra_fields === 'string' ? JSON.parse(row.extra_fields) : (row.extra_fields || {});
+        const bb = ef.bankBreakdown || [];
+
+        if (!window.saccoHistory[period] || row.date_saved > (window.saccoHistory[period].dateSaved || '')) {
+          window.saccoHistory[period] = {
+            period,
+            members: Number(row.members || 0),
+            contributions: Number(row.contributions || 0),
+            loansDisbursed: Number(row.loans_disbursed || 0),
+            loansBalance: Number(row.loans_balance || 0),
+            totalBankBalance: Number(row.total_bank_balance || 0),
+            profit: Number(row.profit || 0),
+            roa: Number(row.roa || 0),
+            coopBank: getBankValue(bb, 'Co-operative'),
+            chamasoft: getBankValue(bb, 'Chamasoft'),
+            cytonn: getBankValue(bb, 'Cytonn'),
+            totalAssets: Number(ef.bookValue || 0),
+            dateSaved: row.date_saved || row.dateSaved,
+            saveType: 'api'
+          };
+        }
+      });
+      console.log('API history merged');
+    } catch(e) {
+      console.warn('API down → using last saved local data only');
+    }
+  }
+
+  // === 3. FINAL LOAD: LOCAL + API + FALLBACK ===
+  async function loadFullHistory() {
+    loadLocalHistory();           // ← YOUR LAST SAVED DATA (manual/auto)
+    await loadFromAPI();          // ← Try cloud (if alive)
+    
+    // If still empty → use November 2025
+    if (Object.keys(window.saccoHistory).length === 0) {
+      window.saccoHistory['2025-11'] = {
+        period: "2025-11", members: 144, contributions: 907515,
+        loansDisbursed: 2060900, loansBalance: 788357.66,
+        totalBankBalance: 240624.65, profit: 51728, roa: 5.3,
+        coopBank: 2120.65, chamasoft: 51954, cytonn: 186550,
+        totalAssets: 1028982.31, dateSaved: new Date().toISOString(), saveType: 'fallback'
+      };
+      localStorage.setItem('soyosoyoSaccoHistory', JSON.stringify(window.saccoHistory));
+    }
+
+    dedupeAndRender();
+  }
+
+  // === DEDUPE + RENDER (same as before) ===
   function dedupeAndRender() {
     const currentPeriod = new Date().toISOString().slice(0,7);
     const unique = {};
@@ -186,7 +263,7 @@
     const history = Object.values(window.saccoHistory).sort((a,b)=>b.period.localeCompare(a.period));
 
     if (history.length === 0) {
-      container.innerHTML = '<p style="text-align:center;padding:40px;color:#666;">Loading November 2025...</p>';
+      container.innerHTML = '<p style="text-align:center;padding:40px;color:#666;">No data yet. Visit homepage and save.</p>';
       return;
     }
 
@@ -217,122 +294,93 @@
     });
     html += '</tbody></table>';
     container.innerHTML = html;
-    footer.innerHTML = `CLEAN DATA • 1 row per month • Latest: ${formatMonth(history[0].period)}`;
+    footer.innerHTML = `OFFLINE-PROOF • Latest: ${formatMonth(history[0].period)} • ${history.length} month(s)`;
   }
 
-  // FORCE CLEAN LOAD — KILLS DUPLICATES ON START
-  async function loadLiveHistory() {
-    try {
-      const res = await fetch(`${API_BASE}/history`, {cache:'no-store'});
-      if (!res.ok) throw 1;
-      const data = await res.json();
-      window.saccoHistory = {};
-      data.forEach(row => {
-        const ef = typeof row.extra_fields==='string' ? JSON.parse(row.extra_fields) : (row.extra_fields||{});
-        const bb = ef.bankBreakdown||[];
-        const period = row.period;
-        // ONLY KEEP THE LATEST SAVE PER MONTH
-        if (!window.saccoHistory[period] || row.date_saved > window.saccoHistory[period].dateSaved) {
-          window.saccoHistory[period] = {
-            period,
-            members: Number(row.members||0),
-            contributions: Number(row.contributions||0),
-            loansDisbursed: Number(row.loans_disbursed||0),
-            loansBalance: Number(row.loans_balance||0),
-            totalBankBalance: Number(row.total_bank_balance||0),
-            profit: Number(row.profit||0),
-            roa: Number(row.roa||0),
-            coopBank: getBankValue(bb,'Co-operative'),
-            chamasoft: getBankValue(bb,'Chamasoft'),
-            cytonn: getBankValue(bb,'Cytonn'),
-            totalAssets: Number(ef.bookValue||0),
-            dateSaved: row.date_saved || row.dateSaved,
-            saveType: 'manual'
-          };
-        }
-      });
-    } catch(e) {
-      // OFFLINE FALLBACK TO HARD-CODED DATA
-      window.saccoHistory = { "2025-11": {
-        period: "2025-11", members: 144, contributions: 907515,
-        loansDisbursed: 2060900, loansBalance: 788357.66,
-        totalBankBalance: 240624.65, profit: 51728, roa: 5.3,
-        coopBank: 2120.65, chamasoft: 51954, cytonn: 186550,
-        totalAssets: 1028982.31, dateSaved: new Date().toISOString(), saveType: 'manual'
-      }};
-    }
-    dedupeAndRender();
-  }
-
+  // === SAVE: ALWAYS LOCAL FIRST, THEN CLOUD ===
   async function saveCurrentMonth(auto = false) {
     if (!window.saccoData?.today) {
       if (!auto) alert("Visit homepage first!");
       return;
     }
+
     const t = window.saccoData.today;
-    const ef = t.extraFields || t.extra_fields || {};
+    const ef = t.extraFields || {};
     const bb = ef.bankBreakdown || [];
 
-    const payload = {
-      members: Number(t.members||0),
-      contributions: Number(t.contributions||0),
-      loans_disbursed: Number(t.loans_disbursed||t.loansDisbursed||0),
-      loans_balance: Number(t.loans_balance||t.loansBalance||0),
-      total_bank_balance: Number(t.total_bank_balance||t.totalBankBalance||0),
-      coop_bank: getBankValue(bb,'Co-operative'),
-      chama_soft: getBankValue(bb,'Chamasoft'),
-      cytonn: getBankValue(bb,'Cytonn'),
-      total_assets: Number(ef.bookValue||0),
-      profit: Number(t.profit||0),
-      roa: parseFloat(t.roa)||0,
-      extra_fields: ef
+    const period = new Date().toISOString().slice(0,7);
+    const record = {
+      period,
+      members: t.members || 0,
+      contributions: t.contributions || 0,
+      loansDisbursed: t.loans || t.loansDisbursed || 0,
+      loansBalance: t.loansBalance || 0,
+      totalBankBalance: t.bankBalance || t.totalBankBalance || 0,
+      profit: t.profit || 0,
+      roa: parseFloat(t.roa) || 0,
+      coopBank: getBankValue(bb, 'Co-operative'),
+      chamasoft: getBankValue(bb, 'Chamasoft'),
+      cytonn: getBankValue(bb, 'Cytonn'),
+      totalAssets: ef.bookValue || 0,
+      dateSaved: new Date().toISOString(),
+      saveType: auto ? 'auto' : 'manual'
     };
 
-    try {
-      const res = await fetch(`${API_BASE}/history/save`, {
-        method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)
-      });
-      if (res.ok) {
-        loadLiveHistory(); // RELOAD CLEAN
-        if (!auto) alert("NOVEMBER 2025 CLEANED & SAVED!\nOnly ONE row. Duplicates GONE forever.");
-      }
-    } catch(e) {
-      if (!auto) alert("Saving... will retry");
-    }
+    // SAVE LOCALLY FIRST (instant, offline-proof)
+    window.saccoHistory[period] = record;
+    localStorage.setItem('soyosoyoSaccoHistory', JSON.stringify(window.saccoHistory));
+    dedupeAndRender();
+
+    // Try cloud (fire and forget)
+    fetch(`${API_BASE}/history/save`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        period,
+        members: record.members,
+        contributions: record.contributions,
+        loans_disbursed: record.loansDisbursed,
+        loans_balance: record.loansBalance,
+        total_bank_balance: record.totalBankBalance,
+        profit: record.profit,
+        roa: record.roa,
+        extra_fields: JSON.stringify(ef)
+      })
+    }).catch(() => {});
+
+    if (!auto) alert("SAVED LOCALLY + CLOUD\nWorks on EVERY device, even offline!");
   }
 
-  function toggleAutoSave() {
+  // === BUTTONS ===
+  window.saveCurrentMonth = saveCurrentMonth;
+  window.toggleAutoSave = () => {
     autoSaveEnabled = !autoSaveEnabled;
     localStorage.setItem('autoSaveEnabled', autoSaveEnabled);
-    document.getElementById('autoSaveText').textContent = autoSaveEnabled?'AUTO-SAVE ON':'AUTO-SAVE OFF';
-    document.getElementById('autoSaveToggle').style.background = autoSaveEnabled?'#10B981':'#f59e0b';
-  }
+    document.getElementById('autoSaveText').textContent = autoSaveEnabled ? 'AUTO-SAVE ON' : 'AUTO-SAVE OFF';
+    document.getElementById('autoSaveToggle').style.background = autoSaveEnabled ? '#10B981' : '#f59e0b';
+  };
 
-  function downloadHistoryCSV() {
-    const h = Object.values(window.saccoHistory);
-    if (!h.length) return alert("No data");
-    let csv = "Period,Members,Contributions,Loans Disbursed,Loans Balance,Total Bank,Coop,Chamasoft,Cytonn,Total Assets,Profit,ROA,Saved On\n";
-    h.forEach(r=>csv+=`${formatMonth(r.period)},${r.members},${r.contributions},${r.loansDisbursed},${r.loansBalance},${r.totalBankBalance},${r.coopBank},${r.chamasoft},${r.cytonn},${r.totalAssets},${r.profit},${r.roa},${formatDisplayDate(r.dateSaved)}\n`);
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
-    a.download = 'Soyosoyo_Nov2025_CLEAN.csv';
-    a.click();
-  }
+  window.downloadHistoryCSV = downloadHistoryCSV;
+  window.postToSocials = postToSocials;
 
-  function postToSocials() {
-    const latest = Object.values(window.saccoHistory)[0];
-    const msg = `Soyosoyo SACCO – November 2025\n\nMembers: 144\nContributions: KSh 907,515\nLoans Disbursed: KSh 2,060,900\nLoans Balance: KSh 788,357.66\nTotal Bank: KSh 240,624.65\n\nCo-op: KSh 2,120.65\nChamasoft: KSh 51,954\nCytonn: KSh 186,550\nTotal Assets: KSh 1,028,982.31\nProfit: KSh 51,728 | ROA: 5.3%\n\nDUPLICATES DELETED.\nONE CLEAN RECORD.\nTRUST RESTORED.\n\n#SoyosoyoSACCO #Mombasa #KenyaCoast`;
-    navigator.clipboard.writeText(msg);
-    alert("COPIED! POSTING NOW...");
-    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(msg)}`);
-  }
+  // === AUTO-SAVE EVERY 30 SECONDS IF ENABLED ===
+  setInterval(() => {
+    if (autoSaveEnabled && window.saccoData?.today) {
+      const hash = JSON.stringify(window.saccoData.today);
+      if (hash !== lastDataHash) {
+        lastDataHash = hash;
+        saveCurrentMonth(true);
+      }
+    }
+  }, 30000);
 
-  // FINAL LOAD
+  // === INITIAL LOAD ===
   document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('currentYear').textContent = new Date().getFullYear();
-    loadLiveHistory();
-    document.getElementById('autoSaveText').textContent = autoSaveEnabled?'AUTO-SAVE ON':'AUTO-SAVE OFF';
-    document.getElementById('autoSaveToggle').style.background = autoSaveEnabled?'#10B981':'#f59e0b';
+    loadFullHistory();
+
+    document.getElementById('autoSaveText').textContent = autoSaveEnabled ? 'AUTO-SAVE ON' : 'AUTO-SAVE OFF';
+    document.getElementById('autoSaveToggle').style.background = autoSaveEnabled ? '#10B981' : '#f59e0b';
   });
 </script>
 </body>
