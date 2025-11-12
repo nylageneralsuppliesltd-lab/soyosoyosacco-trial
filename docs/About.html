@@ -155,7 +155,7 @@
   let isSyncing = false;
 
   function getCurrentPeriod() {
-    return new Date().toISOString().slice(0, 7); // YYYY-MM
+    return new Date().toISOString().slice(0, 7);
   }
 
   function formatMonth(p) {
@@ -178,7 +178,7 @@
     return keys.some(k => Math.abs((live[k] || 0) - (db[k] || 0)) > 0.01);
   }
 
-  // LIVE DATA UPDATE
+  // LIVE DATA UPDATE — NOW TRIGGERS AUTO-SAVE + VISUAL ALERT
   function showLiveData() {
     if (!window.saccoData?.today) {
       setTimeout(showLiveData, 300);
@@ -207,61 +207,63 @@
       saveType: 'live'
     };
 
-    const previous = window.saccoHistory[period];
     window.saccoHistory[period] = liveRecord;
 
-    if (!previous || recordsDiffer(liveRecord, previous)) {
-      renderFullHistory();
+    // UPDATE HASH + AUTO-SAVE
+    const payloadForHash = {
+      period,
+      members: liveRecord.members,
+      contributions: liveRecord.contributions,
+      loans_disbursed: liveRecord.loansDisbursed,
+      loans_balance: liveRecord.loansBalance,
+      total_bank_balance: liveRecord.totalBankBalance,
+      coop_bank: liveRecord.coopBank,
+      chama_soft: liveRecord.chamasoft,
+      cytonn: liveRecord.cytonn,
+      total_assets: liveRecord.totalAssets,
+      profit: liveRecord.profit,
+      roa: liveRecord.roa
+    };
+    const newHash = JSON.stringify(payloadForHash);
+    if (newHash !== lastDataHash) {
+      lastDataHash = newHash;
+      if (autoSaveEnabled) {
+        console.log('Data changed → Auto-saving...');
+        saveCurrentMonth(true);
+      }
     }
 
-    document.getElementById('historyFooter').innerHTML = 
-      `<strong style="color:#d97706">LIVE • ${formatMonth(period)}</strong>`;
+    renderFullHistory(); // Always render with sync status
+    updateSyncStatus(liveRecord);
+  }
 
-    const dbRecord = previous?.saveType === 'db' ? previous : null;
-    if (autoSaveEnabled && recordsDiffer(liveRecord, dbRecord) && !isSyncing) {
-      startSyncLoop(liveRecord);
+  // NEW: VISUAL OUT-OF-SYNC ALERT
+  function updateSyncStatus(liveRecord) {
+    const dbRecord = window.saccoHistory[liveRecord.period]?.saveType === 'db' ? window.saccoHistory[liveRecord.period] : null;
+    const isOutOfSync = recordsDiffer(liveRecord, dbRecord);
+
+    const footer = document.getElementById('historyFooter');
+    const saveBtn = document.querySelector('.btn-save');
+    const container = document.querySelector('.history-section');
+
+    if (isOutOfSync) {
+      footer.innerHTML = `<strong style="color:#EF4444; animation: pulse 1.5s infinite;">OUT OF SYNC • SAVE NOW</strong>`;
+      saveBtn.style.background = '#EF4444';
+      saveBtn.style.animation = 'pulse 1.5s infinite';
+      saveBtn.innerHTML = 'SAVE NOW!';
+      container.style.border = '3px solid #EF4444';
+      container.style.boxShadow = '0 0 30px rgba(239,68,68,0.4)';
+    } else {
+      footer.innerHTML = `<strong style="color:#10B981">SYNCED • All phones up to date</strong>`;
+      saveBtn.style.background = '#10B981';
+      saveBtn.style.animation = 'none';
+      saveBtn.innerHTML = 'SAVE THIS MONTH\'S DATA';
+      container.style.border = '2px solid #86efac';
+      container.style.boxShadow = '0 15px 40px rgba(0,0,0,0.08)';
     }
   }
 
-  function startSyncLoop(liveRecord) {
-    if (isSyncing) return;
-    isSyncing = true;
-    console.log('Mismatch → Starting auto-sync loop...');
-    document.getElementById('historyFooter').innerHTML += ' <span style="color:#d97706;">SYNCING...</span>';
-
-    syncInterval = setInterval(async () => {
-      await saveCurrentMonth(true);
-
-      try {
-        const res = await fetch(`${API_BASE}/history?t=${Date.now()}`, { cache: 'no-store' });
-        if (res.ok) {
-          const data = await res.json();
-          const dbRec = data.find(r => r.period === liveRecord.period);
-          if (dbRec && !recordsDiffer(liveRecord, {
-            members: Number(dbRec.members || 0),
-            contributions: Number(dbRec.contributions || 0),
-            loansDisbursed: Number(dbRec.loans_disbursed || 0),
-            loansBalance: Number(dbRec.loans_balance || 0),
-            totalBankBalance: Number(dbRec.total_bank_balance || 0),
-            coopBank: Number(dbRec.coop_bank || 0),
-            chamasoft: Number(dbRec.chama_soft || 0),
-            cytonn: Number(dbRec.cytonn || 0),
-            totalAssets: Number(dbRec.total_assets || 0),
-            profit: Number(dbRec.profit || 0),
-            roa: Number(dbRec.roa || 0)
-          })) {
-            console.log('Sync complete!');
-            document.getElementById('historyFooter').innerHTML = 
-              `<strong style="color:#10B981">SYNCED FROM DATABASE</strong>`;
-            clearInterval(syncInterval);
-            isSyncing = false;
-          }
-        }
-      } catch (e) { console.warn('Sync check error:', e); }
-    }, 30000);
-  }
-
-  // BULLETPROOF SAVE FUNCTION
+  // AUTO-SAVE WITH VISUAL FEEDBACK
   window.saveCurrentMonth = async function(isAutoSave = false) {
     if (!window.saccoData?.today) {
       if (!isAutoSave) alert("No data! Visit homepage first.");
@@ -272,31 +274,27 @@
     const ef = t.extraFields || {};
     const bb = ef.bankBreakdown || [];
     const period = getCurrentPeriod();
-    const cleanData = JSON.parse(JSON.stringify(t));
 
     const payload = {
       period,
-      members: cleanData.members || 0,
-      contributions: cleanData.contributions || 0,
-      loans_disbursed: cleanData.loansDisbursed || cleanData.loans || 0,
-      loans_balance: cleanData.loansBalance || 0,
-      total_bank_balance: cleanData.totalBankBalance || cleanData.bankBalance || 0,
+      members: t.members || 0,
+      contributions: t.contributions || 0,
+      loans_disbursed: t.loansDisbursed || t.loans || 0,
+      loans_balance: t.loansBalance || 0,
+      total_bank_balance: t.totalBankBalance || t.bankBalance || 0,
       coop_bank: bb.find(b => b.name?.includes('Co-operative'))?.value || 0,
       chama_soft: bb.find(b => b.name?.includes('Chamasoft'))?.value || 0,
       cytonn: bb.find(b => b.name?.includes('Cytonn'))?.value || 0,
       total_assets: ef.bookValue || 0,
-      profit: cleanData.profit || 0,
-      roa: parseFloat(cleanData.roa) || 0
+      profit: t.profit || 0,
+      roa: parseFloat(t.roa) || 0
     };
-
-    const newHash = JSON.stringify(payload);
-    if (isAutoSave && newHash === lastDataHash) return;
-    lastDataHash = newHash;
 
     const optimisticRecord = { ...payload, dateSaved: new Date().toISOString(), saveType: 'db' };
     window.saccoHistory[period] = optimisticRecord;
     localStorage.setItem(CACHE_KEY, JSON.stringify(window.saccoHistory));
     renderFullHistory();
+    updateSyncStatus(optimisticRecord);
 
     try {
       const res = await fetch(`${API_BASE}/history/save`, {
@@ -306,14 +304,13 @@
       });
 
       if (!res.ok) throw new Error(await res.text());
-      const json = await res.json();
-      if (json.success && !isAutoSave) {
-        alert("SAVED TO DATABASE!\nAll devices now in sync");
+      if (!isAutoSave) {
+        alert("SAVED! All phones now in sync");
       }
     } catch (err) {
       console.error('Save failed:', err);
-      if (!isAutoSave) alert("Save failed. Retrying silently...");
-      showLiveData(); // revert optimistic UI
+      if (!isAutoSave) alert("Save failed. Try again.");
+      showLiveData();
     }
   };
 
@@ -324,10 +321,10 @@
     const text = document.getElementById('autoSaveText');
     text.textContent = autoSaveEnabled ? 'AUTO-SAVE ON' : 'AUTO-SAVE OFF';
     btn.style.background = autoSaveEnabled ? '#10B981' : '#f59e0b';
-    if (autoSaveEnabled) showLiveData();
+    showLiveData();
   };
 
-  window.downloadHistoryCSV = function() { alert("CSV download coming soon!"); };
+  window.downloadHistoryCSV = function() { alert("CSV coming soon!"); };
   window.postToSocials = function() { alert("Social post coming soon!"); };
 
   function loadCache() {
@@ -370,15 +367,12 @@
       if (changed) {
         localStorage.setItem(CACHE_KEY, JSON.stringify(window.saccoHistory));
         renderFullHistory();
-        document.getElementById('historyFooter').innerHTML = 
-          `<strong style="color:#10B981">SYNCED FROM DATABASE</strong>`;
       }
     } catch(e) {
       setTimeout(syncWithDB, 20000);
     }
   }
 
-  // BULLETPROOF RENDER — NEVER CRASHES
   function renderFullHistory() {
     const container = document.getElementById('fullHistoryTable');
     const history = Object.values(window.saccoHistory)
@@ -387,14 +381,11 @@
     const isMobile = window.innerWidth <= 768;
 
     if (history.length === 0) {
-      container.innerHTML = '<p style="text-align:center;padding:40px;color:#666;">Loading data...</p>';
+      container.innerHTML = '<p style="text-align:center;padding:40px;color:#666;">Loading history...</p>';
       return;
     }
 
-    const fmt = (num) => {
-      if (num === null || num === undefined || isNaN(num)) return '0';
-      return Number(num).toLocaleString();
-    };
+    const fmt = (num) => (num === null || num === undefined || isNaN(num)) ? '0' : Number(num).toLocaleString();
 
     let html = '';
     if (isMobile) {
@@ -455,11 +446,23 @@
     container.innerHTML = html;
   }
 
+  // ADD PULSE ANIMATION
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+  `;
+  document.head.appendChild(style);
+
   window.addEventListener('resize', () => setTimeout(renderFullHistory, 100));
 
   document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('currentYear').textContent = new Date().getFullYear();
     loadCache();
+    renderFullHistory();
     syncWithDB();
     showLiveData();
 
