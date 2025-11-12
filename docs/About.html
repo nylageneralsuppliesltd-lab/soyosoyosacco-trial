@@ -151,8 +151,9 @@
   let autoSaveEnabled = localStorage.getItem('autoSaveEnabled') === 'true';
   let lastDataHash = '';
   const CACHE_KEY = 'soyosoyoSaccoHistory';
-  let syncInterval = null;
-  let isSyncing = false;
+  let autoSyncTimeout = null;
+  let retryCount = 0;
+  const MAX_RETRIES = 10;
 
   function getCurrentPeriod() {
     return new Date().toISOString().slice(0, 7);
@@ -178,7 +179,6 @@
     return keys.some(k => Math.abs((live[k] || 0) - (db[k] || 0)) > 0.01);
   }
 
-  // LIVE DATA UPDATE — NOW TRIGGERS AUTO-SAVE + VISUAL ALERT
   function showLiveData() {
     if (!window.saccoData?.today) {
       setTimeout(showLiveData, 300);
@@ -209,7 +209,6 @@
 
     window.saccoHistory[period] = liveRecord;
 
-    // UPDATE HASH + AUTO-SAVE
     const payloadForHash = {
       period,
       members: liveRecord.members,
@@ -225,19 +224,23 @@
       roa: liveRecord.roa
     };
     const newHash = JSON.stringify(payloadForHash);
+
     if (newHash !== lastDataHash) {
       lastDataHash = newHash;
+
       if (autoSaveEnabled) {
-        console.log('Data changed → Auto-saving...');
-        saveCurrentMonth(true);
+        console.log('Data changed → Scheduling auto-save...');
+        clearTimeout(autoSyncTimeout);
+        autoSyncTimeout = setTimeout(() => {
+          saveCurrentMonth(true);
+        }, 2000);
       }
     }
 
-    renderFullHistory(); // Always render with sync status
+    renderFullHistory();
     updateSyncStatus(liveRecord);
   }
 
-  // NEW: VISUAL OUT-OF-SYNC ALERT
   function updateSyncStatus(liveRecord) {
     const dbRecord = window.saccoHistory[liveRecord.period]?.saveType === 'db' ? window.saccoHistory[liveRecord.period] : null;
     const isOutOfSync = recordsDiffer(liveRecord, dbRecord);
@@ -247,23 +250,30 @@
     const container = document.querySelector('.history-section');
 
     if (isOutOfSync) {
-      footer.innerHTML = `<strong style="color:#EF4444; animation: pulse 1.5s infinite;">OUT OF SYNC • SAVE NOW</strong>`;
-      saveBtn.style.background = '#EF4444';
+      if (retryCount > 0) {
+        footer.innerHTML = `<strong style="color:#F59E0B; animation: pulse 2s infinite;">OFFLINE • WILL SYNC WHEN BACK (${retryCount}/${MAX_RETRIES})</strong>`;
+        saveBtn.innerHTML = 'WAITING FOR INTERNET...';
+        saveBtn.style.background = '#F59E0B';
+      } else {
+        footer.innerHTML = `<strong style="color:#EF4444; animation: pulse 1.5s infinite;">UNSAVED CHANGES • AUTO-SAVING...</strong>`;
+        saveBtn.innerHTML = 'AUTO-SAVING...';
+        saveBtn.style.background = '#EF4444';
+      }
       saveBtn.style.animation = 'pulse 1.5s infinite';
-      saveBtn.innerHTML = 'SAVE NOW!';
       container.style.border = '3px solid #EF4444';
       container.style.boxShadow = '0 0 30px rgba(239,68,68,0.4)';
     } else {
-      footer.innerHTML = `<strong style="color:#10B981">SYNCED • All phones up to date</strong>`;
+      footer.innerHTML = `<strong style="color:#10B981">FULLY SYNCED • All phones updated</strong>`;
       saveBtn.style.background = '#10B981';
       saveBtn.style.animation = 'none';
-      saveBtn.innerHTML = 'SAVE THIS MONTH\'S DATA';
+      saveBtn.innerHTML = 'SYNCED';
       container.style.border = '2px solid #86efac';
       container.style.boxShadow = '0 15px 40px rgba(0,0,0,0.08)';
+      retryCount = 0;
+      clearTimeout(autoSyncTimeout);
     }
   }
 
-  // AUTO-SAVE WITH VISUAL FEEDBACK
   window.saveCurrentMonth = async function(isAutoSave = false) {
     if (!window.saccoData?.today) {
       if (!isAutoSave) alert("No data! Visit homepage first.");
@@ -290,6 +300,7 @@
       roa: parseFloat(t.roa) || 0
     };
 
+    // Optimistic UI
     const optimisticRecord = { ...payload, dateSaved: new Date().toISOString(), saveType: 'db' };
     window.saccoHistory[period] = optimisticRecord;
     localStorage.setItem(CACHE_KEY, JSON.stringify(window.saccoHistory));
@@ -300,17 +311,39 @@
       const res = await fetch(`${API_BASE}/history/save`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
+        signal: AbortSignal.timeout(10000) // 10s timeout
       });
 
-      if (!res.ok) throw new Error(await res.text());
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      
+      console.log('Auto-saved successfully');
+      retryCount = 0;
+      updateSyncStatus(optimisticRecord);
       if (!isAutoSave) {
         alert("SAVED! All phones now in sync");
       }
     } catch (err) {
-      console.error('Save failed:', err);
-      if (!isAutoSave) alert("Save failed. Try again.");
-      showLiveData();
+      console.warn('Auto-save failed (attempt', retryCount + 1 + '):', err.message);
+      retryCount++;
+      
+      if (retryCount <= MAX_RETRIES) {
+        const delay = Math.min(5000 * retryCount, 30000); // exponential backoff
+        setTimeout(() => saveCurrentMonth(true), delay);
+      }
+      
+      // Show offline state
+      const footer = document.getElementById('historyFooter');
+      if (retryCount <= MAX_RETRIES) {
+        footer.innerHTML = `<strong style="color:#F59E0B; animation: pulse 2s infinite;">OFFLINE • Retrying in ${Math.round(delay/1000)}s (${retryCount}/${MAX_RETRIES})</strong>`;
+      } else {
+        footer.innerHTML = `<strong style="color:#EF4444;">OFFLINE • Max retries reached. Data saved locally.</strong>`;
+      }
+      
+      if (!isAutoSave) {
+        alert("Save failed. Try again.");
+        showLiveData();
+      }
     }
   };
 
@@ -418,8 +451,13 @@
       }).join('');
     } else {
       html = `<table><thead><tr>
-        <th>Period</th><th>Members</th><th>Contributions</th><th>Loans<br>Disbursed</th><th>Loans<br>Balance</th>
-        <th>Total<br>Bank</th><th>Co-op</th><th>Chama-<br>soft</th><th>Cytonn</th><th>Total<br>Assets</th>
+        <th>Period</th><th>Members</th><th>Contributions</th><th>Loans
+Disbursed</th><th>Loans
+Balance</th>
+        <th>Total
+Bank</th><th>Co-op</th><th>Chama-
+soft</th><th>Cytonn</th><th>Total
+Assets</th>
         <th>Profit</th><th>ROA %</th><th>Saved On</th>
       </tr></thead><tbody>`;
       history.forEach(r => {
@@ -438,7 +476,8 @@
           <td>${fmt(r.totalAssets)}</td>
           <td>${fmt(r.profit)}</td>
           <td>${r.roa ? Number(r.roa).toFixed(1) : '0.0'}</td>
-          <td>${formatDisplayDate(r.dateSaved || new Date())}<br><small>${label}</small></td>
+          <td>${formatDisplayDate(r.dateSaved || new Date())}
+<small>${label}</small></td>
         </tr>`;
       });
       html += '</tbody></table>';
@@ -458,7 +497,6 @@
   document.head.appendChild(style);
 
   window.addEventListener('resize', () => setTimeout(renderFullHistory, 100));
-
   document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('currentYear').textContent = new Date().getFullYear();
     loadCache();
@@ -473,6 +511,13 @@
   });
 
   window.addEventListener('saccoDataUpdated', showLiveData);
+  window.addEventListener('online', () => {
+    console.log('Back online → Resuming sync');
+    retryCount = 0;
+    if (autoSaveEnabled) saveCurrentMonth(true);
+  });
 </script>
+
+
 </body>
 </html>
