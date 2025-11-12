@@ -451,13 +451,8 @@
       }).join('');
     } else {
       html = `<table><thead><tr>
-        <th>Period</th><th>Members</th><th>Contributions</th><th>Loans
-Disbursed</th><th>Loans
-Balance</th>
-        <th>Total
-Bank</th><th>Co-op</th><th>Chama-
-soft</th><th>Cytonn</th><th>Total
-Assets</th>
+        <th>Period</th><th>Members</th><th>Contributions</th><th>Loans<br>Disbursed</th><th>Loans<br>Balance</th>
+        <th>Total<br>Bank</th><th>Co-op</th><th>Chama-<br>soft</th><th>Cytonn</th><th>Total<br>Assets</th>
         <th>Profit</th><th>ROA %</th><th>Saved On</th>
       </tr></thead><tbody>`;
       history.forEach(r => {
@@ -476,8 +471,7 @@ Assets</th>
           <td>${fmt(r.totalAssets)}</td>
           <td>${fmt(r.profit)}</td>
           <td>${r.roa ? Number(r.roa).toFixed(1) : '0.0'}</td>
-          <td>${formatDisplayDate(r.dateSaved || new Date())}
-<small>${label}</small></td>
+          <td>${formatDisplayDate(r.dateSaved || new Date())}<br><small>${label}</small></td>
         </tr>`;
       });
       html += '</tbody></table>';
@@ -508,6 +502,33 @@ Assets</th>
     const btn = document.getElementById('autoSaveToggle');
     text.textContent = autoSaveEnabled ? 'AUTO-SAVE ON' : 'AUTO-SAVE OFF';
     btn.style.background = autoSaveEnabled ? '#10B981' : '#f59e0b';
+
+    // EMBEDDED AUTO-CLICK WATCHER: Starts monitoring for red state
+    let autoClickObserver = null;
+    function startAutoClickWatcher() {
+      if (autoClickObserver) return; // Already running
+
+      autoClickObserver = setInterval(() => {
+        const saveBtn = document.querySelector('.btn-save');
+        const footer = document.getElementById('historyFooter');
+        if (saveBtn && footer && 
+            (saveBtn.style.background === 'rgb(239, 68, 68)' || // Red background (exact RGB for #EF4444)
+             footer.innerHTML.includes('UNSAVED CHANGES') || 
+             footer.innerHTML.includes('OUT OF SYNC') ||
+             footer.innerHTML.includes('AUTO-SAVING'))) {
+          console.log('Red state detected → Auto-saving...');
+          saveCurrentMonth(false); // Triggers manual save (like button click)
+          // Optional: Stop after one save (uncomment below)
+          // clearInterval(autoClickObserver);
+          // autoClickObserver = null;
+        }
+      }, 3000); // Check every 3 seconds
+
+      console.log('Auto-click watcher started. It will save when red.');
+    }
+
+    // Start the watcher on load (runs on history/about page)
+    startAutoClickWatcher();
   });
 
   window.addEventListener('saccoDataUpdated', showLiveData);
@@ -517,7 +538,5 @@ Assets</th>
     if (autoSaveEnabled) saveCurrentMonth(true);
   });
 </script>
-
-
 </body>
 </html>
