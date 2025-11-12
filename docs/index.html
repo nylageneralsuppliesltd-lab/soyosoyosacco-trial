@@ -432,238 +432,191 @@
 <script src="./scripts/projections.js"></script>
 <script src="./scripts/member-carousel.js"></script>
 
-<!-- FINAL ULTIMATE CHARTS + ROA v2 + PROJECTED YIELD (NO ERRORS) -->
+<!-- FINAL BULLETPROOF CHARTS + ROA v2 + YIELD + EXTERNAL LOANS (NO CRASHES) -->
 <script>
-  // Safely register plugins
   function registerPlugins() {
-    if (typeof Chart !== 'undefined') {
-      if (typeof ChartDataLabels !== 'undefined') {
-        Chart.register(ChartDataLabels);
-      }
-
-      const finalGrowthArrowPlugin = {
-        id: 'finalGrowthArrow',
-        afterDraw: function(chart) {
-          if (!chart || !chart.ctx || !chart.scales || !chart.data?.datasets?.[0]) return;
-          const dataset = chart.data.datasets[0];
-          if (dataset.data.length < 2) return;
-          
-          const janVal = dataset.data[0];
-          const todayVal = dataset.data[1];
-          if (janVal === undefined || todayVal === undefined) return;
-
-          const growthPercent = janVal === 0 ? (todayVal === 0 ? 0 : 100) : ((todayVal - janVal) / Math.abs(janVal)) * 100;
-          const isPositive = todayVal > janVal;
-
-          const xScale = chart.scales.x;
-          const yScale = chart.scales.y;
-          if (!xScale || !yScale) return;
-
-          const x1 = xScale.getPixelForValue(0);
-          const x2 = xScale.getPixelForValue(1);
-          const y1 = yScale.getPixelForValue(janVal);
-          const y2 = yScale.getPixelForValue(todayVal);
-
-          if (!Number.isFinite(x1) || !Number.isFinite(x2) || !Number.isFinite(y1) || !Number.isFinite(y2)) return;
-
-          const ctx = chart.ctx;
-          ctx.save();
-          ctx.strokeStyle = isPositive ? '#10B981' : '#EF4444';
-          ctx.lineWidth = 5;
-          ctx.lineCap = 'round';
-
-          ctx.beginPath();
-          ctx.moveTo(x1, y1);
-          ctx.lineTo(x2, y2);
-          ctx.stroke();
-
-          const headLength = 18;
-          const angle = Math.atan2(y2 - y1, x2 - x1);
-          ctx.beginPath();
-          ctx.moveTo(x2, y2);
-          ctx.lineTo(x2 - headLength * Math.cos(angle - Math.PI / 6), y2 - headLength * Math.sin(angle - Math.PI / 6));
-          ctx.lineTo(x2 - headLength * Math.cos(angle + Math.PI / 6), y2 - headLength * Math.sin(angle + Math.PI / 6));
-          ctx.closePath();
-          ctx.fillStyle = isPositive ? '#10B981' : '#EF4444';
-          ctx.fill();
-
-          if (Math.abs(growthPercent) > 0.1) {
-            const midX = (x1 + x2) / 2;
-            const midY = (y1 + y2) / 2 - 25;
-            ctx.font = 'bold 16px Lato';
-            ctx.fillStyle = isPositive ? '#10B981' : '#EF4444';
-            ctx.textAlign = 'center';
-            ctx.fillText(`${growthPercent >= 0 ? '+' : ''}${growthPercent.toFixed(1)}%`, midX, midY);
-          }
-          ctx.restore();
-        }
-      };
-      Chart.register(finalGrowthArrowPlugin);
+    if (typeof Chart !== 'undefined' && typeof ChartDataLabels !== 'undefined') {
+      Chart.register(ChartDataLabels);
     }
+
+    const arrowPlugin = {
+      id: 'growthArrow',
+      afterDraw: chart => {
+        if (!chart?.ctx || !chart.scales) return;
+        const dataset = chart.data.datasets[0];
+        if (!dataset || dataset.data.length < 2) return;
+        const [janVal, todayVal] = dataset.data;
+        if (janVal === undefined || todayVal === undefined) return;
+
+        const xScale = chart.scales.x;
+        const yScale = chart.scales.y;
+        const x1 = xScale.getPixelForValue(0);
+        const x2 = xScale.getPixelForValue(1);
+        const y1 = yScale.getPixelForValue(janVal);
+        const y2 = yScale.getPixelForValue(todayVal);
+
+        if (![x1,x2,y1,y2].every(Number.isFinite)) return;
+
+        const ctx = chart.ctx;
+        ctx.save();
+        ctx.strokeStyle = todayVal > janVal ? '#10B981' : '#EF4444';
+        ctx.lineWidth = 5;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+
+        const headLen = 18;
+        const angle = Math.atan2(y2 - y1, x2 - x1);
+        ctx.beginPath();
+        ctx.moveTo(x2, y2);
+        ctx.lineTo(x2 - headLen * Math.cos(angle - Math.PI / 6), y2 - headLen * Math.sin(angle - Math.PI / 6));
+        ctx.lineTo(x2 - headLen * Math.cos(angle + Math.PI / 6), y2 - headLen * Math.sin(angle + Math.PI / 6));
+        ctx.closePath();
+        ctx.fillStyle = todayVal > janVal ? '#10B981' : '#EF4444';
+        ctx.fill();
+
+        const growth = janVal === 0 ? (todayVal === 0 ? 0 : 100) : ((todayVal - janVal) / Math.abs(janVal)) * 100;
+        if (Math.abs(growth) > 0.1) {
+          const midX = (x1 + x2) / 2;
+          const midY = (y1 + y2) / 2 - 25;
+          ctx.font = 'bold 16px Lato';
+          ctx.fillStyle = todayVal > janVal ? '#10B981' : '#EF4444';
+          ctx.textAlign = 'center';
+          ctx.fillText(`${growth >= 0 ? '+' : ''}${growth.toFixed(1)}%`, midX, midY);
+        }
+        ctx.restore();
+      }
+    };
+    Chart.register(arrowPlugin);
   }
 
-  // NEW: Calculate Projected Annual Yield from loan mix
   function calculateProjectedYield() {
-    const loanTypes = window.loanTypesToday || [];
-    if (loanTypes.length === 0) return 0;
-
-    const totalLoans = loanTypes.reduce((sum, t) => sum + t.value, 0);
-    if (totalLoans === 0) return 0;
-
-    let weightedYield = 0;
-    loanTypes.forEach(type => {
+    const types = window.loanTypesToday || [];
+    if (!types.length) return 0;
+    const total = types.reduce((s, t) => s + t.value, 0);
+    if (total === 0) return 0;
+    return types.reduce((sum, t) => {
       let rate = 0;
-      if (type.name.toLowerCase().includes('development')) rate = 12;
-      else if (type.name.toLowerCase().includes('medicare') || type.name.toLowerCase().includes('education')) rate = 4;
-      else if (type.name.toLowerCase().includes('emergency')) rate = 36;
-      // Add more rules if new loan types appear
-
-      const weight = type.value / totalLoans;
-      weightedYield += rate * weight;
-    });
-
-    return weightedYield; // e.g. 18.7
+      if (t.name.toLowerCase().includes('development')) rate = 12;
+      else if (t.name.toLowerCase().includes('medicare') || t.name.toLowerCase().includes('education')) rate = 4;
+      else if (t.name.toLowerCase().includes('emergency')) rate = 36;
+      return sum + rate * (t.value / total);
+    }, 0);
   }
 
-  // Enhanced growth calc
-  function calculateGrowth(janVal, todayVal, metric) {
-    if (janVal === 0) return todayVal === 0 ? { percent: 0, label: '0%', isImproving: true } : { percent: 100, label: '+100%', isImproving: true };
-    const rawChange = ((todayVal - janVal) / Math.abs(janVal)) * 100;
-    const isImproving = todayVal > janVal;
-    const label = `${rawChange >= 0 ? '+' : ''}${rawChange.toFixed(1)}%`;
-    return { percent: rawChange, label, isImproving };
-  }
-
-  // UPDATED PIE CHART + YIELD DISPLAY
   function renderLoanTypesPie() {
-    let loanTypes = window.loanTypesToday || [];
     const canvas = document.getElementById('chartLoanTypes');
     const container = canvas?.parentElement;
-    if (!canvas || loanTypes.length === 0) return;
+    if (!canvas || !window.loanTypesToday?.length) return;
 
-    // Filter out junk (Api Culture, etc.)
-    loanTypes = loanTypes.filter(t => t.name && t.value > 0 && !t.name.toLowerCase().includes('api'));
+    let loanTypes = window.loanTypesToday.filter(t => t.name && t.value > 0 && !t.name.toLowerCase().includes('api'));
+    if (loanTypes.length === 0) return;
 
     if (Chart.getChart(canvas)) Chart.getChart(canvas).destroy();
 
-    const total = loanTypes.reduce((sum, type) => sum + type.value, 0);
-    const labels = loanTypes.map(type => type.name);
-    const data = loanTypes.map(type => (type.value / total) * 100);
+    const total = loanTypes.reduce((s, t) => s + t.value, 0);
+    const labels = loanTypes.map(t => t.name);
+    const data = loanTypes.map(t => (t.value / total) * 100);
     const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'];
 
-    // CALCULATE YIELD
-    const projectedYield = calculateProjectedYield();
-    const yieldText = projectedYield > 0 ? `${projectedYield.toFixed(1)}% p.a. expected yield` : 'No loans';
-
-    // UPDATE YIELD DISPLAY (create if not exists)
+    const yieldPct = calculateProjectedYield();
     let yieldEl = document.getElementById('projectedYield');
     if (!yieldEl) {
       yieldEl = document.createElement('div');
       yieldEl.id = 'projectedYield';
-      yieldEl.style.cssText = `
-        text-align: center; margin-top: 12px; padding: 10px; 
-        background: linear-gradient(135deg, #10B981, #34D399); 
-        color: white; font-weight: 900; font-size: 15px; 
-        border-radius: 12px; box-shadow: 0 4px 15px rgba(16,185,129,0.3);
-      `;
+      yieldEl.style.cssText = 'text-align:center;margin-top:12px;padding:10px;background:linear-gradient(135deg,#10B981,#34D399);color:white;font-weight:900;font-size:15px;border-radius:12px;box-shadow:0 4px 15px rgba(16,185,129,0.3);';
       container.appendChild(yieldEl);
     }
-    yieldEl.innerHTML = `<i class="fas fa-chart-line"></i> ${yieldText}`;
+    yieldEl.innerHTML = `<i class="fas fa-chart-line"></i> ${yieldPct.toFixed(1)}% p.a. expected yield`;
 
     new Chart(canvas.getContext('2d'), {
       type: 'pie',
-      data: { 
-        labels, 
-        datasets: [{ 
-          data, 
-          backgroundColor: colors.slice(0, loanTypes.length), 
-          borderWidth: 3, 
-          borderColor: '#fff' 
-        }] 
-      },
+      data: { labels, datasets: [{ data, backgroundColor: colors.slice(0, loanTypes.length), borderWidth: 3, borderColor: '#fff' }] },
       options: {
-        responsive: true, 
+        responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: { 
-            position: 'bottom', 
-            labels: { 
+          legend: {
+            position: 'bottom',
+            labels: {
               font: { size: 12, weight: 'bold' },
-              generateLabels: (chart) => {
-                return chart.data.labels.map((label, i) => ({
-                  text: `${label} (${chart.data.datasets[0].data[i].toFixed(1)}%)`,
-                  fillStyle: chart.data.datasets[0].backgroundColor[i],
-                  strokeStyle: '#fff',
-                  lineWidth: 3,
-                  index: i
-                }));
-              }
-            } 
+              generateLabels: chart => chart.data.labels.map((l, i) => ({
+                text: `${l} (${chart.data.datasets[0].data[i].toFixed(1)}%)`,
+                fillStyle: chart.data.datasets[0].backgroundColor[i]
+              }))
+            }
           },
           tooltip: {
             callbacks: {
               label: ctx => {
-                const type = loanTypes[ctx.dataIndex];
-                const pct = ctx.raw;
-                const rate = type.name.toLowerCase().includes('development') ? '12%' :
-                            type.name.toLowerCase().includes('medicare') || type.name.toLowerCase().includes('education') ? '4%' :
-                            type.name.toLowerCase().includes('emergency') ? '36%' : '—';
-                return `${type.name}: KES ${type.value.toLocaleString()} (${pct.toFixed(1)}%) • ${rate} p.a.`;
+                const t = loanTypes[ctx.dataIndex];
+                const rate = t.name.toLowerCase().includes('development') ? '12%' :
+                             t.name.toLowerCase().includes('medicare') || t.name.toLowerCase().includes('education') ? '4%' :
+                             t.name.toLowerCase().includes('emergency') ? '36%' : '—';
+                return `${t.name}: KES ${t.value.toLocaleString()} (${ctx.raw.toFixed(1)}%) • ${rate} p.a.`;
               }
             }
           },
-          datalabels: { 
-            formatter: (v) => v > 5 ? `${v.toFixed(1)}%` : '', 
-            color: '#fff', 
-            font: { weight: 'bold', size: 13 } 
-          }
+          datalabels: { formatter: v => v > 5 ? `${v.toFixed(1)}%` : '', color: '#fff', font: { weight: 'bold', size: 13 } }
         }
       },
       plugins: [ChartDataLabels]
     });
   }
 
-  // RENDER GROWTH CHARTS WITH NEW ROA
   function renderGrowthCharts() {
-    const saccoData = window.saccoData;
-    if (!saccoData || !saccoData.jan || !saccoData.today) return;
+    const data = window.saccoData;
+    if (!data || !data.jan || !data.today) {
+      console.warn('Growth charts skipped: missing saccoData.jan or .today');
+      return;
+    }
 
     if (window.growthChartsRendered) return;
     window.growthChartsRendered = true;
 
-    document.querySelectorAll('#final-charts-section canvas').forEach(canvas => {
-      if (Chart.getChart(canvas)) Chart.getChart(canvas).destroy();
-    });
+    document.querySelectorAll('#final-charts-section canvas').forEach(c => Chart.getChart(c)?.destroy());
 
-    const { jan, today } = saccoData;
-    const janExternal = 0; // Jan had no external loans
+    const { jan, today } = data;
+    const janExternal = (() => {
+      const curYear = new Date().getFullYear();
+      const decLast = `${curYear - 1}-12`;
+      const rec = window.saccoHistory?.[decLast];
+      return rec?.externalLoans ?? 0;
+    })();
     const todayExternal = today.externalLoansToday || 0;
 
-    // NEW ROA: Profit / (Contributions + External Loans)
     const janBase = jan.contributions + janExternal;
     const todayBase = today.contributions + todayExternal;
     const janROA = janBase > 0 ? (jan.profit / janBase) * 100 : 0;
     const todayROA = todayBase > 0 ? (today.profit / todayBase) * 100 : 0;
 
-    // Liquidity
     const janLiq = jan.contributions > 0 ? (jan.bankBalance / jan.contributions) * 100 : 0;
     const todayLiq = today.contributions > 0 ? (today.bankBalance / today.contributions) * 100 : 0;
 
-    const colors = { /* same as before */ };
+    const colors = {
+      members: { jan: '#8B5CF6', today: '#C4B5FD' },
+      loans: { jan: '#F59E0B', today: '#FBBF24' },
+      contributions: { jan: '#10B981', today: '#34D399' },
+      profit: { jan: '#EF4444', today: '#F87171' },
+      roa: { jan: '#0EA5E9', today: '#7DD3FC' },
+      liquidity: { jan: '#6366F1', today: '#A5B4FC' }
+    };
 
-    const updateIndicator = (id, growthObj) => {
+    const updateIndicator = (id, growth) => {
       const el = document.getElementById(id);
       if (!el) return;
-      const arrow = growthObj.isImproving ? 'up' : 'down';
-      const cls = growthObj.isImproving ? 'positive' : 'negative';
-      el.innerHTML = `<i class="fas fa-arrow-${arrow}"></i> ${growthObj.label}`;
+      const arrow = growth >= 0 ? 'up' : 'down';
+      const cls = growth >= 0 ? 'positive' : 'negative';
+      el.innerHTML = `<i class="fas fa-arrow-${arrow}"></i> ${growth >= 0 ? '+' : ''}${growth.toFixed(1)}%`;
       el.className = `growth-indicator ${cls}`;
     };
 
-    const createChart = (id, j, t, color, gid, isPercent = false, isMoney = false, metric = '', formula = '') => {
+    const createChart = (id, j, t, color, gid, isPct = false, isMoney = false, metric = '') => {
       if (!document.getElementById(id)) return;
-      const growthObj = calculateGrowth(j, t, metric);
-      updateIndicator(gid, growthObj);
+      const growth = j === 0 ? (t === 0 ? 0 : 100) : ((t - j) / Math.abs(j)) * 100;
+      updateIndicator(gid, growth);
 
       new Chart(document.getElementById(id).getContext('2d'), {
         type: 'bar',
@@ -676,27 +629,23 @@
           maintainAspectRatio: false,
           plugins: {
             legend: { display: false },
-            tooltip: { 
-              callbacks: { 
+            tooltip: {
+              callbacks: {
                 label: ctx => {
                   const val = ctx.raw;
-                  let label = isPercent ? `${val.toFixed(2)}%` : (isMoney ? `KES ${val.toLocaleString()}` : val.toLocaleString());
-                  if (ctx.dataIndex === 1) label += `\n${growthObj.label}\nFormula: ${formula}`;
-                  return label;
+                  const label = isPct ? `${val.toFixed(2)}%` : (isMoney ? `KES ${val.toLocaleString()}` : val.toLocaleString());
+                  return ctx.dataIndex === 1 ? `${label}\n${growth >= 0 ? '+' : ''}${growth.toFixed(1)}%` : label;
                 }
               }
             },
             datalabels: {
               anchor: 'end', align: 'end', offset: 10,
               color: '#1a1a1a', font: { weight: '900', size: 14 },
-              formatter: v => isPercent ? `${v.toFixed(2)}%` : (isMoney ? `KES ${v.toLocaleString()}` : v.toLocaleString()),
+              formatter: v => isPct ? `${v.toFixed(2)}%` : (isMoney ? `KES ${v.toLocaleString()}` : v.toLocaleString()),
               backgroundColor: 'rgba(255,255,255,0.95)', borderRadius: 8, padding: 8
             }
           },
-          scales: {
-            x: { grid: { display: false }, ticks: { color: '#1a1a1a', font: { weight: 'bold', size: 13 } } },
-            y: { display: false, beginAtZero: false, grace: '20%' }
-          },
+          scales: { x: { grid: { display: false } }, y: { display: false, grace: '20%' } },
           layout: { padding: { top: 70 } }
         },
         plugins: [ChartDataLabels]
@@ -707,18 +656,18 @@
     createChart('chartLoans', jan.loans, today.loans, colors.loans, 'growthLoans', false, true, 'Loans');
     createChart('chartContributions', jan.contributions, today.contributions, colors.contributions, 'growthContributions', false, true, 'Contributions');
     createChart('chartProfit', jan.profit, today.profit, colors.profit, 'growthProfit', false, true, 'Profit');
-    createChart('chartROA', janROA, todayROA, colors.roa, 'growthROA', true, false, 'ROA', 'Profit ÷ (Contributions + External Loans) × 100%');
+    createChart('chartROA', janROA, todayROA, colors.roa, 'growthROA', true, false, 'ROA');
     createChart('chartLiquidity', janLiq, todayLiq, colors.liquidity, 'growthLiquidity', true, false, 'Liquidity');
 
     renderLoanTypesPie();
   }
 
-  // INIT
   document.addEventListener('DOMContentLoaded', () => {
     registerPlugins();
 
     const init = () => {
       if (!window.saccoData || !window.loanTypesToday) {
+        console.log('Waiting for carousel.js...');
         setTimeout(init, 500);
         return;
       }
@@ -734,7 +683,6 @@
     init();
   });
 </script>
-
 
 <script src="./scripts/main.js"></script>
 <script src="./scripts/calculator.js"></script>
