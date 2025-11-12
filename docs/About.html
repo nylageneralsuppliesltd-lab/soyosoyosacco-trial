@@ -151,6 +151,8 @@
   let autoSaveEnabled = localStorage.getItem('autoSaveEnabled') === 'true';
   let lastDataHash = '';
   const CACHE_KEY = 'soyosoyoSaccoHistory';
+  let syncInterval = null; // For indefinite 30s sync loop
+  let isSyncing = false; // Prevent multiple loops
 
   function getCurrentPeriod() {
     return new Date().toISOString().slice(0, 7);
@@ -169,6 +171,13 @@
     }).replace(',', '');
   }
 
+  // Helper to compare live vs DB records
+  function recordsDiffer(liveRecord, dbRecord) {
+    if (!dbRecord) return true; // No DB record = differ
+    const keys = ['members', 'contributions', 'loansDisbursed', 'loansBalance', 'totalBankBalance', 'coopBank', 'chamasoft', 'cytonn', 'totalAssets', 'profit', 'roa'];
+    return keys.some(key => Math.abs(liveRecord[key] - (dbRecord[key] || 0)) > 0.01); // Allow tiny float diffs
+  }
+
   // LIVE DATA FROM carousel.js
   function showLiveData() {
     if (!window.saccoData?.today) {
@@ -181,7 +190,7 @@
     const bb = ef.bankBreakdown || [];
     const period = getCurrentPeriod();
 
-    const record = {
+    const liveRecord = {
       period,
       members: t.members || 144,
       contributions: t.contributions || 907515,
@@ -198,10 +207,67 @@
       saveType: 'live'
     };
 
-    window.saccoHistory[period] = record;
+    window.saccoHistory[period] = liveRecord;
     renderFullHistory();
     document.getElementById('historyFooter').innerHTML = 
       `<strong style="color:#d97706">LIVE • ${formatMonth(period)}</strong>`;
+
+    // Check for mismatch and start sync loop if needed
+    const dbRecord = window.saccoHistory[period] && window.saccoHistory[period].saveType === 'db' ? window.saccoHistory[period] : null;
+    if (autoSaveEnabled && recordsDiffer(liveRecord, dbRecord) && !isSyncing) {
+      startSyncLoop(liveRecord);
+    }
+  }
+
+  // Start indefinite 30s sync loop until figures match
+  function startSyncLoop(liveRecord) {
+    isSyncing = true;
+    console.log('Mismatch detected! Starting 30s sync loop...');
+    document.getElementById('historyFooter').innerHTML += ' <span style="color:#d97706;">SYNCING...</span>';
+
+    let syncAttempt = 0;
+    syncInterval = setInterval(async () => {
+      syncAttempt++;
+      console.log(`Sync attempt ${syncAttempt}...`);
+
+      await saveCurrentMonth(true); // Silent save
+
+      // Re-fetch DB to check if synced
+      try {
+        const res = await fetch(`${API_BASE}/history?t=${Date.now()}`, { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          const latestDb = data.find(r => r.period === liveRecord.period);
+          if (latestDb && !recordsDiffer(liveRecord, {
+            members: Number(latestDb.members || 0),
+            contributions: Number(latestDb.contributions || 0),
+            loansDisbursed: Number(latestDb.loans_disbursed || 0),
+            loansBalance: Number(latestDb.loans_balance || 0),
+            totalBankBalance: Number(latestDb.total_bank_balance || 0),
+            coopBank: Number(latestDb.coop_bank || 0),
+            chamasoft: Number(latestDb.chama_soft || 0),
+            cytonn: Number(latestDb.cytonn || 0),
+            totalAssets: Number(latestDb.total_assets || 0),
+            profit: Number(latestDb.profit || 0),
+            roa: Number(latestDb.roa || 0)
+          })) {
+            console.log('Sync complete! Figures match.');
+            document.getElementById('historyFooter').innerHTML = 
+              `<strong style="color:#10B981">SYNCED FROM DATABASE</strong>`;
+            clearInterval(syncInterval);
+            isSyncing = false;
+            return;
+          }
+        }
+      } catch (e) {
+        console.warn('Sync check failed:', e);
+      }
+
+      // If still differing after 10 attempts (5 min), log but continue indefinitely
+      if (syncAttempt % 10 === 0) {
+        console.log(`Still syncing after ${syncAttempt * 30}s...`);
+      }
+    }, 30000); // 30s interval
   }
 
   function loadCache() {
@@ -411,6 +477,7 @@
   window.postToSocials = function() { /* ... same as before ... */ };
   window.toggleAutoSave = () => { /* ... same ... */ };
 
+  // Original 15s interval for general checks (kept for non-sync cases)
   setInterval(() => {
     if (autoSaveEnabled && window.saccoData?.today) {
       const hash = JSON.stringify(window.saccoData.today);
