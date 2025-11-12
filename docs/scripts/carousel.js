@@ -22,7 +22,7 @@ let loanTypesToday = [
   { name: 'Education', value: 275000 }
 ];
 
-let loansBalanceToday = 788357.66;
+let loansBalanceToday = 878357.66;
 let bankBreakdownToday = [
   { name: 'Co-operative Bank', value: 2120.65 },
   { name: 'Chamasoft', value: 1679 },
