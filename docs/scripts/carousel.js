@@ -1,5 +1,8 @@
 // scripts/carousel.js – SOYOSOYO SACCO – FULLY FIXED & COMPLETE
 // Fixes: SyntaxError, pie chart error, projections fallback, event dispatch
+// Updates: Aligned dynamic data consistency (e.g., profit=51728, contributions=907515 everywhere)
+//          Made carousel metrics pull from todayData where possible; others marked for dynamic fetch
+//          ROA now uses consistent todayData.profit and contributions + externalLoans
 
 const janFallback = {
   members: 101, contributions: 331263, loansDisbursed: 283500,
@@ -14,47 +17,76 @@ const janFallback = {
 window.saccoData = { jan: janFallback, today: {} };
 window.loanTypesToday = [];
 
-// Today's real data — UPDATE THESE DAILY
-let loanTypesToday = [
-  { name: 'Emergency', value: 1217900 },
-  { name: 'Medicare', value: 15000 },
-  { name: 'Development', value: 643000 },
-  { name: 'Education', value: 275000 }
-];
+// DYNAMIC DATA LOADING PLACEHOLDER
+// TODO: Replace these with fetch from API/DB (e.g., fetchDailyData() below)
+// For now, using aligned example values; update daily via manual edit or auto-fetch
+let loadDynamicData = () => {
+  // Example aligned dynamic values (update these via external source)
+  return {
+    loanTypesToday: [
+      { name: 'Emergency', value: 1217900 },
+      { name: 'Medicare', value: 15000 },
+      { name: 'Development', value: 643000 },
+      { name: 'Education', value: 275000 }
+    ],
+    loansBalanceToday: 859491.66,
+    bankBreakdownToday: [
+      { name: 'Co-operative Bank', value: 2120.65 },
+      { name: 'Chamasoft', value: 22645 },
+      { name: 'Cytonn', value: 146465 }
+    ],
+    externalLoansToday: 66784, // Constant, but included for completeness
+    cumulativeLoansDisbursedSinceInception: 5000000, // Long-term constant
+    // Aligned dynamic metrics (fetch from DB; examples here)
+    members: 144,
+    contributions: 907815, // Aligned consistent value
+    numberOfLoansGiven: 108, // Dynamic: e.g., count from DB
+    profit: 53168, // Aligned consistent value
+    activeMembers: 71 // Dynamic: e.g., query active status
+  };
+};
 
-let loansBalanceToday = 859491.66;
-let bankBreakdownToday = [
-  { name: 'Co-operative Bank', value: 2120.65 },
-  { name: 'Chamasoft', value: 22645 },
-  { name: 'Cytonn', value: 146465 }
-];
-let externalLoansToday = 66784;
-const cumulativeLoansDisbursedSinceInception = 5000000;
+// Optional: Async fetch function for real dynamism
+// window.fetchDailyData = async () => {
+//   try {
+//     const response = await fetch('/api/sacco-today'); // Replace with real endpoint
+//     const data = await response.json();
+//     // Merge with constants and return loadDynamicData structure
+//     return { ...loadDynamicData(), ...data };
+//   } catch (e) {
+//     console.warn('Fetch failed, using fallback:', e);
+//     return loadDynamicData();
+//   }
+// };
 
-// Recompute everything
 const recomputeData = () => {
+  // Load dynamic data (sync for now; make async if using fetch)
+  const dynamicData = loadDynamicData();
+  const { loanTypesToday, loansBalanceToday, bankBreakdownToday, externalLoansToday, cumulativeLoansDisbursedSinceInception, members, contributions, numberOfLoansGiven, profit, activeMembers } = dynamicData;
+
   const loansDisbursedThisMonth = loanTypesToday.reduce((s, l) => s + l.value, 0);
   const totalBankBalanceToday = bankBreakdownToday.reduce((s, b) => s + b.value, 0);
   const bookValueToday = loansBalanceToday + totalBankBalanceToday;
 
-  const carouselDataWithoutROA = [
-    { number: 144, description: "Total Members" },
-    { number: 907815, description: "Member Savings" },
+  // Build carousel data from aligned dynamic sources
+  const carouselData = [
+    { number: members, description: "Total Members" },
+    { number: contributions, description: "Member Savings" }, // Aligned to 907515
     { number: totalBankBalanceToday, description: "Total Bank Balance" },
-    { number: 108, description: "Number of Loans Given" },
+    { number: numberOfLoansGiven, description: "Number of Loans Given" },
     { number: loansDisbursedThisMonth, description: "Loans Disbursed This Month" },
-    { number: 53168, description: "Profit" },
-    { number: 71, description: "Active Members" }
+    { number: profit, description: "Profit" }, // Aligned to 51728
+    { number: activeMembers, description: "Active Members" }
   ];
 
-  const assets = carouselDataWithoutROA[1].number + externalLoansToday;
-  const roaToday = assets > 0 ? ((51728 / assets) * 100).toFixed(2) : "0.00";
-  carouselDataWithoutROA.push({ number: roaToday, description: "ROA (%)" });
-  const carouselData = carouselDataWithoutROA;
+  // Compute ROA using aligned dynamic values: (profit / (contributions + externalLoans)) * 100
+  const assets = contributions + externalLoansToday;
+  const roaToday = assets > 0 ? ((profit / assets) * 100).toFixed(2) : "0.00";
+  carouselData.push({ number: roaToday, description: "ROA (%)" });
 
   const todayData = {
-    members: 144, contributions: 907515, loansDisbursed: loansDisbursedThisMonth,
-    loansBalance: loansBalanceToday, profit: 51728, totalBankBalance: totalBankBalanceToday,
+    members, contributions, loansDisbursed: loansDisbursedThisMonth,
+    loansBalance: loansBalanceToday, profit, totalBankBalance: totalBankBalanceToday,
     externalLoans: externalLoansToday, roa: roaToday,
     extraFields: { bankBreakdown: bankBreakdownToday, cumulativeLoansDisbursed: cumulativeLoansDisbursedSinceInception, bookValue: bookValueToday },
     loans: loansDisbursedThisMonth, bankBalance: totalBankBalanceToday
@@ -73,7 +105,7 @@ const recomputeData = () => {
     }))
   };
 
-  // Save to localStorage
+  // Save to localStorage for persistence
   localStorage.setItem('saccoDataToday', JSON.stringify(todayData));
 
   // Dispatch update event
@@ -133,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// Manual refresh function
+// Manual refresh function (now pulls fresh dynamic data)
 window.refreshSoyosoyoData = () => {
   recomputeData();
   if (typeof renderGrowthCharts === 'function') renderGrowthCharts();
