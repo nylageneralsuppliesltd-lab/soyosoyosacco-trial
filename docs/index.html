@@ -584,13 +584,10 @@
     document.querySelectorAll('#final-charts-section canvas').forEach(c => Chart.getChart(c)?.destroy());
 
     const { jan, today } = data;
-    const janExternal = (() => {
-      const curYear = new Date().getFullYear();
-      const decLast = `${curYear - 1}-12`;
-      const rec = window.saccoHistory?.[decLast];
-      return rec?.externalLoans ?? 0;
-    })();
-    const todayExternal = today.externalLoansToday || 0;
+    const curYear = new Date().getFullYear();
+    const decLast = `${curYear - 1}-12`;
+    const janExternal = window.saccoHistory?.[decLast]?.externalLoans ?? jan.externalLoans ?? 0;
+    const todayExternal = today.externalLoans ?? 0;
 
     const janBase = jan.contributions + janExternal;
     const todayBase = today.contributions + todayExternal;
@@ -688,6 +685,7 @@
     init();
   });
 </script>
+
 <script src="./scripts/main.js"></script>
 <script src="./scripts/calculator.js"></script>
 <script src="./scripts/dividendscalculator.js"></script>
