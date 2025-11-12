@@ -153,7 +153,7 @@
   const CACHE_KEY = 'soyosoyoSaccoHistory';
   let autoSyncTimeout = null;
   let retryCount = 0;
-  const MAX_RETRIES = 10;
+  const MAX_RETRIES = 50;
 
   function getCurrentPeriod() {
     return new Date().toISOString().slice(0, 7);
