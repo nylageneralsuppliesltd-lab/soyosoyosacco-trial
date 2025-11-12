@@ -22,10 +22,10 @@ let loanTypesToday = [
   { name: 'Education', value: 275000 }
 ];
 
-let loansBalanceToday = 878357.66;
+let loansBalanceToday = 859491.66;
 let bankBreakdownToday = [
   { name: 'Co-operative Bank', value: 2120.65 },
-  { name: 'Chamasoft', value: 1679 },
+  { name: 'Chamasoft', value: 22645 },
   { name: 'Cytonn', value: 146465 }
 ];
 let externalLoansToday = 66784;
@@ -39,11 +39,11 @@ const recomputeData = () => {
 
   const carouselDataWithoutROA = [
     { number: 144, description: "Total Members" },
-    { number: 907515, description: "Member Savings" },
+    { number: 907815, description: "Member Savings" },
     { number: totalBankBalanceToday, description: "Total Bank Balance" },
     { number: 108, description: "Number of Loans Given" },
     { number: loansDisbursedThisMonth, description: "Loans Disbursed This Month" },
-    { number: 51368, description: "Profit" },
+    { number: 53168, description: "Profit" },
     { number: 71, description: "Active Members" }
   ];
 
