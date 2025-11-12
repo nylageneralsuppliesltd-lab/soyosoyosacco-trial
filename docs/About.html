@@ -176,7 +176,11 @@
     if (!db) return true;
     const keys = ['members','contributions','loansDisbursed','loansBalance','totalBankBalance',
                   'coopBank','chamasoft','cytonn','totalAssets','profit','roa'];
-    return keys.some(k => Math.abs((live[k] || 0) - (db[k] || 0)) > 0.01);
+    return keys.some(k => {
+      const a = Number(live[k]) || 0;
+      const b = Number(db[k]) || 0;
+      return Math.abs(a - b) > 0.5; // More forgiving tolerance
+    });
   }
 
   function showLiveData() {
@@ -204,55 +208,48 @@
       roa: parseFloat(t.roa) || 0
     };
 
-    // Check existing record
-    let existingRecord = window.saccoHistory[period];
-    const existingDbData = existingRecord?.saveType === 'db' ? { ...existingRecord } : null;
-    const isSynced = !recordsDiffer(liveData, existingDbData);
+    // ——— FIXED SYNC LOGIC ———
+    let currentRecord = window.saccoHistory[period];
+    let isSynced = false;
+    let recordToUse = { ...liveData, period, dateSaved: new Date().toISOString(), saveType: 'live' };
 
-    // Create or update record: Always use live data, but set type to 'db' if synced
-    const recordType = isSynced ? 'db' : 'live';
-    const liveRecord = {
-      period,
-      ...liveData,
-      dateSaved: new Date().toISOString(),
-      saveType: recordType
-    };
+    if (currentRecord && currentRecord.saveType === 'db') {
+      isSynced = !recordsDiffer(liveData, currentRecord);
+      if (isSynced) {
+        recordToUse = currentRecord; // Keep original DB record (with correct dateSaved)
+      } else {
+        recordToUse.saveType = 'live';
+      }
+    } else {
+      recordToUse.saveType = 'live';
+    }
 
-    window.saccoHistory[period] = liveRecord;
+    const needsUpdate = !currentRecord ||
+                        currentRecord.saveType !== recordToUse.saveType ||
+                        JSON.stringify(currentRecord) !== JSON.stringify(recordToUse);
 
-    const payloadForHash = {
-      period,
-      members: liveRecord.members,
-      contributions: liveRecord.contributions,
-      loans_disbursed: liveRecord.loansDisbursed,
-      loans_balance: liveRecord.loansBalance,
-      total_bank_balance: liveRecord.totalBankBalance,
-      coop_bank: liveRecord.coopBank,
-      chama_soft: liveRecord.chamasoft,
-      cytonn: liveRecord.cytonn,
-      total_assets: liveRecord.totalAssets,
-      profit: liveRecord.profit,
-      roa: liveRecord.roa
-    };
+    if (needsUpdate) {
+      window.saccoHistory[period] = recordToUse;
+      localStorage.setItem(CACHE_KEY, JSON.stringify(window.saccoHistory));
+    }
+    // ——— END FIXED LOGIC ———
+
+    const payloadForHash = { period, ...liveData };
     const newHash = JSON.stringify(payloadForHash);
 
     if (newHash !== lastDataHash) {
       lastDataHash = newHash;
-
       if (autoSaveEnabled && !isSynced) {
-        console.log('Data changed → Scheduling auto-save...');
         clearTimeout(autoSyncTimeout);
-        autoSyncTimeout = setTimeout(() => {
-          saveCurrentMonth(true);
-        }, 2000);
+        autoSyncTimeout = setTimeout(() => saveCurrentMonth(true), 2000);
       }
     }
 
     renderFullHistory();
-    updateSyncStatus(liveRecord, isSynced);
+    updateSyncStatus(recordToUse, isSynced);
   }
 
-  function updateSyncStatus(liveRecord, isSynced) {
+  function updateSyncStatus(record, isSynced) {
     const footer = document.getElementById('historyFooter');
     const saveBtn = document.querySelector('.btn-save');
     const container = document.querySelector('.history-section');
@@ -272,9 +269,9 @@
       container.style.boxShadow = '0 0 30px rgba(239,68,68,0.4)';
     } else {
       footer.innerHTML = `<strong style="color:#10B981">FULLY SYNCED • All phones updated</strong>`;
+      saveBtn.innerHTML = 'SYNCED';
       saveBtn.style.background = '#10B981';
       saveBtn.style.animation = 'none';
-      saveBtn.innerHTML = 'SYNCED';
       container.style.border = '2px solid #86efac';
       container.style.boxShadow = '0 15px 40px rgba(0,0,0,0.08)';
       retryCount = 0;
@@ -308,51 +305,45 @@
       roa: parseFloat(t.roa) || 0
     };
 
-    // Optimistic UI: Update to 'db' with live data
+    // Optimistic UI
     const optimisticRecord = { ...payload, dateSaved: new Date().toISOString(), saveType: 'db' };
     window.saccoHistory[period] = optimisticRecord;
     localStorage.setItem(CACHE_KEY, JSON.stringify(window.saccoHistory));
     renderFullHistory();
-    updateSyncStatus(optimisticRecord, true); // Assume synced optimistically
+    updateSyncStatus(optimisticRecord, true);
 
     try {
       const res = await fetch(`${API_BASE}/history/save`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
-        signal: AbortSignal.timeout(10000) // 10s timeout
+        signal: AbortSignal.timeout(10000)
       });
 
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       
-      console.log('Auto-saved successfully');
+      console.log('Saved successfully');
       retryCount = 0;
-      // No need to update again, already optimistic
-      if (!isAutoSave) {
-        alert("SAVED! All phones now in sync");
-      }
+      if (!isAutoSave) alert("SAVED! All phones now in sync");
     } catch (err) {
-      console.warn('Auto-save failed (attempt', retryCount + 1 + '):', err.message);
+      console.warn('Save failed (attempt', retryCount + 1 + '):', err.message);
       retryCount++;
       
       if (retryCount <= MAX_RETRIES) {
-        const delay = Math.min(5000 * retryCount, 30000); // exponential backoff
+        const delay = Math.min(5000 * retryCount, 30000);
         setTimeout(() => saveCurrentMonth(true), delay);
       }
       
-      // Show offline state
-      const footer = document.getElementById('historyFooter');
       if (retryCount <= MAX_RETRIES) {
-        footer.innerHTML = `<strong style="color:#F59E0B; animation: pulse 2s infinite;">OFFLINE • Retrying in ${Math.round(delay/1000)}s (${retryCount}/${MAX_RETRIES})</strong>`;
+        document.getElementById('historyFooter').innerHTML = 
+          `<strong style="color:#F59E0B; animation: pulse 2s infinite;">OFFLINE • Retrying in ${Math.round(delay/1000)}s (${retryCount}/${MAX_RETRIES})</strong>`;
       } else {
-        footer.innerHTML = `<strong style="color:#EF4444;">OFFLINE • Max retries reached. Data saved locally.</strong>`;
+        document.getElementById('historyFooter').innerHTML = 
+          `<strong style="color:#EF4444;">OFFLINE • Max retries reached. Data saved locally.</strong>`;
       }
-      // Revert to live if failed
-      showLiveData();
       
-      if (!isAutoSave) {
-        alert("Save failed. Try again.");
-      }
+      showLiveData();
+      if (!isAutoSave) alert("Save failed. Will retry when online.");
     }
   };
 
@@ -366,8 +357,8 @@
     showLiveData();
   };
 
-  window.downloadHistoryCSV = function() { alert("CSV coming soon!"); };
-  window.postToSocials = function() { alert("Social post coming soon!"); };
+  window.downloadHistoryCSV = function() { alert("CSV download coming soon!"); };
+  window.postToSocials = function() { alert("Social sharing coming soon!"); };
 
   function loadCache() {
     try {
@@ -461,13 +452,8 @@
       }).join('');
     } else {
       html = `<table><thead><tr>
-        <th>Period</th><th>Members</th><th>Contributions</th><th>Loans
-Disbursed</th><th>Loans
-Balance</th>
-        <th>Total
-Bank</th><th>Co-op</th><th>Chama-
-soft</th><th>Cytonn</th><th>Total
-Assets</th>
+        <th>Period</th><th>Members</th><th>Contributions</th><th>Loans Disbursed</th><th>Loans Balance</th>
+        <th>Total Bank</th><th>Co-op</th><th>Chamasoft</th><th>Cytonn</th><th>Total Assets</th>
         <th>Profit</th><th>ROA %</th><th>Saved On</th>
       </tr></thead><tbody>`;
       history.forEach(r => {
@@ -486,8 +472,7 @@ Assets</th>
           <td>${fmt(r.totalAssets)}</td>
           <td>${fmt(r.profit)}</td>
           <td>${r.roa ? Number(r.roa).toFixed(1) : '0.0'}</td>
-          <td>${formatDisplayDate(r.dateSaved || new Date())}
-<small>${label}</small></td>
+          <td>${formatDisplayDate(r.dateSaved || new Date())} <small>${label}</small></td>
         </tr>`;
       });
       html += '</tbody></table>';
@@ -495,7 +480,7 @@ Assets</th>
     container.innerHTML = html;
   }
 
-  // ADD PULSE ANIMATION
+  // Pulse animation
   const style = document.createElement('style');
   style.textContent = `
     @keyframes pulse {
@@ -519,31 +504,23 @@ Assets</th>
     text.textContent = autoSaveEnabled ? 'AUTO-SAVE ON' : 'AUTO-SAVE OFF';
     btn.style.background = autoSaveEnabled ? '#10B981' : '#f59e0b';
 
-    // EMBEDDED AUTO-CLICK WATCHER: Starts monitoring for red state (only UNSAVED, not during saving to avoid loops)
+    // Auto-click watcher (only triggers when truly unsynced)
     let autoClickObserver = null;
     function startAutoClickWatcher() {
-      if (autoClickObserver) return; // Already running
-
+      if (autoClickObserver) return;
       autoClickObserver = setInterval(() => {
         const saveBtn = document.querySelector('.btn-save');
         const footer = document.getElementById('historyFooter');
-        if (saveBtn && footer && 
-            (saveBtn.style.backgroundColor === 'rgb(239, 68, 68)' || // Red background (exact RGB for #EF4444)
-             footer.innerHTML.includes('UNSAVED CHANGES') || 
-             footer.innerHTML.includes('OUT OF SYNC')) && // Removed 'AUTO-SAVING' to prevent loops
-            !footer.innerHTML.includes('AUTO-SAVING')) { // Extra guard against saving state
-          console.log('Red state detected → Auto-saving...');
-          saveCurrentMonth(false); // Triggers manual save (like button click)
-          // Optional: Stop after one save (uncomment below)
-          // clearInterval(autoClickObserver);
-          // autoClickObserver = null;
+        if (saveBtn && footer &&
+            footer.innerHTML.includes('UNSAVED CHANGES') &&
+            !footer.innerHTML.includes('AUTO-SAVING') &&
+            saveBtn.style.backgroundColor === 'rgb(239, 68, 68)') {
+          console.log('Unsynced data detected → Saving...');
+          saveCurrentMonth(false);
         }
-      }, 5000); // Increased to 5 seconds to allow live state to show briefly
-
-      console.log('Auto-click watcher started. It will save when red (unsaved).');
+      }, 5000);
+      console.log('Auto-save watcher started');
     }
-
-    // Start the watcher on load (runs on history/about page), but delay to let live render first
     setTimeout(startAutoClickWatcher, 3000);
   });
 
@@ -554,7 +531,6 @@ Assets</th>
     if (autoSaveEnabled) saveCurrentMonth(true);
   });
 </script>
-
 
 
 
