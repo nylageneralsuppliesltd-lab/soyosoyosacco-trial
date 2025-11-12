@@ -18,15 +18,15 @@ window.loanTypesToday = [];
 let loanTypesToday = [
   { name: 'Emergency', value: 1217900 },
   { name: 'Medicare', value: 15000 },
-  { name: 'Development', value: 553000 },
+  { name: 'Development', value: 643000 },
   { name: 'Education', value: 275000 }
 ];
 
 let loansBalanceToday = 788357.66;
 let bankBreakdownToday = [
   { name: 'Co-operative Bank', value: 2120.65 },
-  { name: 'Chamasoft', value: 51954 },
-  { name: 'Cytonn', value: 186550 }
+  { name: 'Chamasoft', value: 1679 },
+  { name: 'Cytonn', value: 146465 }
 ];
 let externalLoansToday = 66784;
 const cumulativeLoansDisbursedSinceInception = 5000000;
@@ -41,9 +41,9 @@ const recomputeData = () => {
     { number: 144, description: "Total Members" },
     { number: 907515, description: "Member Savings" },
     { number: totalBankBalanceToday, description: "Total Bank Balance" },
-    { number: 106, description: "Number of Loans Given" },
+    { number: 108, description: "Number of Loans Given" },
     { number: loansDisbursedThisMonth, description: "Loans Disbursed This Month" },
-    { number: 51728, description: "Profit" },
+    { number: 51368, description: "Profit" },
     { number: 71, description: "Active Members" }
   ];
 
