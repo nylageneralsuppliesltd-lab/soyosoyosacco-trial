@@ -432,7 +432,7 @@
 <script src="./scripts/projections.js"></script>
 <script src="./scripts/member-carousel.js"></script>
 
-<!-- FINAL BULLETPROOF CHARTS + ROA v2 + YIELD + EXTERNAL LOANS (NO CRASHES) -->
+<!-- FINAL UNBREAKABLE CHARTS + ARROW PLUGIN v3 (NEVER CRASHES) -->
 <script>
   function registerPlugins() {
     if (typeof Chart !== 'undefined' && typeof ChartDataLabels !== 'undefined') {
@@ -441,25 +441,29 @@
 
     const arrowPlugin = {
       id: 'growthArrow',
-      afterDraw: chart => {
-        if (!chart?.ctx || !chart.scales) return;
-        const dataset = chart.data.datasets[0];
-        if (!dataset || dataset.data.length < 2) return;
+      afterDatasetsDraw: function(chart) {
+        // Use afterDatasetsDraw — GUARANTEED scales exist
+        const { ctx, scales: { x, y }, data } = chart;
+        if (!ctx || !x || !y || !data.datasets[0]) return;
+
+        const dataset = data.datasets[0];
+        if (dataset.data.length < 2) return;
+
         const [janVal, todayVal] = dataset.data;
         if (janVal === undefined || todayVal === undefined) return;
 
-        const xScale = chart.scales.x;
-        const yScale = chart.scales.y;
-        const x1 = xScale.getPixelForValue(0);
-        const x2 = xScale.getPixelForValue(1);
-        const y1 = yScale.getPixelForValue(janVal);
-        const y2 = yScale.getPixelForValue(todayVal);
+        const x1 = x.getPixelForValue(0);
+        const x2 = x.getPixelForValue(1);
+        const y1 = y.getPixelForValue(janVal);
+        const y2 = y.getPixelForValue(todayVal);
 
-        if (![x1,x2,y1,y2].every(Number.isFinite)) return;
+        if (![x1, x2, y1, y2].every(Number.isFinite)) return;
 
-        const ctx = chart.ctx;
+        const isUp = todayVal > janVal;
+        const color = isUp ? '#10B981' : '#EF4444';
+
         ctx.save();
-        ctx.strokeStyle = todayVal > janVal ? '#10B981' : '#EF4444';
+        ctx.strokeStyle = color;
         ctx.lineWidth = 5;
         ctx.lineCap = 'round';
         ctx.beginPath();
@@ -474,7 +478,7 @@
         ctx.lineTo(x2 - headLen * Math.cos(angle - Math.PI / 6), y2 - headLen * Math.sin(angle - Math.PI / 6));
         ctx.lineTo(x2 - headLen * Math.cos(angle + Math.PI / 6), y2 - headLen * Math.sin(angle + Math.PI / 6));
         ctx.closePath();
-        ctx.fillStyle = todayVal > janVal ? '#10B981' : '#EF4444';
+        ctx.fillStyle = color;
         ctx.fill();
 
         const growth = janVal === 0 ? (todayVal === 0 ? 0 : 100) : ((todayVal - janVal) / Math.abs(janVal)) * 100;
@@ -482,13 +486,14 @@
           const midX = (x1 + x2) / 2;
           const midY = (y1 + y2) / 2 - 25;
           ctx.font = 'bold 16px Lato';
-          ctx.fillStyle = todayVal > janVal ? '#10B981' : '#EF4444';
+          ctx.fillStyle = color;
           ctx.textAlign = 'center';
           ctx.fillText(`${growth >= 0 ? '+' : ''}${growth.toFixed(1)}%`, midX, midY);
         }
         ctx.restore();
       }
     };
+
     Chart.register(arrowPlugin);
   }
 
@@ -613,7 +618,7 @@
       el.className = `growth-indicator ${cls}`;
     };
 
-    const createChart = (id, j, t, color, gid, isPct = false, isMoney = false, metric = '') => {
+    const createChart = (id, j, t, color, gid, isPct = false, isMoney = false) => {
       if (!document.getElementById(id)) return;
       const growth = j === 0 ? (t === 0 ? 0 : 100) : ((t - j) / Math.abs(j)) * 100;
       updateIndicator(gid, growth);
@@ -652,12 +657,12 @@
       });
     };
 
-    createChart('chartMembers', jan.members, today.members, colors.members, 'growthMembers', false, false, 'Members');
-    createChart('chartLoans', jan.loans, today.loans, colors.loans, 'growthLoans', false, true, 'Loans');
-    createChart('chartContributions', jan.contributions, today.contributions, colors.contributions, 'growthContributions', false, true, 'Contributions');
-    createChart('chartProfit', jan.profit, today.profit, colors.profit, 'growthProfit', false, true, 'Profit');
-    createChart('chartROA', janROA, todayROA, colors.roa, 'growthROA', true, false, 'ROA');
-    createChart('chartLiquidity', janLiq, todayLiq, colors.liquidity, 'growthLiquidity', true, false, 'Liquidity');
+    createChart('chartMembers', jan.members, today.members, colors.members, 'growthMembers', false, false);
+    createChart('chartLoans', jan.loans, today.loans, colors.loans, 'growthLoans', false, true);
+    createChart('chartContributions', jan.contributions, today.contributions, colors.contributions, 'growthContributions', false, true);
+    createChart('chartProfit', jan.profit, today.profit, colors.profit, 'growthProfit', false, true);
+    createChart('chartROA', janROA, todayROA, colors.roa, 'growthROA', true, false);
+    createChart('chartLiquidity', janLiq, todayLiq, colors.liquidity, 'growthLiquidity', true, false);
 
     renderLoanTypesPie();
   }
@@ -683,7 +688,6 @@
     init();
   });
 </script>
-
 <script src="./scripts/main.js"></script>
 <script src="./scripts/calculator.js"></script>
 <script src="./scripts/dividendscalculator.js"></script>
