@@ -154,6 +154,7 @@
   let autoSyncTimeout = null;
   let retryCount = 0;
   const MAX_RETRIES = 50;
+  let silentWatcherActive = false; // ← NEW: prevents duplicate watchers
 
   function getCurrentPeriod() {
     return new Date().toISOString().slice(0, 7);
@@ -179,7 +180,7 @@
     return keys.some(k => {
       const a = Number(live[k]) || 0;
       const b = Number(db[k]) || 0;
-      return Math.abs(a - b) > 0.5; // More forgiving tolerance
+      return Math.abs(a - b) > 0.5;
     });
   }
 
@@ -208,7 +209,6 @@
       roa: parseFloat(t.roa) || 0
     };
 
-    // ——— FIXED SYNC LOGIC ———
     let currentRecord = window.saccoHistory[period];
     let isSynced = false;
     let recordToUse = { ...liveData, period, dateSaved: new Date().toISOString(), saveType: 'live' };
@@ -216,12 +216,8 @@
     if (currentRecord && currentRecord.saveType === 'db') {
       isSynced = !recordsDiffer(liveData, currentRecord);
       if (isSynced) {
-        recordToUse = currentRecord; // Keep original DB record (with correct dateSaved)
-      } else {
-        recordToUse.saveType = 'live';
+        recordToUse = currentRecord;
       }
-    } else {
-      recordToUse.saveType = 'live';
     }
 
     const needsUpdate = !currentRecord ||
@@ -232,7 +228,6 @@
       window.saccoHistory[period] = recordToUse;
       localStorage.setItem(CACHE_KEY, JSON.stringify(window.saccoHistory));
     }
-    // ——— END FIXED LOGIC ———
 
     const payloadForHash = { period, ...liveData };
     const newHash = JSON.stringify(payloadForHash);
@@ -247,6 +242,35 @@
 
     renderFullHistory();
     updateSyncStatus(recordToUse, isSynced);
+    autoCreateNewMonthIfNeeded();
+  }
+
+  function autoCreateNewMonthIfNeeded() {
+    const currentPeriod = getCurrentPeriod();
+    if (window.saccoHistory[currentPeriod]) return;
+
+    const periods = Object.keys(window.saccoHistory).sort().reverse();
+    const latestPeriod = periods[0];
+    if (!latestPeriod) return;
+
+    const previousRecord = window.saccoHistory[latestPeriod];
+    if (!previousRecord || previousRecord.saveType !== 'db') return;
+
+    const newRecord = {
+      ...previousRecord,
+      period: currentPeriod,
+      dateSaved: new Date().toISOString(),
+      saveType: 'live'
+    };
+
+    window.saccoHistory[currentPeriod] = newRecord;
+    localStorage.setItem(CACHE_KEY, JSON.stringify(window.saccoHistory));
+    renderFullHistory();
+    updateSyncStatus(newRecord, false);
+
+    if (autoSaveEnabled) {
+      setTimeout(() => saveCurrentMonth(true), 3000);
+    }
   }
 
   function updateSyncStatus(record, isSynced) {
@@ -256,22 +280,20 @@
 
     if (!isSynced) {
       if (retryCount > 0) {
-        footer.innerHTML = `<strong style="color:#F59E0B; animation: pulse 2s infinite;">OFFLINE • WILL SYNC WHEN BACK (${retryCount}/${MAX_RETRIES})</strong>`;
-        saveBtn.innerHTML = 'WAITING FOR INTERNET...';
+        footer.innerHTML = `<strong style="color:#F59E0B;">OFFLINE • Retrying (${retryCount}/${MAX_RETRIES})</strong>`;
+        saveBtn.innerHTML = 'WAITING...';
         saveBtn.style.background = '#F59E0B';
       } else {
-        footer.innerHTML = `<strong style="color:#EF4444; animation: pulse 1.5s infinite;">UNSAVED CHANGES • AUTO-SAVING...</strong>`;
-        saveBtn.innerHTML = 'AUTO-SAVING...';
+        footer.innerHTML = `<strong style="color:#EF4444;">UNSAVED CHANGES • Saving...</strong>`;
+        saveBtn.innerHTML = 'SAVING...';
         saveBtn.style.background = '#EF4444';
       }
-      saveBtn.style.animation = 'pulse 1.5s infinite';
       container.style.border = '3px solid #EF4444';
       container.style.boxShadow = '0 0 30px rgba(239,68,68,0.4)';
     } else {
       footer.innerHTML = `<strong style="color:#10B981">FULLY SYNCED • All phones updated</strong>`;
       saveBtn.innerHTML = 'SYNCED';
       saveBtn.style.background = '#10B981';
-      saveBtn.style.animation = 'none';
       container.style.border = '2px solid #86efac';
       container.style.boxShadow = '0 15px 40px rgba(0,0,0,0.08)';
       retryCount = 0;
@@ -305,7 +327,6 @@
       roa: parseFloat(t.roa) || 0
     };
 
-    // Optimistic UI
     const optimisticRecord = { ...payload, dateSaved: new Date().toISOString(), saveType: 'db' };
     window.saccoHistory[period] = optimisticRecord;
     localStorage.setItem(CACHE_KEY, JSON.stringify(window.saccoHistory));
@@ -321,44 +342,34 @@
       });
 
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      
       console.log('Saved successfully');
       retryCount = 0;
-      if (!isAutoSave) alert("SAVED! All phones now in sync");
+      if (!isAutoSave) alert("SAVED! All phones in sync");
     } catch (err) {
-      console.warn('Save failed (attempt', retryCount + 1 + '):', err.message);
+      console.warn('Save failed:', err.message);
       retryCount++;
-      
       if (retryCount <= MAX_RETRIES) {
         const delay = Math.min(5000 * retryCount, 30000);
         setTimeout(() => saveCurrentMonth(true), delay);
-      }
-      
-      if (retryCount <= MAX_RETRIES) {
         document.getElementById('historyFooter').innerHTML = 
-          `<strong style="color:#F59E0B; animation: pulse 2s infinite;">OFFLINE • Retrying in ${Math.round(delay/1000)}s (${retryCount}/${MAX_RETRIES})</strong>`;
+          `<strong style="color:#F59E0B;">OFFLINE • Retrying in ${Math.round(delay/1000)}s</strong>`;
       } else {
         document.getElementById('historyFooter').innerHTML = 
-          `<strong style="color:#EF4444;">OFFLINE • Max retries reached. Data saved locally.</strong>`;
+          `<strong style="color:#EF4444;">OFFLINE • Data saved locally</strong>`;
       }
-      
-      showLiveData();
-      if (!isAutoSave) alert("Save failed. Will retry when online.");
+      showLiveData(); // ← Re-check sync status
     }
   };
 
   window.toggleAutoSave = function() {
     autoSaveEnabled = !autoSaveEnabled;
     localStorage.setItem('autoSaveEnabled', autoSaveEnabled);
-    const btn = document.getElementById('autoSaveToggle');
-    const text = document.getElementById('autoSaveText');
-    text.textContent = autoSaveEnabled ? 'AUTO-SAVE ON' : 'AUTO-SAVE OFF';
-    btn.style.background = autoSaveEnabled ? '#10B981' : '#f59e0b';
-    showLiveData();
+    document.getElementById('autoSaveText').textContent = autoSaveEnabled ? 'AUTO-SAVE ON' : 'AUTO-SAVE OFF';
+    document.getElementById('autoSaveToggle').style.background = autoSaveEnabled ? '#10B981' : '#f59e0b';
   };
 
-  window.downloadHistoryCSV = function() { alert("CSV download coming soon!"); };
-  window.postToSocials = function() { alert("Social sharing coming soon!"); };
+  window.downloadHistoryCSV = function() { alert("CSV coming soon!"); };
+  window.postToSocials = function() { alert("Social post coming soon!"); };
 
   function loadCache() {
     try {
@@ -400,6 +411,7 @@
       if (changed) {
         localStorage.setItem(CACHE_KEY, JSON.stringify(window.saccoHistory));
         renderFullHistory();
+        showLiveData(); // ← Force re-check after DB sync
       }
     } catch(e) {
       setTimeout(syncWithDB, 20000);
@@ -418,7 +430,7 @@
       return;
     }
 
-    const fmt = (num) => (num === null || num === undefined || isNaN(num)) ? '0' : Number(num).toLocaleString();
+    const fmt = (num) => (num == null || isNaN(num)) ? '0' : Number(num).toLocaleString();
 
     let html = '';
     if (isMobile) {
@@ -482,14 +494,30 @@
 
   // Pulse animation
   const style = document.createElement('style');
-  style.textContent = `
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
-  `;
+  style.textContent = `@keyframes pulse {0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}`;
   document.head.appendChild(style);
+
+  // SMART SILENT WATCHER — ONLY triggers when truly unsynced
+  function startSilentWatcher() {
+    if (silentWatcherActive) return;
+    silentWatcherActive = true;
+    console.log('Silent sync guardian started');
+
+    setInterval(() => {
+      const footer = document.getElementById('historyFooter');
+      const saveBtn = document.querySelector('.btn-save');
+      if (!footer || !saveBtn) return;
+
+      const isRed = saveBtn.style.backgroundColor === 'rgb(239, 68, 68)' ||
+                    footer.innerHTML.includes('UNSAVED CHANGES');
+      const isSaving = footer.innerHTML.includes('Saving...') || footer.innerHTML.includes('Retrying');
+
+      if (isRed && !isSaving) {
+        console.log('Silent guardian: Unsynced data detected → Forcing save');
+        saveCurrentMonth(false);
+      }
+    }, 8000); // Every 8 seconds — gentle but effective
+  }
 
   window.addEventListener('resize', () => setTimeout(renderFullHistory, 100));
   document.addEventListener('DOMContentLoaded', () => {
@@ -498,40 +526,21 @@
     renderFullHistory();
     syncWithDB();
     showLiveData();
+    setTimeout(autoCreateNewMonthIfNeeded, 4000);
+    setTimeout(startSilentWatcher, 5000); // Start watcher after everything loads
 
     const text = document.getElementById('autoSaveText');
     const btn = document.getElementById('autoSaveToggle');
     text.textContent = autoSaveEnabled ? 'AUTO-SAVE ON' : 'AUTO-SAVE OFF';
     btn.style.background = autoSaveEnabled ? '#10B981' : '#f59e0b';
-
-    // Auto-click watcher (only triggers when truly unsynced)
-    let autoClickObserver = null;
-    function startAutoClickWatcher() {
-      if (autoClickObserver) return;
-      autoClickObserver = setInterval(() => {
-        const saveBtn = document.querySelector('.btn-save');
-        const footer = document.getElementById('historyFooter');
-        if (saveBtn && footer &&
-            footer.innerHTML.includes('UNSAVED CHANGES') &&
-            !footer.innerHTML.includes('AUTO-SAVING') &&
-            saveBtn.style.backgroundColor === 'rgb(239, 68, 68)') {
-          console.log('Unsynced data detected → Saving...');
-          saveCurrentMonth(false);
-        }
-      }, 5000);
-      console.log('Auto-save watcher started');
-    }
-    setTimeout(startAutoClickWatcher, 3000);
   });
 
   window.addEventListener('saccoDataUpdated', showLiveData);
   window.addEventListener('online', () => {
-    console.log('Back online → Resuming sync');
     retryCount = 0;
     if (autoSaveEnabled) saveCurrentMonth(true);
   });
 </script>
-
 
 
 </body>
