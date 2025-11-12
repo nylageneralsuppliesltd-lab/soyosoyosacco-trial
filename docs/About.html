@@ -190,8 +190,7 @@
     const bb = ef.bankBreakdown || [];
     const period = getCurrentPeriod();
 
-    const liveRecord = {
-      period,
+    const liveData = {
       members: t.members || 0,
       contributions: t.contributions || 0,
       loansDisbursed: t.loansDisbursed || t.loans || 0,
@@ -202,9 +201,21 @@
       cytonn: bb.find(b => b.name?.includes('Cytonn'))?.value || 0,
       totalAssets: ef.bookValue || 0,
       profit: t.profit || 0,
-      roa: parseFloat(t.roa) || 0,
+      roa: parseFloat(t.roa) || 0
+    };
+
+    // Check existing record
+    let existingRecord = window.saccoHistory[period];
+    const existingDbData = existingRecord?.saveType === 'db' ? { ...existingRecord } : null;
+    const isSynced = !recordsDiffer(liveData, existingDbData);
+
+    // Create or update record: Always use live data, but set type to 'db' if synced
+    const recordType = isSynced ? 'db' : 'live';
+    const liveRecord = {
+      period,
+      ...liveData,
       dateSaved: new Date().toISOString(),
-      saveType: 'live'
+      saveType: recordType
     };
 
     window.saccoHistory[period] = liveRecord;
@@ -228,7 +239,7 @@
     if (newHash !== lastDataHash) {
       lastDataHash = newHash;
 
-      if (autoSaveEnabled) {
+      if (autoSaveEnabled && !isSynced) {
         console.log('Data changed → Scheduling auto-save...');
         clearTimeout(autoSyncTimeout);
         autoSyncTimeout = setTimeout(() => {
@@ -238,18 +249,15 @@
     }
 
     renderFullHistory();
-    updateSyncStatus(liveRecord);
+    updateSyncStatus(liveRecord, isSynced);
   }
 
-  function updateSyncStatus(liveRecord) {
-    const dbRecord = window.saccoHistory[liveRecord.period]?.saveType === 'db' ? window.saccoHistory[liveRecord.period] : null;
-    const isOutOfSync = recordsDiffer(liveRecord, dbRecord);
-
+  function updateSyncStatus(liveRecord, isSynced) {
     const footer = document.getElementById('historyFooter');
     const saveBtn = document.querySelector('.btn-save');
     const container = document.querySelector('.history-section');
 
-    if (isOutOfSync) {
+    if (!isSynced) {
       if (retryCount > 0) {
         footer.innerHTML = `<strong style="color:#F59E0B; animation: pulse 2s infinite;">OFFLINE • WILL SYNC WHEN BACK (${retryCount}/${MAX_RETRIES})</strong>`;
         saveBtn.innerHTML = 'WAITING FOR INTERNET...';
@@ -300,12 +308,12 @@
       roa: parseFloat(t.roa) || 0
     };
 
-    // Optimistic UI
+    // Optimistic UI: Update to 'db' with live data
     const optimisticRecord = { ...payload, dateSaved: new Date().toISOString(), saveType: 'db' };
     window.saccoHistory[period] = optimisticRecord;
     localStorage.setItem(CACHE_KEY, JSON.stringify(window.saccoHistory));
     renderFullHistory();
-    updateSyncStatus(optimisticRecord);
+    updateSyncStatus(optimisticRecord, true); // Assume synced optimistically
 
     try {
       const res = await fetch(`${API_BASE}/history/save`, {
@@ -319,7 +327,7 @@
       
       console.log('Auto-saved successfully');
       retryCount = 0;
-      updateSyncStatus(optimisticRecord);
+      // No need to update again, already optimistic
       if (!isAutoSave) {
         alert("SAVED! All phones now in sync");
       }
@@ -339,10 +347,11 @@
       } else {
         footer.innerHTML = `<strong style="color:#EF4444;">OFFLINE • Max retries reached. Data saved locally.</strong>`;
       }
+      // Revert to live if failed
+      showLiveData();
       
       if (!isAutoSave) {
         alert("Save failed. Try again.");
-        showLiveData();
       }
     }
   };
@@ -425,11 +434,12 @@
       html = history.map(r => {
         const isCurrent = r.period === cur;
         const tagClass = r.saveType === 'live' ? 'tag live' : 'tag db';
+        const tagText = r.saveType === 'live' ? 'LIVE' : 'SYNCED';
         return `
         <div class="history-card ${isCurrent ? 'current-month' : ''}">
           <div class="card-header">
             <h3>${formatMonth(r.period)}</h3>
-            <span class="${tagClass}">${r.saveType === 'live' ? 'LIVE' : 'DB'}</span>
+            <span class="${tagClass}">${tagText}</span>
           </div>
           <div class="card-grid">
             <div><span>Members</span><strong>${fmt(r.members)}</strong></div>
@@ -462,7 +472,7 @@ Assets</th>
       </tr></thead><tbody>`;
       history.forEach(r => {
         const bg = r.saveType === 'live' ? 'background:#fffbe6' : 'background:#f0fdf4';
-        const label = r.saveType === 'live' ? '(LIVE)' : '(DB)';
+        const label = r.saveType === 'live' ? '(LIVE)' : '(SYNCED)';
         html += `<tr ${r.period === cur ? 'class="current-month"' : ''} style="${bg}">
           <td>${formatMonth(r.period)}</td>
           <td>${fmt(r.members)}</td>
@@ -544,6 +554,8 @@ Assets</th>
     if (autoSaveEnabled) saveCurrentMonth(true);
   });
 </script>
+
+
 
 
 </body>
