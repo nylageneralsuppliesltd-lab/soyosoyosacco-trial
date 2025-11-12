@@ -34,145 +34,149 @@
     </script>
 
     <!-- PERFECT CHARTS + PROJECTIONS STYLES -->
-    <style id="final-working-styles">
-      .growth-charts-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-        gap: 1.5rem;
-        margin: 2rem 0;
-      }
-      #final-charts-section .chart-card {
-        position: relative;
-        height: 440px;
-        display: flex;
-        flex-direction: column;
-        background: #fff;
-        border-radius: 12px;
-        padding: 1.5rem;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        overflow: hidden;
-        border: 1px solid #f0f0f0;
-      }
-      #final-charts-section .chart-card canvas {
-        flex: 1;
-        width: 100% !important;
-        height: 100% !important;
-        min-height: 320px;
-        display: block;
-      }
-      #final-charts-section .chart-card p {
-        margin: 0.75rem 0 0 0;
-        text-align: center;
-        font-weight: bold;
-        color: #1a1a1a;
-        font-size: 1rem;
-      }
-      #final-charts-section .growth-indicator {
-        text-align: center;
-        margin-top: 0.5rem;
-        font-weight: bold;
-        font-size: 1rem;
-      }
-      #final-charts-section .growth-indicator.positive { color: #10B981; }
-      #final-charts-section .growth-indicator.negative { color: #EF4444; }
-      #final-charts-section .growth-indicator i { margin-right: 4px; font-size: 0.9em; }
-      @media (max-width: 768px) {
-        #final-charts-section .chart-card { height: 400px; }
-        #final-charts-section .chart-card canvas { min-height: 280px; }
-      }
-      /* === PLOTLY PROJECTIONS === */
-      #projectionsChart {
-        isolation: isolate;
-        contain: layout style paint;
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 0 10px;
-        font-family: 'Lato', sans-serif;
-      }
-      #projectionsChart > .kpi-card,
-      #projectionsChart > .summary-card {
-        background: white;
-        border-radius: 20px;
-        overflow: hidden;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        border: 1px solid #f0fdf4;
-        margin: 16px 8px;
-        max-width: calc(100% - 16px);
-      }
-      #projectionsChart .kpi-title {
-        padding: 16px;
-        background: #f8fdfa;
-        text-align: center;
-        font-size: 16px;
-        font-weight: 900;
-        color: #004d1a;
-      }
-      #projectionsChart .plotly-projection-div {
-        height: 420px !important;
-        width: 100% !important;
-      }
-      #projectionsChart .summary-header {
-        background: linear-gradient(90deg,#004d1a,#10B981);
-        color: white;
-        padding: 16px;
-        text-align: center;
-        font-size: 17px;
-        font-weight: 900;
-      }
-      #projectionsChart .summary-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 14px;
-        padding: 16px;
-      }
-      #projectionsChart .summary-item {
-        background: #f0fdf4;
-        border-radius: 14px;
-        padding: 12px;
-        border: 1px solid #86efac;
-        text-align: center;
-      }
-      #projectionsChart .summary-label {
-        font-size: 13.5px;
-        font-weight: 900;
-        color: #166534;
-      }
-      #projectionsChart .summary-values {
-        display: flex;
-        justify-content: space-between;
-        font-size: 13px;
-        margin: 8px 0;
-      }
-      #projectionsChart .summary-values span {
-        color: #6b7280;
-        font-size: 11.5px;
-        display: block;
-      }
-      #projectionsChart .summary-values strong {
-        font-size: 15px;
-        color: #004d1a;
-      }
-      #projectionsChart .summary-growth {
-        background: #10B981;
-        color: white;
-        padding: 6px 14px;
-        border-radius: 50px;
-        font-size: 12.5px;
-        font-weight: 900;
-      }
-      @media (min-width: 769px) {
-        #projectionsChart { display: flex; flex-wrap: wrap; justify-content: space-between; }
-        #projectionsChart > .kpi-card { flex: 1 1 calc(50% - 20px); max-width: 48%; }
-        #projectionsChart .plotly-projection-div { height: 440px !important; }
-        #projectionsChart > .summary-card { flex: 1 1 100%; max-width: 100%; margin: 30px 8px 10px; }
-        #projectionsChart .summary-grid { grid-template-columns: repeat(4, 1fr); gap: 20px; padding: 20px; }
-        #projectionsChart .summary-values strong { font-size: 17px; }
-        #projectionsChart .summary-growth { padding: 8px 16px; font-size: 13px; }
-      }
-      @media (max-width: 768px) {
-        #projectionsChart .plotly-projection-div { height: 460px !important; }
-      }
-    </style>
+<style id="final-working-styles">
+  .growth-charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+  }
+  #final-charts-section .chart-card {
+    position: relative;
+    height: 440px;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05); /* UPDATED: Subtle premium shadow for depth */
+    overflow: hidden;
+    border: 1px solid #f0f0f0;
+  }
+  #final-charts-section .chart-card canvas {
+    flex: 1;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 320px;
+    display: block;
+    image-rendering: -webkit-optimize-contrast; /* NEW: Crisp rendering for Chrome/Safari */
+    image-rendering: crisp-edges; /* NEW: Crisp for Firefox */
+    image-rendering: pixelated; /* NEW: Crisp fallback for Edge/IE */
+    -ms-interpolation-mode: nearest-neighbor; /* NEW: Crisp for older IE */
+  }
+  #final-charts-section .chart-card p {
+    margin: 0.75rem 0 0 0;
+    text-align: center;
+    font-weight: bold;
+    color: #1a1a1a;
+    font-size: 1rem;
+  }
+  #final-charts-section .growth-indicator {
+    text-align: center;
+    margin-top: 0.5rem;
+    font-weight: bold;
+    font-size: 1rem;
+  }
+  #final-charts-section .growth-indicator.positive { color: #10B981; }
+  #final-charts-section .growth-indicator.negative { color: #EF4444; }
+  #final-charts-section .growth-indicator i { margin-right: 4px; font-size: 0.9em; }
+  @media (max-width: 768px) {
+    #final-charts-section .chart-card { height: 400px; }
+    #final-charts-section .chart-card canvas { min-height: 280px; }
+  }
+  /* === PLOTLY PROJECTIONS === */
+  #projectionsChart {
+    isolation: isolate;
+    contain: layout style paint;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 10px;
+    font-family: 'Lato', sans-serif;
+  }
+  #projectionsChart > .kpi-card,
+  #projectionsChart > .summary-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    border: 1px solid #f0fdf4;
+    margin: 16px 8px;
+    max-width: calc(100% - 16px);
+  }
+  #projectionsChart .kpi-title {
+    padding: 16px;
+    background: #f8fdfa;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 900;
+    color: #004d1a;
+  }
+  #projectionsChart .plotly-projection-div {
+    height: 420px !important;
+    width: 100% !important;
+  }
+  #projectionsChart .summary-header {
+    background: linear-gradient(90deg,#004d1a,#10B981);
+    color: white;
+    padding: 16px;
+    text-align: center;
+    font-size: 17px;
+    font-weight: 900;
+  }
+  #projectionsChart .summary-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    padding: 16px;
+  }
+  #projectionsChart .summary-item {
+    background: #f0fdf4;
+    border-radius: 14px;
+    padding: 12px;
+    border: 1px solid #86efac;
+    text-align: center;
+  }
+  #projectionsChart .summary-label {
+    font-size: 13.5px;
+    font-weight: 900;
+    color: #166534;
+  }
+  #projectionsChart .summary-values {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    margin: 8px 0;
+  }
+  #projectionsChart .summary-values span {
+    color: #6b7280;
+    font-size: 11.5px;
+    display: block;
+  }
+  #projectionsChart .summary-values strong {
+    font-size: 15px;
+    color: #004d1a;
+  }
+  #projectionsChart .summary-growth {
+    background: #10B981;
+    color: white;
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 12.5px;
+    font-weight: 900;
+  }
+  @media (min-width: 769px) {
+    #projectionsChart { display: flex; flex-wrap: wrap; justify-content: space-between; }
+    #projectionsChart > .kpi-card { flex: 1 1 calc(50% - 20px); max-width: 48%; }
+    #projectionsChart .plotly-projection-div { height: 440px !important; }
+    #projectionsChart > .summary-card { flex: 1 1 100%; max-width: 100%; margin: 30px 8px 10px; }
+    #projectionsChart .summary-grid { grid-template-columns: repeat(4, 1fr); gap: 20px; padding: 20px; }
+    #projectionsChart .summary-values strong { font-size: 17px; }
+    #projectionsChart .summary-growth { padding: 8px 16px; font-size: 13px; }
+  }
+  @media (max-width: 768px) {
+    #projectionsChart .plotly-projection-div { height: 460px !important; }
+  }
+</style>
 
     <!-- MEMBER CAROUSEL -->
     <style>
@@ -452,10 +456,10 @@
         const [janVal, todayVal] = dataset.data;
         if (janVal === undefined || todayVal === undefined) return;
 
-        const x1 = x.getPixelForValue(0);
-        const x2 = x.getPixelForValue(1);
-        const y1 = y.getPixelForValue(janVal);
-        const y2 = y.getPixelForValue(todayVal);
+        const x1 = Math.round(x.getPixelForValue(0)); // UPDATED: Round to integers for crisp pixels
+        const x2 = Math.round(x.getPixelForValue(1));
+        const y1 = Math.round(y.getPixelForValue(janVal));
+        const y2 = Math.round(y.getPixelForValue(todayVal));
 
         if (![x1, x2, y1, y2].every(Number.isFinite)) return;
 
@@ -464,14 +468,16 @@
 
         ctx.save();
         ctx.strokeStyle = color;
-        ctx.lineWidth = 5;
+        ctx.lineWidth = 3; // UPDATED: Thinner for sharpness (was 5—too bold/soft)
         ctx.lineCap = 'round';
+        ctx.setLineDash([]); // UPDATED: Solid line, no dash blur
+        ctx.imageSmoothingEnabled = false; // UPDATED: Disable smoothing for crisp edges
         ctx.beginPath();
         ctx.moveTo(x1, y1);
         ctx.lineTo(x2, y2);
         ctx.stroke();
 
-        const headLen = 18;
+        const headLen = 16; // UPDATED: Slightly smaller for precision (was 18)
         const angle = Math.atan2(y2 - y1, x2 - x1);
         ctx.beginPath();
         ctx.moveTo(x2, y2);
@@ -483,11 +489,12 @@
 
         const growth = janVal === 0 ? (todayVal === 0 ? 0 : 100) : ((todayVal - janVal) / Math.abs(janVal)) * 100;
         if (Math.abs(growth) > 0.1) {
-          const midX = (x1 + x2) / 2;
-          const midY = (y1 + y2) / 2 - 25;
-          ctx.font = 'bold 16px Lato';
+          const midX = Math.round((x1 + x2) / 2); // UPDATED: Round for pixel-perfect text
+          const midY = Math.round((y1 + y2) / 2 - 25);
+          ctx.font = 'bold 14px Lato, Arial, sans-serif'; // UPDATED: Smaller size, web-safe fallback (was 16px Lato)
           ctx.fillStyle = color;
           ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle'; // UPDATED: Better alignment for sharpness
           ctx.fillText(`${growth >= 0 ? '+' : ''}${growth.toFixed(1)}%`, midX, midY);
         }
         ctx.restore();
@@ -620,15 +627,35 @@
       const growth = j === 0 ? (t === 0 ? 0 : 100) : ((t - j) / Math.abs(j)) * 100;
       updateIndicator(gid, growth);
 
-      new Chart(document.getElementById(id).getContext('2d'), {
+      const canvas = document.getElementById(id);
+      const ctx = canvas.getContext('2d');
+      const dpr = window.devicePixelRatio || 1; // UPDATED: Detect DPR for hi-res scaling
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * dpr; // UPDATED: Scale canvas to physical pixels
+      canvas.height = rect.height * dpr;
+      ctx.scale(dpr, dpr); // UPDATED: Scale context to match
+
+      new Chart(ctx, { // UPDATED: Pass scaled context
         type: 'bar',
         data: {
           labels: ['Jan 2025', 'Nov 2025'],
-          datasets: [{ data: [j, t], backgroundColor: [color.jan, color.today], borderRadius: 12, maxBarThickness: 100 }]
+          datasets: [{ 
+            data: [j, t], 
+            backgroundColor: [color.jan, color.today], 
+            borderRadius: 4, // UPDATED: Less rounding for sharper corners (was 12)
+            maxBarThickness: 80, // UPDATED: Slightly thinner for premium minimalism (was 100)
+            borderSkipped: false,
+            borderWidth: 0 // UPDATED: No border to avoid blur
+          }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          devicePixelRatio: dpr, // UPDATED: Tell Chart.js about DPR
+          elements: {
+            bar: { borderWidth: 0, borderSkipped: false }, // UPDATED: Crisp bar edges
+            point: { borderWidth: 0 }
+          },
           plugins: {
             legend: { display: false },
             tooltip: {
@@ -641,14 +668,19 @@
               }
             },
             datalabels: {
-              anchor: 'end', align: 'end', offset: 10,
-              color: '#1a1a1a', font: { weight: '900', size: 14 },
+              anchor: 'end', align: 'end', offset: 8, // UPDATED: Tighter offset for compactness
+              color: '#1a1a1a', font: { family: 'Lato, Arial, sans-serif', weight: '900', size: 12 }, // UPDATED: Explicit family + smaller size (was size 14)
               formatter: v => isPct ? `${v.toFixed(2)}%` : (isMoney ? `KES ${v.toLocaleString()}` : v.toLocaleString()),
-              backgroundColor: 'rgba(255,255,255,0.95)', borderRadius: 8, padding: 8
+              backgroundColor: 'rgba(255,255,255,1)', // UPDATED: Fully opaque white—no transparency blur (was 0.95)
+              borderColor: 'rgba(0,0,0,0.1)', // UPDATED: Subtle border for definition
+              borderWidth: 1,
+              borderRadius: 4, // UPDATED: Sharper radius (was 8)
+              padding: 6 // UPDATED: Less padding for clean look (was 8)
             }
           },
           scales: { x: { grid: { display: false } }, y: { display: false, grace: '20%' } },
-          layout: { padding: { top: 70 } }
+          layout: { padding: { top: 60 } }, // UPDATED: Slightly less top padding (was 70)
+          animation: { duration: 800, easing: 'easeOutQuart' } // UPDATED: Smooth animation for premium feel
         },
         plugins: [ChartDataLabels]
       });
@@ -685,7 +717,7 @@
     init();
   });
 </script>
-
+    
 <script src="./scripts/main.js"></script>
 <script src="./scripts/calculator.js"></script>
 <script src="./scripts/dividendscalculator.js"></script>
