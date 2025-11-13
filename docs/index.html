@@ -33,7 +33,7 @@
       gtag('config', 'G-05M38MYK0G');
     </script>
 
-    <style id="final-working-styles">
+  <style id="final-working-styles">
   /* GROWTH CHARTS GRID — RESPONSIVE LAYOUT */
   .growth-charts-grid {
     display: grid;
@@ -42,7 +42,7 @@
     margin: 2rem 0;
   }
 
-  /* CHART CARDS — INCREASED HEIGHT FOR FULL VISIBILITY, FLEX FOR SPACING */
+  /* CHART CARDS — FURTHER INCREASED HEIGHT FOR FULL TOP VISIBILITY */
   .chart-card {
     background: #ffffff;
     padding: 2rem 1.5rem;
@@ -51,24 +51,24 @@
     text-align: center;
     transition: transform 0.3s ease;
     position: relative;
-    min-height: 420px; /* Increased to accommodate bars + text + arrows */
+    min-height: 460px; /* Bumped up to 460px to fully reveal top annotations/text */
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Even spacing: plot, label, indicator */
+    justify-content: flex-start; /* Start from top, let plot grow */
   }
 
   .plot-container {
     width: 100%;
-    height: auto; /* Flexible to fit content; avoids fixed height conflicts */
-    min-height: 300px; /* Base for bars/text visibility */
-    flex-grow: 1; /* Fills card space without overflow */
+    height: auto; /* Flexible fit */
+    min-height: 350px; /* Increased to 350px for ample room above bars (margins + outside text) */
+    flex-grow: 1;
     margin-bottom: 12px;
     contain: layout style paint;
   }
 
-  /* PLOTLY CHARTS — EXPANDED FOR TEXT/ANNOTATIONS, NO CLIPPING */
+  /* PLOTLY CHARTS — MATCHED TO NEW HEIGHTS FOR NO CLIPPING */
   .chart-card > div[id^="plot"] {
-    min-height: 300px; /* Matches container; room for outside text + arrows */
+    min-height: 350px; /* Aligned with container; ensures top figures/arrows visible */
     height: 100%;
     width: 100%;
   }
@@ -96,19 +96,19 @@
     text-align: center;
   }
 
-  /* MOBILE — SCALED DOWN BUT VISIBLE, NO OVERFLOW */
+  /* MOBILE — SCALED BUT PRIORITIZED VISIBILITY */
   @media (max-width: 768px) {
     .chart-card {
       padding: 1.6rem 1rem;
-      min-height: 360px;
+      min-height: 400px; /* Upped to 400px for mobile top visibility */
     }
 
     .plot-container {
-      min-height: 260px;
+      min-height: 300px; /* Increased for mobile; prevents top clipping */
     }
 
     .chart-card > div[id^="plot"] {
-      min-height: 260px;
+      min-height: 300px;
     }
 
     #projectedYield {
@@ -253,6 +253,7 @@
     }
   }
 </style>
+
 
 
 
