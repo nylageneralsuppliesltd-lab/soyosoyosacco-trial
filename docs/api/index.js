@@ -5,6 +5,8 @@ const fs = require("fs");
 const path = require("path");
 const cors = require("cors");
 const { Pool } = require("pg");
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+const cron = require("node-cron");
 
 const app = express();
 app.use(cors());
@@ -176,6 +178,100 @@ app.post("/api/zapier", async (req, res) => {
     console.error("Zapier proxy failed:", err);
     res.status(500).json({ error: "Failed to reach Zapier", details: err.message });
   }
+});
+
+// ==================== AUTOMATIC MONTHLY EMAIL ====================
+
+// Convert history to CSV
+function convertHistoryToCSV(history) {
+  const headers = ["Period","Members","Savings","Loans Disbursed","Loans Balance","Total Bank","Co-op","Chamasoft","Cytonn","Total Assets","Profit","ROA","Saved On"];
+  const rows = history.map(r => [
+    r.period,
+    r.members,
+    r.contributions,
+    r.loans_disbursed,
+    r.loans_balance,
+    r.total_bank_balance,
+    r.coop_bank,
+    r.chama_soft,
+    r.cytonn,
+    r.total_assets,
+    r.profit,
+    r.roa,
+    r.date_saved
+  ]);
+  return [headers, ...rows].map(r => r.join(",")).join("\n");
+}
+
+// Send monthly email via Zapier
+async function sendMonthlyEmail() {
+  try {
+    // Fetch latest history from DB or local JSON
+    let history;
+    try {
+      const res = await fetch(`http://localhost:${PORT}/api/history`);
+      history = await res.json();
+    } catch {
+      history = loadJSON(DB_FILE);
+    }
+
+    if (!history.length) return console.warn("No history to send.");
+
+    const latest = history.sort((a,b)=>b.period.localeCompare(a.period))[0];
+    const csvAttachment = convertHistoryToCSV(history);
+
+    const periodDisplay = new Date(latest.period).toLocaleString('en-KE',{month:'long',year:'numeric'});
+
+    // Prepare email payload
+    const emailBody = `
+      <h2>Soyosoyo SACCO — Monthly Update (${periodDisplay})</h2>
+      <p>Dear Members,</p>
+      <p>Summary for <strong>${periodDisplay}</strong>:</p>
+      <ul>
+        <li><strong>Members:</strong> ${latest.members.toLocaleString()}</li>
+        <li><strong>Total Savings:</strong> KES ${latest.contributions.toLocaleString()}</li>
+        <li><strong>Loans Disbursed:</strong> KES ${latest.loans_disbursed.toLocaleString()}</li>
+        <li><strong>Loans Balance:</strong> KES ${latest.loans_balance.toLocaleString()}</li>
+        <li><strong>Total Bank Balance:</strong> KES ${latest.total_bank_balance.toLocaleString()}</li>
+        <li><strong>Total Assets:</strong> KES ${latest.total_assets.toLocaleString()}</li>
+        <li><strong>Profit:</strong> KES ${latest.profit.toLocaleString()}</li>
+        <li><strong>ROA:</strong> ${latest.roa}%</li>
+      </ul>
+      <p>Attached is the full historical data.</p>
+      <p><em>Soyosoyo SACCO Management</em></p>
+    `;
+
+    const payload = {
+      timestamp: new Date().toISOString(),
+      subject: `Soyosoyo SACCO Monthly Update — ${periodDisplay}`,
+      body: emailBody,
+      attachment: csvAttachment,
+      recipients: ["members@soyosoyo.co.ke"]
+    };
+
+    const zapierURL = process.env.ZAPIER_WEBHOOK_URL;
+    if (!zapierURL) return console.error("Zapier webhook not configured.");
+
+    const res = await fetch(zapierURL, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+
+    if (res.ok) console.log("✅ Monthly email sent for", periodDisplay);
+    else {
+      const text = await res.text();
+      console.warn("⚠ Zapier error:", text);
+    }
+  } catch(err) {
+    console.error("❌ Failed to send monthly email:", err.message);
+  }
+}
+
+// Schedule email on 1st of every month at 9 AM
+cron.schedule("0 9 1 * *", () => {
+  console.log("Running scheduled monthly email...");
+  sendMonthlyEmail();
 });
 
 // --- Start server ---
