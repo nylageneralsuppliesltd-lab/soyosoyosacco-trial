@@ -154,24 +154,220 @@ const CACHE_KEY = 'soyosoyoSaccoHistory';
 let autoSyncTimeout = null;
 let retryCount = 0;
 const MAX_RETRIES = 50;
+let silentWatcherActive = false;
 
-// ---------- Helpers ----------
-function getCurrentPeriod() { return new Date().toISOString().slice(0, 7); }
-function formatMonth(p) { const [y, m] = p.split('-'); const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return `${months[parseInt(m)-1]} ${y}`; }
-function formatDisplayDate(d){ return new Date(d).toLocaleString('en-KE',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}).replace(',',''); }
-function fmt(n){ return (n==null||isNaN(n))?'0':Number(n).toLocaleString(); }
-function recordsDiffer(live, db){ const keys=['members','contributions','loansDisbursed','loansBalance','totalBankBalance','coopBank','chamasoft','cytonn','totalAssets','profit','roa']; return keys.some(k=>Math.abs((Number(live[k])||0)-(Number(db[k])||0))>0.5); }
+// Fallback for empty data
+const aboutJanFallback = { members:0, contributions:0, loans:0, profit:0, bankBalance:0, externalLoans:0 };
 
-// ---------- Load Cache ----------
-function loadCache(){ try{ const cached=localStorage.getItem(CACHE_KEY); if(cached) window.saccoHistory=JSON.parse(cached);}catch(e){console.warn('Cache corrupt');} }
+function getCurrentPeriod() { return new Date().toISOString().slice(0,7); }
+function formatMonth(p) { const [y,m] = p.split('-'); const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return `${months[parseInt(m)-1]} ${y}`; }
+function formatDisplayDate(d) { return new Date(d).toLocaleString('en-KE',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}).replace(',',''); }
+function recordsDiffer(live, db) { const keys=['members','contributions','loansDisbursed','loansBalance','totalBankBalance','coopBank','chamasoft','cytonn','totalAssets','profit','roa']; return keys.some(k => Math.abs(Number(live[k]||0)-Number(db[k]||0))>0.5); }
 
-// ---------- Render History ----------
-function renderFullHistory(){
+function showLiveData() {
+    if (!window.saccoData?.today) { setTimeout(showLiveData,300); return; }
+
+    const t = window.saccoData.today;
+    const ef = t.extraFields || {};
+    const bb = ef.bankBreakdown || [];
+    const period = getCurrentPeriod();
+
+    const liveData = {
+        members: t.members||0,
+        contributions: t.contributions||0,
+        loansDisbursed: t.loansDisbursed||t.loans||0,
+        loansBalance: t.loansBalance||0,
+        totalBankBalance: t.totalBankBalance||t.bankBalance||0,
+        coopBank: bb.find(b=>b.name?.includes('Co-operative'))?.value||0,
+        chamasoft: bb.find(b=>b.name?.includes('Chamasoft'))?.value||0,
+        cytonn: bb.find(b=>b.name?.includes('Cytonn'))?.value||0,
+        totalAssets: ef.bookValue||0,
+        profit: t.profit||0,
+        roa: parseFloat(t.roa)||0
+    };
+
+    let currentRecord = window.saccoHistory[period];
+    let isSynced = false;
+    let recordToUse = {...liveData, period, dateSaved:new Date().toISOString(), saveType:'live'};
+
+    if (currentRecord && currentRecord.saveType==='db') {
+        isSynced = !recordsDiffer(liveData, currentRecord);
+        if (isSynced) recordToUse = currentRecord;
+    }
+
+    const needsUpdate = !currentRecord || currentRecord.saveType!==recordToUse.saveType || JSON.stringify(currentRecord)!==JSON.stringify(recordToUse);
+    if (needsUpdate) {
+        window.saccoHistory[period] = recordToUse;
+        localStorage.setItem(CACHE_KEY, JSON.stringify(window.saccoHistory));
+    }
+
+    const newHash = JSON.stringify({period, ...liveData});
+    if (newHash!==lastDataHash) {
+        lastDataHash=newHash;
+        if (autoSaveEnabled && !isSynced) {
+            clearTimeout(autoSyncTimeout);
+            autoSyncTimeout = setTimeout(()=>saveCurrentMonth(true),2000);
+        }
+    }
+
+    renderFullHistory();
+    updateSyncStatus(recordToUse,isSynced);
+    autoCreateNewMonthIfNeeded();
+}
+
+function autoCreateNewMonthIfNeeded() {
+    const currentPeriod = getCurrentPeriod();
+    if (window.saccoHistory[currentPeriod]) return;
+
+    const periods = Object.keys(window.saccoHistory).sort().reverse();
+    const latestPeriod = periods[0];
+    if (!latestPeriod) return;
+
+    const previousRecord = window.saccoHistory[latestPeriod];
+    if (!previousRecord || previousRecord.saveType!=='db') return;
+
+    const newRecord = {...previousRecord, period:currentPeriod, dateSaved:new Date().toISOString(), saveType:'live'};
+    window.saccoHistory[currentPeriod] = newRecord;
+    localStorage.setItem(CACHE_KEY, JSON.stringify(window.saccoHistory));
+    renderFullHistory();
+    updateSyncStatus(newRecord,false);
+
+    if (autoSaveEnabled) setTimeout(()=>saveCurrentMonth(true),3000);
+}
+
+function updateSyncStatus(record,isSynced) {
+    const footer=document.getElementById('historyFooter');
+    const saveBtn=document.querySelector('.btn-save');
+    const container=document.querySelector('.history-section');
+
+    if (!isSynced) {
+        if (retryCount>0) footer.innerHTML=`<strong style="color:#F59E0B;">OFFLINE • Retrying (${retryCount}/${MAX_RETRIES})</strong>`;
+        else footer.innerHTML=`<strong style="color:#EF4444;">UNSAVED CHANGES • Saving...</strong>`;
+        saveBtn.innerHTML=isSynced?'SYNCED':'SAVING...';
+        saveBtn.style.background=isSynced?'#10B981':'#EF4444';
+        container.style.border=isSynced?'2px solid #86efac':'3px solid #EF4444';
+        container.style.boxShadow=isSynced?'0 15px 40px rgba(0,0,0,0.08)':'0 0 30px rgba(239,68,68,0.4)';
+    } else {
+        footer.innerHTML=`<strong style="color:#10B981">FULLY SYNCED • All phones updated</strong>`;
+        saveBtn.innerHTML='SYNCED';
+        saveBtn.style.background='#10B981';
+        container.style.border='2px solid #86efac';
+        container.style.boxShadow='0 15px 40px rgba(0,0,0,0.08)';
+        retryCount=0;
+        clearTimeout(autoSyncTimeout);
+    }
+}
+
+// Save current month to backend
+window.saveCurrentMonth = async function(isAutoSave=false) {
+    if (!window.saccoData?.today) { if(!isAutoSave) alert("No data! Visit homepage first."); return; }
+    const t=window.saccoData.today;
+    const ef=t.extraFields||{};
+    const bb=ef.bankBreakdown||[];
+    const period=getCurrentPeriod();
+    const payload={
+        period,
+        members:t.members||0,
+        contributions:t.contributions||0,
+        loans_disbursed:t.loansDisbursed||t.loans||0,
+        loans_balance:t.loansBalance||0,
+        total_bank_balance:t.totalBankBalance||t.bankBalance||0,
+        coop_bank:bb.find(b=>b.name?.includes('Co-operative'))?.value||0,
+        chama_soft:bb.find(b=>b.name?.includes('Chamasoft'))?.value||0,
+        cytonn:bb.find(b=>b.name?.includes('Cytonn'))?.value||0,
+        total_assets:ef.bookValue||0,
+        profit:t.profit||0,
+        roa:parseFloat(t.roa)||0,
+        extra_fields:ef
+    };
+
+    const optimisticRecord={...payload,dateSaved:new Date().toISOString(),saveType:'db'};
+    window.saccoHistory[period]=optimisticRecord;
+    localStorage.setItem(CACHE_KEY,JSON.stringify(window.saccoHistory));
+    renderFullHistory();
+    updateSyncStatus(optimisticRecord,true);
+
+    try {
+        const res = await fetch(`${API_BASE}/history/save`,{
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify(payload),
+            signal:AbortSignal.timeout(10000)
+        });
+        if(!res.ok) throw new Error(`HTTP ${res.status}`);
+        retryCount=0;
+        if(!isAutoSave) alert("SAVED! All phones in sync");
+    } catch(err) {
+        console.warn('Save failed:',err.message);
+        retryCount++;
+        if(retryCount<=MAX_RETRIES) {
+            const delay=Math.min(5000*retryCount,30000);
+            setTimeout(()=>saveCurrentMonth(true),delay);
+            document.getElementById('historyFooter').innerHTML=`<strong style="color:#F59E0B;">OFFLINE • Retrying in ${Math.round(delay/1000)}s</strong>`;
+        } else {
+            document.getElementById('historyFooter').innerHTML=`<strong style="color:#EF4444;">OFFLINE • Data saved locally</strong>`;
+        }
+        showLiveData();
+    }
+};
+
+// Toggle auto-save
+window.toggleAutoSave=function() {
+    autoSaveEnabled=!autoSaveEnabled;
+    localStorage.setItem('autoSaveEnabled',autoSaveEnabled);
+    const text=document.getElementById('autoSaveText');
+    text.textContent=autoSaveEnabled?'AUTO-SAVE ON':'AUTO-SAVE OFF';
+    document.getElementById('autoSaveToggle').style.background=autoSaveEnabled?'#10B981':'#f59e0b';
+};
+
+// Load local cache
+function loadCache() {
+    try { const cached=localStorage.getItem(CACHE_KEY); if(cached) window.saccoHistory=JSON.parse(cached); }
+    catch(e){console.warn('Cache corrupt');}
+}
+
+// Sync from backend
+async function syncWithDB() {
+    try {
+        const res=await fetch(`${API_BASE}/history?t=${Date.now()}`,{cache:'no-store'});
+        if(!res.ok) throw 1;
+        const data=await res.json();
+        let changed=false;
+        data.forEach(row=>{
+            const rec={
+                period:row.period,
+                members:Number(row.members||0),
+                contributions:Number(row.contributions||0),
+                loansDisbursed:Number(row.loans_disbursed||0),
+                loansBalance:Number(row.loans_balance||0),
+                totalBankBalance:Number(row.total_bank_balance||0),
+                coopBank:Number(row.coop_bank||0),
+                chamasoft:Number(row.chama_soft||0),
+                cytonn:Number(row.cytonn||0),
+                totalAssets:Number(row.total_assets||0),
+                profit:Number(row.profit||0),
+                roa:Number(row.roa||0),
+                dateSaved:row.date_saved||row.dateSaved||new Date().toISOString(),
+                saveType:'db'
+            };
+            if(!window.saccoHistory[rec.period] || rec.dateSaved>(window.saccoHistory[rec.period].dateSaved||'')){
+                window.saccoHistory[rec.period]=rec;
+                changed=true;
+            }
+        });
+        if(changed){localStorage.setItem(CACHE_KEY,JSON.stringify(window.saccoHistory)); renderFullHistory(); showLiveData();}
+    } catch(e){ setTimeout(syncWithDB,20000); }
+}
+
+// Render full history
+function renderFullHistory() {
     const container=document.getElementById('fullHistoryTable');
     const history=Object.values(window.saccoHistory).sort((a,b)=>b.period.localeCompare(a.period));
     const cur=getCurrentPeriod();
     const isMobile=window.innerWidth<=768;
-    if(history.length===0){container.innerHTML='<p style="text-align:center;padding:40px;color:#666;">Loading history...</p>';return;}
+    if(history.length===0){container.innerHTML='<p style="text-align:center;padding:40px;color:#666;">Loading history...</p>'; return;}
+
+    const fmt=num=>(num==null||isNaN(num))?'0':Number(num).toLocaleString();
     let html='';
     if(isMobile){
         html=history.map(r=>{
@@ -198,10 +394,9 @@ function renderFullHistory(){
         }).join('');
     } else {
         html=`<table><thead><tr>
-            <th>Period</th><th>Members</th><th>Contributions</th><th>Loans Disbursed</th><th>Loans Balance</th>
-            <th>Total Bank</th><th>Co-op</th><th>Chamasoft</th><th>Cytonn</th><th>Total Assets</th>
-            <th>Profit</th><th>ROA %</th><th>Saved On</th>
-        </tr></thead><tbody>`;
+        <th>Period</th><th>Members</th><th>Contributions</th><th>Loans Disbursed</th><th>Loans Balance</th>
+        <th>Total Bank</th><th>Co-op</th><th>Chamasoft</th><th>Cytonn</th><th>Total Assets</th>
+        <th>Profit</th><th>ROA %</th><th>Saved On</th></tr></thead><tbody>`;
         history.forEach(r=>{
             const bg=r.saveType==='live'?'background:#fffbe6':'background:#f0fdf4';
             const label=r.saveType==='live'?'(LIVE)':'(SYNCED)';
@@ -210,270 +405,84 @@ function renderFullHistory(){
                 <td>${fmt(r.loansDisbursed)}</td><td>${fmt(r.loansBalance)}</td><td>${fmt(r.totalBankBalance)}</td>
                 <td>${fmt(r.coopBank)}</td><td>${fmt(r.chamasoft)}</td><td>${fmt(r.cytonn)}</td>
                 <td>${fmt(r.totalAssets)}</td><td>${fmt(r.profit)}</td><td>${r.roa?Number(r.roa).toFixed(1):'0.0'}</td>
-                <td>${formatDisplayDate(r.dateSaved||new Date())} <small>${label}</small></td>
-            </tr>`;
+                <td>${formatDisplayDate(r.dateSaved||new Date())} <small>${label}</small></td></tr>`;
         });
         html+='</tbody></table>';
     }
     container.innerHTML=html;
 }
 
-// ---------- Show Live Data ----------
-function showLiveData(){
-    if(!window.saccoData?.today){setTimeout(showLiveData,300);return;}
-    const t=window.saccoData.today;
-    const ef=t.extraFields||{};
-    const bb=ef.bankBreakdown||[];
-    const period=getCurrentPeriod();
-    const liveData={
-        members:t.members||0,
-        contributions:t.contributions||0,
-        loansDisbursed:t.loansDisbursed||t.loans||0,
-        loansBalance:t.loansBalance||0,
-        totalBankBalance:t.totalBankBalance||t.bankBalance||0,
-        coopBank:bb.find(b=>b.name?.includes('Co-operative'))?.value||0,
-        chamasoft:bb.find(b=>b.name?.includes('Chamasoft'))?.value||0,
-        cytonn:bb.find(b=>b.name?.includes('Cytonn'))?.value||0,
-        totalAssets:ef.bookValue||0,
-        profit:t.profit||0,
-        roa:parseFloat(t.roa)||0
-    };
-    let currentRecord=window.saccoHistory[period];
-    let isSynced=false;
-    let recordToUse={...liveData, period, dateSaved:new Date().toISOString(), saveType:'live'};
-    if(currentRecord && currentRecord.saveType==='db'){
-        isSynced=!recordsDiffer(liveData,currentRecord);
-        if(isSynced) recordToUse=currentRecord;
-    }
-    if(!currentRecord || currentRecord.saveType!==recordToUse.saveType || JSON.stringify(currentRecord)!==JSON.stringify(recordToUse)){
-        window.saccoHistory[period]=recordToUse;
-        localStorage.setItem(CACHE_KEY,JSON.stringify(window.saccoHistory));
-    }
-    lastDataHash=JSON.stringify({...recordToUse});
-    renderFullHistory();
-    updateSyncStatus(recordToUse,isSynced);
+// Silent watcher
+function startSilentWatcher(){
+    if(silentWatcherActive)return;
+    silentWatcherActive=true;
+    setInterval(()=>{
+        const footer=document.getElementById('historyFooter');
+        const saveBtn=document.querySelector('.btn-save');
+        if(!footer||!saveBtn)return;
+        const isRed=saveBtn.style.backgroundColor==='rgb(239, 68, 68)'||footer.innerHTML.includes('UNSAVED CHANGES');
+        const isSaving=footer.innerHTML.includes('Saving...')||footer.innerHTML.includes('Retrying');
+        if(isRed&&!isSaving) saveCurrentMonth(false);
+    },8000);
 }
 
-// ---------- Update Sync Status ----------
-function updateSyncStatus(record,isSynced){
-    const footer=document.getElementById('historyFooter');
-    const saveBtn=document.querySelector('.btn-save');
-    const container=document.querySelector('.history-section');
-    if(!isSynced){
-        if(retryCount>0){
-            footer.innerHTML=`<strong style="color:#F59E0B;">OFFLINE • Retrying (${retryCount}/${MAX_RETRIES})</strong>`;
-            saveBtn.innerHTML='WAITING...';
-            saveBtn.style.background='#F59E0B';
-        } else {
-            footer.innerHTML=`<strong style="color:#EF4444;">UNSAVED CHANGES • Saving...</strong>`;
-            saveBtn.innerHTML='SAVING...';
-            saveBtn.style.background='#EF4444';
-        }
-        container.style.border='3px solid #EF4444';
-        container.style.boxShadow='0 0 30px rgba(239,68,68,0.4)';
-    } else {
-        footer.innerHTML=`<strong style="color:#10B981">FULLY SYNCED • All phones updated</strong>`;
-        saveBtn.innerHTML='SYNCED';
-        saveBtn.style.background='#10B981';
-        container.style.border='2px solid #86efac';
-        container.style.boxShadow='0 15px 40px rgba(0,0,0,0.08)';
-        retryCount=0;
-        clearTimeout(autoSyncTimeout);
-    }
-}
-
-// ---------- Save Current Month ----------
-async function saveCurrentMonth(isAutoSave=false){
-    if(!window.saccoData?.today){if(!isAutoSave) alert("No data! Visit homepage first.");return;}
-    const t=window.saccoData.today;
-    const ef=t.extraFields||{};
-    const bb=ef.bankBreakdown||[];
-    const period=getCurrentPeriod();
-    const payload={
-        period,
-        members:t.members||0,
-        contributions:t.contributions||0,
-        loans_disbursed:t.loansDisbursed||t.loans||0,
-        loans_balance:t.loansBalance||0,
-        total_bank_balance:t.totalBankBalance||t.bankBalance||0,
-        coop_bank:bb.find(b=>b.name?.includes('Co-operative'))?.value||0,
-        chama_soft:bb.find(b=>b.name?.includes('Chamasoft'))?.value||0,
-        cytonn:bb.find(b=>b.name?.includes('Cytonn'))?.value||0,
-        total_assets:ef.bookValue||0,
-        profit:t.profit||0,
-        roa:parseFloat(t.roa)||0,
-        extra_fields:ef
-    };
-    const optimisticRecord={...payload,dateSaved:new Date().toISOString(),saveType:'db'};
-    window.saccoHistory[period]=optimisticRecord;
-    localStorage.setItem(CACHE_KEY,JSON.stringify(window.saccoHistory));
-    renderFullHistory();
-    updateSyncStatus(optimisticRecord,true);
-
-    try{
-        const res=await fetch(`${API_BASE}/history/save`,{
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body:JSON.stringify(payload),
-            signal:AbortSignal.timeout(10000)
-        });
-        if(!res.ok) throw new Error(`HTTP ${res.status}`);
-        retryCount=0;
-        if(!isAutoSave) alert("SAVED! All phones in sync");
-    }catch(err){
-        console.warn('Save failed:',err.message);
-        retryCount++;
-        const delay=Math.min(5000*retryCount,30000);
-        setTimeout(()=>saveCurrentMonth(true),delay);
-        document.getElementById('historyFooter').innerHTML=`<strong style="color:#F59E0B;">OFFLINE • Retrying in ${Math.round(delay/1000)}s</strong>`;
-        showLiveData();
-    }
-}
-
-// ---------- Auto Save Toggle ----------
-function toggleAutoSave(){
-    autoSaveEnabled=!autoSaveEnabled;
-    localStorage.setItem('autoSaveEnabled',autoSaveEnabled);
-    document.getElementById('autoSaveText').textContent=autoSaveEnabled?'AUTO-SAVE ON':'AUTO-SAVE OFF';
-    document.getElementById('autoSaveToggle').style.background=autoSaveEnabled?'#10B981':'#f59e0b';
-}
-
-// ---------- Sync from Backend ----------
-async function syncWithDB(){
-    try{
-        const res=await fetch(`${API_BASE}/history?t=${Date.now()}`,{cache:'no-store'});
-        if(!res.ok) throw 1;
-        const data=await res.json();
-        let changed=false;
-        data.forEach(row=>{
-            const rec={ period:row.period,
-                members:Number(row.members||0),
-                contributions:Number(row.contributions||0),
-                loansDisbursed:Number(row.loans_disbursed||0),
-                loansBalance:Number(row.loans_balance||0),
-                totalBankBalance:Number(row.total_bank_balance||0),
-                coopBank:Number(row.coop_bank||0),
-                chamasoft:Number(row.chama_soft||0),
-                cytonn:Number(row.cytonn||0),
-                totalAssets:Number(row.total_assets||0),
-                profit:Number(row.profit||0),
-                roa:Number(row.roa||0),
-                dateSaved:row.date_saved||row.dateSaved||new Date().toISOString(),
-                saveType:'db'
-            };
-            if(!window.saccoHistory[rec.period]||rec.dateSaved>(window.saccoHistory[rec.period].dateSaved||'')){
-                window.saccoHistory[rec.period]=rec;
-                changed=true;
-            }
-        });
-        if(changed){localStorage.setItem(CACHE_KEY,JSON.stringify(window.saccoHistory)); renderFullHistory();}
-    }catch(e){ setTimeout(syncWithDB,20000); }
-}
-
-// ---------- Post to Socials ----------
-async function postToSocials(){
-    if(!window.saccoData?.today){alert("Live SACCO data not ready yet.");return;}
-    const t=window.saccoData.today;
-    try{
-        const payload={
-            timestamp:new Date().toISOString(),
-            members:t.members,
-            contributions:t.contributions,
-            loansDisbursed:t.loansDisbursed,
-            loansBalance:t.loansBalance,
-            totalBankBalance:t.totalBankBalance,
-            totalAssets:t.extraFields?.bookValue||0,
-            profit:t.profit,
-            roa:t.roa,
-            bankBreakdown:t.extraFields?.bankBreakdown||[],
-            externalLoans:t.externalLoans||0
-        };
-        const res=await fetch(`${API_BASE}/zapier`,{
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body:JSON.stringify(payload)
-        });
-        if(res.ok){ alert("🚀 SACCO summary sent successfully!"); }
-        else{ alert("⚠ Failed sending to Zapier."); }
-    }catch(err){ console.error(err); alert("❌ Network error sending data to Zapier"); }
-}
-
-// ---------- Init ----------
-document.addEventListener('DOMContentLoaded',()=>{
-    document.getElementById('currentYear').textContent=new Date().getFullYear();
-    loadCache(); renderFullHistory(); syncWithDB(); showLiveData();
-    document.getElementById('autoSaveText').textContent=autoSaveEnabled?'AUTO-SAVE ON':'AUTO-SAVE OFF';
-    document.getElementById('autoSaveToggle').style.background=autoSaveEnabled?'#10B981':'#f59e0b';
-});
-window.addEventListener('resize',()=>setTimeout(renderFullHistory,100));
-</script>
-
- <script>
-window.postToSocials = async function () {
+// --- POST TO SOCIALS VIA BACKEND ---
+window.postToSocials = async function() {
     const record = window.saccoData?.today;
+    if(!record){ alert("Live SACCO data not ready yet."); return; }
 
-    if (!record) {
-        alert("Live SACCO data not ready yet. Try again in a moment.");
-        return;
-    }
-
-    const zapierURL = "https://hooks.zapier.com/hooks/catch/25320103/u8kupmi/";
-
-    try {
-        const payload = {
-            timestamp: new Date().toISOString(),
-
-            members: record.members,
-            contributions: record.contributions,
-            loansDisbursed: record.loansDisbursed,
-            loansBalance: record.loansBalance,
-
-            // FIXED
-            bankBalance: record.totalBankBalance,
-            totalBankBalance: record.totalBankBalance,
-
-            // FIXED — Safe optional chaining
-            totalAssets: record.extraFields?.bookValue || 0,
-            profit: record.profit,
-            roa: record.roa,
-
-            // FIXED — Safe optional chaining
-            bankBreakdown: record.extraFields?.bankBreakdown || [],
-            externalLoans: record.externalLoans || 0,
-
-            // Social caption text
-            summaryText: `
+    const payload = {
+        timestamp: new Date().toISOString(),
+        members: record.members,
+        contributions: record.contributions,
+        loansDisbursed: record.loansDisbursed,
+        loansBalance: record.loansBalance,
+        totalBankBalance: record.totalBankBalance,
+        totalAssets: record.extraFields?.bookValue||0,
+        profit: record.profit,
+        roa: record.roa,
+        bankBreakdown: record.extraFields?.bankBreakdown||[],
+        externalLoans: record.externalLoans||0,
+        summaryText: `
 📊 Soyosoyo SACCO — Monthly Update
-
 👥 Members: ${record.members.toLocaleString()}
 💰 Savings: ${record.contributions.toLocaleString()}
 📤 Loans Disbursed: ${record.loansDisbursed.toLocaleString()}
-🏦 Total Assets: ${(record.extraFields?.bookValue || 0).toLocaleString()}
+🏦 Total Assets: ${(record.extraFields?.bookValue||0).toLocaleString()}
 📈 ROA: ${record.roa}%
 💵 Profit: ${record.profit.toLocaleString()}
-
 #SoyosoyoSACCO #Finance #Chama #Savings
-            `.trim()
-        };
+        `.trim()
+    };
 
-        const res = await fetch(zapierURL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
+    try {
+        const res = await fetch(`${API_BASE}/zapier`,{
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify(payload)
         });
-
-        if (res.ok) {
-            alert("🚀 SACCO summary sent to Zapier successfully!");
-        } else {
-            alert("⚠ Zapier responded but with an error.");
-        }
-
-    } catch (err) {
-        console.error("ZAPIER ERROR:", err);
-        alert("❌ Network error sending data to Zapier");
-    }
+        const result = await res.json();
+        if(res.ok) alert("🚀 SACCO summary sent to Zapier successfully!");
+        else { console.warn(result); alert("⚠ Zapier proxy responded with an error. Check console."); }
+    } catch(err){ console.error("Error sending to Zapier:",err); alert("❌ Network error sending data to Zapier"); }
 };
+
+// --- INIT ---
+window.addEventListener('resize',()=>setTimeout(renderFullHistory,100));
+document.addEventListener('DOMContentLoaded',()=>{
+    document.getElementById('currentYear').textContent=new Date().getFullYear();
+    loadCache(); renderFullHistory(); syncWithDB(); showLiveData();
+    setTimeout(autoCreateNewMonthIfNeeded,4000);
+    setTimeout(startSilentWatcher,5000);
+    const text=document.getElementById('autoSaveText'); const btn=document.getElementById('autoSaveToggle');
+    text.textContent=autoSaveEnabled?'AUTO-SAVE ON':'AUTO-SAVE OFF';
+    btn.style.background=autoSaveEnabled?'#10B981':'#f59e0b';
+});
+
+window.addEventListener('saccoDataUpdated',showLiveData);
+window.addEventListener('online',()=>{ retryCount=0; if(autoSaveEnabled) saveCurrentMonth(true); });
 </script>
+
 
 
 </body>
