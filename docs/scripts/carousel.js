@@ -24,23 +24,23 @@ let loadDynamicData = () => {
   // Example aligned dynamic values (update these via external source)
   return {
     loanTypesToday: [
-      { name: 'Emergency', value: 1217900 },
+      { name: 'Emergency', value: 1417900 },
       { name: 'Medicare', value: 15000 },
       { name: 'Development', value: 643000 },
       { name: 'Education', value: 275000 }
     ],
-    loansBalanceToday: 859491.66,
+    loansBalanceToday: 879491.66,
     bankBreakdownToday: [
       { name: 'Co-operative Bank', value: 2120.65 },
-      { name: 'Chamasoft', value: 22645 },
+      { name: 'Chamasoft', value: 2495 },
       { name: 'Cytonn', value: 146465 }
     ],
     externalLoansToday: 66784, // Constant, but included for completeness
     cumulativeLoansDisbursedSinceInception: 5000000, // Long-term constant
     // Aligned dynamic metrics (fetch from DB; examples here)
     members: 144,
-    contributions: 907815, // Aligned consistent value
-    numberOfLoansGiven: 108, // Dynamic: e.g., count from DB
+    contributions: 907865, // Aligned consistent value
+    numberOfLoansGiven: 109, // Dynamic: e.g., count from DB
     profit: 53168, // Aligned consistent value
     activeMembers: 71 // Dynamic: e.g., query active status
   };
