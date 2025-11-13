@@ -5,11 +5,19 @@ const fs = require("fs");
 const path = require("path");
 const cors = require("cors");
 const { Pool } = require("pg");
-const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 const cron = require("node-cron");
 
 const app = express();
-app.use(cors());
+
+// ==================== CORS ====================
+// Allow only your frontend origin
+app.use(cors({
+  origin: 'https://soyosoyosacco.com',
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type']
+}));
+
 app.use(express.json({ limit: "10mb" }));
 
 // --- Local JSON storage files ---
@@ -26,11 +34,11 @@ const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
 // --- JSON helpers ---
 function loadJSON(file) {
-  try { return JSON.parse(fs.readFileSync(file, "utf8")); } 
+  try { return JSON.parse(fs.readFileSync(file, "utf8")); }
   catch (err) { console.error(`Error reading ${file}:`, err); return []; }
 }
 function saveJSON(file, data) {
-  try { fs.writeFileSync(file, JSON.stringify(data, null, 2)); return true; } 
+  try { fs.writeFileSync(file, JSON.stringify(data, null, 2)); return true; }
   catch (err) { console.error(`Error writing ${file}:`, err); return false; }
 }
 
@@ -125,7 +133,7 @@ app.post("/api/history/save", async (req, res) => {
     pending.push(newEntry);
     saveJSON(PENDING_FILE, pending);
 
-    // Still update local JSON
+    // Update local JSON anyway
     let history = loadJSON(DB_FILE);
     history = history.filter(h => h.period !== newEntry.period);
     history.push(newEntry);
@@ -155,7 +163,7 @@ async function retryPending() {
 }
 setInterval(retryPending, 30000);
 
-// --- POST /api/zapier (proxy to Zapier) ---
+// --- POST /api/zapier ---
 app.post("/api/zapier", async (req, res) => {
   const zapierURL = process.env.ZAPIER_WEBHOOK_URL;
   if (!zapierURL) return res.status(500).json({ error: "Zapier webhook not configured" });
@@ -180,9 +188,7 @@ app.post("/api/zapier", async (req, res) => {
   }
 });
 
-// ==================== AUTOMATIC MONTHLY EMAIL ====================
-
-// Convert history to CSV
+// --- Convert history to CSV ---
 function convertHistoryToCSV(history) {
   const headers = ["Period","Members","Savings","Loans Disbursed","Loans Balance","Total Bank","Co-op","Chamasoft","Cytonn","Total Assets","Profit","ROA","Saved On"];
   const rows = history.map(r => [
@@ -203,10 +209,9 @@ function convertHistoryToCSV(history) {
   return [headers, ...rows].map(r => r.join(",")).join("\n");
 }
 
-// Send monthly email via Zapier
+// --- Send monthly email ---
 async function sendMonthlyEmail() {
   try {
-    // Fetch latest history from DB or local JSON
     let history;
     try {
       const res = await fetch(`http://localhost:${PORT}/api/history`);
@@ -216,13 +221,10 @@ async function sendMonthlyEmail() {
     }
 
     if (!history.length) return console.warn("No history to send.");
-
     const latest = history.sort((a,b)=>b.period.localeCompare(a.period))[0];
     const csvAttachment = convertHistoryToCSV(history);
-
     const periodDisplay = new Date(latest.period).toLocaleString('en-KE',{month:'long',year:'numeric'});
 
-    // Prepare email payload
     const emailBody = `
       <h2>Soyosoyo SACCO — Monthly Update (${periodDisplay})</h2>
       <p>Dear Members,</p>
@@ -268,7 +270,7 @@ async function sendMonthlyEmail() {
   }
 }
 
-// Schedule email on 1st of every month at 9 AM
+// --- Schedule monthly email at 9 AM on 1st ---
 cron.schedule("0 9 1 * *", () => {
   console.log("Running scheduled monthly email...");
   sendMonthlyEmail();
