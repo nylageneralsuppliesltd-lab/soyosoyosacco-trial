@@ -1,4 +1,4 @@
-// scripts/carousel.js – FULLY FIXED + SOYOSOYO + ALIGNED WITH ABOUT.HTML KEYS + ROA MATCHED TO 5.5
+// scripts/carousel.js – FULLY FIXED + SOYOSOYO + ALIGNED WITH ABOUT.HTML KEYS + TOTAL ASSETS = LOANS BAL + BANK BAL + ROA RECALC
 document.addEventListener('DOMContentLoaded', () => {
   const janFallback = { members: 101, contributions: 331263, loans: 283500, profit: -60056, externalLoans: 0, bankBalance: 113742 };
   window.saccoData = { jan: janFallback, today: {} };
@@ -29,8 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const d = loadDynamicData();
     const loansDisbursed = d.loanTypesToday.reduce((s, l) => s + l.value, 0);
     const bankBalance = d.bankBreakdownToday.reduce((s, b) => s + b.value, 0);
-    const assets = d.contributions + d.externalLoansToday + d.loansBalanceToday;  // Aligned: Full assets calc for totalAssets
-    const roa = 5.5;  // Matched to table: Forced to 5.5 (as per SYNCED row; overrides calc for alignment)
+    const totalAssets = d.loansBalanceToday + bankBalance;  // Updated: Exact formula (Loans Balance + Bank Balance)
+    const roa = totalAssets > 0 ? ((d.profit / totalAssets) * 100).toFixed(1) : 0;  // Recalculated: Profit / Total Assets * 100, rounded to 1 decimal (≈5.2)
 
     // Aligned: Set full keys expected by About.html (extraFields, loansBalance, totalBankBalance, totalAssets)
     const todayData = {
@@ -43,17 +43,17 @@ document.addEventListener('DOMContentLoaded', () => {
       bankBalance: bankBalance,  // Keep for legacy
       profit: d.profit,
       externalLoans: d.externalLoansToday,
-      roa: roa,  // Now matched to 5.5
+      roa: roa,  // Recalculated to match formula
       extraFields: {  // Exact structure for About.html (bankBreakdown, bookValue)
         bankBreakdown: d.bankBreakdownToday,
-        bookValue: assets  // For totalAssets fallback
+        bookValue: totalAssets  // Updated: Now uses the precise formula for totalAssets
       }
     };
 
     window.loanTypesToday = d.loanTypesToday;
     window.saccoData.today = todayData;
 
-    // RESTORE SOYOSOYO FOR PROJECTIONS (unchanged, but uses aligned roa)
+    // RESTORE SOYOSOYO FOR PROJECTIONS (unchanged, uses recalced roa)
     window.SOYOSOYO = {
       current: window.saccoData.today,
       baseline: janFallback,
