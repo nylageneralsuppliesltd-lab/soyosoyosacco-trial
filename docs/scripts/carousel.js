@@ -24,7 +24,7 @@ let loadDynamicData = () => {
   // Example aligned dynamic values (update these via external source)
   return {
     loanTypesToday: [
-      { name: 'Emergency', value: 1417900 },
+      { name: 'Emergency', value: 1237900 },
       { name: 'Medicare', value: 15000 },
       { name: 'Development', value: 643000 },
       { name: 'Education', value: 275000 }
