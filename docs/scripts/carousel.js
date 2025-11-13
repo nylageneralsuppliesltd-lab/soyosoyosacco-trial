@@ -1,6 +1,5 @@
-// scripts/carousel.js – UPGRADED: INFINITE RIBBON + FLICKING NUMBERS + GREEN GRADIENT
+// scripts/carousel.js – FINAL + SOYOSOYO RESTORED
 document.addEventListener('DOMContentLoaded', () => {
-  // === DATA (UPDATE DAILY) ===
   const janFallback = { members: 101, contributions: 331263, loans: 283500, profit: -60056, externalLoans: 0, bankBalance: 113742 };
   window.saccoData = { jan: janFallback, today: {} };
   window.loanTypesToday = [];
@@ -45,9 +44,17 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     window.loanTypesToday = d.loanTypesToday;
-    window.saccoData.today = {
-      members: d.members, contributions: d.contributions, loans: loansDisbursed,
-      profit: d.profit, externalLoans: d.externalLoansToday, bankBalance
+    window.saccoData.today = { members: d.members, contributions: d.contributions, loans: loansDisbursed, profit: d.profit, externalLoans: d.externalLoansToday, bankBalance, roa };
+    
+    // RESTORE SOYOSOYO — PROJECTIONS DEPENDS ON THIS
+    window.SOYOSOYO = {
+      current: window.saccoData.today,
+      baseline: janFallback,
+      counters: carouselData.map(item => ({
+        value: item.number,
+        suffix: item.description.includes('ROA') ? '%' : '',
+        label: item.description
+      }))
     };
 
     window.dispatchEvent(new CustomEvent('saccoDataUpdated'));
@@ -55,49 +62,43 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   const carouselData = recomputeData();
-
-  // === DOM & RENDER ===
   const carousel = document.querySelector('.carousel');
   if (!carousel) return;
 
-  // === BUILD ITEMS ===
   const itemsHTML = carouselData.map(item => `
-    <article class="carousel-item" role="listitem">
-      <h3 class="carousel-button">
-        <span class="prefix">KES</span>
+    <article class="carousel-item">
+      <div class="carousel-button">
         <span class="counter-value" data-target="${item.number}">0</span>
-        ${item.description.includes('ROA') ? '<span class="suffix">%</span>' : ''}
-      </h3>
-      <p class="carousel-desc">${item.description}</p>
+        ${item.description.includes('ROA') ? '<span>%</span>' : ''}
+      </div>
+      <p class="carousel-description">${item.description}</p>
     </article>
   `).join('');
 
-  carousel.innerHTML = itemsHTML + itemsHTML; // Duplicate for infinite loop
+  carousel.innerHTML = itemsHTML + itemsHTML;
 
-  // === COUNTER ANIMATION ===
   const formatNumber = n => n.toLocaleString();
   const animateCounter = (el, target) => {
     const end = +target;
-    let start = 0, id = null;
+    let start = 0;
+    let id = null;
     const step = now => {
       if (!id) id = now;
       const progress = Math.min((now - id) / 800, 1);
       const value = Math.round(start + progress * (end - start));
       el.textContent = formatNumber(value);
       if (progress < 1) requestAnimationFrame(step);
-      else id = null;
     };
     requestAnimationFrame(step);
   };
 
-  // === INTERSECTION OBSERVER ===
   const observer = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        const counter = e.target.querySelector('.counter-value');
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const counter = entry.target.querySelector('.counter-value');
         if (counter && counter.textContent === '0') {
           animateCounter(counter, counter.dataset.target);
-          observer.unobserve(e.target);
+          observer.unobserve(entry.target);
         }
       }
     });
@@ -105,28 +106,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.querySelectorAll('.carousel-item').forEach(item => observer.observe(item));
 
-  // === INFINITE RIBBON ANIMATION ===
-  const updateCarousel = () => {
+  const updateVars = () => {
     const w = window.innerWidth;
-    const itemWidth = w <= 600 ? 220 : w <= 360 ? 180 : 300;
-    const margin = w <= 600 ? 12 : w <= 360 ? 8 : 20;
-    const totalWidth = carouselData.length * (itemWidth + 2 * margin);
-
+    const itemWidth = w <= 600 ? 180 : w <= 360 ? 160 : 300;
+    const margin = w <= 600 ? 20 : w <= 360 ? 15 : 40;
+    const total = carouselData.length * (itemWidth + 2 * margin);
     document.documentElement.style.setProperty('--item-width', `${itemWidth}px`);
     document.documentElement.style.setProperty('--item-margin', `${margin}px`);
-    document.documentElement.style.setProperty('--ribbon-width', `-${totalWidth}px`);
-    document.documentElement.style.setProperty('--ribbon-duration', `${carouselData.length * 8}s`);
+    document.documentElement.style.setProperty('--carousel-translate', `-${total}px`);
+    document.documentElement.style.setProperty('--carousel-duration', `${carouselData.length * 7}s`);
   };
 
-  window.addEventListener('resize', updateCarousel);
-  updateCarousel();
+  window.addEventListener('resize', updateVars);
+  updateVars();
 
-  // === AUTO-START COUNTERS ON LOAD ===
   setTimeout(() => {
-    document.querySelectorAll('.counter-value').forEach(counter => {
-      if (counter.textContent === '0') {
-        animateCounter(counter, counter.dataset.target);
-      }
+    document.querySelectorAll('.counter-value').forEach(c => {
+      if (c.textContent === '0') animateCounter(c, c.dataset.target);
     });
-  }, 400);
+  }, 500);
 });
