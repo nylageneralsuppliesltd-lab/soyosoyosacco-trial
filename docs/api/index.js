@@ -1,14 +1,17 @@
+// server.js
 require('dotenv').config();
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
 const cors = require("cors");
+const fetch = require("node-fetch");
 const { Pool } = require("pg");
 
 const app = express();
 app.use(cors());
 app.use(express.json({ limit: "10mb" }));
 
+// --- Local JSON storage files ---
 const DB_FILE = path.join(__dirname, "history.json");
 const PENDING_FILE = path.join(__dirname, "pending.json");
 
@@ -17,9 +20,10 @@ for (const file of [DB_FILE, PENDING_FILE]) {
   if (!fs.existsSync(file)) fs.writeFileSync(file, "[]", "utf8");
 }
 
+// --- PostgreSQL pool ---
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
-// JSON helpers
+// --- JSON helpers ---
 function loadJSON(file) {
   try { return JSON.parse(fs.readFileSync(file, "utf8")); } 
   catch (err) { console.error(`Error reading ${file}:`, err); return []; }
@@ -29,7 +33,7 @@ function saveJSON(file, data) {
   catch (err) { console.error(`Error writing ${file}:`, err); return false; }
 }
 
-// GET history
+// --- GET /api/history ---
 app.get("/api/history", async (req, res) => {
   try {
     const { rows } = await pool.query("SELECT * FROM sacco_history ORDER BY period DESC");
@@ -48,27 +52,17 @@ app.get("/api/history", async (req, res) => {
   }
 });
 
-// Save to DB
+// --- Save to DB helper ---
 async function saveToDB(entry) {
   const query = `
     INSERT INTO sacco_history
     (period, members, contributions, loans_disbursed, loans_balance, total_bank_balance,
      coop_bank, chama_soft, cytonn, total_assets, profit, roa, date_saved, extra_fields)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
     ON CONFLICT (period) DO UPDATE SET
-      members = $2,
-      contributions = $3,
-      loans_disbursed = $4,
-      loans_balance = $5,
-      total_bank_balance = $6,
-      coop_bank = $7,
-      chama_soft = $8,
-      cytonn = $9,
-      total_assets = $10,
-      profit = $11,
-      roa = $12,
-      date_saved = $13,
-      extra_fields = $14
+      members=$2, contributions=$3, loans_disbursed=$4, loans_balance=$5, 
+      total_bank_balance=$6, coop_bank=$7, chama_soft=$8, cytonn=$9, 
+      total_assets=$10, profit=$11, roa=$12, date_saved=$13, extra_fields=$14
   `;
   const values = [
     entry.period,
@@ -89,7 +83,7 @@ async function saveToDB(entry) {
   await pool.query(query, values);
 }
 
-// POST save
+// --- POST /api/history/save ---
 app.post("/api/history/save", async (req, res) => {
   const p = req.body;
 
@@ -124,6 +118,8 @@ app.post("/api/history/save", async (req, res) => {
     res.json({ success: true, data: newEntry });
   } catch (err) {
     console.warn("DB save failed:", err.message);
+
+    // Add to pending
     let pending = loadJSON(PENDING_FILE);
     pending.push(newEntry);
     saveJSON(PENDING_FILE, pending);
@@ -138,7 +134,7 @@ app.post("/api/history/save", async (req, res) => {
   }
 });
 
-// Retry pending every 30s
+// --- Retry pending every 30s ---
 async function retryPending() {
   const pending = loadJSON(PENDING_FILE);
   if (!pending.length) return;
@@ -156,8 +152,33 @@ async function retryPending() {
   }
   saveJSON(PENDING_FILE, stillPending);
 }
-
 setInterval(retryPending, 30000);
 
+// --- POST /api/zapier (proxy to Zapier) ---
+app.post("/api/zapier", async (req, res) => {
+  const zapierURL = process.env.ZAPIER_WEBHOOK_URL;
+  if (!zapierURL) return res.status(500).json({ error: "Zapier webhook not configured" });
+
+  try {
+    const response = await fetch(zapierURL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(req.body)
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      console.warn("Zapier error:", text);
+      return res.status(500).json({ error: "Zapier returned an error", details: text });
+    }
+
+    res.json({ success: true, message: "Sent to Zapier" });
+  } catch (err) {
+    console.error("Zapier proxy failed:", err);
+    res.status(500).json({ error: "Failed to reach Zapier", details: err.message });
+  }
+});
+
+// --- Start server ---
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`SACCO API live on port ${PORT}`));
