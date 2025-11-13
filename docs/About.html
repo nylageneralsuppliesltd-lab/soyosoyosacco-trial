@@ -156,17 +156,15 @@ let retryCount = 0;
 const MAX_RETRIES = 50;
 let silentWatcherActive = false;
 
-// Fallback for empty data
-const aboutJanFallback = { members:0, contributions:0, loans:0, profit:0, bankBalance:0, externalLoans:0 };
-
+// Helper functions
 function getCurrentPeriod() { return new Date().toISOString().slice(0,7); }
 function formatMonth(p) { const [y,m] = p.split('-'); const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return `${months[parseInt(m)-1]} ${y}`; }
 function formatDisplayDate(d) { return new Date(d).toLocaleString('en-KE',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}).replace(',',''); }
 function recordsDiffer(live, db) { const keys=['members','contributions','loansDisbursed','loansBalance','totalBankBalance','coopBank','chamasoft','cytonn','totalAssets','profit','roa']; return keys.some(k => Math.abs(Number(live[k]||0)-Number(db[k]||0))>0.5); }
 
+// Show live data
 function showLiveData() {
     if (!window.saccoData?.today) { setTimeout(showLiveData,300); return; }
-
     const t = window.saccoData.today;
     const ef = t.extraFields || {};
     const bb = ef.bankBreakdown || [];
@@ -215,6 +213,7 @@ function showLiveData() {
     autoCreateNewMonthIfNeeded();
 }
 
+// Auto-create month if missing
 function autoCreateNewMonthIfNeeded() {
     const currentPeriod = getCurrentPeriod();
     if (window.saccoHistory[currentPeriod]) return;
@@ -235,11 +234,11 @@ function autoCreateNewMonthIfNeeded() {
     if (autoSaveEnabled) setTimeout(()=>saveCurrentMonth(true),3000);
 }
 
+// Update footer/status
 function updateSyncStatus(record,isSynced) {
     const footer=document.getElementById('historyFooter');
     const saveBtn=document.querySelector('.btn-save');
     const container=document.querySelector('.history-section');
-
     if (!isSynced) {
         if (retryCount>0) footer.innerHTML=`<strong style="color:#F59E0B;">OFFLINE • Retrying (${retryCount}/${MAX_RETRIES})</strong>`;
         else footer.innerHTML=`<strong style="color:#EF4444;">UNSAVED CHANGES • Saving...</strong>`;
@@ -345,7 +344,7 @@ async function syncWithDB() {
                 chamasoft:Number(row.chama_soft||0),
                 cytonn:Number(row.cytonn||0),
                 totalAssets:Number(row.total_assets||0),
-                profit:Number(row.profit||0),
+                profit:Number(row.profit),
                 roa:Number(row.roa||0),
                 dateSaved:row.date_saved||row.dateSaved||new Date().toISOString(),
                 saveType:'db'
@@ -366,7 +365,6 @@ function renderFullHistory() {
     const cur=getCurrentPeriod();
     const isMobile=window.innerWidth<=768;
     if(history.length===0){container.innerHTML='<p style="text-align:center;padding:40px;color:#666;">Loading history...</p>'; return;}
-
     const fmt=num=>(num==null||isNaN(num))?'0':Number(num).toLocaleString();
     let html='';
     if(isMobile){
@@ -426,7 +424,7 @@ function startSilentWatcher(){
     },8000);
 }
 
-// --- POST TO SOCIALS VIA BACKEND ---
+// --- POST TO SOCIALS VIA BACKEND (fixes CORS) ---
 window.postToSocials = async function() {
     const record = window.saccoData?.today;
     if(!record){ alert("Live SACCO data not ready yet."); return; }
@@ -456,6 +454,7 @@ window.postToSocials = async function() {
     };
 
     try {
+        // Use your backend proxy to send to Zapier
         const res = await fetch(`${API_BASE}/zapier`,{
             method:"POST",
             headers:{"Content-Type":"application/json"},
@@ -482,7 +481,6 @@ document.addEventListener('DOMContentLoaded',()=>{
 window.addEventListener('saccoDataUpdated',showLiveData);
 window.addEventListener('online',()=>{ retryCount=0; if(autoSaveEnabled) saveCurrentMonth(true); });
 </script>
-
 
 
 </body>
