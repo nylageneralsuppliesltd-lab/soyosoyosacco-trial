@@ -1,34 +1,11 @@
-// scripts/carousel.js – SOYOSOYO SACCO – FULLY FIXED & CLEAN
-// NO PLOTLY → NO ERRORS → PURE CAROUSEL + DATA ENGINE
-// Works only on index.html | Safe on About.html | ROA = profit / (contributions + externalLoans)
+// scripts/carousel.js – UPGRADED: INFINITE RIBBON + FLICKING NUMBERS + GREEN GRADIENT
+document.addEventListener('DOMContentLoaded', () => {
+  // === DATA (UPDATE DAILY) ===
+  const janFallback = { members: 101, contributions: 331263, loans: 283500, profit: -60056, externalLoans: 0, bankBalance: 113742 };
+  window.saccoData = { jan: janFallback, today: {} };
+  window.loanTypesToday = [];
 
-const janFallback = {
-  members: 101,
-  contributions: 331263,
-  loansDisbursed: 283500,
-  cumulativeLoansDisbursed: 1000000,
-  loansBalance: 250000,
-  profit: -60056,
-  totalBankBalance: 113742,
-  bankBreakdown: [
-    { name: 'Co-operative Bank', value: 50000 },
-    { name: 'Chamasoft', value: 20000 },
-    { name: 'Cytonn', value: 43742 }
-  ],
-  bookValue: 363742,
-  externalLoans: 0,
-  loans: 283500,
-  bankBalance: 113742,
-  roa: "2.1"
-};
-
-// Initialize globals EARLY
-window.saccoData = { jan: janFallback, today: {} };
-window.loanTypesToday = [];
-
-// DYNAMIC DATA (UPDATE DAILY — ALIGNED VALUES)
-let loadDynamicData = () => {
-  return {
+  const loadDynamicData = () => ({
     loanTypesToday: [
       { name: 'Emergency', value: 1237900 },
       { name: 'Medicare', value: 15000 },
@@ -42,135 +19,114 @@ let loadDynamicData = () => {
       { name: 'Cytonn', value: 146465 }
     ],
     externalLoansToday: 66784,
-    cumulativeLoansDisbursedSinceInception: 5000000,
     members: 144,
-    contributions: 908415,    // ALIGNED
+    contributions: 908415,
     numberOfLoansGiven: 109,
-    profit: 53268,            // ALIGNED
+    profit: 53268,
     activeMembers: 71
-  };
-};
+  });
 
-const recomputeData = () => {
-  const dynamicData = loadDynamicData();
-  const {
-    loanTypesToday, loansBalanceToday, bankBreakdownToday, externalLoansToday,
-    cumulativeLoansDisbursedSinceInception, members, contributions,
-    numberOfLoansGiven, profit, activeMembers
-  } = dynamicData;
+  const recomputeData = () => {
+    const d = loadDynamicData();
+    const loansDisbursed = d.loanTypesToday.reduce((s, l) => s + l.value, 0);
+    const bankBalance = d.bankBreakdownToday.reduce((s, b) => s + b.value, 0);
+    const assets = d.contributions + d.externalLoansToday;
+    const roa = assets > 0 ? ((d.profit / assets) * 100).toFixed(2) : "0.00";
 
-  const loansDisbursedThisMonth = loanTypesToday.reduce((s, l) => s + l.value, 0);
-  const totalBankBalanceToday = bankBreakdownToday.reduce((s, b) => s + b.value, 0);
-  const bookValueToday = loansBalanceToday + totalBankBalanceToday;
+    const carouselData = [
+      { number: d.members, description: "Total Members" },
+      { number: d.contributions, description: "Member Savings" },
+      { number: bankBalance, description: "Total Bank Balance" },
+      { number: d.numberOfLoansGiven, description: "Number of Loans Given" },
+      { number: loansDisbursed, description: "Loans Disbursed This Month" },
+      { number: d.profit, description: "Profit" },
+      { number: d.activeMembers, description: "Active Members" },
+      { number: roa, description: "ROA (%)" }
+    ];
 
-  // ROA = (profit / (contributions + externalLoans)) * 100
-  const totalAssets = contributions + externalLoansToday;
-  const roaToday = totalAssets > 0 ? ((profit / totalAssets) * 100).toFixed(2) : "0.00";
+    window.loanTypesToday = d.loanTypesToday;
+    window.saccoData.today = {
+      members: d.members, contributions: d.contributions, loans: loansDisbursed,
+      profit: d.profit, externalLoans: d.externalLoansToday, bankBalance
+    };
 
-  const carouselData = [
-    { number: members, description: "Total Members" },
-    { number: contributions, description: "Member Savings" },
-    { number: totalBankBalanceToday, description: "Total Bank Balance" },
-    { number: numberOfLoansGiven, description: "Number of Loans Given" },
-    { number: loansDisbursedThisMonth, description: "Loans Disbursed This Month" },
-    { number: profit, description: "Profit" },
-    { number: activeMembers, description: "Active Members" },
-    { number: roaToday, description: "ROA (%)" }
-  ];
-
-  const todayData = {
-    members, contributions, loansDisbursed: loansDisbursedThisMonth,
-    loansBalance: loansBalanceToday, profit, totalBankBalance: totalBankBalanceToday,
-    externalLoans: externalLoansToday, roa: roaToday,
-    extraFields: {
-      bankBreakdown: bankBreakdownToday,
-      cumulativeLoansDisbursed: cumulativeLoansDisbursedSinceInception,
-      bookValue: bookValueToday
-    },
-    loans: loansDisbursedThisMonth,
-    bankBalance: totalBankBalanceToday
+    window.dispatchEvent(new CustomEvent('saccoDataUpdated'));
+    return carouselData;
   };
 
-  // EXPOSE GLOBALS
-  window.loanTypesToday = loanTypesToday;
-  window.saccoData.today = todayData;
-  window.SOYOSOYO = {
-    current: todayData,
-    baseline: janFallback,
-    counters: carouselData.map(item => ({
-      value: item.number,
-      suffix: item.description.includes('ROA') ? '%' : '',
-      label: item.description
-    }))
-  };
+  const carouselData = recomputeData();
 
-  localStorage.setItem('saccoDataToday', JSON.stringify(todayData));
-  window.dispatchEvent(new CustomEvent('saccoDataUpdated'));
-  console.log('carousel.js: Data recomputed & saccoDataUpdated dispatched');
-
-  return { todayData, carouselData };
-};
-
-// RUN ONCE
-const { carouselData } = recomputeData();
-
-// DOM READY: RENDER CAROUSEL
-document.addEventListener('DOMContentLoaded', () => {
+  // === DOM & RENDER ===
   const carousel = document.querySelector('.carousel');
-  if (!carousel) {
-    console.log('carousel.js: No .carousel found. Skipping render.');
-    return;
-  }
+  if (!carousel) return;
 
-  carousel.innerHTML = '';
-  const slidesHTML = carouselData.map(item => `
-    <article class="carousel-item">
-      <div class="carousel-number">
-        ${item.description.includes('ROA') ? item.number : item.number.toLocaleString()}
-        ${item.description.includes('ROA') ? '%' : ''}
-      </div>
-      <div class="carousel-desc">${item.description}</div>
+  // === BUILD ITEMS ===
+  const itemsHTML = carouselData.map(item => `
+    <article class="carousel-item" role="listitem">
+      <h3 class="carousel-button">
+        <span class="prefix">KES</span>
+        <span class="counter-value" data-target="${item.number}">0</span>
+        ${item.description.includes('ROA') ? '<span class="suffix">%</span>' : ''}
+      </h3>
+      <p class="carousel-desc">${item.description}</p>
     </article>
   `).join('');
 
-  carousel.innerHTML = slidesHTML + slidesHTML; // Duplicate for infinite loop
+  carousel.innerHTML = itemsHTML + itemsHTML; // Duplicate for infinite loop
 
-  let index = 0;
-  const total = carouselData.length;
-
-  const goToSlide = (i) => {
-    carousel.style.transform = `translateX(-${i * 100}%)`;
+  // === COUNTER ANIMATION ===
+  const formatNumber = n => n.toLocaleString();
+  const animateCounter = (el, target) => {
+    const end = +target;
+    let start = 0, id = null;
+    const step = now => {
+      if (!id) id = now;
+      const progress = Math.min((now - id) / 800, 1);
+      const value = Math.round(start + progress * (end - start));
+      el.textContent = formatNumber(value);
+      if (progress < 1) requestAnimationFrame(step);
+      else id = null;
+    };
+    requestAnimationFrame(step);
   };
 
-  const nextSlide = () => {
-    index = (index + 1) % total;
-    goToSlide(index);
+  // === INTERSECTION OBSERVER ===
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const counter = e.target.querySelector('.counter-value');
+        if (counter && counter.textContent === '0') {
+          animateCounter(counter, counter.dataset.target);
+          observer.unobserve(e.target);
+        }
+      }
+    });
+  }, { threshold: 0.5 });
 
-    if (index === 0) {
-      setTimeout(() => {
-        carousel.style.transition = 'none';
-        goToSlide(total);
-        requestAnimationFrame(() => {
-          carousel.style.transition = 'transform 0.6s ease-in-out';
-          goToSlide(0);
-        });
-      }, 600);
-    }
+  document.querySelectorAll('.carousel-item').forEach(item => observer.observe(item));
+
+  // === INFINITE RIBBON ANIMATION ===
+  const updateCarousel = () => {
+    const w = window.innerWidth;
+    const itemWidth = w <= 600 ? 220 : w <= 360 ? 180 : 300;
+    const margin = w <= 600 ? 12 : w <= 360 ? 8 : 20;
+    const totalWidth = carouselData.length * (itemWidth + 2 * margin);
+
+    document.documentElement.style.setProperty('--item-width', `${itemWidth}px`);
+    document.documentElement.style.setProperty('--item-margin', `${margin}px`);
+    document.documentElement.style.setProperty('--ribbon-width', `-${totalWidth}px`);
+    document.documentElement.style.setProperty('--ribbon-duration', `${carouselData.length * 8}s`);
   };
 
-  // Initialize
-  carousel.style.transition = 'transform 0.6s ease-in-out';
-  goToSlide(total);
-  setTimeout(() => goToSlide(0), 50);
-  setInterval(nextSlide, 3000);
+  window.addEventListener('resize', updateCarousel);
+  updateCarousel();
 
-  console.log('carousel.js: Carousel rendered with', total, 'slides');
+  // === AUTO-START COUNTERS ON LOAD ===
+  setTimeout(() => {
+    document.querySelectorAll('.counter-value').forEach(counter => {
+      if (counter.textContent === '0') {
+        animateCounter(counter, counter.dataset.target);
+      }
+    });
+  }, 400);
 });
-
-// MANUAL REFRESH
-window.refreshSoyosoyoData = () => {
-  recomputeData();
-  console.log('Data manually refreshed via refreshSoyosoyoData()');
-};
-
-console.log('carousel.js loaded successfully');
