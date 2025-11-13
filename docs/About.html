@@ -549,6 +549,73 @@
     if (autoSaveEnabled) saveCurrentMonth(true);
   });
 </script>
+ <script>
+window.postToSocials = async function () {
+    const record = window.saccoData?.today;
+
+    if (!record) {
+        alert("Live SACCO data not ready yet. Try again in a moment.");
+        return;
+    }
+
+    const zapierURL = "https://hooks.zapier.com/hooks/catch/25320103/u8kupmi/";
+
+    try {
+        const payload = {
+            timestamp: new Date().toISOString(),
+
+            members: record.members,
+            contributions: record.contributions,
+            loansDisbursed: record.loansDisbursed,
+            loansBalance: record.loansBalance,
+
+            // FIXED
+            bankBalance: record.totalBankBalance,
+            totalBankBalance: record.totalBankBalance,
+
+            // FIXED — Safe optional chaining
+            totalAssets: record.extraFields?.bookValue || 0,
+            profit: record.profit,
+            roa: record.roa,
+
+            // FIXED — Safe optional chaining
+            bankBreakdown: record.extraFields?.bankBreakdown || [],
+            externalLoans: record.externalLoans || 0,
+
+            // Social caption text
+            summaryText: `
+📊 Soyosoyo SACCO — Monthly Update
+
+👥 Members: ${record.members.toLocaleString()}
+💰 Savings: ${record.contributions.toLocaleString()}
+📤 Loans Disbursed: ${record.loansDisbursed.toLocaleString()}
+🏦 Total Assets: ${(record.extraFields?.bookValue || 0).toLocaleString()}
+📈 ROA: ${record.roa}%
+💵 Profit: ${record.profit.toLocaleString()}
+
+#SoyosoyoSACCO #Finance #Chama #Savings
+            `.trim()
+        };
+
+        const res = await fetch(zapierURL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+            alert("🚀 SACCO summary sent to Zapier successfully!");
+        } else {
+            alert("⚠ Zapier responded but with an error.");
+        }
+
+    } catch (err) {
+        console.error("ZAPIER ERROR:", err);
+        alert("❌ Network error sending data to Zapier");
+    }
+};
+</script>
+
 
 </body>
 </html>
