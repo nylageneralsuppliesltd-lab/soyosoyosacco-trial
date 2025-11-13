@@ -489,11 +489,11 @@
 <script src="./scripts/member-carousel.js"></script>
 
 <script>
-  // PLOTLY GROWTH CHARTS — FIXED: ARROWS + % + NO ERRORS + TIMING SAFE
+  // PLOTLY GROWTH CHARTS — FULLY FIXED: ARROWS, NUMBERS, SPACING, YIELD
   function renderPlotlyGrowthCharts() {
     const data = window.saccoData;
     if (!data || !data.jan || !data.today) {
-      console.warn('growth-charts: saccoData not ready. Retrying...');
+      console.warn('growth-charts: Waiting for saccoData...');
       return false;
     }
 
@@ -515,13 +515,13 @@
     };
 
     const baseLayout = {
-      margin: { t: 60, b: 50, l: 50, r: 30 },
+      margin: { t: 80, b: 60, l: 60, r: 40 },
       paper_bgcolor: 'rgba(0,0,0,0)',
       plot_bgcolor: 'rgba(0,0,0,0)',
       font: { family: 'Lato, sans-serif', color: '#1a1a1a' },
       showlegend: false,
       bargap: 0.5,
-      xaxis: { fixedrange: true, tickfont: { size: 12 } },
+      xaxis: { fixedrange: true, tickfont: { size: 13 } },
       yaxis: { fixedrange: true, gridcolor: '#e5e7eb', zeroline: false }
     };
 
@@ -533,7 +533,6 @@
       const arrowColor = isUp ? '#10B981' : '#EF4444';
       const textColor = isUp ? '#10B981' : '#EF4444';
 
-      // Update growth indicator below chart
       const el = document.getElementById(gid);
       if (el) {
         el.innerHTML = `<i class="fas fa-arrow-${isUp ? 'up' : 'down'}"></i> ${g >= 0 ? '+' : ''}${g.toFixed(1)}%`;
@@ -550,7 +549,7 @@
         marker: { color: [colorJan, colorToday] },
         text: [displayJan, displayToday],
         textposition: 'outside',
-        textfont: { size: 13, family: 'Lato, sans-serif', color: '#1a1a1a' },
+        textfont: { size: 14, family: 'Lato, sans-serif', color: '#1a1a1a' },
         hovertemplate: `<b>%{x}</b><br>%{y:${isPct ? '.2f' : ','}}${isPct ? '%' : ''}<extra></extra>`
       };
 
@@ -560,12 +559,13 @@
         annotations: []
       };
 
-      // Draw arrow + % in center
       if (Math.abs(g) > 0.1) {
         const midX = 0.5;
-        const midY = (janVal + todayVal) / 2;
-        const arrowLen = 0.15;
-        const headLen = 0.04;
+        const maxY = Math.max(janVal, todayVal);
+        const minY = Math.min(janVal, todayVal);
+        const midY = (maxY + minY) / 2;
+        const arrowLen = 0.18;
+        const headLen = 0.05;
 
         const x0 = midX - arrowLen / 2;
         const x1 = midX + arrowLen / 2;
@@ -575,7 +575,7 @@
         layout.shapes.push({
           type: 'line',
           x0, y0, x1, y1,
-          line: { color: arrowColor, width: 3 },
+          line: { color: arrowColor, width: 4 },
           layer: 'above'
         });
 
@@ -589,22 +589,22 @@
 
         layout.annotations.push({
           x: midX,
-          y: midY + (isUp ? 0.08 : -0.08),
+          y: midY + (isUp ? 0.1 : -0.1),
           text: `<b>${g >= 0 ? '+' : ''}${g.toFixed(1)}%</b>`,
           showarrow: false,
-          font: { size: 15, family: 'Lato, sans-serif', color: textColor, weight: 'bold' },
-          bgcolor: 'rgba(255,255,255,0.9)',
-          bordercolor: 'rgba(0,0,0,0.1)',
-          borderwidth: 1,
-          borderpad: 4,
-          borderRadius: 6
+          font: { size: 16, family: 'Lato, sans-serif', color: textColor, weight: 'bold' },
+          bgcolor: 'rgba(255,255,255,0.95)',
+          bordercolor: arrowColor,
+          borderwidth: 2,
+          borderpad: 6,
+          borderRadius: 8
         });
       }
 
       Plotly.newPlot(id, [trace], layout, config);
     };
 
-    // === RENDER ALL CHARTS ===
+    // RENDER ALL CHARTS
     createBarWithArrow('plotMembers', jan.members, today.members, '#8B5CF6', '#C4B5FD', false, false, 'growthMembers');
     createBarWithArrow('plotLoans', jan.loans, today.loans, '#F59E0B', '#FBBF24', false, true, 'growthLoans');
     createBarWithArrow('plotContributions', jan.contributions, today.contributions, '#10B981', '#34D399', false, true, 'growthContributions');
@@ -612,7 +612,7 @@
     createBarWithArrow('plotROA', janROA, todayROA, '#0EA5E9', '#7DD3FC', true, false, 'growthROA');
     createBarWithArrow('plotLiquidity', janLiq, todayLiq, '#6366F1', '#A5B4FC', true, false, 'growthLiquidity');
 
-    // === LOAN TYPES PIE CHART ===
+    // PIE CHART
     if (window.loanTypesToday?.length) {
       const loanTypes = window.loanTypesToday.filter(t => t.name && t.value > 0 && !t.name.toLowerCase().includes('api'));
       if (loanTypes.length) {
@@ -636,7 +636,6 @@
         if (!yieldEl) {
           yieldEl = document.createElement('div');
           yieldEl.id = 'projectedYield';
-          yieldEl.style.cssText = 'text-align:center;margin-top:12px;padding:10px;background:linear-gradient(135deg,#10B981,#34D399);color:white;font-weight:900;font-size:15px;border-radius:12px;';
           document.querySelector('#plotLoanTypes').parentElement.appendChild(yieldEl);
         }
         yieldEl.innerHTML = `${yieldPct.toFixed(1)}% p.a. expected yield`;
@@ -659,22 +658,18 @@
       }
     }
 
-    console.log('growth-charts: All Plotly charts rendered with arrows');
+    console.log('growth-charts: All charts rendered perfectly');
     return true;
   }
 
-  // === SAFE INIT — WAITS FOR DATA ===
+  // SAFE INIT
   document.addEventListener('DOMContentLoaded', () => {
     const tryRender = () => {
       if (!renderPlotlyGrowthCharts()) {
         setTimeout(tryRender, 300);
       }
     };
-
-    window.addEventListener('saccoDataUpdated', () => {
-      setTimeout(tryRender, 100);
-    });
-
+    window.addEventListener('saccoDataUpdated', () => setTimeout(tryRender, 100));
     tryRender();
   });
 </script>
