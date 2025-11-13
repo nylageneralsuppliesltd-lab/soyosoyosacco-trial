@@ -146,409 +146,268 @@
 <script src="scripts/carousel.js"></script>
 
 <script>
-  const API_BASE = 'https://soyosoyo-sacco-api.onrender.com/api';
-  window.saccoHistory = {};
-  let autoSaveEnabled = localStorage.getItem('autoSaveEnabled') === 'true';
-  let lastDataHash = '';
-  const CACHE_KEY = 'soyosoyoSaccoHistory';
-  let autoSyncTimeout = null;
-  let retryCount = 0;
-  const MAX_RETRIES = 50;
-  let silentWatcherActive = false;
+const API_BASE = 'https://soyosoyo-sacco-api.onrender.com/api';
+window.saccoHistory = {};
+let autoSaveEnabled = localStorage.getItem('autoSaveEnabled') === 'true';
+let lastDataHash = '';
+const CACHE_KEY = 'soyosoyoSaccoHistory';
+let autoSyncTimeout = null;
+let retryCount = 0;
+const MAX_RETRIES = 50;
 
-  // FIXED: Renamed to avoid conflict with carousel.js
-  const aboutJanFallback = {
-    members: 0,
-    contributions: 0,
-    loans: 0,
-    profit: 0,
-    bankBalance: 0,
-    externalLoans: 0
-  };
+// ---------- Helpers ----------
+function getCurrentPeriod() { return new Date().toISOString().slice(0, 7); }
+function formatMonth(p) { const [y, m] = p.split('-'); const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return `${months[parseInt(m)-1]} ${y}`; }
+function formatDisplayDate(d){ return new Date(d).toLocaleString('en-KE',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}).replace(',',''); }
+function fmt(n){ return (n==null||isNaN(n))?'0':Number(n).toLocaleString(); }
+function recordsDiffer(live, db){ const keys=['members','contributions','loansDisbursed','loansBalance','totalBankBalance','coopBank','chamasoft','cytonn','totalAssets','profit','roa']; return keys.some(k=>Math.abs((Number(live[k])||0)-(Number(db[k])||0))>0.5); }
 
-  function getCurrentPeriod() {
-    return new Date().toISOString().slice(0, 7);
-  }
+// ---------- Load Cache ----------
+function loadCache(){ try{ const cached=localStorage.getItem(CACHE_KEY); if(cached) window.saccoHistory=JSON.parse(cached);}catch(e){console.warn('Cache corrupt');} }
 
-  function formatMonth(p) {
-    const [y, m] = p.split('-');
-    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    return `${months[parseInt(m)-1]} ${y}`;
-  }
-
-  function formatDisplayDate(d) {
-    return new Date(d).toLocaleString('en-KE', {
-      day: 'numeric', month: 'short', year: 'numeric',
-      hour: '2-digit', minute: '2-digit'
-    }).replace(',', '');
-  }
-
-  function recordsDiffer(live, db) {
-    if (!db) return true;
-    const keys = ['members','contributions','loansDisbursed','loansBalance','totalBankBalance',
-                  'coopBank','chamasoft','cytonn','totalAssets','profit','roa'];
-    return keys.some(k => {
-      const a = Number(live[k]) || 0;
-      const b = Number(db[k]) || 0;
-      return Math.abs(a - b) > 0.5;
-    });
-  }
-
-  function showLiveData() {
-    if (!window.saccoData?.today) {
-      setTimeout(showLiveData, 300);
-      return;
-    }
-
-    const t = window.saccoData.today;
-    const ef = t.extraFields || {};
-    const bb = ef.bankBreakdown || [];
-    const period = getCurrentPeriod();
-
-    const liveData = {
-      members: t.members || 0,
-      contributions: t.contributions || 0,
-      loansDisbursed: t.loansDisbursed || t.loans || 0,
-      loansBalance: t.loansBalance || 0,
-      totalBankBalance: t.totalBankBalance || t.bankBalance || 0,
-      coopBank: bb.find(b => b.name?.includes('Co-operative'))?.value || 0,
-      chamasoft: bb.find(b => b.name?.includes('Chamasoft'))?.value || 0,
-      cytonn: bb.find(b => b.name?.includes('Cytonn'))?.value || 0,
-      totalAssets: ef.bookValue || 0,
-      profit: t.profit || 0,
-      roa: parseFloat(t.roa) || 0
-    };
-
-    let currentRecord = window.saccoHistory[period];
-    let isSynced = false;
-    let recordToUse = { ...liveData, period, dateSaved: new Date().toISOString(), saveType: 'live' };
-
-    if (currentRecord && currentRecord.saveType === 'db') {
-      isSynced = !recordsDiffer(liveData, currentRecord);
-      if (isSynced) {
-        recordToUse = currentRecord;
-      }
-    }
-
-    const needsUpdate = !currentRecord ||
-                        currentRecord.saveType !== recordToUse.saveType ||
-                        JSON.stringify(currentRecord) !== JSON.stringify(recordToUse);
-
-    if (needsUpdate) {
-      window.saccoHistory[period] = recordToUse;
-      localStorage.setItem(CACHE_KEY, JSON.stringify(window.saccoHistory));
-    }
-
-    const payloadForHash = { period, ...liveData };
-    const newHash = JSON.stringify(payloadForHash);
-
-    if (newHash !== lastDataHash) {
-      lastDataHash = newHash;
-      if (autoSaveEnabled && !isSynced) {
-        clearTimeout(autoSyncTimeout);
-        autoSyncTimeout = setTimeout(() => saveCurrentMonth(true), 2000);
-      }
-    }
-
-    renderFullHistory();
-    updateSyncStatus(recordToUse, isSynced);
-    autoCreateNewMonthIfNeeded();
-  }
-
-  function autoCreateNewMonthIfNeeded() {
-    const currentPeriod = getCurrentPeriod();
-    if (window.saccoHistory[currentPeriod]) return;
-
-    const periods = Object.keys(window.saccoHistory).sort().reverse();
-    const latestPeriod = periods[0];
-    if (!latestPeriod) return;
-
-    const previousRecord = window.saccoHistory[latestPeriod];
-    if (!previousRecord || previousRecord.saveType !== 'db') return;
-
-    const newRecord = {
-      ...previousRecord,
-      period: currentPeriod,
-      dateSaved: new Date().toISOString(),
-      saveType: 'live'
-    };
-
-    window.saccoHistory[currentPeriod] = newRecord;
-    localStorage.setItem(CACHE_KEY, JSON.stringify(window.saccoHistory));
-    renderFullHistory();
-    updateSyncStatus(newRecord, false);
-
-    if (autoSaveEnabled) {
-      setTimeout(() => saveCurrentMonth(true), 3000);
-    }
-  }
-
-  function updateSyncStatus(record, isSynced) {
-    const footer = document.getElementById('historyFooter');
-    const saveBtn = document.querySelector('.btn-save');
-    const container = document.querySelector('.history-section');
-
-    if (!isSynced) {
-      if (retryCount > 0) {
-        footer.innerHTML = `<strong style="color:#F59E0B;">OFFLINE • Retrying (${retryCount}/${MAX_RETRIES})</strong>`;
-        saveBtn.innerHTML = 'WAITING...';
-        saveBtn.style.background = '#F59E0B';
-      } else {
-        footer.innerHTML = `<strong style="color:#EF4444;">UNSAVED CHANGES • Saving...</strong>`;
-        saveBtn.innerHTML = 'SAVING...';
-        saveBtn.style.background = '#EF4444';
-      }
-      container.style.border = '3px solid #EF4444';
-      container.style.boxShadow = '0 0 30px rgba(239,68,68,0.4)';
+// ---------- Render History ----------
+function renderFullHistory(){
+    const container=document.getElementById('fullHistoryTable');
+    const history=Object.values(window.saccoHistory).sort((a,b)=>b.period.localeCompare(a.period));
+    const cur=getCurrentPeriod();
+    const isMobile=window.innerWidth<=768;
+    if(history.length===0){container.innerHTML='<p style="text-align:center;padding:40px;color:#666;">Loading history...</p>';return;}
+    let html='';
+    if(isMobile){
+        html=history.map(r=>{
+            const isCurrent=r.period===cur;
+            const tagClass=r.saveType==='live'?'tag live':'tag db';
+            const tagText=r.saveType==='live'?'LIVE':'SYNCED';
+            return `<div class="history-card ${isCurrent?'current-month':''}">
+                <div class="card-header"><h3>${formatMonth(r.period)}</h3><span class="${tagClass}">${tagText}</span></div>
+                <div class="card-grid">
+                    <div><span>Members</span><strong>${fmt(r.members)}</strong></div>
+                    <div><span>Savings</span><strong>${fmt(r.contributions)}</strong></div>
+                    <div><span>Loans Out</span><strong>${fmt(r.loansDisbursed)}</strong></div>
+                    <div><span>Loans Bal.</span><strong>${fmt(r.loansBalance)}</strong></div>
+                    <div><span>Bank Total</span><strong>${fmt(r.totalBankBalance)}</strong></div>
+                    <div><span>Co-op</span><strong>${fmt(r.coopBank)}</strong></div>
+                    <div><span>Chamasoft</span><strong>${fmt(r.chamasoft)}</strong></div>
+                    <div><span>Cytonn</span><strong>${fmt(r.cytonn)}</strong></div>
+                    <div><span>Assets</span><strong>${fmt(r.totalAssets)}</strong></div>
+                    <div><span>Profit</span><strong>${fmt(r.profit)}</strong></div>
+                    <div class="roa-value"><span>ROA</span><strong>${r.roa?Number(r.roa).toFixed(1):'0.0'}%</strong></div>
+                </div>
+                <div class="card-footer"><strong>Saved:</strong> ${formatDisplayDate(r.dateSaved||new Date())}</div>
+            </div>`;
+        }).join('');
     } else {
-      footer.innerHTML = `<strong style="color:#10B981">FULLY SYNCED • All phones updated</strong>`;
-      saveBtn.innerHTML = 'SYNCED';
-      saveBtn.style.background = '#10B981';
-      container.style.border = '2px solid #86efac';
-      container.style.boxShadow = '0 15px 40px rgba(0,0,0,0.08)';
-      retryCount = 0;
-      clearTimeout(autoSyncTimeout);
+        html=`<table><thead><tr>
+            <th>Period</th><th>Members</th><th>Contributions</th><th>Loans Disbursed</th><th>Loans Balance</th>
+            <th>Total Bank</th><th>Co-op</th><th>Chamasoft</th><th>Cytonn</th><th>Total Assets</th>
+            <th>Profit</th><th>ROA %</th><th>Saved On</th>
+        </tr></thead><tbody>`;
+        history.forEach(r=>{
+            const bg=r.saveType==='live'?'background:#fffbe6':'background:#f0fdf4';
+            const label=r.saveType==='live'?'(LIVE)':'(SYNCED)';
+            html+=`<tr ${r.period===cur?'class="current-month"':''} style="${bg}">
+                <td>${formatMonth(r.period)}</td><td>${fmt(r.members)}</td><td>${fmt(r.contributions)}</td>
+                <td>${fmt(r.loansDisbursed)}</td><td>${fmt(r.loansBalance)}</td><td>${fmt(r.totalBankBalance)}</td>
+                <td>${fmt(r.coopBank)}</td><td>${fmt(r.chamasoft)}</td><td>${fmt(r.cytonn)}</td>
+                <td>${fmt(r.totalAssets)}</td><td>${fmt(r.profit)}</td><td>${r.roa?Number(r.roa).toFixed(1):'0.0'}</td>
+                <td>${formatDisplayDate(r.dateSaved||new Date())} <small>${label}</small></td>
+            </tr>`;
+        });
+        html+='</tbody></table>';
     }
-  }
+    container.innerHTML=html;
+}
 
-  window.saveCurrentMonth = async function(isAutoSave = false) {
-    if (!window.saccoData?.today) {
-      if (!isAutoSave) alert("No data! Visit homepage first.");
-      return;
-    }
-
-    const t = window.saccoData.today;
-    const ef = t.extraFields || {};
-    const bb = ef.bankBreakdown || [];
-    const period = getCurrentPeriod();
-
-    const payload = {
-      period,
-      members: t.members || 0,
-      contributions: t.contributions || 0,
-      loans_disbursed: t.loansDisbursed || t.loans || 0,
-      loans_balance: t.loansBalance || 0,
-      total_bank_balance: t.totalBankBalance || t.bankBalance || 0,
-      coop_bank: bb.find(b => b.name?.includes('Co-operative'))?.value || 0,
-      chama_soft: bb.find(b => b.name?.includes('Chamasoft'))?.value || 0,
-      cytonn: bb.find(b => b.name?.includes('Cytonn'))?.value || 0,
-      total_assets: ef.bookValue || 0,
-      profit: t.profit || 0,
-      roa: parseFloat(t.roa) || 0
+// ---------- Show Live Data ----------
+function showLiveData(){
+    if(!window.saccoData?.today){setTimeout(showLiveData,300);return;}
+    const t=window.saccoData.today;
+    const ef=t.extraFields||{};
+    const bb=ef.bankBreakdown||[];
+    const period=getCurrentPeriod();
+    const liveData={
+        members:t.members||0,
+        contributions:t.contributions||0,
+        loansDisbursed:t.loansDisbursed||t.loans||0,
+        loansBalance:t.loansBalance||0,
+        totalBankBalance:t.totalBankBalance||t.bankBalance||0,
+        coopBank:bb.find(b=>b.name?.includes('Co-operative'))?.value||0,
+        chamasoft:bb.find(b=>b.name?.includes('Chamasoft'))?.value||0,
+        cytonn:bb.find(b=>b.name?.includes('Cytonn'))?.value||0,
+        totalAssets:ef.bookValue||0,
+        profit:t.profit||0,
+        roa:parseFloat(t.roa)||0
     };
-
-    const optimisticRecord = { ...payload, dateSaved: new Date().toISOString(), saveType: 'db' };
-    window.saccoHistory[period] = optimisticRecord;
-    localStorage.setItem(CACHE_KEY, JSON.stringify(window.saccoHistory));
-    renderFullHistory();
-    updateSyncStatus(optimisticRecord, true);
-
-    try {
-      const res = await fetch(`${API_BASE}/history/save`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-        signal: AbortSignal.timeout(10000)
-      });
-
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      console.log('Saved successfully');
-      retryCount = 0;
-      if (!isAutoSave) alert("SAVED! All phones in sync");
-    } catch (err) {
-      console.warn('Save failed:', err.message);
-      retryCount++;
-      if (retryCount <= MAX_RETRIES) {
-        const delay = Math.min(5000 * retryCount, 30000);
-        setTimeout(() => saveCurrentMonth(true), delay);
-        document.getElementById('historyFooter').innerHTML = 
-          `<strong style="color:#F59E0B;">OFFLINE • Retrying in ${Math.round(delay/1000)}s</strong>`;
-      } else {
-        document.getElementById('historyFooter').innerHTML = 
-          `<strong style="color:#EF4444;">OFFLINE • Data saved locally</strong>`;
-      }
-      showLiveData();
+    let currentRecord=window.saccoHistory[period];
+    let isSynced=false;
+    let recordToUse={...liveData, period, dateSaved:new Date().toISOString(), saveType:'live'};
+    if(currentRecord && currentRecord.saveType==='db'){
+        isSynced=!recordsDiffer(liveData,currentRecord);
+        if(isSynced) recordToUse=currentRecord;
     }
-  };
+    if(!currentRecord || currentRecord.saveType!==recordToUse.saveType || JSON.stringify(currentRecord)!==JSON.stringify(recordToUse)){
+        window.saccoHistory[period]=recordToUse;
+        localStorage.setItem(CACHE_KEY,JSON.stringify(window.saccoHistory));
+    }
+    lastDataHash=JSON.stringify({...recordToUse});
+    renderFullHistory();
+    updateSyncStatus(recordToUse,isSynced);
+}
 
-  window.toggleAutoSave = function() {
-    autoSaveEnabled = !autoSaveEnabled;
-    localStorage.setItem('autoSaveEnabled', autoSaveEnabled);
-    document.getElementById('autoSaveText').textContent = autoSaveEnabled ? 'AUTO-SAVE ON' : 'AUTO-SAVE OFF';
-    document.getElementById('autoSaveToggle').style.background = autoSaveEnabled ? '#10B981' : '#f59e0b';
-  };
-
-  window.downloadHistoryCSV = function() { alert("CSV coming soon!"); };
-  window.postToSocials = function() { alert("Social post coming soon!"); };
-
-  function loadCache() {
-    try {
-      const cached = localStorage.getItem(CACHE_KEY);
-      if (cached) window.saccoHistory = JSON.parse(cached);
-    } catch(e) { console.warn('Cache corrupt'); }
-  }
-
-  async function syncWithDB() {
-    try {
-      const res = await fetch(`${API_BASE}/history?t=${Date.now()}`, { cache: 'no-store' });
-      if (!res.ok) throw 1;
-      const data = await res.json();
-      let changed = false;
-
-      data.forEach(row => {
-        const rec = {
-          period: row.period,
-          members: Number(row.members || 0),
-          contributions: Number(row.contributions || 0),
-          loansDisbursed: Number(row.loans_disbursed || 0),
-          loansBalance: Number(row.loans_balance || 0),
-          totalBankBalance: Number(row.total_bank_balance || 0),
-          coopBank: Number(row.coop_bank || 0),
-          chamasoft: Number(row.chama_soft || 0),
-          cytonn: Number(row.cytonn || 0),
-          totalAssets: Number(row.total_assets || 0),
-          profit: Number(row.profit || 0),
-          roa: Number(row.roa || 0),
-          dateSaved: row.date_saved || row.dateSaved || new Date().toISOString(),
-          saveType: 'db'
-        };
-        if (!window.saccoHistory[rec.period] || rec.dateSaved > (window.saccoHistory[rec.period].dateSaved || '')) {
-          window.saccoHistory[rec.period] = rec;
-          changed = true;
+// ---------- Update Sync Status ----------
+function updateSyncStatus(record,isSynced){
+    const footer=document.getElementById('historyFooter');
+    const saveBtn=document.querySelector('.btn-save');
+    const container=document.querySelector('.history-section');
+    if(!isSynced){
+        if(retryCount>0){
+            footer.innerHTML=`<strong style="color:#F59E0B;">OFFLINE • Retrying (${retryCount}/${MAX_RETRIES})</strong>`;
+            saveBtn.innerHTML='WAITING...';
+            saveBtn.style.background='#F59E0B';
+        } else {
+            footer.innerHTML=`<strong style="color:#EF4444;">UNSAVED CHANGES • Saving...</strong>`;
+            saveBtn.innerHTML='SAVING...';
+            saveBtn.style.background='#EF4444';
         }
-      });
-
-      if (changed) {
-        localStorage.setItem(CACHE_KEY, JSON.stringify(window.saccoHistory));
-        renderFullHistory();
-        showLiveData();
-      }
-    } catch(e) {
-      setTimeout(syncWithDB, 20000);
-    }
-  }
-
-  function renderFullHistory() {
-    const container = document.getElementById('fullHistoryTable');
-    const history = Object.values(window.saccoHistory)
-      .sort((a,b) => b.period.localeCompare(a.period));
-    const cur = getCurrentPeriod();
-    const isMobile = window.innerWidth <= 768;
-
-    if (history.length === 0) {
-      container.innerHTML = '<p style="text-align:center;padding:40px;color:#666;">Loading history...</p>';
-      return;
-    }
-
-    const fmt = (num) => (num == null || isNaN(num)) ? '0' : Number(num).toLocaleString();
-
-    let html = '';
-    if (isMobile) {
-      html = history.map(r => {
-        const isCurrent = r.period === cur;
-        const tagClass = r.saveType === 'live' ? 'tag live' : 'tag db';
-        const tagText = r.saveType === 'live' ? 'LIVE' : 'SYNCED';
-        return `
-        <div class="history-card ${isCurrent ? 'current-month' : ''}">
-          <div class="card-header">
-            <h3>${formatMonth(r.period)}</h3>
-            <span class="${tagClass}">${tagText}</span>
-          </div>
-          <div class="card-grid">
-            <div><span>Members</span><strong>${fmt(r.members)}</strong></div>
-            <div><span>Savings</span><strong>${fmt(r.contributions)}</strong></div>
-            <div><span>Loans Out</span><strong>${fmt(r.loansDisbursed)}</strong></div>
-            <div><span>Loans Bal.</span><strong>${fmt(r.loansBalance)}</strong></div>
-            <div><span>Bank Total</span><strong>${fmt(r.totalBankBalance)}</strong></div>
-            <div><span>Co-op</span><strong>${fmt(r.coopBank)}</strong></div>
-            <div><span>Chamasoft</span><strong>${fmt(r.chamasoft)}</strong></div>
-            <div><span>Cytonn</span><strong>${fmt(r.cytonn)}</strong></div>
-            <div><span>Assets</span><strong>${fmt(r.totalAssets)}</strong></div>
-            <div><span>Profit</span><strong>${fmt(r.profit)}</strong></div>
-            <div class="roa-value"><span>ROA</span><strong>${r.roa ? Number(r.roa).toFixed(1) : '0.0'}%</strong></div>
-          </div>
-          <div class="card-footer">
-            <strong>Saved:</strong> ${formatDisplayDate(r.dateSaved || new Date())}
-          </div>
-        </div>`;
-      }).join('');
+        container.style.border='3px solid #EF4444';
+        container.style.boxShadow='0 0 30px rgba(239,68,68,0.4)';
     } else {
-      html = `<table><thead><tr>
-        <th>Period</th><th>Members</th><th>Contributions</th><th>Loans Disbursed</th><th>Loans Balance</th>
-        <th>Total Bank</th><th>Co-op</th><th>Chamasoft</th><th>Cytonn</th><th>Total Assets</th>
-        <th>Profit</th><th>ROA %</th><th>Saved On</th>
-      </tr></thead><tbody>`;
-      history.forEach(r => {
-        const bg = r.saveType === 'live' ? 'background:#fffbe6' : 'background:#f0fdf4';
-        const label = r.saveType === 'live' ? '(LIVE)' : '(SYNCED)';
-        html += `<tr ${r.period === cur ? 'class="current-month"' : ''} style="${bg}">
-          <td>${formatMonth(r.period)}</td>
-          <td>${fmt(r.members)}</td>
-          <td>${fmt(r.contributions)}</td>
-          <td>${fmt(r.loansDisbursed)}</td>
-          <td>${fmt(r.loansBalance)}</td>
-          <td>${fmt(r.totalBankBalance)}</td>
-          <td>${fmt(r.coopBank)}</td>
-          <td>${fmt(r.chamasoft)}</td>
-          <td>${fmt(r.cytonn)}</td>
-          <td>${fmt(r.totalAssets)}</td>
-          <td>${fmt(r.profit)}</td>
-          <td>${r.roa ? Number(r.roa).toFixed(1) : '0.0'}</td>
-          <td>${formatDisplayDate(r.dateSaved || new Date())} <small>${label}</small></td>
-        </tr>`;
-      });
-      html += '</tbody></table>';
+        footer.innerHTML=`<strong style="color:#10B981">FULLY SYNCED • All phones updated</strong>`;
+        saveBtn.innerHTML='SYNCED';
+        saveBtn.style.background='#10B981';
+        container.style.border='2px solid #86efac';
+        container.style.boxShadow='0 15px 40px rgba(0,0,0,0.08)';
+        retryCount=0;
+        clearTimeout(autoSyncTimeout);
     }
-    container.innerHTML = html;
-  }
+}
 
-  const style = document.createElement('style');
-  style.textContent = `@keyframes pulse {0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}`;
-  document.head.appendChild(style);
-
-  function startSilentWatcher() {
-    if (silentWatcherActive) return;
-    silentWatcherActive = true;
-    console.log('Silent sync guardian started');
-
-    setInterval(() => {
-      const footer = document.getElementById('historyFooter');
-      const saveBtn = document.querySelector('.btn-save');
-      if (!footer || !saveBtn) return;
-
-      const isRed = saveBtn.style.backgroundColor === 'rgb(239, 68, 68)' ||
-                    footer.innerHTML.includes('UNSAVED CHANGES');
-      const isSaving = footer.innerHTML.includes('Saving...') || footer.innerHTML.includes('Retrying');
-
-      if (isRed && !isSaving) {
-        console.log('Silent guardian: Unsynced data detected → Forcing save');
-        saveCurrentMonth(false);
-      }
-    }, 8000);
-  }
-
-  window.addEventListener('resize', () => setTimeout(renderFullHistory, 100));
-  document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('currentYear').textContent = new Date().getFullYear();
-    loadCache();
+// ---------- Save Current Month ----------
+async function saveCurrentMonth(isAutoSave=false){
+    if(!window.saccoData?.today){if(!isAutoSave) alert("No data! Visit homepage first.");return;}
+    const t=window.saccoData.today;
+    const ef=t.extraFields||{};
+    const bb=ef.bankBreakdown||[];
+    const period=getCurrentPeriod();
+    const payload={
+        period,
+        members:t.members||0,
+        contributions:t.contributions||0,
+        loans_disbursed:t.loansDisbursed||t.loans||0,
+        loans_balance:t.loansBalance||0,
+        total_bank_balance:t.totalBankBalance||t.bankBalance||0,
+        coop_bank:bb.find(b=>b.name?.includes('Co-operative'))?.value||0,
+        chama_soft:bb.find(b=>b.name?.includes('Chamasoft'))?.value||0,
+        cytonn:bb.find(b=>b.name?.includes('Cytonn'))?.value||0,
+        total_assets:ef.bookValue||0,
+        profit:t.profit||0,
+        roa:parseFloat(t.roa)||0,
+        extra_fields:ef
+    };
+    const optimisticRecord={...payload,dateSaved:new Date().toISOString(),saveType:'db'};
+    window.saccoHistory[period]=optimisticRecord;
+    localStorage.setItem(CACHE_KEY,JSON.stringify(window.saccoHistory));
     renderFullHistory();
-    syncWithDB();
-    showLiveData();
-    setTimeout(autoCreateNewMonthIfNeeded, 4000);
-    setTimeout(startSilentWatcher, 5000);
+    updateSyncStatus(optimisticRecord,true);
 
-    const text = document.getElementById('autoSaveText');
-    const btn = document.getElementById('autoSaveToggle');
-    text.textContent = autoSaveEnabled ? 'AUTO-SAVE ON' : 'AUTO-SAVE OFF';
-    btn.style.background = autoSaveEnabled ? '#10B981' : '#f59e0b';
-  });
+    try{
+        const res=await fetch(`${API_BASE}/history/save`,{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify(payload),
+            signal:AbortSignal.timeout(10000)
+        });
+        if(!res.ok) throw new Error(`HTTP ${res.status}`);
+        retryCount=0;
+        if(!isAutoSave) alert("SAVED! All phones in sync");
+    }catch(err){
+        console.warn('Save failed:',err.message);
+        retryCount++;
+        const delay=Math.min(5000*retryCount,30000);
+        setTimeout(()=>saveCurrentMonth(true),delay);
+        document.getElementById('historyFooter').innerHTML=`<strong style="color:#F59E0B;">OFFLINE • Retrying in ${Math.round(delay/1000)}s</strong>`;
+        showLiveData();
+    }
+}
 
-  window.addEventListener('saccoDataUpdated', showLiveData);
-  window.addEventListener('online', () => {
-    retryCount = 0;
-    if (autoSaveEnabled) saveCurrentMonth(true);
-  });
+// ---------- Auto Save Toggle ----------
+function toggleAutoSave(){
+    autoSaveEnabled=!autoSaveEnabled;
+    localStorage.setItem('autoSaveEnabled',autoSaveEnabled);
+    document.getElementById('autoSaveText').textContent=autoSaveEnabled?'AUTO-SAVE ON':'AUTO-SAVE OFF';
+    document.getElementById('autoSaveToggle').style.background=autoSaveEnabled?'#10B981':'#f59e0b';
+}
+
+// ---------- Sync from Backend ----------
+async function syncWithDB(){
+    try{
+        const res=await fetch(`${API_BASE}/history?t=${Date.now()}`,{cache:'no-store'});
+        if(!res.ok) throw 1;
+        const data=await res.json();
+        let changed=false;
+        data.forEach(row=>{
+            const rec={ period:row.period,
+                members:Number(row.members||0),
+                contributions:Number(row.contributions||0),
+                loansDisbursed:Number(row.loans_disbursed||0),
+                loansBalance:Number(row.loans_balance||0),
+                totalBankBalance:Number(row.total_bank_balance||0),
+                coopBank:Number(row.coop_bank||0),
+                chamasoft:Number(row.chama_soft||0),
+                cytonn:Number(row.cytonn||0),
+                totalAssets:Number(row.total_assets||0),
+                profit:Number(row.profit||0),
+                roa:Number(row.roa||0),
+                dateSaved:row.date_saved||row.dateSaved||new Date().toISOString(),
+                saveType:'db'
+            };
+            if(!window.saccoHistory[rec.period]||rec.dateSaved>(window.saccoHistory[rec.period].dateSaved||'')){
+                window.saccoHistory[rec.period]=rec;
+                changed=true;
+            }
+        });
+        if(changed){localStorage.setItem(CACHE_KEY,JSON.stringify(window.saccoHistory)); renderFullHistory();}
+    }catch(e){ setTimeout(syncWithDB,20000); }
+}
+
+// ---------- Post to Socials ----------
+async function postToSocials(){
+    if(!window.saccoData?.today){alert("Live SACCO data not ready yet.");return;}
+    const t=window.saccoData.today;
+    try{
+        const payload={
+            timestamp:new Date().toISOString(),
+            members:t.members,
+            contributions:t.contributions,
+            loansDisbursed:t.loansDisbursed,
+            loansBalance:t.loansBalance,
+            totalBankBalance:t.totalBankBalance,
+            totalAssets:t.extraFields?.bookValue||0,
+            profit:t.profit,
+            roa:t.roa,
+            bankBreakdown:t.extraFields?.bankBreakdown||[],
+            externalLoans:t.externalLoans||0
+        };
+        const res=await fetch(`${API_BASE}/zapier`,{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify(payload)
+        });
+        if(res.ok){ alert("🚀 SACCO summary sent successfully!"); }
+        else{ alert("⚠ Failed sending to Zapier."); }
+    }catch(err){ console.error(err); alert("❌ Network error sending data to Zapier"); }
+}
+
+// ---------- Init ----------
+document.addEventListener('DOMContentLoaded',()=>{
+    document.getElementById('currentYear').textContent=new Date().getFullYear();
+    loadCache(); renderFullHistory(); syncWithDB(); showLiveData();
+    document.getElementById('autoSaveText').textContent=autoSaveEnabled?'AUTO-SAVE ON':'AUTO-SAVE OFF';
+    document.getElementById('autoSaveToggle').style.background=autoSaveEnabled?'#10B981':'#f59e0b';
+});
+window.addEventListener('resize',()=>setTimeout(renderFullHistory,100));
 </script>
+
  <script>
 window.postToSocials = async function () {
     const record = window.saccoData?.today;
