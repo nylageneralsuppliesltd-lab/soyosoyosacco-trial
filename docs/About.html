@@ -115,7 +115,7 @@
                 <span id="autoSaveText">AUTO-SAVE OFF</span>
             </button>
             <button class="btn btn-download" onclick="downloadHistoryCSV()">DOWNLOAD FULL HISTORY (CSV)</button>
-            <button class="btn btn-social" onclick="postToSocials()">POST TO SOCIALS</button>
+            <button class="btn btn-social" onclick="sendMonthlyEmail()">POST TO EMAIL</button>
         </div>
         <div id="fullHistoryTable"></div>
         <div class="history-footer" id="historyFooter">Loading monthly records...</div>
@@ -486,7 +486,7 @@ window.toggleAutoSave = function() {
 // ==================== EMAIL AUTOMATION ====================
 window.sendMonthlyEmail = async function() {
     const record = window.saccoData?.today;
-    if(!record){ console.warn("Live SACCO data not ready yet."); return; }
+    if(!record){ console.warn("Live SACCO data not ready yet."); alert("Live data not ready yet."); return; }
 
     const period = new Date().toLocaleString('en-KE', { month: 'long', year: 'numeric' });
     const history = Object.values(window.saccoHistory).sort((a,b)=>b.period.localeCompare(a.period));
@@ -514,8 +514,8 @@ window.sendMonthlyEmail = async function() {
         timestamp: new Date().toISOString(),
         subject: `Soyosoyo SACCO Monthly Update — ${period}`,
         body: emailBody,
-        attachment: csvAttachment, // CSV content as string
-        recipients: ["members@soyosoyo.co.ke"] // Zapier can handle dynamic lists
+        attachment: csvAttachment,
+        recipients: ["members@soyosoyo.co.ke"]
     };
 
     try {
@@ -524,10 +524,18 @@ window.sendMonthlyEmail = async function() {
             headers:{'Content-Type':'application/json'},
             body:JSON.stringify(payload)
         });
-        const result = await res.json();
-        if(res.ok) console.log("✅ Monthly email sent successfully!");
-        else console.warn("⚠ Zapier returned an error:",result);
-    } catch(err) { console.error("❌ Error sending monthly email:",err); }
+        if(res.ok){
+            console.log("✅ Monthly email sent successfully!");
+            alert("✅ Monthly email sent successfully!");
+        } else {
+            const result = await res.json();
+            console.warn("⚠ Zapier returned an error:", result);
+            alert("⚠ Zapier returned an error. Check console.");
+        }
+    } catch(err) {
+        console.error("❌ Error sending monthly email:",err);
+        alert("❌ Error sending email. Check console.");
+    }
 };
 
 // ==================== SCHEDULE MONTHLY EMAIL ====================
