@@ -40,50 +40,55 @@
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 1.5rem;
     margin: 2rem 0;
+/* CHART CARDS — MORE SPACE, NO OVERFLOW */
+.chart-card {
+  background: #ffffff;
+  padding: 2rem 1.5rem !important;
+  border-radius: 18px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+  text-align: center;
+  transition: transform 0.3s ease;
+  position: relative;
+  min-height: 380px;
+}
+
+.plot-container {
+  height: 280px !important;
+  margin-bottom: 12px;
+}
+
+.growth-indicator {
+  margin-top: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.growth-indicator.positive { color: #10B981; }
+.growth-indicator.negative { color: #EF4444; }
+.growth-indicator i { margin-right: 4px; font-size: 0.9em; }
+
+/* YIELD — PULLED UP */
+#projectedYield {
+  margin-top: -8px !important;
+  margin-bottom: 12px;
+  padding: 10px;
+  background: linear-gradient(135deg, #10B981, #34D399);
+  color: white;
+  font-weight: 900;
+  font-size: 15px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .chart-card {
+    padding: 1.6rem 1rem !important;
+    min-height: 340px;
   }
-  #final-charts-section .chart-card {
-    position: relative;
-    height: 440px;
-    display: flex;
-    flex-direction: column;
-    background: #fff;
-    border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05); /* UPDATED: Subtle premium shadow for depth */
-    overflow: hidden;
-    border: 1px solid #f0f0f0;
-  }
-  #final-charts-section .chart-card canvas {
-    flex: 1;
-    width: 100% !important;
-    height: 100% !important;
-    min-height: 320px;
-    display: block;
-    image-rendering: -webkit-optimize-contrast; /* NEW: Crisp rendering for Chrome/Safari */
-    image-rendering: crisp-edges; /* NEW: Crisp for Firefox */
-    image-rendering: pixelated; /* NEW: Crisp fallback for Edge/IE */
-    -ms-interpolation-mode: nearest-neighbor; /* NEW: Crisp for older IE */
-  }
-  #final-charts-section .chart-card p {
-    margin: 0.75rem 0 0 0;
-    text-align: center;
-    font-weight: bold;
-    color: #1a1a1a;
-    font-size: 1rem;
-  }
-  #final-charts-section .growth-indicator {
-    text-align: center;
-    margin-top: 0.5rem;
-    font-weight: bold;
-    font-size: 1rem;
-  }
-  #final-charts-section .growth-indicator.positive { color: #10B981; }
-  #final-charts-section .growth-indicator.negative { color: #EF4444; }
-  #final-charts-section .growth-indicator i { margin-right: 4px; font-size: 0.9em; }
-  @media (max-width: 768px) {
-    #final-charts-section .chart-card { height: 400px; }
-    #final-charts-section .chart-card canvas { min-height: 280px; }
-  }
+  .plot-container { height: 240px !important; }
+  #projectedYield { margin-top: -4px; font-size: 14px; }
+}
     /* PLOTLY CHARTS — CRISP SVG */
 .chart-card > div[id^="plot"] {
   min-height: 320px;
