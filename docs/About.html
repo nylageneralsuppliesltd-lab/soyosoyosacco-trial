@@ -446,10 +446,11 @@ window.postToSocials = async function() {
 👥 Members: ${record.members.toLocaleString()}
 💰 Savings: ${record.contributions.toLocaleString()}
 📤 Loans Disbursed: ${record.loansDisbursed.toLocaleString()}
+📉 Loans Balance: ${record.loansBalance.toLocaleString()}
 🏦 Total Assets: ${(record.extraFields?.bookValue||0).toLocaleString()}
 📈 ROA: ${record.roa}%
 💵 Profit: ${record.profit.toLocaleString()}
-#SoyosoyoSACCO #Finance #Chama #Savings
+
         `.trim()
     };
 
