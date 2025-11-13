@@ -587,7 +587,7 @@
 <script src="./scripts/member-carousel.js"></script>
 
 <script>
-  // PLOTLY GROWTH CHARTS — FULLY FIXED: ARROWS, NUMBERS, SPACING, YIELD
+  // PLOTLY GROWTH CHARTS — FULLY FIXED: ARROWS, NUMBERS, SPACING, YIELD + ROA ALIGNED TO TOTAL ASSETS FORMULA
   function renderPlotlyGrowthCharts() {
     const data = window.saccoData;
     if (!data || !data.jan || !data.today) {
@@ -599,10 +599,13 @@
     const janExternal = today.externalLoans ?? jan.externalLoans ?? 0;
     const todayExternal = today.externalLoans ?? 0;
 
-    const janBase = jan.contributions + janExternal;
-    const todayBase = today.contributions + todayExternal;
-    const janROA = janBase > 0 ? (jan.profit / janBase) * 100 : 0;
-    const todayROA = todayBase > 0 ? (today.profit / todayBase) * 100 : 0;
+    // Aligned ROA: totalAssets = loansBalance + bankBalance (fallback to contributions + external if loansBalance missing)
+    const janTotalAssets = (jan.loansBalance || 0) + (jan.bankBalance || (jan.contributions + janExternal));
+    const todayTotalAssets = (today.loansBalance || 0) + (today.bankBalance || (today.contributions + todayExternal));
+    const janROA = janTotalAssets > 0 ? (jan.profit / janTotalAssets) * 100 : 0;
+    const todayROA = todayTotalAssets > 0 ? (today.profit / todayTotalAssets) * 100 : 0;
+
+    // Liquidity unchanged (uses contributions)
     const janLiq = jan.contributions > 0 ? (jan.bankBalance / jan.contributions) * 100 : 0;
     const todayLiq = today.contributions > 0 ? (today.bankBalance / today.contributions) * 100 : 0;
 
@@ -770,32 +773,6 @@
     window.addEventListener('saccoDataUpdated', () => setTimeout(tryRender, 100));
     tryRender();
   });
-</script>
-    
-<script src="./scripts/main.js"></script>
-<script src="./scripts/calculator.js"></script>
-<script src="./scripts/dividendscalculator.js"></script>
-<script src="./scripts/chatbot.js"></script>
-<script src="./scripts/seo.js"></script>
-
-<!-- SCHEMA & YEAR UPDATE -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "FinancialService",
-  "name": "SOYOSOYO SACCO",
-  "url": "https://soyosoyosacco.com",
-  "logo": "https://soyosoyosacco.com/assets/141dd3faa98da9737b591161deac509a.jpg",
-  "description": "Affordable 1% monthly loans and high dividends in Coastal Kenya.",
-  "address": {
-    "@type": "PostalAddress",
-    "addressLocality": "Kilifi",
-    "addressRegion": "Coast",
-    "addressCountry": "KE"
-  },
-  "email": "info@soyosoyosacco.com",
-  "areaServed": ["Kilifi", "Mombasa", "Kwale"]
-}
 </script>
 
 </body>
