@@ -34,7 +34,7 @@
     </script>
 
 <style id="final-working-styles">
-  /* GROWTH CHARTS GRID — RESPONSIVE LAYOUT */
+  /* === GRID LAYOUT FOR ALL CHARTS === */
   .growth-charts-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -42,44 +42,27 @@
     margin: 2rem 0;
   }
 
-  /* CHART CARDS — TIGHTER PADDING FOR BETTER MARGIN UTILIZATION, TALLER FOR FULL DISPLAY */
+  /* === CHART CARD CONTAINER — UNIFIED STYLE === */
   .chart-card {
     background: #ffffff;
-    padding: 1rem; /* Reduced from 1.5rem to minimize unused margins/space */
+    padding: 1rem;
     border-radius: 18px;
     box-shadow: 0 8px 25px rgba(0,0,0,0.08);
     text-align: center;
     transition: transform 0.3s ease;
     position: relative;
-    min-height: 500px; /* Stretched further to ensure no top/bottom clipping of words/figures */
+    min-height: 500px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    gap: 0.5rem; /* Reduced gap for tighter internal spacing */
+    gap: 0.5rem;
   }
 
-  /* BOTTOM ELEMENTS — PULLED CLOSER, NO EXCESS SPACE */
   .chart-card > p,
   .chart-card .growth-indicator {
     margin-top: auto;
     flex-shrink: 0;
-    padding-top: 0.5rem; /* Minimal padding to avoid touching plot */
-  }
-
-  .plot-container {
-    width: 100%;
-    height: auto;
-    min-height: 400px; /* Increased to fully encompass Plotly's top annotations + bar texts without hiding */
-    flex-grow: 1;
-    margin-bottom: 0;
-    contain: layout style paint;
-  }
-
-  /* PLOTLY CHARTS — FULL STRETCH, PRIORITIZE VISIBILITY OVER COMPACTNESS */
-  .chart-card > div[id^="plot"] {
-    min-height: 400px !important; /* !important to override any Plotly defaults; shows all elements */
-    height: 100% !important;
-    width: 100% !important;
+    padding-top: 0.5rem;
   }
 
   .growth-indicator {
@@ -92,10 +75,10 @@
   .growth-indicator.negative { color: #EF4444; }
   .growth-indicator i { margin-right: 4px; font-size: 0.9em; }
 
-  /* YIELD — SPACED FROM PLOT AND TITLE/P LABEL */
+  /* === YIELD BADGE === */
   #projectedYield {
-    margin-top: 8px; /* Space from plot */
-    margin-bottom: 12px; /* Added space below to separate from <p> title without touching */
+    margin-top: 8px;
+    margin-bottom: 12px;
     padding: 10px;
     background: linear-gradient(135deg, #10B981, #34D399);
     color: white;
@@ -106,11 +89,50 @@
     flex-shrink: 0;
   }
 
-  /* MOBILE — TIGHTER BUT VISIBLE */
+  /* === FINANCIAL CHART CONTAINMENT FIXES === */
+  #financialCharts,
+  .financial-chart-container {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: visible;
+    contain: layout style paint;
+    padding: 0.5rem;
+  }
+
+  .financial-chart {
+    background: #fff;
+    border-radius: 16px;
+    padding: 1rem;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    position: relative;
+    text-align: center;
+    margin-bottom: 1rem;
+    min-height: 480px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .financial-chart > div[id^="plot"],
+  .plotly-financial-div,
+  .js-plotly-plot {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 400px !important;
+    contain: layout style paint;
+    overflow: visible !important; /* ensures labels/values fully visible */
+  }
+
+  .financial-chart .plot-container {
+    min-height: 420px;
+    overflow: visible;
+  }
+
+  /* === MOBILE FINANCIAL CHARTS === */
   @media (max-width: 768px) {
     .chart-card {
       padding: 0.8rem;
-      min-height: 440px; /* Adjusted stretch for smaller screens */
+      min-height: 440px;
       gap: 0.25rem;
     }
 
@@ -118,7 +140,8 @@
       min-height: 340px;
     }
 
-    .chart-card > div[id^="plot"] {
+    .chart-card > div[id^="plot"],
+    .financial-chart > div[id^="plot"] {
       min-height: 340px !important;
     }
 
@@ -129,7 +152,7 @@
     }
   }
 
-  /* === PLOTLY PROJECTIONS === */
+  /* === PROJECTION CHARTS (UNCHANGED) === */
   #projectionsChart {
     isolation: isolate;
     contain: layout style paint;
