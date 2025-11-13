@@ -1,4 +1,4 @@
-// scripts/carousel.js – FULLY FIXED + SOYOSOYO
+// scripts/carousel.js – FULLY FIXED + SOYOSOYO + ALIGNED WITH ABOUT.HTML KEYS
 document.addEventListener('DOMContentLoaded', () => {
   const janFallback = { members: 101, contributions: 331263, loans: 283500, profit: -60056, externalLoans: 0, bankBalance: 113742 };
   window.saccoData = { jan: janFallback, today: {} };
@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
       { name: 'Development', value: 643000 },
       { name: 'Education', value: 275000 }
     ],
-    loansBalanceToday: 876141.66,
+    loansBalanceToday: 876141.66,  // Aligned: Added for About.html
     bankBreakdownToday: [
       { name: 'Co-operative Bank', value: 2120.65 },
       { name: 'Chamasoft', value: 6695 },
@@ -29,28 +29,44 @@ document.addEventListener('DOMContentLoaded', () => {
     const d = loadDynamicData();
     const loansDisbursed = d.loanTypesToday.reduce((s, l) => s + l.value, 0);
     const bankBalance = d.bankBreakdownToday.reduce((s, b) => s + b.value, 0);
-    const assets = d.contributions + d.externalLoansToday;
+    const assets = d.contributions + d.externalLoansToday + d.loansBalanceToday;  // Aligned: Full assets calc for totalAssets
     const roa = assets > 0 ? ((d.profit / assets) * 100).toFixed(2) : "0.00";
 
-    const carouselData = [
-      { number: d.members, description: "Total Members" },
-      { number: d.contributions, description: "Member Savings" },
-      { number: bankBalance, description: "Total Bank Balance" },
-      { number: d.numberOfLoansGiven, description: "Number of Loans Given" },
-      { number: loansDisbursed, description: "Loans Disbursed This Month" },
-      { number: d.profit, description: "Profit" },
-      { number: d.activeMembers, description: "Active Members" },
-      { number: roa, description: "ROA (%)" }
-    ];
+    // Aligned: Set full keys expected by About.html (extraFields, loansBalance, totalBankBalance, totalAssets)
+    const todayData = {
+      members: d.members,
+      contributions: d.contributions,
+      loansDisbursed: loansDisbursed,  // Exact key for About.html
+      loans: loansDisbursed,  // Keep for legacy
+      loansBalance: d.loansBalanceToday,  // Exact key for About.html
+      totalBankBalance: bankBalance,  // Exact key for About.html
+      bankBalance: bankBalance,  // Keep for legacy
+      profit: d.profit,
+      externalLoans: d.externalLoansToday,
+      roa: roa,
+      extraFields: {  // Exact structure for About.html (bankBreakdown, bookValue)
+        bankBreakdown: d.bankBreakdownToday,
+        bookValue: assets  // For totalAssets fallback
+      }
+    };
 
     window.loanTypesToday = d.loanTypesToday;
-    window.saccoData.today = { members: d.members, contributions: d.contributions, loans: loansDisbursed, profit: d.profit, externalLoans: d.externalLoansToday, bankBalance, roa };
+    window.saccoData.today = todayData;
 
-    // RESTORE SOYOSOYO FOR PROJECTIONS
+    // RESTORE SOYOSOYO FOR PROJECTIONS (unchanged)
     window.SOYOSOYO = {
       current: window.saccoData.today,
       baseline: janFallback,
-      counters: carouselData.map(item => ({
+      counters: [
+        { number: d.members, description: "Total Members" },
+        { number: d.contributions, description: "Member Savings" },
+        { number: bankBalance, description: "Total Bank Balance" },
+        { number: d.numberOfLoansGiven, description: "Number of Loans Given" },
+        { number: loansDisbursed, description: "Loans Disbursed This Month" },
+        { number: d.profit, description: "Profit" },
+        { number: d.activeMembers, description: "Active Members" },
+        { number: roa, description: "ROA (%)" }
+      ].map(item => ({
         value: item.number,
         suffix: item.description.includes('ROA') ? '%' : '',
         label: item.description
@@ -58,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.dispatchEvent(new CustomEvent('saccoDataUpdated'));
-    return carouselData;
+    return window.SOYOSOYO.counters;  // Return for carousel use
   };
 
   const carouselData = recomputeData();
@@ -68,10 +84,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const itemsHTML = carouselData.map(item => `
     <article class="carousel-item">
       <div class="carousel-button">
-        <span class="counter-value" data-target="${item.number}">0</span>
-        ${item.description.includes('ROA') ? '<span>%</span>' : ''}
+        <span class="counter-value" data-target="${item.value}">${item.suffix ? '0' : '0'}</span>
+        ${item.suffix ? `<span>${item.suffix}</span>` : ''}
       </div>
-      <p class="carousel-description">${item.description}</p>
+      <p class="carousel-description">${item.label}</p>
     </article>
   `).join('');
 
