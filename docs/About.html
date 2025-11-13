@@ -469,6 +469,25 @@ window.toggleAutoSave = function() {
     text.textContent = autoSaveEnabled ? 'AUTO-SAVE ON':'AUTO-SAVE OFF';
     document.getElementById('autoSaveToggle').style.background = autoSaveEnabled ? '#10B981':'#f59e0b';
 };
+// ====================DOWNLOAD CSV ====================
+    
+    function downloadHistoryCSV() {
+    const history = Object.values(window.saccoHistory).sort((a,b)=>b.period.localeCompare(a.period));
+    if(history.length === 0){
+        alert("No history available to download yet.");
+        return;
+    }
+    const csv = convertHistoryToCSV(history);
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `soyosoyo_sacco_history_${new Date().toISOString().slice(0,10)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
 
 // ==================== EMAIL AUTOMATION ====================
 window.sendMonthlyEmail = async function() {
