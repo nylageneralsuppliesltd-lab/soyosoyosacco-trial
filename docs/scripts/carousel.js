@@ -1,4 +1,4 @@
-// scripts/carousel.js – FINAL + SOYOSOYO RESTORED
+// scripts/carousel.js – FULLY FIXED + SOYOSOYO
 document.addEventListener('DOMContentLoaded', () => {
   const janFallback = { members: 101, contributions: 331263, loans: 283500, profit: -60056, externalLoans: 0, bankBalance: 113742 };
   window.saccoData = { jan: janFallback, today: {} };
@@ -45,8 +45,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.loanTypesToday = d.loanTypesToday;
     window.saccoData.today = { members: d.members, contributions: d.contributions, loans: loansDisbursed, profit: d.profit, externalLoans: d.externalLoansToday, bankBalance, roa };
-    
-    // RESTORE SOYOSOYO — PROJECTIONS DEPENDS ON THIS
+
+    // RESTORE SOYOSOYO FOR PROJECTIONS
     window.SOYOSOYO = {
       current: window.saccoData.today,
       baseline: janFallback,
