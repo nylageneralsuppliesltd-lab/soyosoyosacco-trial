@@ -33,7 +33,7 @@
       gtag('config', 'G-05M38MYK0G');
     </script>
 
- <style id="final-working-styles">
+<style id="final-working-styles">
   /* GROWTH CHARTS GRID — RESPONSIVE LAYOUT */
   .growth-charts-grid {
     display: grid;
@@ -42,39 +42,48 @@
     margin: 2rem 0;
   }
 
-  /* CHART CARDS — FURTHER INCREASED HEIGHT FOR FULL TOP VISIBILITY */
+  /* CHART CARDS — TIGHTER PADDING FOR BETTER MARGIN UTILIZATION, TALLER FOR FULL DISPLAY */
   .chart-card {
     background: #ffffff;
-    padding: 2rem 1.5rem;
+    padding: 1rem; /* Reduced from 1.5rem to minimize unused margins/space */
     border-radius: 18px;
     box-shadow: 0 8px 25px rgba(0,0,0,0.08);
     text-align: center;
     transition: transform 0.3s ease;
     position: relative;
-    min-height: 460px; /* Bumped up to 460px to fully reveal top annotations/text */
+    min-height: 500px; /* Stretched further to ensure no top/bottom clipping of words/figures */
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; /* Start from top, let plot grow */
+    justify-content: flex-start;
+    gap: 0.5rem; /* Reduced gap for tighter internal spacing */
+  }
+
+  /* BOTTOM ELEMENTS — PULLED CLOSER, NO EXCESS SPACE */
+  .chart-card > p,
+  .chart-card .growth-indicator {
+    margin-top: auto;
+    flex-shrink: 0;
+    padding-top: 0.5rem; /* Minimal padding to avoid touching plot */
   }
 
   .plot-container {
     width: 100%;
-    height: auto; /* Flexible fit */
-    min-height: 350px; /* Increased to 350px for ample room above bars (margins + outside text) */
+    height: auto;
+    min-height: 400px; /* Increased to fully encompass Plotly's top annotations + bar texts without hiding */
     flex-grow: 1;
-    margin-bottom: 12px;
+    margin-bottom: 0;
     contain: layout style paint;
   }
 
-  /* PLOTLY CHARTS — MATCHED TO NEW HEIGHTS FOR NO CLIPPING */
+  /* PLOTLY CHARTS — FULL STRETCH, PRIORITIZE VISIBILITY OVER COMPACTNESS */
   .chart-card > div[id^="plot"] {
-    min-height: 350px; /* Aligned with container; ensures top figures/arrows visible */
-    height: 100%;
-    width: 100%;
+    min-height: 400px !important; /* !important to override any Plotly defaults; shows all elements */
+    height: 100% !important;
+    width: 100% !important;
   }
 
   .growth-indicator {
-    margin-top: 8px;
+    margin-top: 0;
     font-size: 1rem;
     font-weight: bold;
   }
@@ -83,10 +92,10 @@
   .growth-indicator.negative { color: #EF4444; }
   .growth-indicator i { margin-right: 4px; font-size: 0.9em; }
 
-  /* YIELD — PULLED UP, NO OVERLAP */
+  /* YIELD — SPACED FROM PLOT AND TITLE/P LABEL */
   #projectedYield {
-    margin-top: -8px;
-    margin-bottom: 12px;
+    margin-top: 8px; /* Space from plot */
+    margin-bottom: 12px; /* Added space below to separate from <p> title without touching */
     padding: 10px;
     background: linear-gradient(135deg, #10B981, #34D399);
     color: white;
@@ -94,25 +103,28 @@
     font-size: 15px;
     border-radius: 12px;
     text-align: center;
+    flex-shrink: 0;
   }
 
-  /* MOBILE — SCALED BUT PRIORITIZED VISIBILITY */
+  /* MOBILE — TIGHTER BUT VISIBLE */
   @media (max-width: 768px) {
     .chart-card {
-      padding: 1.6rem 1rem;
-      min-height: 400px; /* Upped to 400px for mobile top visibility */
+      padding: 0.8rem;
+      min-height: 440px; /* Adjusted stretch for smaller screens */
+      gap: 0.25rem;
     }
 
     .plot-container {
-      min-height: 300px; /* Increased for mobile; prevents top clipping */
+      min-height: 340px;
     }
 
     .chart-card > div[id^="plot"] {
-      min-height: 300px;
+      min-height: 340px !important;
     }
 
     #projectedYield {
-      margin-top: -4px;
+      margin-top: 6px;
+      margin-bottom: 8px;
       font-size: 14px;
     }
   }
@@ -253,6 +265,7 @@
     }
   }
 </style>
+
 
 
 
