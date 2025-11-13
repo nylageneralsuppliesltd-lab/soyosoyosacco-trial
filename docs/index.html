@@ -92,6 +92,15 @@
 @media (max-width: 768px) {
   .chart-card > div[id^="plot"] { min-height: 280px; }
 }
+    .plot-container {
+  width: 100%;
+  height: 100%;
+  min-height: 320px;
+  contain: layout style paint;
+}
+@media (max-width: 768px) {
+  .plot-container { min-height: 280px; }
+}
   /* === PLOTLY PROJECTIONS === */
   #projectionsChart {
     isolation: isolate;
@@ -288,41 +297,41 @@
         <div class="carousel-wrapper"><div class="carousel" aria-label="Financial Metrics Carousel"></div></div>
     </section>
 
-   <!-- GROWTH CHARTS - PLOTLY SVG (CRISP ON ALL DEVICES) -->
+  <!-- GROWTH CHARTS - PLOTLY SVG (FIXED: ARROWS + CENTERED % + NO OVERFLOW) -->
 <section class="section" id="final-charts-section">
   <h2 style="text-align: center; margin-bottom: 1.5rem;">Growth Since January 2025</h2>
   <div class="growth-charts-grid">
     <div class="chart-card">
-      <div id="plotMembers" style="width:100%;height:100%;"></div>
+      <div id="plotMembers" class="plot-container"></div>
       <p>Total Members</p>
       <div id="growthMembers" class="growth-indicator"></div>
     </div>
     <div class="chart-card">
-      <div id="plotLoans" style="width:100%;height:100%;"></div>
+      <div id="plotLoans" class="plot-container"></div>
       <p>Loans Disbursed</p>
       <div id="growthLoans" class="growth-indicator"></div>
     </div>
     <div class="chart-card">
-      <div id="plotLoanTypes" style="width:100%;height:100%;"></div>
+      <div id="plotLoanTypes" class="plot-container"></div>
       <p>Loan Types Distribution (%)</p>
     </div>
     <div class="chart-card">
-      <div id="plotContributions" style="width:100%;height:100%;"></div>
+      <div id="plotContributions" class="plot-container"></div>
       <p>Contributions</p>
       <div id="growthContributions" class="growth-indicator"></div>
     </div>
     <div class="chart-card">
-      <div id="plotProfit" style="width:100%;height:100%;"></div>
+      <div id="plotProfit" class="plot-container"></div>
       <p>Profit</p>
       <div id="growthProfit" class="growth-indicator"></div>
     </div>
     <div class="chart-card">
-      <div id="plotROA" style="width:100%;height:100%;"></div>
+      <div id="plotROA" class="plot-container"></div>
       <p>Return on Assets (ROA)</p>
       <div id="growthROA" class="growth-indicator"></div>
     </div>
     <div class="chart-card">
-      <div id="plotLiquidity" style="width:100%;height:100%;"></div>
+      <div id="plotLiquidity" class="plot-container"></div>
       <p>Liquidity Ratio</p>
       <div id="growthLiquidity" class="growth-indicator"></div>
     </div>
@@ -472,7 +481,7 @@
 <script src="./scripts/member-carousel.js"></script>
 
 <script>
-  // PLOTLY GROWTH CHARTS — SVG, CRISP ON LAPTOPS, PHONES, 4K SCREENS
+  // PLOTLY GROWTH CHARTS — SVG + ARROWS + CENTERED RED/GREEN % + NO OVERFLOW
   function renderPlotlyGrowthCharts() {
     const data = window.saccoData;
     if (!data || !data.jan || !data.today) return;
@@ -493,52 +502,107 @@
     const fmt = (n) => n.toLocaleString();
     const growth = (now, then) => then === 0 ? (now === 0 ? 0 : 100) : ((now - then) / Math.abs(then)) * 100;
 
-    const layout = {
-      margin: { t: 20, b: 40, l: 50, r: 20 },
+    const baseLayout = {
+      margin: { t: 60, b: 50, l: 50, r: 30 },
       paper_bgcolor: 'rgba(0,0,0,0)',
       plot_bgcolor: 'rgba(0,0,0,0)',
       font: { family: 'Lato, sans-serif', color: '#1a1a1a' },
       showlegend: false,
-      bargap: 0.4,
+      bargap: 0.5,
+      xaxis: { fixedrange: true, tickfont: { size: 12 } },
+      yaxis: { fixedrange: true, gridcolor: '#e5e7eb', zeroline: false }
     };
 
     const config = { responsive: true, displayModeBar: false };
 
-    const createBar = (id, janVal, todayVal, colorJan, colorToday, isPct = false, isMoney = false, gid) => {
+    const createBarWithArrow = (id, janVal, todayVal, colorJan, colorToday, isPct = false, isMoney = false, gid) => {
       const g = growth(todayVal, janVal);
-      const arrow = g >= 0 ? 'up' : 'down';
-      const cls = g >= 0 ? 'positive' : 'negative';
+      const isUp = g >= 0;
+      const arrowColor = isUp ? '#10B981' : '#EF4444';
+      const textColor = isUp ? '#10B981' : '#EF4444';
+
+      // Update indicator below
       const el = document.getElementById(gid);
       if (el) {
-        el.innerHTML = `<i class="fas fa-arrow-${arrow}"></i> ${g >= 0 ? '+' : ''}${g.toFixed(1)}%`;
-        el.className = `growth-indicator ${cls}`;
+        el.innerHTML = `<i class="fas fa-arrow-${isUp ? 'up' : 'down'}"></i> ${g >= 0 ? '+' : ''}${g.toFixed(1)}%`;
+        el.className = `growth-indicator ${isUp ? 'positive' : 'negative'}`;
       }
 
-      const text = [
-        `${isPct ? janVal.toFixed(2) + '%' : isMoney ? 'KES ' + fmt(janVal) : fmt(janVal)}`,
-        `${isPct ? todayVal.toFixed(2) + '%' : isMoney ? 'KES ' + fmt(todayVal) : fmt(todayVal)}<br><b>${g >= 0 ? '+' : ''}${g.toFixed(1)}%</b>`
-      ];
+      const displayJan = isPct ? janVal.toFixed(2) + '%' : isMoney ? 'KES ' + fmt(janVal) : fmt(janVal);
+      const displayToday = isPct ? todayVal.toFixed(2) + '%' : isMoney ? 'KES ' + fmt(todayVal) : fmt(todayVal);
 
-      Plotly.newPlot(id, [{
+      const trace = {
         x: ['Jan 2025', 'Today'],
         y: [janVal, todayVal],
         type: 'bar',
         marker: { color: [colorJan, colorToday] },
-        text: text,
+        text: [displayJan, displayToday],
         textposition: 'outside',
-        textfont: { size: 13, family: 'Lato, sans-serif' },
+        textfont: { size: 13, family: 'Lato, sans-serif', color: '#1a1a1a' },
         hovertemplate: '<b>%{x}</b><br>%{y:' + (isPct ? '.2f' : ',') + (isPct ? '%' : '') + '}<extra></extra>'
-      }], layout, config);
+      };
+
+      const layout = {
+        ...baseLayout,
+        shapes: [],
+        annotations: []
+      };
+
+      // Arrow + % in center
+      if (Math.abs(g) > 0.1) {
+        const midX = 0.5;
+        const midY = (janVal + todayVal) / 2;
+        const arrowLen = 0.15;
+        const headLen = 0.04;
+
+        const x0 = midX - arrowLen / 2;
+        const x1 = midX + arrowLen / 2;
+        const y0 = midY;
+        const y1 = midY;
+
+        layout.shapes.push({
+          type: 'line',
+          x0, y0, x1, y1,
+          line: { color: arrowColor, width: 3 },
+          layer: 'above'
+        });
+
+        // Arrowhead
+        const angle = isUp ? -Math.PI / 2 : Math.PI / 2;
+        layout.shapes.push({
+          type: 'path',
+          path: `M ${x1} ${y1} L ${x1 - headLen * Math.cos(angle - 0.5)} ${y1 - headLen * Math.sin(angle - 0.5)} L ${x1 - headLen * Math.cos(angle + 0.5)} ${y1 - headLen * Math.sin(angle + 0.5)} Z`,
+          fillcolor: arrowColor,
+          line: { width: 0 }
+        });
+
+        // % text in center
+        layout.annotations.push({
+          x: midX,
+          y: midY + (isUp ? 0.08 : -0.08),
+          text: `<b>${g >= 0 ? '+' : ''}${g.toFixed(1)}%</b>`,
+          showarrow: false,
+          font: { size: 15, family: 'Lato, sans-serif', color: textColor, weight: 'bold' },
+          bgcolor: 'rgba(255,255,255,0.9)',
+          bordercolor: 'rgba(0,0,0,0.1)',
+          borderwidth: 1,
+          borderpad: 4,
+          borderRadius: 6
+        });
+      }
+
+      Plotly.newPlot(id, [trace], layout, config);
     };
 
-    createBar('plotMembers', jan.members, today.members, '#8B5CF6', '#C4B5FD', false, false, 'growthMembers');
-    createBar('plotLoans', jan.loans, today.loans, '#F59E0B', '#FBBF24', false, true, 'growthLoans');
-    createBar('plotContributions', jan.contributions, today.contributions, '#10B981', '#34D399', false, true, 'growthContributions');
-    createBar('plotProfit', jan.profit, today.profit, '#EF4444', '#F87171', false, true, 'growthProfit');
-    createBar('plotROA', janROA, todayROA, '#0EA5E9', '#7DD3FC', true, false, 'growthROA');
-    createBar('plotLiquidity', janLiq, todayLiq, '#6366F1', '#A5B4FC', true, false, 'growthLiquidity');
+    // === CREATE ALL CHARTS ===
+    createBarWithArrow('plotMembers', jan.members, today.members, '#8B5CF6', '#C4B5FD', false, false, 'growthMembers');
+    createBarWithArrow('plotLoans', jan.loans, today.loans, '#F59E0B', '#FBBF24', false, true, 'growthLoans');
+    createBarWithArrow('plotContributions', jan.contributions, today.contributions, '#10B981', '#34D399', false, true, 'growthContributions');
+    createBarWithArrow('plotProfit', jan.profit, today.profit, '#EF4444', '#F87171', false, true, 'growthProfit');
+    createBarWithArrow('plotROA', janROA, todayROA, '#0EA5E9', '#7DD3FC', true, false, 'growthROA');
+    createBarWithArrow('plotLiquidity', janLiq, todayLiq, '#6366F1', '#A5B4FC', true, false, 'growthLiquidity');
 
-    // Loan Types Pie
+    // === LOAN TYPES PIE (unchanged) ===
     if (window.loanTypesToday?.length) {
       let loanTypes = window.loanTypesToday.filter(t => t.name && t.value > 0 && !t.name.toLowerCase().includes('api'));
       if (loanTypes.length) {
@@ -576,7 +640,6 @@
     }
   }
 
-  // Keep your existing calculateProjectedYield function
   function calculateProjectedYield() {
     const types = window.loanTypesToday || [];
     if (!types.length) return 0;
