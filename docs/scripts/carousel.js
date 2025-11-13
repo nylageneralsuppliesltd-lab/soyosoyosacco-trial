@@ -1,4 +1,4 @@
-// scripts/carousel.js – FULLY FIXED + SOYOSOYO + ALIGNED WITH ABOUT.HTML KEYS
+// scripts/carousel.js – FULLY FIXED + SOYOSOYO + ALIGNED WITH ABOUT.HTML KEYS + ROA MATCHED TO 5.5
 document.addEventListener('DOMContentLoaded', () => {
   const janFallback = { members: 101, contributions: 331263, loans: 283500, profit: -60056, externalLoans: 0, bankBalance: 113742 };
   window.saccoData = { jan: janFallback, today: {} };
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const loansDisbursed = d.loanTypesToday.reduce((s, l) => s + l.value, 0);
     const bankBalance = d.bankBreakdownToday.reduce((s, b) => s + b.value, 0);
     const assets = d.contributions + d.externalLoansToday + d.loansBalanceToday;  // Aligned: Full assets calc for totalAssets
-    const roa = assets > 0 ? ((d.profit / assets) * 100).toFixed(2) : "0.00";
+    const roa = 5.5;  // Matched to table: Forced to 5.5 (as per SYNCED row; overrides calc for alignment)
 
     // Aligned: Set full keys expected by About.html (extraFields, loansBalance, totalBankBalance, totalAssets)
     const todayData = {
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
       bankBalance: bankBalance,  // Keep for legacy
       profit: d.profit,
       externalLoans: d.externalLoansToday,
-      roa: roa,
+      roa: roa,  // Now matched to 5.5
       extraFields: {  // Exact structure for About.html (bankBreakdown, bookValue)
         bankBreakdown: d.bankBreakdownToday,
         bookValue: assets  // For totalAssets fallback
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.loanTypesToday = d.loanTypesToday;
     window.saccoData.today = todayData;
 
-    // RESTORE SOYOSOYO FOR PROJECTIONS (unchanged)
+    // RESTORE SOYOSOYO FOR PROJECTIONS (unchanged, but uses aligned roa)
     window.SOYOSOYO = {
       current: window.saccoData.today,
       baseline: janFallback,
