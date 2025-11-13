@@ -290,36 +290,20 @@
         </div>
     </section>
 
-<!-- FINANCIAL HIGHLIGHTS CAROUSEL -->
+<!-- ========================================
+     1. FINANCIAL HIGHLIGHTS CAROUSEL
+     ======================================== -->
 <section class="section">
-  <h2 style="text-align: center;">Financial Highlights</h2>
-  <p style="text-align: center; margin-bottom: 1.5rem;">Our impact in numbers.</p>
+  <h2 style="text-align: center; margin-bottom: 1rem;">Financial Highlights</h2>
+  <p style="text-align: center; margin-bottom: 1.5rem; color: #4b5563;">Our impact in numbers — updated daily.</p>
   <div class="carousel-wrapper">
     <div class="carousel" aria-label="Financial Metrics Carousel"></div>
   </div>
 </section>
-    <!-- CHART CONTAINERS (REQUIRED FOR PLOTLY) -->
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
-        <div class="chart-card">
-            <div id="chart-0" style="height: 320px;"></div>
-            <p style="text-align:center; margin-top:8px; font-weight:bold;">Members Growth</p>
-        </div>
-        <div class="chart-card">
-            <div id="chart-1" style="height: 320px;"></div>
-            <p style="text-align:center; margin-top:8px; font-weight:bold;">Contributions</p>
-        </div>
-        <div class="chart-card">
-            <div id="chart-2" style="height: 320px;"></div>
-            <p style="text-align:center; margin-top:8px; font-weight:bold;">Loans Disbursed</p>
-        </div>
-        <div class="chart-card">
-            <div id="chart-3" style="height: 320px;"></div>
-            <p style="text-align:center; margin-top:8px; font-weight:bold;">Profit & ROA</p>
-        </div>
-    </div>
-</section>
 
-  <!-- GROWTH CHARTS - PLOTLY SVG (FIXED: ARROWS + CENTERED % + NO OVERFLOW) -->
+<!-- ========================================
+     2. GROWTH SINCE JANUARY 2025 (PLOTLY)
+     ======================================== -->
 <section class="section" id="final-charts-section">
   <h2 style="text-align: center; margin-bottom: 1.5rem;">Growth Since January 2025</h2>
   <div class="growth-charts-grid">
@@ -360,15 +344,17 @@
   </div>
 </section>
 
-    <!-- PROJECTIONS -->
-    <section style="margin: 60px 0; padding: 0 10px;">
-        <div style="text-align:center; margin-bottom: 30px;">
-            <h2 style="font-size: 28px; color: #004d1a; font-weight: 900;">5-Year Growth Projections</h2>
-            <p style="color: #6b7280; font-size: 16px;">Smart forecasting based on our current performance trajectory</p>
-        </div>
-        <div id="projectionsChart"></div>
-    </section>
-
+<!-- ========================================
+     3. 5-YEAR GROWTH PROJECTIONS
+     ======================================== -->
+<section style="margin: 60px 0; padding: 0 10px;">
+  <div style="text-align:center; margin-bottom: 30px;">
+    <h2 style="font-size: 28px; color: #004d1a; font-weight: 900;">5-Year Growth Projections</h2>
+    <p style="color: #6b7280; font-size: 16px;">Smart forecasting based on our current performance trajectory</p>
+  </div>
+  <div id="projectionsChart"></div>
+</section>
+    
     <!-- LOAN CALCULATOR -->
     <section class="tool-section" id="loan-calculator">
         <h2 style="text-align: center;">Loan Calculator</h2>
