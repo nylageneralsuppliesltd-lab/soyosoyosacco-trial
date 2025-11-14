@@ -110,13 +110,12 @@
         </div>
     </section>
 
-    <!-- Loan Calculator -->
+     <!-- Loan Calculator Tool -->
     <section class="section tool-section" id="loan-calculator">
         <h2 style="text-align: center;">Loan Calculator</h2>
         <div class="calculator-wrapper">
             <div class="calculator">
                 <h2><span class="soyo-logo">SOYOSOYO</span> SACCO Loan Calculator</h2>
-
                 <div class="form-group">
                     <label for="loanType">Loan Type:</label>
                     <select id="loanType" onchange="updateFields()">
@@ -128,23 +127,18 @@
                         <option value="apiCulture">Api Culture Loan</option>
                     </select>
                 </div>
-
                 <div class="form-group interest-rate">
                     <label for="rate">Annual Interest Rate (%):</label>
                     <input type="text" id="rate" readonly placeholder="Select a loan type">
                 </div>
-
                 <div class="form-group tenure">
                     <label for="tenure">Tenure (Months):</label>
                     <input type="text" id="tenure" readonly placeholder="Select a loan type">
                 </div>
-
-                <div class="form-group slider-container">
-                    <label for="principalSlider">Loan Amount (KES):</label>
-                    <input type="range" id="principalSlider" min="1000" max="1000000" step="1000" value="10000" oninput="updateSliderValue('principal')">
-                    <div class="slider-value" id="principalValue">KES 10,000</div>
+                <div class="form-group">
+                    <label for="principalAmount">Loan Amount (KES):</label>
+                    <input type="number" id="principalAmount" min="0" max="1000000" step="0.01" value="10000" placeholder="e.g., 1250.50">
                 </div>
-
                 <button onclick="calculateLoan()">Calculate Loan</button>
                 <div class="result" id="result"></div>
 
