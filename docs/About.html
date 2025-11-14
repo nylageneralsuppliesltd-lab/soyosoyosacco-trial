@@ -486,44 +486,51 @@ window.toggleAutoSave = function() {
 // ==================== EMAIL AUTOMATION ====================
 window.sendMonthlyEmail = async function() {
     const record = window.saccoData?.today;
-    if(!record){ console.warn("Live SACCO data not ready yet."); alert("Live data not ready yet."); return; }
+    if(!record){ 
+        console.warn("Live SACCO data not ready yet."); 
+        alert("Live data not ready yet."); 
+        return; 
+    }
 
     const period = new Date().toLocaleString('en-KE', { month: 'long', year: 'numeric' });
     const history = Object.values(window.saccoHistory).sort((a,b)=>b.period.localeCompare(a.period));
     const csvAttachment = convertHistoryToCSV(history);
 
+    // Construct the email body
     const emailBody = `
-<h2>Soyosoyo SACCO — Monthly Update (${period})</h2>
-<p>Dear Members,</p>
-<p>Here is the summary of our SACCO performance for <strong>${period}</strong>:</p>
-<ul>
-<li><strong>Members:</strong> ${record.members.toLocaleString()}</li>
-<li><strong>Total Savings:</strong> KES ${record.contributions.toLocaleString()}</li>
-<li><strong>Loans Disbursed:</strong> KES ${record.loansDisbursed.toLocaleString()}</li>
-<li><strong>Loans Balance:</strong> KES ${record.loansBalance.toLocaleString()}</li>
-<li><strong>Total Bank Balance:</strong> KES ${record.totalBankBalance.toLocaleString()}</li>
-<li><strong>Total Assets:</strong> KES ${(record.extraFields?.bookValue||0).toLocaleString()}</li>
-<li><strong>Profit:</strong> KES ${record.profit.toLocaleString()}</li>
-<li><strong>ROA:</strong> ${record.roa}%</li>
-</ul>
-<p>Attached is the full historical data.</p>
-<p><em>Soyosoyo SACCO Management</em></p>
-`;
+        <h2>Soyosoyo SACCO — Monthly Update (${period})</h2>
+        <p>Dear Members,</p>
+        <p>Here is the summary of our SACCO performance for <strong>${period}</strong>:</p>
+        <ul>
+            <li><strong>Members:</strong> ${record.members.toLocaleString()}</li>
+            <li><strong>Total Savings:</strong> KES ${record.contributions.toLocaleString()}</li>
+            <li><strong>Loans Disbursed:</strong> KES ${record.loansDisbursed.toLocaleString()}</li>
+            <li><strong>Loans Balance:</strong> KES ${record.loansBalance.toLocaleString()}</li>
+            <li><strong>Total Bank Balance:</strong> KES ${record.totalBankBalance.toLocaleString()}</li>
+            <li><strong>Total Assets:</strong> KES ${(record.extraFields?.bookValue||0).toLocaleString()}</li>
+            <li><strong>Profit:</strong> KES ${record.profit.toLocaleString()}</li>
+            <li><strong>ROA:</strong> ${record.roa}%</li>
+        </ul>
+        <p>Attached is the full historical data.</p>
+        <p><em>Soyosoyo SACCO Management</em></p>
+    `;
 
+    // Package payload properly for Zapier
     const payload = {
         timestamp: new Date().toISOString(),
         subject: `Soyosoyo SACCO Monthly Update — ${period}`,
-        body: emailBody,
-        attachment: csvAttachment,
-        recipients: ["members@soyosoyo.co.ke"]
+        body: emailBody,              // ✅ This must be present
+        attachment: csvAttachment,    // Optional CSV
+        recipients: ["members@soyosoyo.co.ke"] // Gmail group
     };
 
     try {
-        const res = await fetch(`${API_BASE}/zapier`,{
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body:JSON.stringify(payload)
+        const res = await fetch(`${API_BASE}/zapier`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
         });
+
         if(res.ok){
             console.log("✅ Monthly email sent successfully!");
             alert("✅ Monthly email sent successfully!");
@@ -533,10 +540,11 @@ window.sendMonthlyEmail = async function() {
             alert("⚠ Zapier returned an error. Check console.");
         }
     } catch(err) {
-        console.error("❌ Error sending monthly email:",err);
+        console.error("❌ Error sending monthly email:", err);
         alert("❌ Error sending email. Check console.");
     }
 };
+
 
 // ==================== SCHEDULE MONTHLY EMAIL ====================
 function scheduleMonthlyEmail() {
