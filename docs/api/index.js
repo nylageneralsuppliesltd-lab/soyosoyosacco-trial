@@ -163,29 +163,33 @@ async function sendMonthlyEmail(){
     const csvAttachment = convertHistoryToCSV(history);
     const periodDisplay = new Date(latest.period).toLocaleString('en-KE',{month:'long',year:'numeric'});
 
-    const payload = {
-      timestamp: new Date().toISOString(),
-      subject: `Soyosoyo SACCO Monthly Update — ${periodDisplay}`,
-      body: `
-        <h2>Soyosoyo SACCO — Monthly Update (${periodDisplay})</h2>
-        <p>Dear Members,</p>
-        <p>Summary for <strong>${periodDisplay}</strong>:</p>
-        <ul>
-          <li><strong>Members:</strong> ${latest.members.toLocaleString()}</li>
-          <li><strong>Total Savings:</strong> KES ${latest.contributions.toLocaleString()}</li>
-          <li><strong>Loans Disbursed:</strong> KES ${latest.loans_disbursed.toLocaleString()}</li>
-          <li><strong>Loans Balance:</strong> KES ${latest.loans_balance.toLocaleString()}</li>
-          <li><strong>Total Bank Balance:</strong> KES ${latest.total_bank_balance.toLocaleString()}</li>
-          <li><strong>Total Assets:</strong> KES ${latest.total_assets.toLocaleString()}</li>
-          <li><strong>Profit:</strong> KES ${latest.profit.toLocaleString()}</li>
-          <li><strong>ROA:</strong> ${latest.roa}%</li>
-        </ul>
-        <p>Attached is the full historical data.</p>
-        <p><em>Soyosoyo SACCO Management</em></p>
-      `,
-      attachment: csvAttachment,
-      recipients: ["members@soyosoyo.co.ke"]
-    };
+   const payload = {
+  to: "members@soyosoyo.co.ke",
+  subject: `Soyosoyo SACCO Monthly Update — ${periodDisplay}`,
+  body: `
+    <h2>Soyosoyo SACCO — Monthly Update (${periodDisplay})</h2>
+    <p>Dear Members,</p>
+    <p>Summary for <strong>${periodDisplay}</strong>:</p>
+    <ul>
+      <li><strong>Members:</strong> ${latest.members.toLocaleString()}</li>
+      <li><strong>Total Savings:</strong> KES ${latest.contributions.toLocaleString()}</li>
+      <li><strong>Loans Disbursed:</strong> KES ${latest.loans_disbursed.toLocaleString()}</li>
+      <li><strong>Loans Balance:</strong> KES ${latest.loans_balance.toLocaleString()}</li>
+      <li><strong>Total Bank Balance:</strong> KES ${latest.total_bank_balance.toLocaleString()}</li>
+      <li><strong>Total Assets:</strong> KES ${latest.total_assets.toLocaleString()}</li>
+      <li><strong>Profit:</strong> KES ${latest.profit.toLocaleString()}</li>
+      <li><strong>ROA:</strong> ${latest.roa}%</li>
+    </ul>
+    <p>Attached is the full historical data.</p>
+    <p><em>Soyosoyo SACCO Management</em></p>
+  `,
+  attachments: [
+    {
+      name: "history.csv",
+      content: csvAttachment
+    }
+  ]
+};
 
     const zapierURL = process.env.ZAPIER_WEBHOOK_URL;
     if(!zapierURL) return console.error("Zapier webhook not configured");
