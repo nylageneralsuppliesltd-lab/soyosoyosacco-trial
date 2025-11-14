@@ -148,59 +148,78 @@ function convertHistoryToCSV(history){
   return [headers,...rows].map(r=>r.join(",")).join("\n");
 }
 
-// --- Send monthly email ---
-async function sendMonthlyEmail(){
-  try{
+// --- Send monthly email (Zapier Gmail compliant) ---
+async function sendMonthlyEmail() {
+  try {
+    // Load latest history
     let history;
-    try{
+    try {
       const res = await fetch(`http://localhost:${PORT}/api/history`);
       history = await res.json();
-    }catch{
+    } catch {
       history = loadJSON(DB_FILE);
     }
-    if(!history.length) return;
-    const latest = history.sort((a,b)=>b.period.localeCompare(a.period))[0];
-    const csvAttachment = convertHistoryToCSV(history);
-    const periodDisplay = new Date(latest.period).toLocaleString('en-KE',{month:'long',year:'numeric'});
 
-   const payload = {
-  to: "members@soyosoyo.co.ke",
-  subject: `Soyosoyo SACCO Monthly Update — ${periodDisplay}`,
-  body: `
-    <h2>Soyosoyo SACCO — Monthly Update (${periodDisplay})</h2>
-    <p>Dear Members,</p>
-    <p>Summary for <strong>${periodDisplay}</strong>:</p>
-    <ul>
-      <li><strong>Members:</strong> ${latest.members.toLocaleString()}</li>
-      <li><strong>Total Savings:</strong> KES ${latest.contributions.toLocaleString()}</li>
-      <li><strong>Loans Disbursed:</strong> KES ${latest.loans_disbursed.toLocaleString()}</li>
-      <li><strong>Loans Balance:</strong> KES ${latest.loans_balance.toLocaleString()}</li>
-      <li><strong>Total Bank Balance:</strong> KES ${latest.total_bank_balance.toLocaleString()}</li>
-      <li><strong>Total Assets:</strong> KES ${latest.total_assets.toLocaleString()}</li>
-      <li><strong>Profit:</strong> KES ${latest.profit.toLocaleString()}</li>
-      <li><strong>ROA:</strong> ${latest.roa}%</li>
-    </ul>
-    <p>Attached is the full historical data.</p>
-    <p><em>Soyosoyo SACCO Management</em></p>
-  `,
-  attachments: [
-    {
-      name: "history.csv",
-      content: csvAttachment
+    if (!history.length) {
+      console.warn("No history to send.");
+      return;
     }
-  ]
-};
+
+    // Get latest month
+    const latest = history.sort((a, b) => b.period.localeCompare(a.period))[0];
+    const csvAttachment = convertHistoryToCSV(history);
+    const periodDisplay = new Date(latest.period).toLocaleString('en-KE', { month: 'long', year: 'numeric' });
+
+    // Construct email body
+    const emailBody = `
+      <h2>Soyosoyo SACCO — Monthly Update (${periodDisplay})</h2>
+      <p>Dear Members,</p>
+      <p>Summary for <strong>${periodDisplay}</strong>:</p>
+      <ul>
+        <li><strong>Members:</strong> ${latest.members.toLocaleString()}</li>
+        <li><strong>Total Savings:</strong> KES ${latest.contributions.toLocaleString()}</li>
+        <li><strong>Loans Disbursed:</strong> KES ${latest.loans_disbursed.toLocaleString()}</li>
+        <li><strong>Loans Balance:</strong> KES ${latest.loans_balance.toLocaleString()}</li>
+        <li><strong>Total Bank Balance:</strong> KES ${latest.total_bank_balance.toLocaleString()}</li>
+        <li><strong>Total Assets:</strong> KES ${latest.total_assets.toLocaleString()}</li>
+        <li><strong>Profit:</strong> KES ${latest.profit.toLocaleString()}</li>
+        <li><strong>ROA:</strong> ${latest.roa}%</li>
+      </ul>
+      <p>Attached is the full historical data.</p>
+      <p><em>Soyosoyo SACCO Management</em></p>
+    `;
+
+    // Zapier payload (Gmail-compatible)
+    const payload = {
+      to: "members@soyosoyo.co.ke", // string, not array
+      subject: `Soyosoyo SACCO Monthly Update — ${periodDisplay}`,
+      body: emailBody,
+      attachments: [
+        {
+          name: `soyosoyo_history_${new Date().toISOString().slice(0,10)}.csv`,
+          content: csvAttachment
+        }
+      ]
+    };
 
     const zapierURL = process.env.ZAPIER_WEBHOOK_URL;
-    if(!zapierURL) return console.error("Zapier webhook not configured");
-    const res = await fetch(zapierURL,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
+    if (!zapierURL) return console.error("Zapier webhook not configured.");
+
+    const res = await fetch(zapierURL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
     });
-    if(res.ok) console.log("✅ Monthly email sent for", periodDisplay);
-    else { const text = await res.text(); console.warn("⚠ Zapier error:", text); }
-  }catch(err){ console.error("❌ Failed to send monthly email:", err.message);}
+
+    if (res.ok) console.log("✅ Monthly email sent for", periodDisplay);
+    else {
+      const text = await res.text();
+      console.warn("⚠ Zapier error:", text);
+    }
+
+  } catch (err) {
+    console.error("❌ Failed to send monthly email:", err.message);
+  }
 }
 
 // --- Schedule monthly email at 9 AM on 1st ---
