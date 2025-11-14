@@ -34,11 +34,18 @@ function saveJSON(file, data) {
 app.get('/api/history', async (req, res) => {
   try {
     const { rows } = await pool.query('SELECT * FROM sacco_history ORDER BY period DESC');
-    const parsed = rows.map(r => ({ ...r, extra_fields: typeof r.extra_fields === 'string' ? JSON.parse(r.extra_fields) : r.extra_fields || {} }));
+    const parsed = rows.map(r => ({ 
+      ...r, 
+      extra_fields: typeof r.extra_fields === 'string' ? JSON.parse(r.extra_fields) : r.extra_fields || {} 
+    }));
     res.json(parsed);
   } catch (err) {
+    console.error('DB fetch failed, using local fallback:', err.message);
     const fallback = loadJSON(DB_FILE);
-    res.json(fallback.map(r => ({ ...r, extra_fields: typeof r.extra_fields === 'string' ? JSON.parse(r.extra_fields) : r.extra_fields || {} })));
+    res.json(fallback.map(r => ({ 
+      ...r, 
+      extra_fields: typeof r.extra_fields === 'string' ? JSON.parse(r.extra_fields) : r.extra_fields || {} 
+    })));
   }
 });
 
@@ -89,11 +96,16 @@ app.post('/api/history/save', async (req, res) => {
     history.push(newEntry);
     saveJSON(DB_FILE, history);
     saveJSON(PENDING_FILE, []);
+    console.log(`Saved to DB and local: ${newEntry.period}`);
     res.json({ success: true, data: newEntry });
   } catch (err) {
-    let pending = loadJSON(PENDING_FILE); pending.push(newEntry); saveJSON(PENDING_FILE, pending);
+    console.error(`DB save failed for ${newEntry.period}. Saving locally & pending retry.`, err.message);
+    let pending = loadJSON(PENDING_FILE); 
+    pending.push(newEntry); 
+    saveJSON(PENDING_FILE, pending);
     let history = loadJSON(DB_FILE).filter(h => h.period !== newEntry.period);
-    history.push(newEntry); saveJSON(DB_FILE, history);
+    history.push(newEntry); 
+    saveJSON(DB_FILE, history);
     res.json({ success: false, message: 'Saved locally, will retry', data: newEntry });
   }
 });
@@ -102,20 +114,31 @@ app.post('/api/history/save', async (req, res) => {
 setInterval(async () => {
   const pending = loadJSON(PENDING_FILE);
   if (!pending.length) return;
+
+  console.log(`Retrying ${pending.length} pending DB entries...`);
   const stillPending = [];
   for (const entry of pending) {
-    try { await saveToDB(entry); } 
-    catch { stillPending.push(entry); }
+    try { 
+      await saveToDB(entry); 
+      console.log(`Retry success: ${entry.period}`);
+    } 
+    catch (err) { 
+      console.error(`Retry failed for ${entry.period}:`, err.message);
+      stillPending.push(entry); 
+    }
   }
   saveJSON(PENDING_FILE, stillPending);
+  if (stillPending.length === 0) {
+    console.log('All pending entries synced to DB.');
+  }
 }, 30000);
 
 // --- Convert history to CSV ---
 function convertHistoryToCSV(history) {
   const headers = ["Period","Members","Savings","Loans Disbursed","Loans Balance","Total Bank","Co-op","Chamasoft","Cytonn","Total Assets","Profit","ROA","Saved On"];
   const rows = history.map(r => [
-    r.period,r.members,r.contributions,r.loans_disbursed,r.loans_balance,r.total_bank_balance,
-    r.coop_bank,r.chama_soft,r.cytonn,r.total_assets,r.profit,r.roa,r.date_saved
+    r.period, r.members, r.contributions, r.loans_disbursed, r.loans_balance, r.total_bank_balance,
+    r.coop_bank, r.chama_soft, r.cytonn, r.total_assets, r.profit, r.roa, r.date_saved
   ]);
   return [headers, ...rows].map(r => r.join(',')).join('\n');
 }
@@ -123,17 +146,35 @@ function convertHistoryToCSV(history) {
 // --- POST /api/zapier ---
 app.post('/api/zapier', async (req, res) => {
   const zapierURL = process.env.ZAPIER_WEBHOOK_URL;
-  if (!zapierURL) return res.status(500).json({ error: 'Zapier webhook not configured' });
+  if (!zapierURL) {
+    console.error('ZAPIER_WEBHOOK_URL not set in .env');
+    return res.status(500).json({ error: 'Zapier webhook not configured' });
+  }
+
+  const rawBody = req.body.body;
+  let emailBody = '';
+
+  if (!rawBody || typeof rawBody !== 'string' || rawBody.trim() === '') {
+    console.warn('Email body missing or empty. Using fallback message.');
+    emailBody = `Soyosoyo SACCO Update\n\nNo detailed message was provided.\nGenerated on: ${new Date().toLocaleString()}`;
+  } else {
+    emailBody = String(rawBody).trim();
+    console.log('Email body received:', emailBody.substring(0, 100) + (emailBody.length > 100 ? '...' : ''));
+  }
+
+  const payload = {
+    timestamp: new Date().toISOString(),
+    subject: req.body.subject || 'Soyosoyo SACCO Monthly Update',
+    body: emailBody,
+    recipients: Array.isArray(req.body.recipients) 
+      ? req.body.recipients 
+      : ['members@soyosoyo.co.ke'],
+    attachment: req.body.attachment || ''
+  };
+
+  console.log('Sending to Zapier:', { subject: payload.subject, recipients: payload.recipients.length, hasAttachment: !!payload.attachment });
 
   try {
-    const payload = {
-      timestamp: new Date().toISOString(),
-      subject: req.body.subject || 'Soyosoyo SACCO Monthly Update',
-      body: req.body.body ? String(req.body.body) : 'No content provided',
-      recipients: Array.isArray(req.body.recipients) ? req.body.recipients : ['members@soyosoyo.co.ke'],
-      attachment: req.body.attachment || ''
-    };
-
     const response = await fetch(zapierURL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -142,15 +183,35 @@ app.post('/api/zapier', async (req, res) => {
 
     if (!response.ok) {
       const text = await response.text();
+      console.error('Zapier webhook failed:', response.status, text);
       return res.status(500).json({ error: 'Zapier returned error', details: text });
     }
 
-    res.json({ success: true, message: 'Payload sent to Zapier successfully' });
+    const result = await response.json().catch(() => ({}));
+    console.log('Email payload successfully sent to Zapier!', result);
+    res.json({ 
+      success: true, 
+      message: 'Email payload sent to Zapier successfully',
+      sentAt: new Date().toISOString()
+    });
+
   } catch (err) {
-    res.status(500).json({ error: 'Failed to reach Zapier', details: err.message });
+    console.error('Failed to reach Zapier:', err.message);
+    res.status(500).json({ 
+      error: 'Failed to reach Zapier', 
+      details: err.message 
+    });
   }
 });
 
 // --- Start server ---
 const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => console.log(`SACCO API running on port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`SACCO API running on port ${PORT}`);
+  console.log(`CORS allowed: https://soyosoyosacco.com`);
+  if (process.env.ZAPIER_WEBHOOK_URL) {
+    console.log('Zapier webhook: CONFIGURED');
+  } else {
+    console.warn('Zapier webhook: NOT CONFIGURED (.env missing ZAPIER_WEBHOOK_URL)');
+  }
+});
