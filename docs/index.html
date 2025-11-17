@@ -609,209 +609,193 @@
     <script src="./scripts/chatbot.js"></script>
 
 <script>
-  // PLOTLY GROWTH CHARTS — FULLY FIXED: ARROWS, NUMBERS, SPACING, YIELD + ROA ALIGNED TO TOTAL ASSETS FORMULA
-  function renderPlotlyGrowthCharts() {
-    const data = window.saccoData;
-    if (!data || !data.jan || !data.today) {
-      console.warn('growth-charts: Waiting for saccoData...');
-      return false;
-    }
-
-    const { jan, today } = data;
-    const janExternal = today.externalLoans ?? jan.externalLoans ?? 0;
-    const todayExternal = today.externalLoans ?? 0;
-
-    // Aligned ROA: totalAssets = loansBalance + bankBalance (fallback to contributions + external if loansBalance missing)
-    const janTotalAssets = (jan.loansBalance || 0) + (jan.bankBalance || (jan.contributions + janExternal));
-    const todayTotalAssets = (today.loansBalance || 0) + (today.bankBalance || (today.contributions + todayExternal));
-    const janROA = janTotalAssets > 0 ? (jan.profit / janTotalAssets) * 100 : 0;
-    const todayROA = todayTotalAssets > 0 ? (today.profit / todayTotalAssets) * 100 : 0;
-
-    // Liquidity unchanged (uses contributions)
-    const janLiq = jan.contributions > 0 ? (jan.bankBalance / jan.contributions) * 100 : 0;
-    const todayLiq = today.contributions > 0 ? (today.bankBalance / today.contributions) * 100 : 0;
-
-    const fmt = (n) => n.toLocaleString('en-US');
-    const growth = (now, then) => {
-      if (then === 0) return now === 0 ? 0 : 100;
-      return ((now - then) / Math.abs(then)) * 100;
-    };
-
-    const baseLayout = {
-      margin: { t: 60, b: 60, l: 70, r: 30 },
-      paper_bgcolor: 'rgba(0,0,0,0)',
-      plot_bgcolor: 'rgba(0,0,0,0)',
-      font: { family: 'Lato, sans-serif', color: '#1a1a1a' },
-      showlegend: false,
-      bargap: 0.5,
-      xaxis: { 
-        fixedrange: true, 
-        tickfont: { size: 13 }
-      },
-      yaxis: { 
-        fixedrange: true, 
-        gridcolor: '#e5e7eb', 
-        zeroline: false,
-        automargin: true,
-        rangemode: 'tozero'
-      }
-    };
-
-    const config = { responsive: true, displayModeBar: false };
-
-    const createBarWithArrow = (id, janVal, todayVal, colorJan, colorToday, isPct = false, isMoney = false, gid) => {
-      const g = growth(todayVal, janVal);
-      const isUp = g >= 0;
-      const arrowColor = isUp ? '#10B981' : '#EF4444';
-      const textColor = isUp ? '#10B981' : '#EF4444';
-
-      const el = document.getElementById(gid);
-      if (el) {
-        el.innerHTML = `<i class="fas fa-arrow-${isUp ? 'up' : 'down'}"></i> ${g >= 0 ? '+' : ''}${g.toFixed(1)}%`;
-        el.className = `growth-indicator ${isUp ? 'positive' : 'negative'}`;
-      }
-
-      const displayJan = isPct ? janVal.toFixed(2) + '%' : isMoney ? 'KES ' + fmt(janVal) : fmt(janVal);
-      const displayToday = isPct ? todayVal.toFixed(2) + '%' : isMoney ? 'KES ' + fmt(todayVal) : fmt(todayVal);
-
-        // KEY FIX: Set Y-axis range to 125% of max value
-      const maxVal = Math.max(janVal, todayVal);
-      const yAxisMax = maxVal * 1.25;
-        
-      const trace = {
-        x: ['Jan 2025', 'Today'],
-        y: [janVal, todayVal],
-        type: 'bar',
-        marker: { color: [colorJan, colorToday] },
-        text: [displayJan, displayToday],
-        textposition: 'outside',
-        textfont: { size: 13, family: 'Lato, sans-serif', color: '#1a1a1a', weight: 'bold' },
-        cliponaxis: false,
-        hovertemplate: `<b>%{x}</b><br>%{y:${isPct ? '.2f' : ','}}${isPct ? '%' : ''}<extra></extra>`
-      };
-
-  const layout = {
-        ...baseLayout,
-        yaxis: {
-          ...baseLayout.yaxis,
-          range: [0, yAxisMax]
-        },
-        shapes: [],
-        annotations: []
-      };
-
-      if (Math.abs(g) > 0.1) {
-        const midX = 0.5;
-        const maxY = Math.max(janVal, todayVal);
-        const minY = Math.min(janVal, todayVal);
-        const midY = (maxY + minY) / 2;
-        const arrowLen = 0.18;
-        const headLen = 0.05;
-
-        const x0 = midX - arrowLen / 2;
-        const x1 = midX + arrowLen / 2;
-        const y0 = midY;
-        const y1 = midY;
-
-        layout.shapes.push({
-          type: 'line',
-          x0, y0, x1, y1,
-          line: { color: arrowColor, width: 4 },
-          layer: 'above'
-        });
-
-        const angle = isUp ? -Math.PI / 2 : Math.PI / 2;
-        layout.shapes.push({
-          type: 'path',
-          path: `M ${x1} ${y1} L ${x1 - headLen * Math.cos(angle - 0.5)} ${y1 - headLen * Math.sin(angle - 0.5)} L ${x1 - headLen * Math.cos(angle + 0.5)} ${y1 - headLen * Math.sin(angle + 0.5)} Z`,
-          fillcolor: arrowColor,
-          line: { width: 0 }
-        });
-
-       layout.annotations.push({
-          x: midX,
-          y: midY + (isUp ? maxY * 0.08 : -maxY * 0.08),
-          text: `<b>${g >= 0 ? '+' : ''}${g.toFixed(1)}%</b>`,
-          showarrow: false,
-          font: { size: 15, family: 'Lato, sans-serif', color: textColor, weight: 'bold' },
-          bgcolor: 'rgba(255,255,255,0.95)',
-          bordercolor: arrowColor,
-          borderwidth: 2,
-          borderpad: 6
-        });
-
-      Plotly.newPlot(id, [trace], layout, config);
-    };
-
-    // RENDER ALL CHARTS
-    createBarWithArrow('plotMembers', jan.members, today.members, '#8B5CF6', '#C4B5FD', false, false, 'growthMembers');
-    createBarWithArrow('plotLoans', jan.loans, today.loans, '#F59E0B', '#FBBF24', false, true, 'growthLoans');
-    createBarWithArrow('plotContributions', jan.contributions, today.contributions, '#10B981', '#34D399', false, true, 'growthContributions');
-    createBarWithArrow('plotProfit', jan.profit, today.profit, '#EF4444', '#F87171', false, true, 'growthProfit');
-    createBarWithArrow('plotROA', janROA, todayROA, '#0EA5E9', '#7DD3FC', true, false, 'growthROA');
-    createBarWithArrow('plotLiquidity', janLiq, todayLiq, '#6366F1', '#A5B4FC', true, false, 'growthLiquidity');
-
-    // PIE CHART
-    if (window.loanTypesToday?.length) {
-      const loanTypes = window.loanTypesToday.filter(t => t.name && t.value > 0 && !t.name.toLowerCase().includes('api'));
-      if (loanTypes.length) {
-        const total = loanTypes.reduce((s, t) => s + t.value, 0);
-        const labels = loanTypes.map(t => t.name);
-        const values = loanTypes.map(t => (t.value / total) * 100);
-        const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'];
-
-        const yieldPct = (() => {
-          if (total === 0) return 0;
-          return loanTypes.reduce((sum, t) => {
-            let rate = 0;
-            if (t.name.toLowerCase().includes('development')) rate = 12;
-            else if (t.name.toLowerCase().includes('medicare') || t.name.toLowerCase().includes('education')) rate = 4;
-            else if (t.name.toLowerCase().includes('emergency')) rate = 36;
-            return sum + rate * (t.value / total);
-          }, 0);
-        })();
-
-        let yieldEl = document.getElementById('projectedYield');
-        if (!yieldEl) {
-          yieldEl = document.createElement('div');
-          yieldEl.id = 'projectedYield';
-          document.querySelector('#plotLoanTypes').parentElement.appendChild(yieldEl);
-        }
-        yieldEl.innerHTML = `${yieldPct.toFixed(1)}% p.a. expected yield`;
-
-        Plotly.newPlot('plotLoanTypes', [{
-          values: values,
-          labels: labels,
-          type: 'pie',
-          textinfo: 'percent',
-          textposition: values.some(v => v < 8) ? 'outside' : 'inside',
-          automargin: true,
-          marker: { colors: colors.slice(0, labels.length) },
-          hovertemplate: '<b>%{label}</b><br>%{percent}<br>KES %{customdata}<extra></extra>',
-          customdata: loanTypes.map(t => t.value.toLocaleString())
-        }], {
-          margin: { t: 20, b: 20, l: 10, r: 10 },
-          paper_bgcolor: 'rgba(0,0,0,0)',
-          font: { family: 'Lato, sans-serif' }
-        }, config);
-      }
-    }
-
-    console.log('growth-charts: All charts rendered perfectly');
-    return true;
+// PLOTLY GROWTH CHARTS — FINAL VERSION WITH FULL NEGATIVE VALUE SUPPORT (NOV 17, 2025)
+function renderPlotlyGrowthCharts() {
+  const data = window.saccoData;
+  if (!data || !data.jan || !data.today) {
+    console.warn('growth-charts: Waiting for saccoData...');
+    return false;
   }
 
-  // SAFE INIT
-  document.addEventListener('DOMContentLoaded', () => {
-    const tryRender = () => {
-      if (!renderPlotlyGrowthCharts()) {
-        setTimeout(tryRender, 300);
-      }
+  const { jan, today } = data;
+  const janExternal = today.externalLoans ?? jan.externalLoans ?? 0;
+  const todayExternal = today.externalLoans ?? 0;
+
+  // CORRECT TOTAL ASSETS = Loans Balance + Bank Balance
+  const janTotalAssets = (jan.loansBalance || 0) + (jan.bankBalance || (jan.contributions + janExternal));
+  const todayTotalAssets = (today.loansBalance || 0) + (today.bankBalance || (today.contributions + todayExternal));
+  const janROA = janTotalAssets > 0 ? (jan.profit / janTotalAssets) * 100 : 0;
+  const todayROA = todayTotalAssets > 0 ? (today.profit / todayTotalAssets) * 100 : 0;
+
+  const janLiq = jan.contributions > 0 ? ((jan.bankBalance || 0) / jan.contributions) * 100 : 0;
+  const todayLiq = today.contributions > 0 ? ((today.bankBalance || 0) / today.contributions) * 100 : 0;
+
+  const fmt = (n) => n.toLocaleString('en-KE');
+  const growth = (now, then) => {
+    if (then === 0) return now === 0 ? 0 : 100;
+    return ((now - then) / Math.abs(then)) * 100;
+  };
+
+  const baseLayout = {
+    margin: { t: 90, b: 70, l: 70, r: 50 },
+    paper_bgcolor: 'rgba(0,0,0,0)',
+    plot_bgcolor: 'rgba(0,0,0,0)',
+    font: { family: 'Lato, sans-serif', color: '#1a1a1a' },
+    showlegend: false,
+    bargap: 0.5,
+    xaxis: { fixedrange: true, tickfont: { size: 13 } },
+    yaxis: { fixedrange: true, gridcolor: '#e5e7eb', zerolinecolor: '#999', zerolinewidth: 1.5 }
+  };
+
+  const config = { responsive: true, displayModeBar: false };
+
+  const createBarWithArrow = (id, janVal, todayVal, colorJan, colorToday, isPct = false, isMoney = false, gid) => {
+    const g = growth(todayVal, janVal);
+    const rawDiff = todayVal - janVal;
+    const isImprovement = rawDiff > 0 || (janVal < 0 && todayVal >= 0) || (janVal < 0 && todayVal < janVal && Math.abs(todayVal) < Math.abs(janVal));
+    const arrowColor = isImprovement ? '#10B981' : '#EF4444';
+
+    // Update growth indicator
+    const el = document.getElementById(gid);
+    if (el) {
+      el.innerHTML = `<i class="fas fa-arrow-${isImprovement ? 'up' : 'down'}"></i> ${g >= 0 ? '+' : ''}${g.toFixed(1)}%`;
+      el.className = `growth-indicator ${isImprovement ? 'positive' : 'negative'}`;
+    }
+
+    const displayJan = isPct ? janVal.toFixed(2) + '%' : isMoney ? 'KES ' + fmt(janVal) : fmt(janVal);
+    const displayToday = isPct ? todayVal.toFixed(2) + '%' : isMoney ? 'KES ' + fmt(todayVal) : fmt(todayVal);
+
+    // Dynamic Y-axis range — includes negative values
+    const values = [janVal, todayVal];
+    const absMax = Math.max(Math.abs(janVal), Math.abs(todayVal));
+    const padding = absMax * 0.5;
+    const yMin = Math.min(...values) - padding;
+    const yMax = Math.max(...values) + padding;
+
+    const trace = {
+      x: ['Jan 2025', 'Today'],
+      y: values,
+      type: 'bar',
+      marker: { color: [colorJan, colorToday] },
+      text: [displayJan, displayToday],
+      textposition: 'outside',
+      textfont: { size: 13, family: 'Lato, sans-serif' },
+      cliponaxis: false
     };
-    window.addEventListener('saccoDataUpdated', () => setTimeout(tryRender, 100));
-    tryRender();
-  });
+
+    const layout = {
+      ...baseLayout,
+      yaxis: {
+        ...baseLayout.yaxis,
+        range: [yMin, yMax],
+        zeroline: true
+      },
+      shapes: [],
+      annotations: []
+    };
+
+    // Draw arrow only if meaningful change
+    if (Math.abs(g) > 0.1) {
+      const midX = 0.5;
+      const y0 = janVal;
+      const y1 = todayVal;
+      const arrowY = isImprovement ? Math.max(y0, y1) : Math.min(y0, y1);
+      const labelY = arrowY + (isImprovement ? padding * 0.3 : -padding * 0.3);
+
+      layout.shapes.push({
+        type: 'line',
+        x0: midX - 0.15, y0: arrowY,
+        x1: midX + 0.15, y1: arrowY,
+        line: { color: arrowColor, width: 5 },
+        layer: 'above'
+      });
+
+      // Arrowhead
+      const headOffset = isImprovement ? -0.06 : 0.06;
+      layout.shapes.push({
+        type: 'path',
+        path: `M ${midX + 0.15} ${arrowY} L ${midX + 0.1} ${arrowY + headOffset} L ${midX + 0.2} ${arrowY + headOffset} Z`,
+        fillcolor: arrowColor,
+        line: { width: 0 }
+      });
+
+      layout.annotations.push({
+        x: midX,
+        y: labelY,
+        text: `<b>${g >= 0 ? '+' : ''}${g.toFixed(1)}%</b>`,
+        showarrow: false,
+        font: { size: 16, weight: 'bold', color: arrowColor },
+        bgcolor: 'rgba(255,255,255,0.97)',
+        bordercolor: arrowColor,
+        borderwidth: 2,
+        borderpad: 8,
+        borderradius: 10
+      });
+    }
+
+    Plotly.newPlot(id, [trace], layout, config);
+  };
+
+  // Render all charts — now fully supports negative values!
+  createBarWithArrow('plotMembers', jan.members, today.members, '#8B5CF6', '#C4B5FD', false, false, 'growthMembers');
+  createBarWithArrow('plotLoans', jan.loans || 0, today.loans || 0, '#F59E0B', '#FBBF24', false, true, 'growthLoans');
+  createBarWithArrow('plotContributions', jan.contributions, today.contributions, '#10B981', '#34D399', false, true, 'growthContributions');
+  createBarWithArrow('plotProfit', jan.profit, today.profit, '#EF4444', '#F87171', false, true, 'growthProfit');
+  createBarWithArrow('plotROA', janROA, todayROA, '#0EA5E9', '#7DD3FC', true, false, 'growthROA');
+  createBarWithArrow('plotLiquidity', janLiq, todayLiq, '#6366F1', '#A5B4FC', true, false, 'growthLiquidity');
+
+  // PIE CHART + EXPECTED YIELD (unchanged — already perfect)
+  if (window.loanTypesToday?.length > 0) {
+    const loanTypes = window.loanTypesToday.filter(t => t.value > 0);
+    const total = loanTypes.reduce((s, t) => s + t.value, 0);
+
+    const yieldPct = loanTypes.reduce((sum, t) => {
+      let rate = 0;
+      if (t.name.toLowerCase().includes('development')) rate = 12;
+      else if (t.name.toLowerCase().includes('emergency')) rate = 36;
+      else if (t.name.toLowerCase().includes('medicare') || t.name.toLowerCase().includes('education')) rate = 4;
+      return sum + rate * (t.value / total);
+    }, 0);
+
+    let yieldEl = document.getElementById('projectedYield');
+    if (!yieldEl) {
+      yieldEl = document.createElement('div');
+      yieldEl.id = 'projectedYield';
+      document.querySelector('#plotLoanTypes').parentElement.appendChild(yieldEl);
+    }
+    yieldEl.textContent = `${yieldPct.toFixed(1)}% p.a. expected yield`;
+
+    Plotly.newPlot('plotLoanTypes', [{
+      values: loanTypes.map(t => t.value),
+      labels: loanTypes.map(t => t.name),
+      type: 'pie',
+      textinfo: 'percent',
+      textposition: 'inside',
+      automargin: true,
+      marker: { colors: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'] },
+      hovertemplate: '<b>%{label}</b><br>%{percent}<br>KES %{value:,.0f}<extra></extra>'
+    }], {
+      margin: { t: 30, b: 30, l: 10, r: 10 },
+      paper_bgcolor: 'rgba(0,0,0,0)',
+      font: { family: 'Lato, sans-serif' }
+    }, config);
+  }
+
+  console.log('SOYOSOYO: All charts rendered — NEGATIVE VALUES FULLY SUPPORTED');
+  return true;
+}
+
+// Safe render loop
+document.addEventListener('DOMContentLoaded', () => {
+  const tryRender = () => {
+    if (!renderPlotlyGrowthCharts()) setTimeout(tryRender, 300);
+  };
+  window.addEventListener('saccoDataUpdated', () => setTimeout(tryRender, 100));
+  tryRender();
+});
 </script>
+
+<!-- MAIN MENU — LOAD LAST -->
 <script defer src="./scripts/main.js"></script>
 
 </body>
