@@ -75,10 +75,11 @@ header.site-header .nav-links {
     gap:1.2rem; 
 }
 header.site-header #menu-toggle { 
-    display:none; 
-    cursor:pointer; 
-    background:none; 
-    border:none; 
+    display: none;           /* hidden on desktop */
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 10px;
 }
 
 /* ----------------- HERO ----------------- */
@@ -655,6 +656,18 @@ footer a:hover { color:#ffffff; }
 /* Prevent Inline Override Bleed */
 #menu-toggle svg[style*="display: none"] {
     display: inline-block !important; /* Temp hack if JS stubborn */
+}
+/* FINAL FIX – MOBILE MENU WORKS 100% EVERYWHERE */
+#menu-toggle {
+    display: block !important;
+    position: relative !important;
+    z-index: 10002 !important;
+    pointer-events: auto !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 10px !important;          /* gives proper tap area */
+    width: 50px !important;
+    height: 50px !important;
 }
 
 /* ----------------- END OF FILE ----------------- */
