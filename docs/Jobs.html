@@ -3,25 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jobs - Soyosoyo SACCO | Finance Manager & Customer Service Mombasa/Kilifi</title>
-    <meta name="description" content="HIRING! Finance Manager (Mombasa) KSh 80K-120K | Customer Service (Kilifi) KSh 40K-60K. Apply FREE Google Form. CPA preferred. Join NOW!">
-    <meta name="keywords" content="SACCO jobs Mombasa, finance manager Kenya, customer service Kilifi, SACCO careers, CPA jobs">
+    <meta name="msvalidate.01" content="858002EEAD3486E0F9BDC0652A4071B4" />
+    <title>Soyosoyo SACCO | Affordable Loans & Savings in Coastal Kenya</title>
+    <meta name="description" content="Join Soyosoyo SACCO for 1% monthly loans, high dividends, and financial empowerment. Emergency, education, and development loans available in Mombasa, Kilifi, Kwale.">
+    <meta name="keywords" content="SACCO Kenya, loans Mombasa, savings cooperative, emergency loan, education loan, Soyosoyo SACCO">
     <meta property="og:type" content="website">
-    <meta property="og:title" content="HIRING! Finance Manager & Customer Service - Soyosoyo SACCO">
-    <meta property="og:description" content="Finance Manager Mombasa KSh 80K-120K | Customer Service Kilifi KSh 40K-60K. Apply FREE!">
+    <meta property="og:title" content="Soyosoyo SACCO | Affordable Loans & Savings in Coastal Kenya">
+    <meta property="og:description" content="Join Soyosoyo SACCO for 1% monthly loans, high dividends, and financial empowerment.">
     <meta property="og:image" content="https://soyosoyosacco.com/assets/141dd3faa98da9737b591161deac509a.jpg">
-    <meta property="og:url" content="https://soyosoyosacco.com/Jobs.html">
+    <meta property="og:url" content="https://soyosoyosacco.com/">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="HIRING NOW! SACCO Jobs Mombasa/Kilifi">
-    <meta name="twitter:description" content="Finance Manager KSh 80K+ | Customer Service KSh 40K+. Apply FREE!">
+    <meta name="twitter:title" content="Soyosoyo SACCO | Affordable Loans & Savings">
+    <meta name="twitter:description" content="1% monthly loans in Coastal Kenya. Join with KSh 200!">
     <meta name="twitter:image" content="https://soyosoyosacco.com/assets/141dd3faa98da9737b591161deac509a.jpg">
-    <link rel="canonical" href="https://soyosoyosacco.com/Jobs.html">
+    <link rel="canonical" href="https://soyosoyosacco.com/">
     <link rel="icon" href="./assets/141dd3faa98da9737b591161deac509a.jpg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
-    
-    <!-- FINAL CSS v31 – MENU via main.js -->
-    <link rel="stylesheet" href="./style.css?v=209">
+<script src="https://cdn.plot.ly/plotly-3.2.0.min.js"></script>
+    <!-- MAIN CSS -->
+    <link rel="stylesheet" href="./style.css?v=208">
 
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-05M38MYK0G"></script>
@@ -31,84 +32,327 @@
       gtag('js', new Date());
       gtag('config', 'G-05M38MYK0G');
     </script>
+
+<style id="final-working-styles">
+  .growth-charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+  }
+  .chart-card {
+    background: #ffffff;
+    padding: 0.5rem 0.5rem 0.75rem;
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    text-align: center;
+    position: relative;
+    min-height: 480px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .chart-card > p {
+    flex-shrink: 0;
+    padding: 0.3rem 0;
+    margin: 0;
+    font-weight: bold;
+    font-size: 0.9rem;
+  }
+  .growth-indicator {
+    margin: 0.3rem 0;
+    font-size: 0.95rem;
+    font-weight: bold;
+    flex-shrink: 0;
+  }
+  .growth-indicator.positive { color: #10B981; }
+  .growth-indicator.negative { color: #EF4444; }
+  .growth-indicator i { margin-right: 4px; font-size: 0.9em; }
+  .chart-card > div[id^="plot"] {
+    flex: 1;
+    width: 100% !important;
+    min-height: 360px !important;
+    height: 100% !important;
+    position: relative;
+    overflow: visible !important;
+  }
+  #projectedYield {
+    margin: 6px 0 8px;
+    padding: 7px 10px;
+    background: linear-gradient(135deg, #10B981, #34D399);
+    color: white;
+    font-weight: 900;
+    font-size: 13px;
+    border-radius: 12px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  @media (max-width: 768px) {
+    .growth-charts-grid { grid-template-columns: 1fr; gap: 1.25rem; }
+    .chart-card { padding: 0.5rem 0.4rem 0.75rem; min-height: 440px; }
+    .chart-card > div[id^="plot"] { min-height: 330px !important; }
+    .chart-card > p { font-size: 0.85rem; padding: 0.25rem 0; }
+    .growth-indicator { font-size: 0.9rem; }
+    #projectedYield { margin: 5px 0 6px; font-size: 12px; padding: 6px 8px; }
+  }
+  #projectionsChart {
+    isolation: isolate;
+    contain: layout style paint;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 10px;
+    font-family: 'Lato', sans-serif;
+  }
+  #projectionsChart > .kpi-card,
+  #projectionsChart > .summary-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    border: 1px solid #f0fdf4;
+    margin: 16px 8px;
+    max-width: calc(100% - 16px);
+  }
+  #projectionsChart .kpi-title {
+    padding: 16px;
+    background: #f8fdfa;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 900;
+    color: #004d1a;
+  }
+  #projectionsChart .plotly-projection-div {
+    height: 420px !important;
+    width: 100% !important;
+  }
+  #projectionsChart .summary-header {
+    background: linear-gradient(90deg,#004d1a,#10B981);
+    color: white;
+    padding: 16px;
+    text-align: center;
+    font-size: 17px;
+    font-weight: 900;
+  }
+  #projectionsChart .summary-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    padding: 16px;
+  }
+  #projectionsChart .summary-item {
+    background: #f0fdf4;
+    border-radius: 14px;
+    padding: 12px;
+    border: 1px solid #86efac;
+    text-align: center;
+  }
+  #projectionsChart .summary-label {
+    font-size: 13.5px;
+    font-weight: 900;
+    color: #166534;
+  }
+  #projectionsChart .summary-values {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    margin: 8px 0;
+  }
+  #projectionsChart .summary-values span {
+    color: #6b7280;
+    font-size: 11.5px;
+    display: block;
+  }
+  #projectionsChart .summary-values strong {
+    font-size: 15px;
+    color: #004d1a;
+  }
+  #projectionsChart .summary-growth {
+    background: #10B981;
+    color: white;
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 12.5px;
+    font-weight: 900;
+  }
+  @media (min-width: 769px) {
+    #projectionsChart { display: flex; flex-wrap: wrap; justify-content: space-between; }
+    #projectionsChart > .kpi-card { flex: 1 1 calc(50% - 20px); max-width: 48%; }
+    #projectionsChart .plotly-projection-div { height: 440px !important; }
+    #projectionsChart > .summary-card { flex: 1 1 100%; max-width: 100%; margin: 30px 8px 10px; }
+    #projectionsChart .summary-grid { grid-template-columns: repeat(4, 1fr); gap: 20px; padding: 20px; }
+    #projectionsChart .summary-values strong { font-size: 17px; }
+    #projectionsChart .summary-growth { padding: 8px 16px; font-size: 13px; }
+  }
+  @media (max-width: 768px) {
+    #projectionsChart .plotly-projection-div { height: 460px !important; }
+  }
+</style>
+
+
+
+
+
+    <!-- MEMBER CAROUSEL -->
+    <style>
+      .member-activities-section { margin-top: 3rem; padding: 2rem 0; background-color: #f8f9fa; }
+      .member-activities-carousel { position: relative; max-width: 1000px; margin: 0 auto; overflow: hidden; border-radius: 12px; }
+      .member-activities-carousel .slides { display: flex; transition: transform 0.5s ease-in-out; height: 400px; }
+      .member-activities-carousel .slide { min-width: 100%; height: 400px; flex-shrink: 0; }
+      .member-activities-carousel .slide img { width: 100%; height: 100%; object-fit: cover; }
+      .member-activities-carousel .nav-btn { position: absolute; top: 50%; transform: translateY(-50%);
+        background: rgba(0,0,0,0.5); color: white; border: none; padding: 10px; cursor: pointer; font-size: 18px; z-index: 10; }
+      .member-activities-carousel .prev { left: 10px; }
+      .member-activities-carousel .next { right: 10px; }
+      .member-activities-carousel .dots { display: flex; justify-content: center; gap: 8px; margin-top: 1rem; }
+      .member-activities-carousel .dot { width: 10px; height: 10px; border-radius: 50%; background: #ccc; cursor: pointer; }
+      .member-activities-carousel .dot.active { background: #10B981; }
+      @media (max-width: 768px) {
+        .member-activities-carousel .slides, .member-activities-carousel .slide { height: 250px; }
+      }
+    </style>
 </head>
 <body>
 
-<!-- ==================== HEADER ==================== -->
+<!-- HEADER -->
 <header class="site-header">
     <div class="navbar">
-        <a href="index.html">
-            <img class="brand-logo round" src="./assets/141dd3faa98da9737b591161deac509a.jpg" alt="Soyosoyo Sacco Logo">
-        </a>
+        <a href="index.html"><img class="brand-logo round" src="./assets/141dd3faa98da9737b591161deac509a.jpg" alt="Soyosoyo Sacco Logo"></a>
         <a href="https://chamasoft.com/login" class="member-portal">Member Portal</a>
-      <button id="menu-toggle" aria-label="Toggle Menu"></button>
-
+        <button id="menu-toggle" aria-label="Toggle Menu"><span></span><span></span><span></span></button>
         <nav class="nav-links">
             <a href="index.html">Home</a>
             <a href="Products.html">Products</a>
             <a href="Online-Forms.html">Online Forms</a>
             <a href="Jobs.html">Jobs</a>
+            <a href="About.html">About</a>
             <a href="Join-Us.html">Join Us</a>
         </nav>
     </div>
-
-    <!-- HERO IMAGE + TEXT OVERLAY -->
     <div class="hero">
         <div class="banner-text">
-            <h1>Job Opportunities</h1>
-            <p>Join our team and contribute to the growth of Soyosoyo SACCO.</p>
+            <h1>Soyosoyo SACCO</h1>
+            <p>Empowering Coastal Kenya with 1% Loans & High Dividends</p>
         </div>
     </div>
 </header>
 
-<!-- ==================== MAIN ==================== -->
+<!-- MAIN -->
 <main class="container">
-
-    <!-- Job Listings -->
-    <section class="section jobs-section">
-        <h2>CURRENT JOB OPENINGS – APPLY NOW</h2>
-
-        <div class="job-listing">
-            <h3>Finance Manager</h3>
-            <p><strong>Salary:</strong> KSh 80,000 – 120,000 / month</p>
-            <p><strong>Location:</strong> Mombasa, Kenya</p>
-            <p><strong>Responsibilities:</strong></p>
-            <ul>
-                <li>Manage financial reporting, budgeting, and forecasting.</li>
-                <li>Oversee accounts payable and receivable.</li>
-                <li>Ensure compliance with financial regulations.</li>
-            </ul>
-            <p><strong>Requirements:</strong></p>
-            <ul>
-                <li>Bachelor’s degree in Finance or Accounting.</li>
-                <li>5+ years of experience in financial management.</li>
-                <li>CPA(K) certification preferred.</li>
-            </ul>
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLSeZO-ZtY5T1juJPHgmuZHDEao7T9wORb6nOVNZwoWW4GTFltg/viewform?usp=sharing&ouid=110688686925732719395"
-               target="_blank" class="job-apply-button">APPLY NOW – Finance Manager</a>
-        </div>
-
-        <div class="job-listing">
-            <h3>Customer Service Officer</h3>
-            <p><strong>Salary:</strong> KSh 40,000 – 60,000 / month</p>
-            <p><strong>Location:</strong> Kilifi, Kenya</p>
-            <p><strong>Responsibilities:</strong></p>
-            <ul>
-                <li>Handle customer inquiries and complaints.</li>
-                <li>Process loan and membership applications.</li>
-                <li>Promote SACCO products and services.</li>
-            </ul>
-            <p><strong>Requirements:</strong></p>
-            <ul>
-                <li>Diploma in Business Administration or related field.</li>
-                <li>2+ years in customer service.</li>
-                <li>Excellent communication skills.</li>
-            </ul>
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLSeZO-ZtY5T1juJPHgmuZHDEao7T9wORb6nOVNZwoWW4GTFltg/viewform?usp=sharing&ouid=110688686925732719395"
-               target="_blank" class="job-apply-button">APPLY NOW – Customer Service</a>
+    <!-- HISTORY TEASER -->
+    <section class="section">
+        <h2 style="text-align: center; font-size: 1.6rem; margin-bottom: 1rem;">Our Journey</h2>
+        <p style="text-align: center; max-width: 700px; margin: 0 auto 1.5rem;">
+            Founded in 1998 as a medical aid cooperative, we’ve evolved into a trusted financial partner for many in the Kenyan Coast.
+        </p>
+        <div style="text-align: center;">
+            <a href="About.html" class="products-button" style="display: inline-block; padding: 0.75rem 2rem;">Read Full History</a>
         </div>
     </section>
 
+    <!-- MISSION / VISION / CORE VALUES -->
+    <div class="mission-vision-container">
+        <img src="./assets/0065564ad0f92baf9be886b031073979.jpg" alt="Mission" class="round">
+        <div><h2>Our Mission</h2><p>Empower members with accessible, affordable credit for healthcare, education, agriculture, growth and development.</p></div>
+    </div>
+    <div class="mission-vision-container">
+        <img src="./assets/d8c3d49708ed9831ff753b3548c717aa.jpg" alt="Vision" class="round">
+        <div><h2>Our Vision</h2><p>To lead financial transformation and sustainable prosperity across Kenya.</p></div>
+    </div>
+    <div class="core-values-container">
+        <img src="./assets/8119c4ebd64ccbe641d0563d23444c34.jpg" alt="Core Values" class="round">
+        <div><h2>Core Values</h2><ul><li>Empowerment</li><li>Integrity</li><li>Community</li><li>Accessibility</li><li>Growth</li></ul></div>
+    </div>
+
+    <!-- LEADERSHIP -->
+    <section class="section">
+        <h2 style="text-align: center;">Leadership</h2>
+        <div class="leadership-grid">
+            <div class="leader-profile"><img src="./assets/judi.jpg" alt="Judith" class="round"><h3>Judith Malombo Mramba</h3><p>Chairperson</p></div>
+            <div class="leader-profile"><img src="./assets/jere.jpg" alt="Jeremiah" class="round"><h3>Jeremiah Kalama Lewa</h3><p>Vice-Chairperson</p></div>
+            <div class="leader-profile"><img src="./assets/sidi.jpg" alt="Sidi" class="round"><h3>Sidi Saro Ngowa</h3><p>Secretary</p></div>
+            <div class="leader-profile"><img src="./assets/thoya.jpg" alt="Thomas" class="round"><h3>Thomas Thoya Kitsao</h3><p>Treasurer</p></div>
+        </div>
+    </section>
+
+    <!-- PRODUCTS PREVIEW -->
+    <section class="section">
+        <h2 style="text-align: center;">Featured Product</h2>
+        <div class="products-grid">
+            <div class="product-card">
+                <img src="./assets/ba04cd4377b3746fc0750dcf2ff3d935.jpg" alt="Education Loan" class="round">
+                <h2 style="text-align: center;">Education Loan</h2>
+                <p>Cover tuition, books, and living costs. Up to 12 months at 4% per annum.</p>
+                <a href="Products.html" class="products-button">Explore All Products</a>
+            </div>
+        </div>
+    </section>
+
+<!-- ========================================
+     1. FINANCIAL HIGHLIGHTS CAROUSEL
+     ======================================== -->
+<section class="section">
+  <h2 style="text-align: center; margin-bottom: 1rem;">Financial Highlights</h2>
+  <p style="text-align: center; margin-bottom: 1.5rem; color: #4b5563;">Our impact in numbers — updated daily.</p>
+  <div class="carousel-wrapper">
+    <div class="carousel" aria-label="Financial Metrics Carousel"></div>
+  </div>
+</section>
+
+<!-- ========================================
+     2. GROWTH SINCE JANUARY 2025 (PLOTLY)
+     ======================================== -->
+<section class="section" id="final-charts-section">
+  <h2 style="text-align: center; margin-bottom: 1.5rem;">Growth Since January 2025</h2>
+  <div class="growth-charts-grid">
+    <div class="chart-card">
+      <div id="plotMembers" class="plot-container"></div>
+      <p>Total Members</p>
+      <div id="growthMembers" class="growth-indicator"></div>
+    </div>
+    <div class="chart-card">
+      <div id="plotLoans" class="plot-container"></div>
+      <p>Loans Disbursed</p>
+      <div id="growthLoans" class="growth-indicator"></div>
+    </div>
+    <div class="chart-card">
+      <div id="plotLoanTypes" class="plot-container"></div>
+      <p>Loan Types Distribution (%)</p>
+    </div>
+    <div class="chart-card">
+      <div id="plotContributions" class="plot-container"></div>
+      <p>Contributions</p>
+      <div id="growthContributions" class="growth-indicator"></div>
+    </div>
+    <div class="chart-card">
+      <div id="plotProfit" class="plot-container"></div>
+      <p>Profit</p>
+      <div id="growthProfit" class="growth-indicator"></div>
+    </div>
+    <div class="chart-card">
+      <div id="plotROA" class="plot-container"></div>
+      <p>Return on Assets (ROA)</p>
+      <div id="growthROA" class="growth-indicator"></div>
+    </div>
+    <div class="chart-card">
+      <div id="plotLiquidity" class="plot-container"></div>
+      <p>Liquidity Ratio</p>
+      <div id="growthLiquidity" class="growth-indicator"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================
+     3. 5-YEAR GROWTH PROJECTIONS
+     ======================================== -->
+<section style="margin: 60px 0; padding: 0 10px;">
+  <div style="text-align:center; margin-bottom: 30px;">
+    <h2 style="font-size: 28px; color: #004d1a; font-weight: 900;">5-Year Growth Projections</h2>
+    <p style="color: #6b7280; font-size: 16px;">Smart forecasting based on our current performance trajectory</p>
+  </div>
+  <div id="projectionsChart"></div>
+</section>
+    
      <!-- Loan Calculator Tool -->
     <section class="section tool-section" id="loan-calculator">
         <h2 style="text-align: center;">Loan Calculator</h2>
@@ -204,27 +448,64 @@
         </div>
     </section>
 
+
+    <!-- DIVIDENDS CALCULATOR -->
+    <section class="tool-section" id="dividends-calculator">
+        <h2 style="text-align: center;">Dividends Calculator</h2>
+        <div class="calculator">
+            <div class="form-group">
+                <label for="dividendRate">Dividend Rate (%):</label>
+                <input type="number" id="dividendRate" placeholder="e.g., 12.5" step="0.01">
+            </div>
+            <div class="month-subheader">Enter your monthly savings contributions in the spaces below:</div>
+            <div class="month-inputs">
+                <input type="number" id="jan" placeholder="Jan" min="0" step="0.01">
+                <input type="number" id="feb" placeholder="Feb" min="0" step="0.01">
+                <input type="number" id="mar" placeholder="Mar" min="0" step="0.01">
+                <input type="number" id="apr" placeholder="Apr" min="0" step="0.01">
+                <input type="number" id="may" placeholder="May" min="0" step="0.01">
+                <input type="number" id="jun" placeholder="Jun" min="0" step="0.01">
+                <input type="number" id="jul" placeholder="Jul" min="0" step="0.01">
+                <input type="number" id="aug" placeholder="Aug" min="0" step="0.01">
+                <input type="number" id="sep" placeholder="Sep" min="0" step="0.01">
+                <input type="number" id="oct" placeholder="Oct" min="0" step="0.01">
+                <input type="number" id="nov" placeholder="Nov" min="0" step="0.01">
+                <input type="number" id="dec" placeholder="Dec" min="0" step="0.01">
+            </div>
+            <button onclick="calculateDividend()">Calculate Dividend</button>
+            <div class="result" id="dividendResult"></div>
+        </div>
+    </section>
+
+    <!-- MEMBER ACTIVITIES CAROUSEL -->
+    <section class="member-activities-section">
+        <h2 style="text-align: center;">Member Activities</h2>
+        <p style="text-align: center; margin-bottom: 1.5rem;">See what our members are up to.</p>
+        <div class="member-activities-carousel">
+            <div class="slides" id="memberSlides"></div>
+            <button class="nav-btn prev" onclick="changeSlide(-1)">Previous</button>
+            <button class="nav-btn next" onclick="changeSlide(1)">Next</button>
+            <div class="dots" id="memberDots"></div>
+        </div>
+    </section>
+
 </main>
 
-<!-- ==================== FOOTER ==================== -->
+<!-- FOOTER -->
 <footer>
-    <p>© 2025–<span id="currentYear"></span> SOYOSOYO SACCO. All rights reserved. | <a href="mailto:info@soyosoyosacco.com">info@soyosoyosacco.com</a></p>
+    <p>© <span id="autoYearStart">2025</span>–<span id="autoYearNow"></span>  SOYOSOYO SACCO. All rights reserved. | <a href="mailto:info@soyosoyosacco.com">info@soyosoyosacco.com</a></p>
     <div class="social-icons">
-        <a href="https://www.facebook.com/people/Soyosoyo-Sacco/61565783836766/" target="_blank"><i class="fab fa-facebook-f"></i></a>
-        <a href="https://x.com/SoyosoyoSACCO" target="_blank"><i class="fab fa-x-twitter"></i></a>
-        <a href="https://www.instagram.com/soyosoyosacco" target="_blank"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.facebook.com/people/Soyosoyo-Sacco/61565783836766/" target="_blank" aria-label="Facebook">Facebook</a>
+        <a href="https://x.com/SoyosoyoSACCO" target="_blank" aria-label="Twitter">Twitter</a>
+        <a href="https://www.instagram.com/soyosoyosacco" target="_blank" aria-label="Instagram">Instagram</a>
     </div>
 </footer>
 
-<!-- ==================== SCRIPTS ==================== -->
-    <script>
-  document.getElementById('currentYear').textContent = new Date().getFullYear();
+<!-- SCRIPTS -->
+<script>
+  document.getElementById('autoYearNow').textContent = new Date().getFullYear();
 </script>
-
-<script src="./scripts/calculator.js"></script>
-   <script src="./scripts/main.js"></script>
-<script src="./scripts/seo.js"></script>
-
+    
 <!-- Initialize Calculator -->
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -233,92 +514,214 @@
     });
 </script>
 
-    
-<!-- SCHEMA.ORG – SOYOSOYO SACCO (ALL PAGES) -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "FinancialService",
-  "name": "SOYOSOYO SACCO",
-  "url": "https://soyosoyosacco.com",
-  "logo": "https://soyosoyosacco.com/assets/141dd3faa98da9737b591161deac509a.jpg",
-  "image": "https://soyosoyosacco.com/assets/header-image.jpg",
-  "description": "Soyosoyo SACCO offers affordable loans, savings, and financial empowerment to coastal Kenya communities in Kilifi, Mombasa, and Kwale. Products include Emergency, Education, Medicare, Development, and Api Culture loans at 1% interest.",
-  "address": {
-    "@type": "PostalAddress",
-    "addressLocality": "Kilifi",
-    "addressRegion": "Coast",
-    "addressCountry": "KE"
-  },
-  "email": "info@soyosoyosacco.com",
-  "telephone": "+254700000000",
-  "contactPoint": {
-    "@type": "ContactPoint",
-    "contactType": "Customer Service",
-    "email": "info@soyosoyosacco.com",
-    "areaServed": ["Kilifi", "Mombasa", "Kwale"]
-  },
-  "areaServed": [
-    { "@type": "Place", "name": "Kilifi" },
-    { "@type": "Place", "name": "Mombasa" },
-    { "@type": "Place", "name": "Kwale" }
-  ],
-  "sameAs": [
-    "https://www.facebook.com/people/Soyosoyo-Sacco/61565783836766/",
-    "https://x.com/SoyosoyoSACCO",
-    "https://www.instagram.com/soyosoyosacco"
-  ],
-  "makesOffer": [
-    {
-      "@type": "Offer",
-      "itemOffered": {
-        "@type": "FinancialProduct",
-        "name": "Emergency Loan",
-        "description": "Instant short-term loan for urgent needs. 1% interest. Fast approval."
+<!-- SCRIPTS - EXACT ORDER, NO CONFLICTS -->
+<script src="./scripts/carousel.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+<script src="./scripts/projections.js"></script>
+<script src="./scripts/member-carousel.js"></script>
+    <script src="./scripts/calculator.js"></script>
+    <script src="./scripts/dividendscalculator.js"></script>
+    <script src="./scripts/chatbot.js"></script>
+
+<script>
+  // PLOTLY GROWTH CHARTS — FULLY FIXED: ARROWS, NUMBERS, SPACING, YIELD + ROA ALIGNED TO TOTAL ASSETS FORMULA
+  function renderPlotlyGrowthCharts() {
+    const data = window.saccoData;
+    if (!data || !data.jan || !data.today) {
+      console.warn('growth-charts: Waiting for saccoData...');
+      return false;
+    }
+
+    const { jan, today } = data;
+    const janExternal = today.externalLoans ?? jan.externalLoans ?? 0;
+    const todayExternal = today.externalLoans ?? 0;
+
+    // Aligned ROA: totalAssets = loansBalance + bankBalance (fallback to contributions + external if loansBalance missing)
+    const janTotalAssets = (jan.loansBalance || 0) + (jan.bankBalance || (jan.contributions + janExternal));
+    const todayTotalAssets = (today.loansBalance || 0) + (today.bankBalance || (today.contributions + todayExternal));
+    const janROA = janTotalAssets > 0 ? (jan.profit / janTotalAssets) * 100 : 0;
+    const todayROA = todayTotalAssets > 0 ? (today.profit / todayTotalAssets) * 100 : 0;
+
+    // Liquidity unchanged (uses contributions)
+    const janLiq = jan.contributions > 0 ? (jan.bankBalance / jan.contributions) * 100 : 0;
+    const todayLiq = today.contributions > 0 ? (today.bankBalance / today.contributions) * 100 : 0;
+
+    const fmt = (n) => n.toLocaleString('en-US');
+    const growth = (now, then) => {
+      if (then === 0) return now === 0 ? 0 : 100;
+      return ((now - then) / Math.abs(then)) * 100;
+    };
+
+    const baseLayout = {
+      margin: { t: 80, b: 60, l: 60, r: 40 },
+      paper_bgcolor: 'rgba(0,0,0,0)',
+      plot_bgcolor: 'rgba(0,0,0,0)',
+      font: { family: 'Lato, sans-serif', color: '#1a1a1a' },
+      showlegend: false,
+      bargap: 0.5,
+      xaxis: { fixedrange: true, tickfont: { size: 13 } },
+      yaxis: { fixedrange: true, gridcolor: '#e5e7eb', zeroline: false }
+    };
+
+    const config = { responsive: true, displayModeBar: false };
+
+    const createBarWithArrow = (id, janVal, todayVal, colorJan, colorToday, isPct = false, isMoney = false, gid) => {
+      const g = growth(todayVal, janVal);
+      const isUp = g >= 0;
+      const arrowColor = isUp ? '#10B981' : '#EF4444';
+      const textColor = isUp ? '#10B981' : '#EF4444';
+
+      const el = document.getElementById(gid);
+      if (el) {
+        el.innerHTML = `<i class="fas fa-arrow-${isUp ? 'up' : 'down'}"></i> ${g >= 0 ? '+' : ''}${g.toFixed(1)}%`;
+        el.className = `growth-indicator ${isUp ? 'positive' : 'negative'}`;
       }
-    },
-    {
-      "@type": "Offer",
-      "itemOffered": {
-        "@type": "FinancialProduct",
-        "name": "Education Loan",
-        "description": "Pay school fees with ease. Up to 36 months. 1% interest."
+
+      const displayJan = isPct ? janVal.toFixed(2) + '%' : isMoney ? 'KES ' + fmt(janVal) : fmt(janVal);
+      const displayToday = isPct ? todayVal.toFixed(2) + '%' : isMoney ? 'KES ' + fmt(todayVal) : fmt(todayVal);
+
+      // FIX: Calculate Y-axis range with 35% headroom for labels
+      const maxVal = Math.max(janVal, todayVal);
+      const yAxisMax = maxVal * 1.35;
+
+      const trace = {
+        x: ['Jan 2025', 'Today'],
+        y: [janVal, todayVal],
+        type: 'bar',
+        marker: { color: [colorJan, colorToday] },
+        text: [displayJan, displayToday],
+        textposition: 'outside',
+        textfont: { size: 12, family: 'Lato, sans-serif', color: '#1a1a1a' },
+        cliponaxis: false,
+        hovertemplate: `<b>%{x}</b><br>%{y:${isPct ? '.2f' : ','}}${isPct ? '%' : ''}<extra></extra>`
+      };
+
+      const layout = {
+        ...baseLayout,
+        yaxis: {
+          ...baseLayout.yaxis,
+          range: [0, yAxisMax]
+        },
+        shapes: [],
+        annotations: []
+      };
+
+      if (Math.abs(g) > 0.1) {
+        const midX = 0.5;
+        const maxY = Math.max(janVal, todayVal);
+        const minY = Math.min(janVal, todayVal);
+        const midY = (maxY + minY) / 2;
+        const arrowLen = 0.18;
+        const headLen = 0.05;
+
+        const x0 = midX - arrowLen / 2;
+        const x1 = midX + arrowLen / 2;
+        const y0 = midY;
+        const y1 = midY;
+
+        layout.shapes.push({
+          type: 'line',
+          x0, y0, x1, y1,
+          line: { color: arrowColor, width: 4 },
+          layer: 'above'
+        });
+
+        const angle = isUp ? -Math.PI / 2 : Math.PI / 2;
+        layout.shapes.push({
+          type: 'path',
+          path: `M ${x1} ${y1} L ${x1 - headLen * Math.cos(angle - 0.5)} ${y1 - headLen * Math.sin(angle - 0.5)} L ${x1 - headLen * Math.cos(angle + 0.5)} ${y1 - headLen * Math.sin(angle + 0.5)} Z`,
+          fillcolor: arrowColor,
+          line: { width: 0 }
+        });
+
+        layout.annotations.push({
+          x: midX,
+          y: midY + (isUp ? maxVal * 0.08 : -maxVal * 0.08),
+          text: `<b>${g >= 0 ? '+' : ''}${g.toFixed(1)}%</b>`,
+          showarrow: false,
+          font: { size: 16, family: 'Lato, sans-serif', color: textColor, weight: 'bold' },
+          bgcolor: 'rgba(255,255,255,0.95)',
+          bordercolor: arrowColor,
+          borderwidth: 2,
+          borderpad: 6,
+          borderRadius: 8
+        });
       }
-    },
-    {
-      "@type": "Offer",
-      "itemOffered": {
-        "@type": "FinancialProduct",
-        "name": "Medicare Loan",
-        "description": "Cover medical bills and healthcare costs. Flexible repayment."
-      }
-    },
-    {
-      "@type": "Offer",
-      "itemOffered": {
-        "@type": "FinancialProduct",
-        "name": "Development Loan",
-        "description": "Build your business or home. Long-term, low-interest financing."
-      }
-    },
-    {
-      "@type": "Offer",
-      "itemOffered": {
-        "@type": "FinancialProduct",
-        "name": "Api Culture Loan",
-        "description": "Support for beekeeping and honey production enterprises."
+
+      Plotly.newPlot(id, [trace], layout, config);
+    };
+
+    // RENDER ALL CHARTS
+    createBarWithArrow('plotMembers', jan.members, today.members, '#8B5CF6', '#C4B5FD', false, false, 'growthMembers');
+    createBarWithArrow('plotLoans', jan.loans, today.loans, '#F59E0B', '#FBBF24', false, true, 'growthLoans');
+    createBarWithArrow('plotContributions', jan.contributions, today.contributions, '#10B981', '#34D399', false, true, 'growthContributions');
+    createBarWithArrow('plotProfit', jan.profit, today.profit, '#EF4444', '#F87171', false, true, 'growthProfit');
+    createBarWithArrow('plotROA', janROA, todayROA, '#0EA5E9', '#7DD3FC', true, false, 'growthROA');
+    createBarWithArrow('plotLiquidity', janLiq, todayLiq, '#6366F1', '#A5B4FC', true, false, 'growthLiquidity');
+
+    // PIE CHART
+    if (window.loanTypesToday?.length) {
+      const loanTypes = window.loanTypesToday.filter(t => t.name && t.value > 0 && !t.name.toLowerCase().includes('api'));
+      if (loanTypes.length) {
+        const total = loanTypes.reduce((s, t) => s + t.value, 0);
+        const labels = loanTypes.map(t => t.name);
+        const values = loanTypes.map(t => (t.value / total) * 100);
+        const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'];
+
+        const yieldPct = (() => {
+          if (total === 0) return 0;
+          return loanTypes.reduce((sum, t) => {
+            let rate = 0;
+            if (t.name.toLowerCase().includes('development')) rate = 12;
+            else if (t.name.toLowerCase().includes('medicare') || t.name.toLowerCase().includes('education')) rate = 4;
+            else if (t.name.toLowerCase().includes('emergency')) rate = 36;
+            return sum + rate * (t.value / total);
+          }, 0);
+        })();
+
+        let yieldEl = document.getElementById('projectedYield');
+        if (!yieldEl) {
+          yieldEl = document.createElement('div');
+          yieldEl.id = 'projectedYield';
+          document.querySelector('#plotLoanTypes').parentElement.appendChild(yieldEl);
+        }
+        yieldEl.innerHTML = `${yieldPct.toFixed(1)}% p.a. expected yield`;
+
+        Plotly.newPlot('plotLoanTypes', [{
+          values: values,
+          labels: labels,
+          type: 'pie',
+          textinfo: 'percent',
+          textposition: values.some(v => v < 8) ? 'outside' : 'inside',
+          automargin: true,
+          marker: { colors: colors.slice(0, labels.length) },
+          hovertemplate: '<b>%{label}</b><br>%{percent}<br>KES %{customdata}<extra></extra>',
+          customdata: loanTypes.map(t => t.value.toLocaleString())
+        }], {
+          margin: { t: 20, b: 20, l: 10, r: 10 },
+          paper_bgcolor: 'rgba(0,0,0,0)',
+          font: { family: 'Lato, sans-serif' }
+        }, config);
       }
     }
-  ],
-  "openingHours": "Mo-Fr 08:00-17:00, Sa 09:00-13:00",
-  "foundingDate": "2024",
-  "legalName": "Soyosoyo Savings and Credit Cooperative Society",
-  "slogan": "Empowering Coastal Communities Through Affordable Finance"
-}
-</script>
 
-    <script src="./scripts/chatbot.js"></script>
- 
+    console.log('growth-charts: All charts rendered perfectly');
+    return true;
+  }
+
+  // SAFE INIT
+  document.addEventListener('DOMContentLoaded', () => {
+    const tryRender = () => {
+      if (!renderPlotlyGrowthCharts()) {
+        setTimeout(tryRender, 300);
+      }
+    };
+    window.addEventListener('saccoDataUpdated', () => setTimeout(tryRender, 100));
+    tryRender();
+  });
+</script>
+<script defer src="./scripts/main.js"></script>
 
 </body>
 </html>
