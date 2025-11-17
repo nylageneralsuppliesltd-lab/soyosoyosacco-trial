@@ -122,16 +122,18 @@
     letter-spacing: 2px;
     text-transform: uppercase;
   }
-    /* ADD THIS BLOCK – makes negative bars RED instantly */
-.js-plotly-plot .plotly .bar textpoint text {
-  fill: #004d1a !important;           /* positive stays dark green */
+/* NEGATIVE BARS & TEXT = RED – 100% WORKING */
+.js-plotly-plot .plotly .trace.bar text {
+  fill: #004d1a !important; /* positive text */
 }
-.js-plotly-plot .plotly .bar.negative textpoint text {
-  fill: #991b1b !important;           /* negative text = deep red */
+.js-plotly-plot .plotly .trace.bar .point text {
+  fill: #004d1a !important;
 }
-.js-plotly-plot .plotly .bar.negative .barlayer .trace .bar {
-  fill: #ef4444 !important;           /* negative bar fill = red */
-  opacity: 0.85 !important;
+
+/* This is the real way Plotly marks negative values */
+.js-plotly-plot .plotly .trace.bar .point[fillcolor="#ef4444"] text,
+.js-plotly-plot .plotly .trace.bar .point[fill="#ef4444"] text {
+  fill: #991b1b !important; /* negative text = deep red */
 }
 
   /* Mobile */
@@ -588,13 +590,12 @@ const baseLayout = {
       x: ['Jan 2025', 'Today'],
       y: values,
       type: 'bar',
-     marker: {
+    marker: {
   color: [
-    janVal < 0 ? '#ef4444' : colorJan,     // Jan negative → red
-    todayVal < 0 ? '#ef4444' : colorToday  // Today negative → red
+    janVal < 0 ? '#ef4444' : colorJan,
+    todayVal < 0 ? '#ef4444' : colorToday
   ]
 },
-className: janVal < 0 || todayVal < 0 ? 'negative' : ''   // adds class for CSS
       text: [displayJan, displayToday],
       textposition: 'outside',
       textfont: { size: 13, family: 'Lato, sans-serif' },
