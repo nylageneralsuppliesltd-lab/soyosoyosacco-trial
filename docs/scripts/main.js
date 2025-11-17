@@ -90,6 +90,7 @@
         links.forEach(link => {
           link.addEventListener('click', closeMenu);
         });
+        console.log(`✅ Bound ${links.length} nav links`);
       } else {
         console.warn('No nav links found for event binding');
       }
