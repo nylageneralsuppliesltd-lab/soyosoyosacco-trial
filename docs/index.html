@@ -42,12 +42,11 @@
   }
   .chart-card {
     background: #ffffff;
-    padding: 1.8rem 1.2rem 2rem;
+    padding: 1.8rem 1rem 2rem;
     border-radius: 28px;
     box-shadow: 0 14px 40px rgba(0,0,0,0.11);
     text-align: center;
     transition: transform 0.35s ease;
-    position: relative;
     min-height: 580px;
     height: 100%;
     display: flex;
@@ -59,7 +58,6 @@
   .chart-card:hover { transform: translateY(-10px); box-shadow: 0 20px 50px rgba(0,0,0,0.15); }
 
   .chart-card > p {
-    flex-shrink: 0;
     margin: 0 0 8px 0;
     font-weight: 900;
     font-size: 1.5rem;
@@ -71,90 +69,72 @@
     margin: 12px 0 6px 0;
     font-size: 1.75rem;
     font-weight: 900;
-    flex-shrink: 0;
     text-shadow: 0 3px 6px rgba(0,0,0,0.12);
   }
   .growth-indicator.positive { color: #10B981; }
   .growth-indicator.negative { color: #EF4444; }
   .growth-indicator i { margin-right: 10px; font-size: 1.4em; }
 
-  /* Full container usage + zero overlap */
+  /* MAXIMUM CANVAS USAGE — ultra-slim margins */
   .chart-card > div[id^="plot"] {
     flex: 1;
     width: 100% !important;
-    min-height: 460px !important;
+    min-height: 480px !important;
     height: 100% !important;
     margin-top: 16px;
   }
 
-  /* Bigger, bolder bar labels (never hidden) */
+  /* FULL KES amounts only — no k/m suffixes */
   .js-plotly-plot .plotly .textpoint text {
     font-size: 18px !important;
     font-weight: 900 !important;
     fill: #004d1a !important;
   }
 
-  /* Green percentage annotation – pushed higher, bigger, never overlaps */
+  /* Green % label — bigger and perfectly positioned */
   .js-plotly-plot .plotly .annotation text {
-    font-size: 24px !important;
+    font-size: 26px !important;
     font-weight: 900 !important;
   }
 
-  /* Arrow – thicker and proud */
-  .js-plotly-plot .plotly .arrow path { stroke-width: 9 !important; }
+  /* Thicker arrow */
+  .js-plotly-plot .plotly .arrow path { stroke-width: 10 !important; }
 
-  /* Expected Yield Box – massive & glorious */
+  /* Expected Yield — huge and proud */
   #projectedYield {
     margin: 16px 0 20px;
-    padding: 18px 20px;
+    padding: 20px 24px;
     background: linear-gradient(135deg, #10B981, #34D399);
     color: white;
     font-weight: 900;
-    font-size: 1.65rem;
+    font-size: 1.75rem;
     border-radius: 20px;
     text-align: center;
     flex-shrink: 0;
-    box-shadow: 0 8px 28px rgba(16,185,129,0.4);
-    letter-spacing: 1.5px;
+    box-shadow: 0 10px 32px rgba(16,185,129,0.45);
+    letter-spacing: 2px;
     text-transform: uppercase;
   }
 
-  /* Tablet & Mobile – still gorgeous */
+  /* RESPONSIVE */
   @media (max-width: 768px) {
-    .growth-charts-grid {
-      grid-template-columns: 1fr;
-      gap: 2rem;
-      margin: 3rem 0;
-    }
-    .chart-card {
-      min-height: 540px;
-      padding: 1.6rem 1rem;
-      border-radius: 24px;
-    }
+    .growth-charts-grid { gap: 2rem; margin: 3rem 0; }
+    .chart-card { min-height: 540px; padding: 1.6rem 0.9rem; }
     .chart-card > p { font-size: 1.35rem; }
     .growth-indicator { font-size: 1.55rem; }
-    .chart-card > div[id^="plot"] { min-height: 400px !important; }
-    #projectedYield {
-      font-size: 1.45rem;
-      padding: 16px 18px;
-    }
+    .chart-card > div[id^="plot"] { min-height: 420px !important; }
+    #projectedYield { font-size: 1.5rem; padding: 18px 20px; }
     .js-plotly-plot .plotly .textpoint text { font-size: 16px !important; }
-    .js-plotly-plot .plotly .annotation text { font-size: 21px !important; }
+    .js-plotly-plot .plotly .annotation text { font-size: 22px !important; }
   }
 
-  @media (max-width: 480px) {
-    .chart-card > p { font-size: 1.25rem; }
-    .growth-indicator { font-size: 1.4rem; }
-    #projectedYield { font-size: 1.35rem; }
-  }
-
-  /* Keep the rest of your existing styles untouched */
+  /* Keep the rest untouched */
   #financialCharts, .financial-chart-container { width: 100%; overflow-x: auto; overflow-y: visible; contain: layout style paint; padding: 0.75rem; }
-  .financial-chart { background: #ffffff; border-radius: 20px; padding: 0.75rem 0.75rem 1rem; box-shadow: 0 8px 25px rgba(0,0,0,0.08); margin-bottom: 1.5rem; min-height: 500px; display: flex; flex-direction: column; justify-content: flex-start; }
+  .financial-chart { background: #ffffff; border-radius: 20px; padding: 0.75rem; box-shadow: 0 8px 25px rgba(0,0,0,0.08); margin-bottom: 1.5rem; min-height: 500px; display: flex; flex-direction: column; }
   .financial-chart > div[id^="plot"], .plotly-financial-div, .js-plotly-plot { width: 100% !important; height: 100% !important; min-height: 400px !important; flex: 1; overflow: visible !important; }
   .plot-container { flex-grow: 1; min-height: 400px; overflow: visible; contain: layout style paint; }
 
-  /* Projections section – unchanged */
+  /* Projections section — unchanged */
   #projectionsChart { isolation: isolate; contain: layout style paint; max-width: 1400px; margin: 0 auto; padding: 0 10px; font-family: 'Lato', sans-serif; }
   #projectionsChart > .kpi-card, #projectionsChart > .summary-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid #f0fdf4; margin: 16px 8px; max-width: calc(100% - 16px); }
   #projectionsChart .kpi-title { padding: 16px; background: #f8fdfa; text-align: center; font-size: 16px; font-weight: 900; color: #004d1a; }
@@ -180,7 +160,6 @@
     #projectionsChart .plotly-projection-div { height: 460px !important; }
   }
 </style>
-
 
 
 
@@ -548,16 +527,22 @@ function renderPlotlyGrowthCharts() {
     return ((now - then) / Math.abs(then)) * 100;
   };
 
-  const baseLayout = {
-    margin: { t: 90, b: 70, l: 70, r: 50 },
-    paper_bgcolor: 'rgba(0,0,0,0)',
-    plot_bgcolor: 'rgba(0,0,0,0)',
-    font: { family: 'Lato, sans-serif', color: '#1a1a1a' },
-    showlegend: false,
-    bargap: 0.5,
-    xaxis: { fixedrange: true, tickfont: { size: 13 } },
-    yaxis: { fixedrange: true, gridcolor: '#e5e7eb', zerolinecolor: '#999', zerolinewidth: 1.5 }
-  };
+const baseLayout = {
+  margin: { t: 80, b: 60, l: 50, r: 30 },  // ultra-slim margins
+  paper_bgcolor: 'rgba(0,0,0,0)',
+  plot_bgcolor: 'rgba(0,0,0,0)',
+  font: { family: 'Lato, sans-serif', color: '#1a1a1a' },
+  showlegend: false,
+  bargap: 0.5,
+  xaxis: { fixedrange: true, tickfont: { size: 13 } },
+  yaxis: { 
+    fixedrange: true, 
+    gridcolor: '#e5e7eb', 
+    zerolinecolor: '#999', 
+    zerolinewidth: 1.5,
+    tickformat: ',.0f'   // ← THIS FORCES FULL NUMBERS (no k/m)
+  }
+};
 
   const config = { responsive: true, displayModeBar: false };
 
