@@ -621,12 +621,15 @@ function renderPlotlyGrowthCharts() {
   const janExternal = today.externalLoans ?? jan.externalLoans ?? 0;
   const todayExternal = today.externalLoans ?? 0;
 
-  // CORRECT TOTAL ASSETS = Loans Balance + Bank Balance
-const janTotalAssets = (jan.loans || jan.loansBalance || 0) + 
-                       (jan.bankBalance || jan.totalBankBalance || 0);
+  // FINAL CORRECT TOTAL ASSETS — NEVER TOUCH AGAIN
+  const janTotalAssets = (jan.loans || jan.loansBalance || 0) + 
+                         (jan.bankBalance || jan.totalBankBalance || 0);
 
-const todayTotalAssets = (today.loansBalance || today.totalBankBalance || today.bankBalance || 0);
-  const janROA = janTotalAssets > 0 ? (jan.profit / janTotalAssets) * 100 : 0;
+  const todayTotalAssets = (today.loansBalance || 0) + 
+                           (today.totalBankBalance || today.bankBalance || 0);
+
+  // ROA — calculated ONCE and used everywhere
+  const janROA   = janTotalAssets   > 0 ? (jan.profit   / janTotalAssets)   * 100 : 0;
   const todayROA = todayTotalAssets > 0 ? (today.profit / todayTotalAssets) * 100 : 0;
 
   const janLiq = jan.contributions > 0 ? ((jan.bankBalance || 0) / jan.contributions) * 100 : 0;
