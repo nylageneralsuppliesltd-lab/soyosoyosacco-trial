@@ -34,48 +34,51 @@
     </script>
 
 <style id="final-working-styles">
-  /* === GRID LAYOUT === */
   .growth-charts-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 1.5rem;
     margin: 2rem 0;
   }
-
-  /* === CHART CARD — FULL HEIGHT UTILIZATION === */
   .chart-card {
     background: #ffffff;
-    padding: 1.25rem 1rem 1.5rem; /* top increased, bottom slightly extended */
+    padding: 0.75rem 0.75rem 1rem;
     border-radius: 20px;
     box-shadow: 0 8px 25px rgba(0,0,0,0.08);
     text-align: center;
     transition: transform 0.3s ease;
     position: relative;
-    min-height: 520px; /* slightly taller for safe label display */
+    min-height: 500px;
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* stretch contents */
-    gap: 0.75rem;
+    justify-content: flex-start;
+    gap: 0.5rem;
   }
-
-  .chart-card > p,
-  .chart-card .growth-indicator {
+  .chart-card > p {
     flex-shrink: 0;
-    padding-top: 0.75rem;
+    padding: 0.5rem 0;
+    margin: 0;
+    font-weight: bold;
+    font-size: 0.95rem;
   }
-
   .growth-indicator {
-    margin-top: 0;
+    margin: 0.5rem 0 0 0;
     font-size: 1rem;
     font-weight: bold;
+    flex-shrink: 0;
   }
-
   .growth-indicator.positive { color: #10B981; }
   .growth-indicator.negative { color: #EF4444; }
   .growth-indicator i { margin-right: 4px; font-size: 0.9em; }
-
-  /* === FINANCIAL CHART CONTAINMENT === */
+  .chart-card > div[id^="plot"] {
+    flex: 1;
+    width: 100% !important;
+    min-height: 380px !important;
+    height: 100% !important;
+    position: relative;
+    overflow: visible !important;
+  }
   #financialCharts,
   .financial-chart-container {
     width: 100%;
@@ -84,75 +87,75 @@
     contain: layout style paint;
     padding: 0.75rem;
   }
-
   .financial-chart {
     background: #ffffff;
     border-radius: 20px;
-    padding: 1.25rem 1rem 1.75rem;
+    padding: 0.75rem 0.75rem 1rem;
     box-shadow: 0 8px 25px rgba(0,0,0,0.08);
     margin-bottom: 1.5rem;
     position: relative;
     text-align: center;
-    min-height: 520px;
+    min-height: 500px;
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
   }
-
   .financial-chart > div[id^="plot"],
   .plotly-financial-div,
   .js-plotly-plot {
     width: 100% !important;
     height: 100% !important;
-    min-height: 440px !important;
+    min-height: 400px !important;
+    flex: 1;
     contain: layout style paint;
     overflow: visible !important;
-    margin-top: 0.5rem;  /* ensures top labels are visible */
-    margin-bottom: 0.75rem; /* ensures x-axis labels visible */
   }
-
   .plot-container {
     flex-grow: 1;
-    min-height: 440px;
+    min-height: 400px;
     overflow: visible;
     contain: layout style paint;
   }
-
-  /* === YIELD BADGE === */
   #projectedYield {
-    margin-top: 10px;
-    margin-bottom: 14px;
-    padding: 10px;
+    margin: 8px 0 10px;
+    padding: 8px 12px;
     background: linear-gradient(135deg, #10B981, #34D399);
     color: white;
     font-weight: 900;
-    font-size: 15px;
+    font-size: 14px;
     border-radius: 12px;
     text-align: center;
+    flex-shrink: 0;
   }
-
-  /* === MOBILE === */
   @media (max-width: 768px) {
+    .growth-charts-grid {
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
     .chart-card,
     .financial-chart {
-      padding: 0.9rem 0.75rem 1.25rem;
-      min-height: 460px;
+      padding: 0.75rem 0.5rem 1rem;
+      min-height: 450px;
     }
-
+    .chart-card > div[id^="plot"],
     .plot-container,
     .financial-chart > div[id^="plot"] {
-      min-height: 360px !important;
+      min-height: 340px !important;
     }
-
+    .chart-card > p {
+      font-size: 0.9rem;
+      padding: 0.4rem 0;
+    }
+    .growth-indicator {
+      font-size: 0.95rem;
+    }
     #projectedYield {
-      margin-top: 6px;
-      margin-bottom: 8px;
-      font-size: 14px;
+      margin: 6px 0 8px;
+      font-size: 13px;
+      padding: 7px 10px;
     }
   }
-
-  /* === PROJECTION CHARTS (UNCHANGED) === */
   #projectionsChart {
     isolation: isolate;
     contain: layout style paint;
@@ -161,7 +164,6 @@
     padding: 0 10px;
     font-family: 'Lato', sans-serif;
   }
-
   #projectionsChart > .kpi-card,
   #projectionsChart > .summary-card {
     background: white;
@@ -172,7 +174,6 @@
     margin: 16px 8px;
     max-width: calc(100% - 16px);
   }
-
   #projectionsChart .kpi-title {
     padding: 16px;
     background: #f8fdfa;
@@ -181,28 +182,24 @@
     font-weight: 900;
     color: #004d1a;
   }
-
   #projectionsChart .plotly-projection-div {
     height: 420px !important;
     width: 100% !important;
   }
-
   #projectionsChart .summary-header {
-    background: linear-gradient(90deg, #004d1a, #10B981);
+    background: linear-gradient(90deg,#004d1a,#10B981);
     color: white;
     padding: 16px;
     text-align: center;
     font-size: 17px;
     font-weight: 900;
   }
-
   #projectionsChart .summary-grid {
     display: grid;
     grid-template-columns: 1fr;
     gap: 14px;
     padding: 16px;
   }
-
   #projectionsChart .summary-item {
     background: #f0fdf4;
     border-radius: 14px;
@@ -210,31 +207,26 @@
     border: 1px solid #86efac;
     text-align: center;
   }
-
   #projectionsChart .summary-label {
     font-size: 13.5px;
     font-weight: 900;
     color: #166534;
   }
-
   #projectionsChart .summary-values {
     display: flex;
     justify-content: space-between;
     font-size: 13px;
     margin: 8px 0;
   }
-
   #projectionsChart .summary-values span {
     color: #6b7280;
     font-size: 11.5px;
     display: block;
   }
-
   #projectionsChart .summary-values strong {
     font-size: 15px;
     color: #004d1a;
   }
-
   #projectionsChart .summary-growth {
     background: #10B981;
     color: white;
@@ -243,45 +235,37 @@
     font-size: 12.5px;
     font-weight: 900;
   }
-
   @media (min-width: 769px) {
     #projectionsChart {
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
     }
-
     #projectionsChart > .kpi-card {
       flex: 1 1 calc(50% - 20px);
       max-width: 48%;
     }
-
     #projectionsChart .plotly-projection-div {
       height: 440px !important;
     }
-
     #projectionsChart > .summary-card {
       flex: 1 1 100%;
       max-width: 100%;
       margin: 30px 8px 10px;
     }
-
     #projectionsChart .summary-grid {
       grid-template-columns: repeat(4, 1fr);
       gap: 20px;
       padding: 20px;
     }
-
     #projectionsChart .summary-values strong {
       font-size: 17px;
     }
-
     #projectionsChart .summary-growth {
       padding: 8px 16px;
       font-size: 13px;
     }
   }
-
   @media (max-width: 768px) {
     #projectionsChart .plotly-projection-div {
       height: 460px !important;
