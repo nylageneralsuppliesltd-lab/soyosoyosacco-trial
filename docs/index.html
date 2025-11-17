@@ -36,243 +36,150 @@
 <style id="final-working-styles">
   .growth-charts-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 1.5rem;
-    margin: 2rem 0;
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    gap: 2.2rem;
+    margin: 3.5rem 0;
   }
   .chart-card {
     background: #ffffff;
-    padding: 0.75rem 0.75rem 1rem;
-    border-radius: 20px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    padding: 1.8rem 1.2rem 2rem;
+    border-radius: 28px;
+    box-shadow: 0 14px 40px rgba(0,0,0,0.11);
     text-align: center;
-    transition: transform 0.3s ease;
+    transition: transform 0.35s ease;
     position: relative;
-    min-height: 500px;
+    min-height: 580px;
     height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    gap: 0.5rem;
+    gap: 1.2rem;
+    border: 1.5px solid #f0fdf4;
   }
+  .chart-card:hover { transform: translateY(-10px); box-shadow: 0 20px 50px rgba(0,0,0,0.15); }
+
   .chart-card > p {
     flex-shrink: 0;
-    padding: 0.5rem 0;
-    margin: 0;
-    font-weight: bold;
-    font-size: 0.95rem;
+    margin: 0 0 8px 0;
+    font-weight: 900;
+    font-size: 1.5rem;
+    color: #004d1a;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
   }
   .growth-indicator {
-    margin: 0.5rem 0 0 0;
-    font-size: 1rem;
-    font-weight: bold;
+    margin: 12px 0 6px 0;
+    font-size: 1.75rem;
+    font-weight: 900;
     flex-shrink: 0;
+    text-shadow: 0 3px 6px rgba(0,0,0,0.12);
   }
   .growth-indicator.positive { color: #10B981; }
   .growth-indicator.negative { color: #EF4444; }
-  .growth-indicator i { margin-right: 4px; font-size: 0.9em; }
+  .growth-indicator i { margin-right: 10px; font-size: 1.4em; }
+
+  /* Full container usage + zero overlap */
   .chart-card > div[id^="plot"] {
     flex: 1;
     width: 100% !important;
-    min-height: 380px !important;
+    min-height: 460px !important;
     height: 100% !important;
-    position: relative;
-    overflow: visible !important;
+    margin-top: 16px;
   }
-  #financialCharts,
-  .financial-chart-container {
-    width: 100%;
-    overflow-x: auto;
-    overflow-y: visible;
-    contain: layout style paint;
-    padding: 0.75rem;
+
+  /* Bigger, bolder bar labels (never hidden) */
+  .js-plotly-plot .plotly .textpoint text {
+    font-size: 18px !important;
+    font-weight: 900 !important;
+    fill: #004d1a !important;
   }
-  .financial-chart {
-    background: #ffffff;
-    border-radius: 20px;
-    padding: 0.75rem 0.75rem 1rem;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
-    margin-bottom: 1.5rem;
-    position: relative;
-    text-align: center;
-    min-height: 500px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
+
+  /* Green percentage annotation – pushed higher, bigger, never overlaps */
+  .js-plotly-plot .plotly .annotation text {
+    font-size: 24px !important;
+    font-weight: 900 !important;
   }
-  .financial-chart > div[id^="plot"],
-  .plotly-financial-div,
-  .js-plotly-plot {
-    width: 100% !important;
-    height: 100% !important;
-    min-height: 400px !important;
-    flex: 1;
-    contain: layout style paint;
-    overflow: visible !important;
-  }
-  .plot-container {
-    flex-grow: 1;
-    min-height: 400px;
-    overflow: visible;
-    contain: layout style paint;
-  }
+
+  /* Arrow – thicker and proud */
+  .js-plotly-plot .plotly .arrow path { stroke-width: 9 !important; }
+
+  /* Expected Yield Box – massive & glorious */
   #projectedYield {
-    margin: 8px 0 10px;
-    padding: 8px 12px;
+    margin: 16px 0 20px;
+    padding: 18px 20px;
     background: linear-gradient(135deg, #10B981, #34D399);
     color: white;
     font-weight: 900;
-    font-size: 14px;
-    border-radius: 12px;
+    font-size: 1.65rem;
+    border-radius: 20px;
     text-align: center;
     flex-shrink: 0;
+    box-shadow: 0 8px 28px rgba(16,185,129,0.4);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
   }
+
+  /* Tablet & Mobile – still gorgeous */
   @media (max-width: 768px) {
     .growth-charts-grid {
       grid-template-columns: 1fr;
-      gap: 1.25rem;
+      gap: 2rem;
+      margin: 3rem 0;
     }
-    .chart-card,
-    .financial-chart {
-      padding: 0.75rem 0.5rem 1rem;
-      min-height: 450px;
+    .chart-card {
+      min-height: 540px;
+      padding: 1.6rem 1rem;
+      border-radius: 24px;
     }
-    .chart-card > div[id^="plot"],
-    .plot-container,
-    .financial-chart > div[id^="plot"] {
-      min-height: 340px !important;
-    }
-    .chart-card > p {
-      font-size: 0.9rem;
-      padding: 0.4rem 0;
-    }
-    .growth-indicator {
-      font-size: 0.95rem;
-    }
+    .chart-card > p { font-size: 1.35rem; }
+    .growth-indicator { font-size: 1.55rem; }
+    .chart-card > div[id^="plot"] { min-height: 400px !important; }
     #projectedYield {
-      margin: 6px 0 8px;
-      font-size: 13px;
-      padding: 7px 10px;
+      font-size: 1.45rem;
+      padding: 16px 18px;
     }
+    .js-plotly-plot .plotly .textpoint text { font-size: 16px !important; }
+    .js-plotly-plot .plotly .annotation text { font-size: 21px !important; }
   }
-  #projectionsChart {
-    isolation: isolate;
-    contain: layout style paint;
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 10px;
-    font-family: 'Lato', sans-serif;
+
+  @media (max-width: 480px) {
+    .chart-card > p { font-size: 1.25rem; }
+    .growth-indicator { font-size: 1.4rem; }
+    #projectedYield { font-size: 1.35rem; }
   }
-  #projectionsChart > .kpi-card,
-  #projectionsChart > .summary-card {
-    background: white;
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    border: 1px solid #f0fdf4;
-    margin: 16px 8px;
-    max-width: calc(100% - 16px);
-  }
-  #projectionsChart .kpi-title {
-    padding: 16px;
-    background: #f8fdfa;
-    text-align: center;
-    font-size: 16px;
-    font-weight: 900;
-    color: #004d1a;
-  }
-  #projectionsChart .plotly-projection-div {
-    height: 420px !important;
-    width: 100% !important;
-  }
-  #projectionsChart .summary-header {
-    background: linear-gradient(90deg,#004d1a,#10B981);
-    color: white;
-    padding: 16px;
-    text-align: center;
-    font-size: 17px;
-    font-weight: 900;
-  }
-  #projectionsChart .summary-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 14px;
-    padding: 16px;
-  }
-  #projectionsChart .summary-item {
-    background: #f0fdf4;
-    border-radius: 14px;
-    padding: 12px;
-    border: 1px solid #86efac;
-    text-align: center;
-  }
-  #projectionsChart .summary-label {
-    font-size: 13.5px;
-    font-weight: 900;
-    color: #166534;
-  }
-  #projectionsChart .summary-values {
-    display: flex;
-    justify-content: space-between;
-    font-size: 13px;
-    margin: 8px 0;
-  }
-  #projectionsChart .summary-values span {
-    color: #6b7280;
-    font-size: 11.5px;
-    display: block;
-  }
-  #projectionsChart .summary-values strong {
-    font-size: 15px;
-    color: #004d1a;
-  }
-  #projectionsChart .summary-growth {
-    background: #10B981;
-    color: white;
-    padding: 6px 14px;
-    border-radius: 50px;
-    font-size: 12.5px;
-    font-weight: 900;
-  }
+
+  /* Keep the rest of your existing styles untouched */
+  #financialCharts, .financial-chart-container { width: 100%; overflow-x: auto; overflow-y: visible; contain: layout style paint; padding: 0.75rem; }
+  .financial-chart { background: #ffffff; border-radius: 20px; padding: 0.75rem 0.75rem 1rem; box-shadow: 0 8px 25px rgba(0,0,0,0.08); margin-bottom: 1.5rem; min-height: 500px; display: flex; flex-direction: column; justify-content: flex-start; }
+  .financial-chart > div[id^="plot"], .plotly-financial-div, .js-plotly-plot { width: 100% !important; height: 100% !important; min-height: 400px !important; flex: 1; overflow: visible !important; }
+  .plot-container { flex-grow: 1; min-height: 400px; overflow: visible; contain: layout style paint; }
+
+  /* Projections section – unchanged */
+  #projectionsChart { isolation: isolate; contain: layout style paint; max-width: 1400px; margin: 0 auto; padding: 0 10px; font-family: 'Lato', sans-serif; }
+  #projectionsChart > .kpi-card, #projectionsChart > .summary-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid #f0fdf4; margin: 16px 8px; max-width: calc(100% - 16px); }
+  #projectionsChart .kpi-title { padding: 16px; background: #f8fdfa; text-align: center; font-size: 16px; font-weight: 900; color: #004d1a; }
+  #projectionsChart .plotly-projection-div { height: 420px !important; width: 100% !important; }
+  #projectionsChart .summary-header { background: linear-gradient(90deg,#004d1a,#10B981); color: white; padding: 16px; text-align: center; font-size: 17px; font-weight: 900; }
+  #projectionsChart .summary-grid { display: grid; grid-template-columns: 1fr; gap: 14px; padding: 16px; }
+  #projectionsChart .summary-item { background: #f0fdf4; border-radius: 14px; padding: 12px; border: 1px solid #86efac; text-align: center; }
+  #projectionsChart .summary-label { font-size: 13.5px; font-weight: 900; color: #166534; }
+  #projectionsChart .summary-values { display: flex; justify-content: space-between; font-size: 13px; margin: 8px 0; }
+  #projectionsChart .summary-values span { color: #6b7280; font-size: 11.5px; display: block; }
+  #projectionsChart .summary-values strong { font-size: 15px; color: #004d1a; }
+  #projectionsChart .summary-growth { background: #10B981; color: white; padding: 6px 14px; border-radius: 50px; font-size: 12.5px; font-weight: 900; }
   @media (min-width: 769px) {
-    #projectionsChart {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-    }
-    #projectionsChart > .kpi-card {
-      flex: 1 1 calc(50% - 20px);
-      max-width: 48%;
-    }
-    #projectionsChart .plotly-projection-div {
-      height: 440px !important;
-    }
-    #projectionsChart > .summary-card {
-      flex: 1 1 100%;
-      max-width: 100%;
-      margin: 30px 8px 10px;
-    }
-    #projectionsChart .summary-grid {
-      grid-template-columns: repeat(4, 1fr);
-      gap: 20px;
-      padding: 20px;
-    }
-    #projectionsChart .summary-values strong {
-      font-size: 17px;
-    }
-    #projectionsChart .summary-growth {
-      padding: 8px 16px;
-      font-size: 13px;
-    }
+    #projectionsChart { display: flex; flex-wrap: wrap; justify-content: space-between; }
+    #projectionsChart > .kpi-card { flex: 1 1 calc(50% - 20px); max-width: 48%; }
+    #projectionsChart .plotly-projection-div { height: 440px !important; }
+    #projectionsChart > .summary-card { flex: 1 1 100%; max-width: 100%; margin: 30px 8px 10px; }
+    #projectionsChart .summary-grid { grid-template-columns: repeat(4, 1fr); gap: 20px; padding: 20px; }
+    #projectionsChart .summary-values strong { font-size: 17px; }
+    #projectionsChart .summary-growth { padding: 8px 16px; font-size: 13px; }
   }
   @media (max-width: 768px) {
-    #projectionsChart .plotly-projection-div {
-      height: 460px !important;
-    }
+    #projectionsChart .plotly-projection-div { height: 460px !important; }
   }
 </style>
-
 
 
 
