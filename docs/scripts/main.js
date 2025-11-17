@@ -4,6 +4,10 @@
 (function () {
   'use strict';
 
+  // Guard: Skip if already initialized (avoids duplicates)
+  if (window.soyosoyoMenuInited) return;
+  window.soyosoyoMenuInited = true;
+
   // Wait for the button to exist (up to 5 seconds)
   const maxWait = 5000;
   const start = Date.now();
@@ -63,35 +67,46 @@
       navLinks.classList.contains('show') ? closeMenu() : openMenu();
     };
 
-    // Click + Touch
-    toggleBtn.addEventListener('click', toggleMenu);
-    toggleBtn.addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      toggleMenu(e);
-    }, { passive: false });
+    // Click + Touch (wrapped in try-catch for safety)
+    try {
+      toggleBtn.addEventListener('click', toggleMenu);
+      toggleBtn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        toggleMenu(e);
+      }, { passive: false });
 
-    // Close on outside click
-    document.addEventListener('click', (e) => {
-      if (navLinks.classList.contains('show') && 
-          !navLinks.contains(e.target) && 
-          !toggleBtn.contains(e.target)) {
-        closeMenu();
+      // Close on outside click
+      document.addEventListener('click', (e) => {
+        if (navLinks.classList.contains('show') && 
+            !navLinks.contains(e.target) && 
+            !toggleBtn.contains(e.target)) {
+          closeMenu();
+        }
+      });
+
+      // Close on link click (safe query)
+      const links = navLinks.querySelectorAll('a');
+      if (links.length > 0) {
+        links.forEach(link => {
+          link.addEventListener('click', closeMenu);
+        });
+      } else {
+        console.warn('No nav links found for event binding');
       }
-    });
 
-    // Close on link click
-    navLinks.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', closeMenu);
-    });
+      // Resize & ESC
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) closeMenu();
+      });
 
-    // Resize & ESC
-    window.addEventListener('resize', () => {
-      if (window.innerWidth > 768) closeMenu();
-    });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeMenu();
+      });
 
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeMenu();
-    });
+      console.log('✅ Events bound successfully');
+    } catch (err) {
+      console.error('Event binding failed:', err);
+    }
   };
 
   // Start checking
