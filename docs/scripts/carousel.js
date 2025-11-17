@@ -1,6 +1,6 @@
 // scripts/carousel.js – FULLY FIXED + SOYOSOYO + ALIGNED WITH ABOUT.HTML KEYS + TOTAL ASSETS = LOANS BAL + BANK BAL + ROA RECALC
 document.addEventListener('DOMContentLoaded', () => {
-  const janFallback = { members: 101, contributions: 331263, loans: 283500, profit: -60056, externalLoans: 0, bankBalance: 113742 };
+  const janFallback = { members: 101, contributions: 331263, loansBalance: 283500, loans: 283500, profit: -60056, externalLoans: 0, bankBalance: 113742, totalBankBalance: 113742 };
   window.saccoData = { jan: janFallback, today: {} };
   window.loanTypesToday = [];
 
