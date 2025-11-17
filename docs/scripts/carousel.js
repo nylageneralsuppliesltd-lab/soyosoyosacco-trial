@@ -11,17 +11,17 @@ document.addEventListener('DOMContentLoaded', () => {
       { name: 'Development', value: 643000 },
       { name: 'Education', value: 275000 }
     ],
-    loansBalanceToday: 874336.45,  // Aligned: Added for About.html
+    loansBalanceToday: 870983.81,  // Aligned: Added for About.html
     bankBreakdownToday: [
       { name: 'Co-operative Bank', value: 2120.65 },
-      { name: 'Chamasoft', value: 9695 },
+      { name: 'Chamasoft', value: 15924 },
       { name: 'Cytonn', value: 146465 }
     ],
     externalLoansToday: 66784,
-    members: 144,
-    contributions: 909415,
+    members: 145,
+    contributions: 911965,
     numberOfLoansGiven: 109,
-    profit: 53462,
+    profit: 53789,
     activeMembers: 71
   });
 
