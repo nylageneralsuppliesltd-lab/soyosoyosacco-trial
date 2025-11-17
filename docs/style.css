@@ -457,14 +457,14 @@ header.site-header #menu-toggle {
         flex-direction: column;
         gap: 0.8rem;
         transition: all 0.35s ease;
-        transform: translateX(100%);
-        opacity: 0;
-        visibility: hidden;
+        transform: translateX(100%) !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
     }
     header.site-header .nav-links.show {
-        transform: translateX(0);
-        opacity: 1;
-        visibility: visible;
+        transform: translateX(0) !important;
+        opacity: 1 !important;
+        visibility: visible !important;
     }
     header.site-header .nav-links a {
         color: #ffffff !important;
@@ -626,4 +626,31 @@ footer a:hover { color:#ffffff; }
     position: relative !important;
   }
 }
+
+/* Menu SVG Icons (Force Visibility + Sizing) */
+#menu-toggle .menu-icon,
+#menu-toggle .close-icon {
+    display: inline-block !important; /* Base show, JS toggles none/block */
+    width: 28px !important;
+    height: 28px !important;
+    stroke: #006400 !important; /* Green match */
+    stroke-width: 2.5 !important;
+    fill: none !important;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    vertical-align: middle;
+}
+#menu-toggle .close-icon {
+    opacity: 0; /* Initial fade-out */
+}
+#menu-toggle[aria-expanded="true"] .menu-icon {
+    opacity: 0;
+}
+#menu-toggle[aria-expanded="true"] .close-icon {
+    opacity: 1 !important;
+}
+/* Prevent Inline Override Bleed */
+#menu-toggle svg[style*="display: none"] {
+    display: inline-block !important; /* Temp hack if JS stubborn */
+}
+
 /* ----------------- END OF FILE ----------------- */
