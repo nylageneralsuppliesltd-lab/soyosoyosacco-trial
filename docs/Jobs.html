@@ -232,54 +232,8 @@
         if (typeof updateSliderValue === 'function') updateSliderValue('principal');
     });
 </script>
-<script>
-  // AUTO-YEAR MAGIC — UPDATES EVERY YEAR TEXT AUTOMATICALLY
-  document.addEventListener('DOMContentLoaded', () => {
-    const currentYear = new Date().getFullYear();
-    const startYear = 2025; // Change only if you want a different base year
 
-    // Update copyright
-    document.querySelectorAll('footer p, .copyright, [class*="copyright"], [id*="copyright"]').forEach(el => {
-      if (el.textContent.includes('©')) {
-        el.innerHTML = el.innerHTML.replace(/\d{4}(?=\s*SOYOSOYO|\s*$)/, currentYear);
-      }
-    });
-
-    // Update any "2025" in titles, headers, or text
-    document.querySelectorAll('h1, h2, h3, p, span, div, li').forEach(el => {
-      if (el.textContent.includes('2025')) {
-        el.innerHTML = el.innerHTML.replace(/2025/g, currentYear);
-      }
-    });
-
-    // Special: Update "5-Year Growth Strategy" → "6-Year", etc.
-    document.querySelectorAll('.summary-header, h2').forEach(el => {
-      if (el.textContent.includes('Year Growth Strategy')) {
-        const yearsAhead = currentYear - startYear + 5;
-        el.textContent = `${yearsAhead}-Year Growth Strategy`;
-      }
-    });
-
-    // Special: Update "Monthly Financial History (2025 – Present)"
-    document.querySelectorAll('.history-header').forEach(el => {
-      if (el.textContent.includes('2025')) {
-        el.textContent = el.textContent.replace('2025', currentYear);
-      }
-    });
-
-    // Special: Update any "2025–Present" pattern
-    document.querySelectorAll('*').forEach(el => {
-      if (el.textContent.includes('2025 – Present') || el.textContent.includes('2025-Present')) {
-        el.innerHTML = el.innerHTML.replace(/2025(?=\s*[–-]\s*Present)/g, currentYear);
-      }
-    });
-
-    // Update footer year only
-    document.querySelectorAll('footer').forEach(footer => {
-      footer.innerHTML = footer.innerHTML.replace(/©\s*\d{4}/, `© ${currentYear}`);
-    });
-  });
-</script>
+    
 <!-- SCHEMA.ORG – SOYOSOYO SACCO (ALL PAGES) -->
 <script type="application/ld+json">
 {
