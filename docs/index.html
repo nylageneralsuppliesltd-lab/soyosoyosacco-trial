@@ -605,6 +605,14 @@
 <script>
   document.getElementById('autoYearNow').textContent = new Date().getFullYear();
 </script>
+    
+<!-- Initialize Calculator -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        if (typeof updateFields === 'function') updateFields();
+        if (typeof updateSliderValue === 'function') updateSliderValue('principal');
+    });
+</script>
 
 <!-- SCRIPTS - EXACT ORDER, NO CONFLICTS -->
 <script src="./scripts/carousel.js"></script>
