@@ -39,10 +39,11 @@
     grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
     gap: 2.2rem;
     margin: 3.5rem 0;
+    padding: 0 8px; /* small page padding to prevent edge overflow */
   }
   .chart-card {
     background: #ffffff;
-    padding: 1.8rem 1rem 2rem;
+    padding: 1.8rem 1.2rem 2rem;
     border-radius: 28px;
     box-shadow: 0 14px 40px rgba(0,0,0,0.11);
     text-align: center;
@@ -54,6 +55,7 @@
     justify-content: flex-start;
     gap: 1.2rem;
     border: 1.5px solid #f0fdf4;
+    overflow: hidden; /* prevents any bleed */
   }
   .chart-card:hover { transform: translateY(-10px); box-shadow: 0 20px 50px rgba(0,0,0,0.15); }
 
@@ -69,13 +71,11 @@
     margin: 12px 0 6px 0;
     font-size: 1.75rem;
     font-weight: 900;
-    text-shadow: 0 3px 6px rgba(0,0,0,0.12);
   }
   .growth-indicator.positive { color: #10B981; }
   .growth-indicator.negative { color: #EF4444; }
   .growth-indicator i { margin-right: 10px; font-size: 1.4em; }
 
-  /* MAXIMUM CANVAS USAGE — ultra-slim margins */
   .chart-card > div[id^="plot"] {
     flex: 1;
     width: 100% !important;
@@ -84,23 +84,30 @@
     margin-top: 16px;
   }
 
-  /* FULL KES amounts only — no k/m suffixes */
+  /* Full KES on bar tops */
   .js-plotly-plot .plotly .textpoint text {
     font-size: 18px !important;
     font-weight: 900 !important;
     fill: #004d1a !important;
   }
 
-  /* Green % label — bigger and perfectly positioned */
+  /* Green percentage — perfect position */
   .js-plotly-plot .plotly .annotation text {
     font-size: 26px !important;
     font-weight: 900 !important;
   }
+    /* ADD THIS ANYWHERE INSIDE <style id="final-working-styles"> */
+.js-plotly-plot .plotly .annotation text {
+    font-size: 26px !important;
+    font-weight: 900 !important;
+    yshift: 50px !important;     /* pushes it way up */
+    text-anchor: middle !important;
+}
+.js-plotly-plot .plotly .annotation text tspan {
+    fill: #10B981 !important;
+}
 
-  /* Thicker arrow */
-  .js-plotly-plot .plotly .arrow path { stroke-width: 10 !important; }
-
-  /* Expected Yield — huge and proud */
+  /* Expected Yield */
   #projectedYield {
     margin: 16px 0 20px;
     padding: 20px 24px;
@@ -116,10 +123,10 @@
     text-transform: uppercase;
   }
 
-  /* RESPONSIVE */
+  /* Mobile */
   @media (max-width: 768px) {
-    .growth-charts-grid { gap: 2rem; margin: 3rem 0; }
-    .chart-card { min-height: 540px; padding: 1.6rem 0.9rem; }
+    .growth-charts-grid { gap: 2rem; margin: 3rem 0; padding: 0 4px; }
+    .chart-card { min-height: 540px; padding: 1.6rem 1rem; }
     .chart-card > p { font-size: 1.35rem; }
     .growth-indicator { font-size: 1.55rem; }
     .chart-card > div[id^="plot"] { min-height: 420px !important; }
@@ -128,13 +135,11 @@
     .js-plotly-plot .plotly .annotation text { font-size: 22px !important; }
   }
 
-  /* Keep the rest untouched */
+  /* Rest of your styles (projections, etc.) — unchanged */
   #financialCharts, .financial-chart-container { width: 100%; overflow-x: auto; overflow-y: visible; contain: layout style paint; padding: 0.75rem; }
   .financial-chart { background: #ffffff; border-radius: 20px; padding: 0.75rem; box-shadow: 0 8px 25px rgba(0,0,0,0.08); margin-bottom: 1.5rem; min-height: 500px; display: flex; flex-direction: column; }
   .financial-chart > div[id^="plot"], .plotly-financial-div, .js-plotly-plot { width: 100% !important; height: 100% !important; min-height: 400px !important; flex: 1; overflow: visible !important; }
   .plot-container { flex-grow: 1; min-height: 400px; overflow: visible; contain: layout style paint; }
-
-  /* Projections section — unchanged */
   #projectionsChart { isolation: isolate; contain: layout style paint; max-width: 1400px; margin: 0 auto; padding: 0 10px; font-family: 'Lato', sans-serif; }
   #projectionsChart > .kpi-card, #projectionsChart > .summary-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid #f0fdf4; margin: 16px 8px; max-width: calc(100% - 16px); }
   #projectionsChart .kpi-title { padding: 16px; background: #f8fdfa; text-align: center; font-size: 16px; font-weight: 900; color: #004d1a; }
@@ -160,7 +165,6 @@
     #projectionsChart .plotly-projection-div { height: 460px !important; }
   }
 </style>
-
 
 
     <!-- MEMBER CAROUSEL -->
@@ -528,7 +532,7 @@ function renderPlotlyGrowthCharts() {
   };
 
 const baseLayout = {
-  margin: { t: 80, b: 60, l: 50, r: 30 },  // ultra-slim margins
+  margin: { t: 80, b: 60, l: 50, r: 40 },  // ultra-slim margins
   paper_bgcolor: 'rgba(0,0,0,0)',
   plot_bgcolor: 'rgba(0,0,0,0)',
   font: { family: 'Lato, sans-serif', color: '#1a1a1a' },
@@ -591,44 +595,34 @@ const baseLayout = {
       annotations: []
     };
 
-    // Draw arrow only if meaningful change
-    if (Math.abs(g) > 0.1) {
-      const midX = 0.5;
-      const y0 = janVal;
-      const y1 = todayVal;
-      const arrowY = isImprovement ? Math.max(y0, y1) : Math.min(y0, y1);
-      const labelY = arrowY + (isImprovement ? padding * 0.3 : -padding * 0.3);
+  // Arrow + percentage label — now forced to top of chart
+if (Math.abs(g) > 0.1) {
+  const midX = 0.5;
+  const topY = Math.max(...values) + padding * 0.8;  // always near the very top
 
-      layout.shapes.push({
-        type: 'line',
-        x0: midX - 0.15, y0: arrowY,
-        x1: midX + 0.15, y1: arrowY,
-        line: { color: arrowColor, width: 5 },
-        layer: 'above'
-      });
+  layout.shapes.push({
+    type: 'line',
+    x0: midX - 0.15, y0: topY - 30,
+    x1: midX + 0.15, y1: topY - 30,
+    line: { color: arrowColor, width: 7 },
+    layer: 'above'
+  });
 
-      // Arrowhead
-      const headOffset = isImprovement ? -0.06 : 0.06;
-      layout.shapes.push({
-        type: 'path',
-        path: `M ${midX + 0.15} ${arrowY} L ${midX + 0.1} ${arrowY + headOffset} L ${midX + 0.2} ${arrowY + headOffset} Z`,
-        fillcolor: arrowColor,
-        line: { width: 0 }
-      });
-
-      layout.annotations.push({
-        x: midX,
-        y: labelY,
-        text: `<b>${g >= 0 ? '+' : ''}${g.toFixed(1)}%</b>`,
-        showarrow: false,
-        font: { size: 16, weight: 'bold', color: arrowColor },
-        bgcolor: 'rgba(255,255,255,0.97)',
-        bordercolor: arrowColor,
-        borderwidth: 2,
-        borderpad: 8,
-        borderradius: 10
-      });
-    }
+  layout.annotations.push({
+    x: midX,
+    y: topY,
+    yref: 'y',
+    text: `<b>${g >= 0 ? '+' : ''}${g.toFixed(1)}%</b>`,
+    showarrow: false,
+    font: { size: 26, weight: 'bold', color: arrowColor },
+    bgcolor: 'rgba(255,255,255,0.95)',
+    bordercolor: arrowColor,
+    borderwidth: 3,
+    borderpad: 10,
+    borderradius: 12,
+    yshift: 10
+  });
+}
 
     Plotly.newPlot(id, [trace], layout, config);
   };
