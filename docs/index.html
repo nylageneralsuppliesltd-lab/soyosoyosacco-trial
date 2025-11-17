@@ -638,14 +638,23 @@
     };
 
     const baseLayout = {
-      margin: { t: 80, b: 60, l: 60, r: 40 },
+      margin: { t: 60, b: 60, l: 70, r: 30 },
       paper_bgcolor: 'rgba(0,0,0,0)',
       plot_bgcolor: 'rgba(0,0,0,0)',
       font: { family: 'Lato, sans-serif', color: '#1a1a1a' },
       showlegend: false,
       bargap: 0.5,
-      xaxis: { fixedrange: true, tickfont: { size: 13 } },
-      yaxis: { fixedrange: true, gridcolor: '#e5e7eb', zeroline: false }
+      xaxis: { 
+        fixedrange: true, 
+        tickfont: { size: 13 }
+      },
+      yaxis: { 
+        fixedrange: true, 
+        gridcolor: '#e5e7eb', 
+        zeroline: false,
+        automargin: true,
+        rangemode: 'tozero'
+      }
     };
 
     const config = { responsive: true, displayModeBar: false };
@@ -665,6 +674,10 @@
       const displayJan = isPct ? janVal.toFixed(2) + '%' : isMoney ? 'KES ' + fmt(janVal) : fmt(janVal);
       const displayToday = isPct ? todayVal.toFixed(2) + '%' : isMoney ? 'KES ' + fmt(todayVal) : fmt(todayVal);
 
+        // KEY FIX: Set Y-axis range to 125% of max value
+      const maxVal = Math.max(janVal, todayVal);
+      const yAxisMax = maxVal * 1.25;
+        
       const trace = {
         x: ['Jan 2025', 'Today'],
         y: [janVal, todayVal],
@@ -672,12 +685,17 @@
         marker: { color: [colorJan, colorToday] },
         text: [displayJan, displayToday],
         textposition: 'outside',
-        textfont: { size: 14, family: 'Lato, sans-serif', color: '#1a1a1a' },
+        textfont: { size: 13, family: 'Lato, sans-serif', color: '#1a1a1a', weight: 'bold' },
+        cliponaxis: false,
         hovertemplate: `<b>%{x}</b><br>%{y:${isPct ? '.2f' : ','}}${isPct ? '%' : ''}<extra></extra>`
       };
 
-      const layout = {
+  const layout = {
         ...baseLayout,
+        yaxis: {
+          ...baseLayout.yaxis,
+          range: [0, yAxisMax]
+        },
         shapes: [],
         annotations: []
       };
@@ -710,19 +728,17 @@
           line: { width: 0 }
         });
 
-        layout.annotations.push({
+       layout.annotations.push({
           x: midX,
-          y: midY + (isUp ? 0.1 : -0.1),
+          y: midY + (isUp ? maxY * 0.08 : -maxY * 0.08),
           text: `<b>${g >= 0 ? '+' : ''}${g.toFixed(1)}%</b>`,
           showarrow: false,
-          font: { size: 16, family: 'Lato, sans-serif', color: textColor, weight: 'bold' },
+          font: { size: 15, family: 'Lato, sans-serif', color: textColor, weight: 'bold' },
           bgcolor: 'rgba(255,255,255,0.95)',
           bordercolor: arrowColor,
           borderwidth: 2,
-          borderpad: 6,
-          borderRadius: 8
+          borderpad: 6
         });
-      }
 
       Plotly.newPlot(id, [trace], layout, config);
     };
