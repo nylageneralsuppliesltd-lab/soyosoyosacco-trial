@@ -344,7 +344,8 @@ function autoCreateNewMonthIfNeeded() {
     if(autoSaveEnabled) setTimeout(()=>saveCurrentMonth(true),3000);
 }
 
-// ==================== SYNC WITH DATABASE (FINAL FIXED - REMAPS FIELDS FOR DISPLAY) ====================
+
+// ==================== SYNC WITH DATABASE (FINAL - PERFECT FIELD MAPPING) ====================
 async function syncWithDB() {
     try {
         const res = await fetch(`${API_BASE}/history?t=${Date.now()}`, {cache:'no-store'});
@@ -353,29 +354,26 @@ async function syncWithDB() {
         let changed = false;
 
         data.forEach(row => {
-            const period = row.period;
             const rec = {
-                // Remap snake_case from DB to camelCase for display
-                period: period,
-                members: Number(row.members||0),
-                contributions: Number(row.contributions||0),
-                loansDisbursed: Number(row.loans_disbursed||0),  // Remapped
-                loansBalance: Number(row.loans_balance||0),      // Remapped
-                totalBankBalance: Number(row.total_bank_balance||0),  // Remapped
-                coopBank: Number(row.coop_bank||0),
-                chamasoft: Number(row.chama_soft||0),            // Remapped
-                cytonn: Number(row.cytonn||0),
-                totalAssets: Number(row.total_assets||0),        // Remapped
-                profit: Number(row.profit||0),
-                roa: Number(row.roa||0),
+                period: row.period,
+                members: Number(row.members || 0),
+                contributions: Number(row.contributions || 0),
+                loansDisbursed: Number(row.loans_disbursed || 0),      // ← mapped
+                loansBalance: Number(row.loans_balance || 0),          // ← mapped
+                totalBankBalance: Number(row.total_bank_balance || 0),// ← mapped
+                coopBank: Number(row.coop_bank || 0),
+                chamasoft: Number(row.chama_soft || 0),                // ← mapped
+                cytonn: Number(row.cytonn || 0),
+                totalAssets: Number(row.total_assets || 0),            // ← mapped
+                profit: Number(row.profit || 0),
+                roa: Number(row.roa || 0),
                 dateSaved: row.date_saved || row.dateSaved || new Date().toISOString(),
                 saveType: 'db'
             };
 
-            const dbKey = period + '_db';
+            const dbKey = row.period + '_db';
             const existing = window.saccoHistory[dbKey];
 
-            // Only update if newer OR doesn't exist
             if (!existing || rec.dateSaved > (existing.dateSaved || '')) {
                 window.saccoHistory[dbKey] = rec;
                 changed = true;
@@ -384,7 +382,7 @@ async function syncWithDB() {
 
         if (changed) {
             localStorage.setItem(CACHE_KEY, JSON.stringify(window.saccoHistory));
-            renderFullHistory();  // Shows correct SYNCED with real numbers
+            renderFullHistory();
         }
     } catch(e) {
         setTimeout(syncWithDB, 20000);
