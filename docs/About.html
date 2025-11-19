@@ -304,6 +304,10 @@ function renderHistoryLazy() {
         document.getElementById('loadMoreBtn').remove();
     }
 }
+    function renderFullHistory() {
+    currentDisplayCount = 0;   // This resets the "Load More" counter
+    renderHistoryLazy();       // Then renders from the beginning
+}
 // ==================== AUTO-CREATE NEW MONTH ====================
 function autoCreateNewMonthIfNeeded() {
     const currentPeriod = getCurrentPeriod();
