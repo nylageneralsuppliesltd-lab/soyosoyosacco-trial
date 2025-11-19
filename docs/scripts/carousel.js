@@ -21,8 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
     members: 145,
     contributions: 923765,
     numberOfLoansGiven: 112,
-    profit: 54808,
-    activeMembers: 72
+    profit: 54818,
+    activeMembers: 71
   });
 
   const recomputeData = () => {
