@@ -55,7 +55,7 @@
   box-shadow: 0 12px 36px rgba(0,0,0,0.10);
   height: 520px !important;
   width: 100%;
-  max-width: 400px !important;        /* ← your loved width back */
+  max-width: 400px !important;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -64,88 +64,73 @@
   box-sizing: border-box;
 }
 
-/* Title — tighter, fits even long ones (ROA, Liquidity) */
+/* Title — minimal space below */
 .chart-card > p {
-  margin: 0 0 4px;
+  margin: 0 0 4px 0;
   font-weight: 900;
   font-size: 1.26rem;
   color: #004d1a;
   text-transform: uppercase;
   text-align: center;
-  line-height: 1.25;
+  line-height: 1.2;
 }
 
-/* Arrow + % — fully visible, tight spacing */
+/* Arrow + % — super tight */
 .growth-indicator {
-  margin: 6px auto 12px !important;
+  margin: 4px auto 8px !important;
   font-size: 1.48rem;
   font-weight: 900;
-  padding: 7px 18px;
+  padding: 6px 18px;
   background: rgba(240,253,244,0.98);
   border-radius: 16px;
   width: fit-content;
   box-shadow: 0 3px 10px rgba(0,0,0,0.08);
 }
 
-/* Plot area — compresses internal Plotly spacing */
+/* MAIN FIX: Pull EVERYTHING up — no wasted space */
 .chart-card > div[id^="plot"] {
   flex: 1;
   position: relative;
-  margin-top: -12px;           /* pulls chart up */
-  padding-bottom: 68px;        /* reserves space for yield box */
+  margin-top: -28px !important;        /* pulls the entire chart up */
+  padding-bottom: 68px;                /* keeps room for yield box */
 }
 
-/* Remove big middle percentage */
+/* Remove the big middle number */
 .js-plotly-plot .plotly .annotation,
 .js-plotly-plot .plotly .annotation text { display: none !important; }
 
-/* PIE CHART ONLY — perfect spacing, no overlap */
+/* BAR CHARTS: squeeze space between x-axis labels (Jan/Today) and the bars */
+.js-plotly-plot .infolayer .g-gtitle { margin-top: -10px !important; }
+.js-plotly-plot .xaxislayer-above { transform: translateY(-12px) !important; }
+
+/* PIE CHART ONLY: GLUE the green yield box directly under the pie */
 #plotLoanTypes {
-  padding-bottom: 78px !important;
+  padding-bottom: 62px !important;
+  margin-top: -28px !important;
 }
 
 #projectedYield {
   position: absolute !important;
-  bottom: 12px !important;
+  bottom: 6px !important;                 /* glued to the bottom */
   left: 50% !important;
   transform: translateX(-50%) !important;
-  width: calc(100% - 48px) !important;
-  padding: 12px 18px !important;
+  width: calc(100% - 40px) !important;
+  padding: 11px 16px !important;
   background: linear-gradient(135deg,#10B981,#34D399);
   color: #fff;
   font-weight: 900;
-  font-size: 1.48rem !important;
-  border-radius: 16px;
+  font-size: 1.46rem !important;
+  border-radius: 14px;
   box-shadow: 0 6px 22px rgba(16,185,129,0.5);
-  z-index: 20;
+  z-index: 30;
 }
 
-/* Compress Plotly internal spacing so long titles fit */
-.js-plotly-plot .main-svg {
-  transform: translateY(-10px) !important;
-}
-.js-plotly-plot .plot-container {
-  margin-top: -10px !important;
-}
-
-/* Mobile — everything visible */
+/* Mobile — still perfect */
 @media (max-width: 768px) {
-  .chart-card {
-    height: 490px !important;
-    max-width: 380px !important;
-  }
-  .chart-card > p { font-size: 1.22rem; }
-  .growth-indicator {
-    font-size: 1.42rem;
-    padding: 6px 16px;
-    margin: 4px auto 10px !important;
-  }
-  #projectedYield {
-    font-size: 1.38rem !important;
-    padding: 11px 15px !important;
-    bottom: 10px !important;
-  }
-  .js-plotly-plot .main-svg { transform: translateY(-8px) !important; }
+  .chart-card { height: 490px !important; }
+  .chart-card > div[id^="plot"] { margin-top: -22px !important; }
+  .growth-indicator { font-size: 1.42rem; padding: 5px 15px; margin: 3px auto 6px !important; }
+  #projectedYield { font-size: 1.38rem !important; bottom: 4px !important; }
 }
     
   /* Keep all your projection & other styles untouched */
