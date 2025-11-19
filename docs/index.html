@@ -34,125 +34,134 @@
     </script>
 
 <style id="final-working-styles">
+  /* UNIFIED CARD DESIGN — Growth Charts now EXACTLY match Projections section */
   .growth-charts-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-    gap: 2.2rem;
-    margin: 3.5rem 0;
-    padding: 0 8px; /* small page padding to prevent edge overflow */
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 1.8rem;
+    margin: 3rem 0;
+    padding: 0 10px;
   }
+
   .chart-card {
     background: #ffffff;
-    padding: 1.8rem 1.2rem 2rem;
-    border-radius: 28px;
-    box-shadow: 0 14px 40px rgba(0,0,0,0.11);
+    padding: 1.4rem 1.1rem 1.6rem;
+    border-radius: 24px;
+    box-shadow: 0 12px 36px rgba(0,0,0,0.10);
     text-align: center;
     transition: transform 0.35s ease;
-    min-height: 580px;
+    min-height: 500px;
+    max-height: 520px;
     height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    gap: 1.2rem;
+    gap: 1rem;
     border: 1.5px solid #f0fdf4;
-    overflow: hidden; /* prevents any bleed */
+    overflow: hidden;
+    box-sizing: border-box;
   }
-  .chart-card:hover { transform: translateY(-10px); box-shadow: 0 20px 50px rgba(0,0,0,0.15); }
+
+  .chart-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 18px 46px rgba(0,0,0,0.14);
+  }
 
   .chart-card > p {
-    margin: 0 0 8px 0;
+    margin: 0 0 6px 0;
     font-weight: 900;
-    font-size: 1.5rem;
+    font-size: 1.42rem;
     color: #004d1a;
-    letter-spacing: 0.8px;
+    letter-spacing: 0.7px;
     text-transform: uppercase;
+    line-height: 1.2;
   }
+
   .growth-indicator {
-    margin: 12px 0 6px 0;
-    font-size: 1.75rem;
+    margin: 8px 0 4px 0;
+    font-size: 1.65rem;
     font-weight: 900;
   }
+
   .growth-indicator.positive { color: #10B981; }
   .growth-indicator.negative { color: #EF4444; }
-  .growth-indicator i { margin-right: 10px; font-size: 1.4em; }
+  .growth-indicator i { margin-right: 10px; font-size: 1.35em; }
 
   .chart-card > div[id^="plot"] {
     flex: 1;
     width: 100% !important;
-    min-height: 480px !important;
+    min-height: 380px !important;
     height: 100% !important;
-    margin-top: 16px;
+    margin-top: 10px;
   }
 
-  /* Full KES on bar tops */
+  /* Full KES numbers on bar tops */
   .js-plotly-plot .plotly .textpoint text {
     font-size: 18px !important;
     font-weight: 900 !important;
     fill: #004d1a !important;
   }
 
-  /* Green percentage — perfect position */
+  /* Big green/red percentage at top */
   .js-plotly-plot .plotly .annotation text {
     font-size: 26px !important;
     font-weight: 900 !important;
   }
-    /* ADD THIS ANYWHERE INSIDE <style id="final-working-styles"> */
-.js-plotly-plot .plotly .annotation text {
-    font-size: 26px !important;
-    font-weight: 900 !important;
-    yshift: 50px !important;     /* pushes it way up */
-    text-anchor: middle !important;
-}
-.js-plotly-plot .plotly .annotation text tspan {
-    fill: #10B981 !important;
-}
 
-  /* Expected Yield */
+  /* Expected Yield box — now perfectly sized */
   #projectedYield {
-    margin: 16px 0 20px;
-    padding: 20px 24px;
+    margin: 12px 0 16px;
+    padding: 16px 20px;
     background: linear-gradient(135deg, #10B981, #34D399);
     color: white;
     font-weight: 900;
-    font-size: 1.75rem;
-    border-radius: 20px;
+    font-size: 1.65rem;
+    border-radius: 18px;
     text-align: center;
     flex-shrink: 0;
-    box-shadow: 0 10px 32px rgba(16,185,129,0.45);
-    letter-spacing: 2px;
+    box-shadow: 0 8px 28px rgba(16,185,129,0.42);
+    letter-spacing: 1.8px;
     text-transform: uppercase;
   }
-/* NEGATIVE BARS & TEXT = RED – 100% WORKING */
-.js-plotly-plot .plotly .trace.bar text {
-  fill: #004d1a !important; /* positive text */
-}
-.js-plotly-plot .plotly .trace.bar .point text {
-  fill: #004d1a !important;
-}
 
-/* This is the real way Plotly marks negative values */
-.js-plotly-plot .plotly .trace.bar .point[fillcolor="#ef4444"] text,
-.js-plotly-plot .plotly .trace.bar .point[fill="#ef4444"] text {
-  fill: #991b1b !important; /* negative text = deep red */
-}
+  /* NEGATIVE BARS & TEXT — already fixed in JS, but keep CSS safety */
+  .js-plotly-plot .plotly .trace.bar text { fill: #004d1a !important; }
+  .js-plotly-plot .plotly .trace.bar .point[fillcolor="#ef4444"] text,
+  .js-plotly-plot .plotly .trace.bar .point[fill="#ef4444"] text {
+    fill: #991b1b !important;
+  }
 
-  /* Mobile */
+  /* RESPONSIVE — identical proportions to Projections section */
   @media (max-width: 768px) {
-    .growth-charts-grid { gap: 2rem; margin: 3rem 0; padding: 0 4px; }
-    .chart-card { min-height: 540px; padding: 1.6rem 1rem; }
-    .chart-card > p { font-size: 1.35rem; }
-    .growth-indicator { font-size: 1.55rem; }
-    .chart-card > div[id^="plot"] { min-height: 420px !important; }
-    #projectedYield { font-size: 1.5rem; padding: 18px 20px; }
+    .growth-charts-grid {
+      gap: 1.6rem;
+      margin: 2.5rem 0;
+      padding: 0 6px;
+    }
+    .chart-card {
+      min-height: 460px;
+      max-height: 480px;
+      padding: 1.3rem 1rem;
+      border-radius: 20px;
+    }
+    .chart-card > p { font-size: 1.32rem; }
+    .growth-indicator { font-size: 1.52rem; }
+    .chart-card > div[id^="plot"] { min-height: 340px !important; }
+    #projectedYield {
+      font-size: 1.45rem;
+      padding: 14px 18px;
+      letter-spacing: 1.4px;
+    }
     .js-plotly-plot .plotly .textpoint text { font-size: 16px !important; }
     .js-plotly-plot .plotly .annotation text { font-size: 22px !important; }
   }
 
-  /* Rest of your styles (projections, etc.) — unchanged */
+  /* REST OF YOUR STYLES — unchanged and still perfect */
   #financialCharts, .financial-chart-container { width: 100%; overflow-x: auto; overflow-y: visible; contain: layout style paint; padding: 0.75rem; }
   .financial-chart { background: #ffffff; border-radius: 20px; padding: 0.75rem; box-shadow: 0 8px 25px rgba(0,0,0,0.08); margin-bottom: 1.5rem; min-height: 500px; display: flex; flex-direction: column; }
   .financial-chart > div[id^="plot"], .plotly-financial-div, .js-plotly-plot { width: 100% !important; height: 100% !important; min-height: 400px !important; flex: 1; overflow: visible !important; }
   .plot-container { flex-grow: 1; min-height: 400px; overflow: visible; contain: layout style paint; }
+
   #projectionsChart { isolation: isolate; contain: layout style paint; max-width: 1400px; margin: 0 auto; padding: 0 10px; font-family: 'Lato', sans-serif; }
   #projectionsChart > .kpi-card, #projectionsChart > .summary-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid #f0fdf4; margin: 16px 8px; max-width: calc(100% - 16px); }
   #projectionsChart .kpi-title { padding: 16px; background: #f8fdfa; text-align: center; font-size: 16px; font-weight: 900; color: #004d1a; }
@@ -165,6 +174,7 @@
   #projectionsChart .summary-values span { color: #6b7280; font-size: 11.5px; display: block; }
   #projectionsChart .summary-values strong { font-size: 15px; color: #004d1a; }
   #projectionsChart .summary-growth { background: #10B981; color: white; padding: 6px 14px; border-radius: 50px; font-size: 12.5px; font-weight: 900; }
+
   @media (min-width: 769px) {
     #projectionsChart { display: flex; flex-wrap: wrap; justify-content: space-between; }
     #projectionsChart > .kpi-card { flex: 1 1 calc(50% - 20px); max-width: 48%; }
@@ -174,6 +184,7 @@
     #projectionsChart .summary-values strong { font-size: 17px; }
     #projectionsChart .summary-growth { padding: 8px 16px; font-size: 13px; }
   }
+
   @media (max-width: 768px) {
     #projectionsChart .plotly-projection-div { height: 460px !important; }
   }
