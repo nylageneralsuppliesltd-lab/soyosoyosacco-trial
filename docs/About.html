@@ -200,7 +200,16 @@ function loadCache() {
     }
 }
 
-// 1. renderHistoryLazy() — FULLY FIXED + keeps lazy loading
+// ==================== LAZY LOAD RENDERER (FINAL FIXED VERSION) ====================
+let currentDisplayCount = 0;
+const MOBILE_LIMIT = 12;
+const DESKTOP_LIMIT = 36;
+
+function renderFullHistory() {
+    currentDisplayCount = 0;
+    renderHistoryLazy();
+}
+
 function renderHistoryLazy() {
     const container = document.getElementById('fullHistoryTable');
     const cur = getCurrentPeriod();
@@ -224,7 +233,7 @@ function renderHistoryLazy() {
         });
     });
 
-    // Sort: newest first, LIVE on top for current month
+    // Sort: newest first, LIVE always on top for current month
     history.sort((a, b) => {
         if (a.period !== b.period) return b.period.localeCompare(a.period);
         return a.saveType === 'live' ? -1 : 1;
@@ -270,17 +279,26 @@ function renderHistoryLazy() {
             const bg = r.saveType === 'live' ? 'background:#fffbe6' : 'background:#f0fdf4';
             const label = r.saveType === 'live' ? '(LIVE)' : '(SYNCED)';
             html += `<tr ${r.period === cur ? 'class="current-month"' : ''} style="${bg}">
-                <td>${formatMonth(r.period)}</td><td>${fmt(r.members)}</td><td>${fmt(r.contributions)}</td>
-                <td>${fmt(r.loansDisbursed)}</td><td>${fmt(r.loansBalance)}</td><td>${fmt(r.totalBankBalance)}</td>
-                <td>${fmt(r.coopBank)}</td><td>${fmt(r.chamasoft)}</td><td>${fmt(r.cytonn)}</td>
-                <td>${fmt(r.totalAssets)}</td><td>${fmt(r.profit)}</td><td>${r.roa ? Number(r.roa).toFixed(1) : '0.0'}</td>
-                <td>${formatDisplayDate(r.dateSaved)} <small>${label}</small></td></tr>`;
+                <td>${formatMonth(r.period)}</td>
+                <td>${fmt(r.members)}</td>
+                <td>${fmt(r.contributions)}</td>
+                <td>${fmt(r.loansDisbursed)}</td>
+                <td>${fmt(r.loansBalance)}</td>
+                <td>${fmt(r.totalBankBalance)}</td>
+                <td>${fmt(r.coopBank)}</td>
+                <td>${fmt(r.chamasoft)}</td>
+                <td>${fmt(r.cytonn)}</td>
+                <td>${fmt(r.totalAssets)}</td>
+                <td>${fmt(r.profit)}</td>
+                <td>${r.roa ? Number(r.roa).toFixed(1) : '0.0'}</td>
+                <td>${formatDisplayDate(r.dateSaved)} <small>${label}</small></td>
+            </tr>`;
         });
         html += '</tbody></table>';
     }
     container.innerHTML = html;
 
-    // Load More button — exactly your original logic
+    // Load More button — exactly your original beautiful behavior
     const btnExists = !!document.getElementById('loadMoreBtn');
     if (currentDisplayCount < history.length) {
         if (!btnExists) {
@@ -295,7 +313,7 @@ function renderHistoryLazy() {
             btn.onclick = () => {
                 renderHistoryLazy();
                 if (prevCount < container.children.length) {
-                    container.children[prevCount].scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    container.children[prevCount].scrollIntoView({behavior:'smooth', block:'start'});
                 }
             };
             container.appendChild(btn);
@@ -304,10 +322,7 @@ function renderHistoryLazy() {
         document.getElementById('loadMoreBtn').remove();
     }
 }
-    function renderFullHistory() {
-    currentDisplayCount = 0;   // This resets the "Load More" counter
-    renderHistoryLazy();       // Then renders from the beginning
-}
+
 // ==================== AUTO-CREATE NEW MONTH ====================
 function autoCreateNewMonthIfNeeded() {
     const currentPeriod = getCurrentPeriod();
@@ -547,13 +562,13 @@ window.toggleAutoSave = function() {
     document.getElementById('autoSaveToggle').style.background = autoSaveEnabled ? '#10B981':'#f59e0b';
 };
 
-// 2. downloadHistoryCSV() — now includes both current month rows
+// ==================== DOWNLOAD CSV (FINAL FIXED) ====================
 function downloadHistoryCSV() {
     const history = [];
     Object.keys(window.saccoHistory).forEach(key => {
         const rec = window.saccoHistory[key];
         const isDb = key.endsWith('_db');
-        if (isDb && key.slice(0, -3) !== getCurrentPeriod()) return; // skip old _db
+        if (isDb && key.slice(0, -3) !== getCurrentPeriod()) return;
         history.push({
             ...rec,
             period: isDb ? key.slice(0, -3) : key,
