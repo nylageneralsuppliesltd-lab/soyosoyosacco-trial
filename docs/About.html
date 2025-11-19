@@ -344,16 +344,18 @@ function autoCreateNewMonthIfNeeded() {
     if(autoSaveEnabled) setTimeout(()=>saveCurrentMonth(true),3000);
 }
 
-// ==================== SYNC WITH DATABASE ====================
+// ==================== SYNC WITH DATABASE (FINAL FIXED - NO MORE DUPLICATES) ====================
 async function syncWithDB() {
     try {
         const res = await fetch(`${API_BASE}/history?t=${Date.now()}`, {cache:'no-store'});
         if(!res.ok) throw 1;
         const data = await res.json();
         let changed = false;
-        data.forEach(row=>{
+
+        data.forEach(row => {
+            const period = row.period;
             const rec = {
-                period: row.period,
+                period: period,
                 members: Number(row.members||0),
                 contributions: Number(row.contributions||0),
                 loansDisbursed: Number(row.loans_disbursed||0),
@@ -365,24 +367,29 @@ async function syncWithDB() {
                 totalAssets: Number(row.total_assets||0),
                 profit: Number(row.profit),
                 roa: Number(row.roa||0),
-                dateSaved: row.date_saved||row.dateSaved||new Date().toISOString(),
-                saveType:'db'
+                dateSaved: row.date_saved || row.dateSaved || new Date().toISOString(),
+                saveType: 'db'
             };
-            if(!window.saccoHistory[rec.period] || rec.dateSaved>(window.saccoHistory[rec.period].dateSaved||'')) {
-                window.saccoHistory[rec.period] = rec;
+
+            const dbKey = period + '_db';
+            const currentDbRecord = window.saccoHistory[dbKey];
+
+            // Only update if this DB record is newer
+            if (!currentDbRecord || rec.dateSaved > currentDbRecord.dateSaved) {
+                window.saccoHistory[dbKey] = rec;
                 changed = true;
             }
         });
-        if(changed){ 
-            localStorage.setItem(CACHE_KEY, JSON.stringify(window.saccoHistory)); 
-            renderFullHistory(); 
-            showLiveData(); 
+
+        if (changed) {
+            localStorage.setItem(CACHE_KEY, JSON.stringify(window.saccoHistory));
+            renderFullHistory();
+            showLiveData(); // this will refresh the LIVE row
         }
     } catch(e) {
-        setTimeout(syncWithDB,20000);
+        setTimeout(syncWithDB, 20000);
     }
 }
-
 // ==================== SAVE CURRENT MONTH (100% FIXED) ====================
 window.saveCurrentMonth = async function(isAutoSave=false) {
     if(!window.saccoData?.today) { 
