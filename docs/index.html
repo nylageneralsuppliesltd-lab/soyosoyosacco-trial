@@ -512,7 +512,7 @@
     <script src="./scripts/chatbot.js"></script>
 
 <script>
-// PLOTLY GROWTH CHARTS — FINAL VERSION WITH FULL NEGATIVE VALUE SUPPORT (NOV 17, 2025)
+// PLOTLY GROWTH CHARTS — FINAL VERSION: FULL NEGATIVE RED SUPPORT + ZERO DOM WATCHERS (Nov 19, 2025)
 function renderPlotlyGrowthCharts() {
   const data = window.saccoData;
   if (!data || !data.jan || !data.today) {
@@ -521,21 +521,15 @@ function renderPlotlyGrowthCharts() {
   }
 
   const { jan, today } = data;
-  const janExternal = today.externalLoans ?? jan.externalLoans ?? 0;
-  const todayExternal = today.externalLoans ?? 0;
 
-  // FINAL CORRECT TOTAL ASSETS — NEVER TOUCH AGAIN
-  const janTotalAssets = (jan.loans || jan.loansBalance || 0) + 
-                         (jan.bankBalance || jan.totalBankBalance || 0);
+  // Correct Total Assets (used for ROA)
+  const janTotalAssets = (jan.loans || jan.loansBalance || 0) + (jan.bankBalance || jan.totalBankBalance || 0);
+  const todayTotalAssets = (today.loansBalance || 0) + (today.totalBankBalance || today.bankBalance || 0);
 
-  const todayTotalAssets = (today.loansBalance || 0) + 
-                           (today.totalBankBalance || today.bankBalance || 0);
-
-  // ROA — calculated ONCE and used everywhere
+  // ROA & Liquidity
   const janROA   = janTotalAssets   > 0 ? (jan.profit   / janTotalAssets)   * 100 : 0;
   const todayROA = todayTotalAssets > 0 ? (today.profit / todayTotalAssets) * 100 : 0;
-
-  const janLiq = jan.contributions > 0 ? ((jan.bankBalance || 0) / jan.contributions) * 100 : 0;
+  const janLiq   = jan.contributions > 0 ? ((jan.bankBalance || 0) / jan.contributions) * 100 : 0;
   const todayLiq = today.contributions > 0 ? ((today.bankBalance || 0) / today.contributions) * 100 : 0;
 
   const fmt = (n) => n.toLocaleString('en-KE');
@@ -544,22 +538,16 @@ function renderPlotlyGrowthCharts() {
     return ((now - then) / Math.abs(then)) * 100;
   };
 
-const baseLayout = {
-  margin: { t: 80, b: 60, l: 50, r: 40 },  // ultra-slim margins
-  paper_bgcolor: 'rgba(0,0,0,0)',
-  plot_bgcolor: 'rgba(0,0,0,0)',
-  font: { family: 'Lato, sans-serif', color: '#1a1a1a' },
-  showlegend: false,
-  bargap: 0.5,
-  xaxis: { fixedrange: true, tickfont: { size: 13 } },
-  yaxis: { 
-    fixedrange: true, 
-    gridcolor: '#e5e7eb', 
-    zerolinecolor: '#999', 
-    zerolinewidth: 1.5,
-    tickformat: ',.0f'   // ← THIS FORCES FULL NUMBERS (no k/m)
-  }
-};
+  const baseLayout = {
+    margin: { t: 80, b: 60, l: 50, r: 40 },
+    paper_bgcolor: 'rgba(0,0,0,0)',
+    plot_bgcolor: 'rgba(0,0,0,0)',
+    font: { family: 'Lato, sans-serif', color: '#1a1a1a' },
+    showlegend: false,
+    bargap: 0.5,
+    xaxis: { fixedrange: true, tickfont: { size: 13 } },
+    yaxis: { fixedrange: true, gridcolor: '#e5e7eb', zerolinecolor: '#999', zerolinewidth: 1.5, tickformat: ',.0f' }
+  };
 
   const config = { responsive: true, displayModeBar: false };
 
@@ -567,9 +555,8 @@ const baseLayout = {
     const g = growth(todayVal, janVal);
     const rawDiff = todayVal - janVal;
     const isImprovement = rawDiff > 0 || (janVal < 0 && todayVal >= 0) || (janVal < 0 && todayVal < janVal && Math.abs(todayVal) < Math.abs(janVal));
-    const arrowColor = isImprovement ? '#10B981' : '#EF4444';
 
-    // Update growth indicator
+    // Update small text indicator below chart
     const el = document.getElementById(gid);
     if (el) {
       el.innerHTML = `<i class="fas fa-arrow-${isImprovement ? 'up' : 'down'}"></i> ${g >= 0 ? '+' : ''}${g.toFixed(1)}%`;
@@ -579,7 +566,7 @@ const baseLayout = {
     const displayJan = isPct ? janVal.toFixed(2) + '%' : isMoney ? 'KES ' + fmt(janVal) : fmt(janVal);
     const displayToday = isPct ? todayVal.toFixed(2) + '%' : isMoney ? 'KES ' + fmt(todayVal) : fmt(todayVal);
 
-    // Dynamic Y-axis range — includes negative values
+    // Dynamic Y range (handles negatives)
     const values = [janVal, todayVal];
     const absMax = Math.max(Math.abs(janVal), Math.abs(todayVal));
     const padding = absMax * 0.5;
@@ -590,62 +577,68 @@ const baseLayout = {
       x: ['Jan 2025', 'Today'],
       y: values,
       type: 'bar',
-    marker: {
-  color: [
-    janVal < 0 ? '#ef4444' : colorJan,
-    todayVal < 0 ? '#ef4444' : colorToday
-  ]
-},
+      marker: {
+        color: [
+          janVal < 0 ? '#ef4444' : colorJan,
+          todayVal < 0 ? '#ef4444' : colorToday
+        ]
+      },
       text: [displayJan, displayToday],
       textposition: 'outside',
-      textfont: { size: 13, family: 'Lato, sans-serif' },
-      cliponaxis: false
+      cliponaxis: false,
+      textfont: {
+        color: [                      // THIS IS THE KEY — FORCED RED FOR NEGATIVE BARS
+          janVal < 0 ? '#991b1b' : '#004d1a',
+          todayVal < 0 ? '#991b1b' : '#004d1a'
+        ],
+        size: 16,
+        family: 'Lato, sans-serif',
+        weight: 'bold'
+      }
     };
 
     const layout = {
       ...baseLayout,
-      yaxis: {
-        ...baseLayout.yaxis,
-        range: [yMin, yMax],
-        zeroline: true
-      },
+      yaxis: { ...baseLayout.yaxis, range: [yMin, yMax], zeroline: true },
       shapes: [],
       annotations: []
     };
 
-  // Arrow + percentage label — now forced to top of chart
-if (Math.abs(g) > 0.1) {
-  const midX = 0.5;
-  const topY = Math.max(...values) + padding * 0.8;  // always near the very top
+    // Big percentage + short dash at the top — now 100% red when negative
+    if (Math.abs(g) > 0.1) {
+      const midX = 0.5;
+      const topY = Math.max(...values) + padding * 0.8;
 
-  layout.shapes.push({
-    type: 'line',
-    x0: midX - 0.15, y0: topY - 30,
-    x1: midX + 0.15, y1: topY - 30,
-    line: { color: arrowColor, width: 7 },
-    layer: 'above'
-  });
+      // Short horizontal dash
+      layout.shapes.push({
+        type: 'line',
+        x0: midX - 0.15, y0: topY - 30,
+        x1: midX + 0.15, y1: topY - 30,
+        line: { color: isImprovement ? '#10B981' : '#EF4444', width: 8 },
+        layer: 'above'
+      });
 
-  layout.annotations.push({
-    x: midX,
-    y: topY,
-    yref: 'y',
-    text: `<b>${g >= 0 ? '+' : ''}${g.toFixed(1)}%</b>`,
-    showarrow: false,
-    font: { size: 26, weight: 'bold', color: arrowColor },
-    bgcolor: 'rgba(255,255,255,0.95)',
-    bordercolor: arrowColor,
-    borderwidth: 3,
-    borderpad: 10,
-    borderradius: 12,
-    yshift: 10
-  });
-}
+      // Big percentage label
+      layout.annotations.push({
+        x: midX,
+        y: topY,
+        yref: 'y',
+        text: `<b>${g >= 0 ? '+' : ''}${g.toFixed(1)}%</b>`,
+        showarrow: false,
+        font: { size: 26, family: 'Lato, sans-serif', color: isImprovement ? '#10B981' : '#EF4444' },
+        bgcolor: 'rgba(255,255,255,0.97)',
+        bordercolor: isImprovement ? '#10B981' : '#EF4444',
+        borderwidth: 4,
+        borderpad: 12,
+        borderradius: 14,
+        yshift: 10
+      });
+    }
 
     Plotly.newPlot(id, [trace], layout, config);
   };
 
-  // Render all charts — now fully supports negative values!
+  // Render all charts
   createBarWithArrow('plotMembers', jan.members, today.members, '#8B5CF6', '#C4B5FD', false, false, 'growthMembers');
   createBarWithArrow('plotLoans', jan.loans || 0, today.loans || 0, '#F59E0B', '#FBBF24', false, true, 'growthLoans');
   createBarWithArrow('plotContributions', jan.contributions, today.contributions, '#10B981', '#34D399', false, true, 'growthContributions');
@@ -653,7 +646,7 @@ if (Math.abs(g) > 0.1) {
   createBarWithArrow('plotROA', janROA, todayROA, '#0EA5E9', '#7DD3FC', true, false, 'growthROA');
   createBarWithArrow('plotLiquidity', janLiq, todayLiq, '#6366F1', '#A5B4FC', true, false, 'growthLiquidity');
 
-  // PIE CHART + EXPECTED YIELD (unchanged — already perfect)
+  // Loan Types Pie Chart + Expected Yield (unchanged)
   if (window.loanTypesToday?.length > 0) {
     const loanTypes = window.loanTypesToday.filter(t => t.value > 0);
     const total = loanTypes.reduce((s, t) => s + t.value, 0);
@@ -690,11 +683,11 @@ if (Math.abs(g) > 0.1) {
     }, config);
   }
 
-  console.log('SOYOSOYO: All charts rendered — NEGATIVE VALUES FULLY SUPPORTED');
+  console.log('SOYOSOYO: All growth charts rendered — NEGATIVE VALUES NOW 100% RED & MOBILE-SAFE');
   return true;
 }
 
-// Safe render loop
+// Safe render loop — still no DOM listeners that break mobile menu
 document.addEventListener('DOMContentLoaded', () => {
   const tryRender = () => {
     if (!renderPlotlyGrowthCharts()) setTimeout(tryRender, 300);
