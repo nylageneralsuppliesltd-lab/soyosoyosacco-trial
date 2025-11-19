@@ -48,7 +48,7 @@
 
 .chart-card {
   background:#fff;
-  padding:1.6rem 1.8rem 2.2rem;
+  padding:1.6rem 1.8rem 2rem;
   border-radius:28px;
   box-shadow:0 16px 48px rgba(0,0,0,0.13);
   height:570px !important;
@@ -62,45 +62,42 @@
   box-sizing:border-box;
 }
 
-/* Normal titles & indicators */
 .chart-card > p { margin:0 0 8px; font-weight:900; font-size:1.38rem; color:#004d1a; text-transform:uppercase; text-align:center; }
 .growth-indicator { margin:8px auto 14px !important; font-size:1.62rem; font-weight:900; padding:9px 26px; background:rgba(240,253,244,0.98); border-radius:20px; width:fit-content; }
 
-/* Chart takes all remaining space */
 .chart-card > div[id^="plot"] { flex:1; position:relative; margin-top:-16px !important; }
 
-/* PIE CHART ONLY — CLEAN 3-LAYER ORDER WITH REAL SPACE */
+/* PIE CHART ONLY — CLEAN ORDER + SPACING */
 .chart-card:has(#plotLoanTypes) {
-  gap: 14px;                     /* ← space between pie, yield box and title */
+  gap: 18px;                     /* ← increased gap so everything fits perfectly on desktop */
 }
 
-/* 1. The pie itself */
+/* Pie itself */
 #plotLoanTypes {
   padding-bottom: 0 !important;
-  margin-bottom: 10px !important;
 }
 
-/* 2. Yield box — normal element, not absolute */
+/* Yield box — compact */
 #projectedYield {
   order: 2;
-  width: 70% !important;
-  max-width: 400px !important;
+  width: 66% !important;
+  max-width: 380px !important;
   margin: 0 auto !important;
-  padding: 12px 20px !important;
+  padding: 11px 18px !important;
   background: linear-gradient(135deg,#10B981,#34D399);
   color:#fff;
   font-weight:900;
-  font-size:1.34rem !important;
+  font-size:1.32rem !important;
   border-radius:18px;
   box-shadow:0 8px 24px rgba(16,185,129,0.5);
   text-align:center;
   flex-shrink:0;
 }
 
-/* 3. Title moved to very bottom with space */
+/* Title at bottom — now fully visible on desktop */
 .chart-card:has(#plotLoanTypes) > p {
   order: 3;
-  margin: 10px auto 0 !important;
+  margin: 0 auto 8px !important;
   padding: 10px 16px;
   background: rgba(255,255,255,0.97);
   border-radius: 14px;
@@ -109,27 +106,38 @@
   flex-shrink: 0;
 }
 
-/* Remove middle percentage from all charts */
+/* Remove middle annotation */
 .js-plotly-plot .plotly .annotation,
 .js-plotly-plot .plotly .annotation text { display:none !important; }
 
-/* MOBILE — FULL BLEED + SAME PERFECT SPACING */
-@media (max-width:992px) {
+/* MOBILE — TRUE FULL BLEED + SAME PERFECT SPACING */
+@media (max-width: 992px) {
   .growth-charts-grid {
-    grid-template-columns:1fr;
-    gap:2.2rem;
-    padding:0;
-    margin:4rem 0;
-    width:100vw;
-    position:relative;
-    left:50%;
-    right:50%;
-    margin-left:-50vw;
-    margin-right:-50vw;
+    grid-template-columns: 1fr !important;
+    gap: 2.4rem;
+    padding: 0 !important;
+    margin: 4rem 0 !important;
+    width: 100vw !important;
+    max-width: none !important;
+    position: relative !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;   /* ← this forces real full-bleed */
   }
-  .chart-card { max-width:none !important; height:550px !important; }
-  .chart-card:has(#plotLoanTypes) { gap:12px; }
-  #projectedYield { font-size:1.30rem !important; padding:11px 18px !important; }
+
+  .chart-card {
+    max-width: none !important;
+    height: 560px !important;
+    border-radius: 26px;
+  }
+
+  .chart-card:has(#plotLoanTypes) {
+    gap: 16px;           /* ← mobile gets perfect spacing too */
+  }
+
+  #projectedYield {
+    font-size: 1.30rem !important;
+    padding: 10px 16px !important;
+  }
 }
     
   /* Keep all your projection & other styles untouched */
