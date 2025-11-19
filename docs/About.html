@@ -344,7 +344,7 @@ function autoCreateNewMonthIfNeeded() {
     if(autoSaveEnabled) setTimeout(()=>saveCurrentMonth(true),3000);
 }
 
-// ==================== SYNC WITH DATABASE (FINAL FIXED - NO MORE DUPLICATES) ====================
+// ==================== SYNC WITH DATABASE (FINAL FIXED - NO ZEROS, NO DUPLICATES) ====================
 async function syncWithDB() {
     try {
         const res = await fetch(`${API_BASE}/history?t=${Date.now()}`, {cache:'no-store'});
@@ -372,10 +372,10 @@ async function syncWithDB() {
             };
 
             const dbKey = period + '_db';
-            const currentDbRecord = window.saccoHistory[dbKey];
+            const existing = window.saccoHistory[dbKey];
 
-            // Only update if this DB record is newer
-            if (!currentDbRecord || rec.dateSaved > currentDbRecord.dateSaved) {
+            // Only update if newer OR if it doesn't exist
+            if (!existing || rec.dateSaved > existing.dateSaved) {
                 window.saccoHistory[dbKey] = rec;
                 changed = true;
             }
@@ -383,14 +383,13 @@ async function syncWithDB() {
 
         if (changed) {
             localStorage.setItem(CACHE_KEY, JSON.stringify(window.saccoHistory));
-            renderFullHistory();
-            showLiveData(); // this will refresh the LIVE row
+            renderFullHistory();  // This will show correct SYNCED row
         }
     } catch(e) {
         setTimeout(syncWithDB, 20000);
     }
 }
-// ==================== SAVE CURRENT MONTH (100% FIXED) ====================
+// ==================== SAVE CURRENT MONTH (SLIGHTLY IMPROVED - NEVER OVERWRITES LIVE) ====================
 window.saveCurrentMonth = async function(isAutoSave=false) {
     if(!window.saccoData?.today) { 
         if(!isAutoSave) alert("No data! Visit homepage first."); 
@@ -418,22 +417,18 @@ window.saveCurrentMonth = async function(isAutoSave=false) {
         extra_fields: ef
     };
 
-    // THIS WAS THE CRASHING LINE — NOW SAFE FOREVER
-    window.saccoHistory = window.saccoHistory || {};
-    const optimisticRecord = {...payload, dateSaved:new Date().toISOString(), saveType:'db'};
-    // Save the official DB version with a suffix so it doesn't overwrite LIVE
-window.saccoHistory[period + '_db'] = {
-    ...payload,
-    dateSaved: new Date().toISOString(),
-    saveType: 'db'
-};
+    // Save DB version safely
+    const savedRecord = {
+        ...payload,
+        dateSaved: new Date().toISOString(),
+        saveType: 'db'
+    };
+    window.saccoHistory[period + '_db'] = savedRecord;
 
-// Keep the current LIVE version visible
-// (it stays at window.saccoHistory[period] until next month)
-
+    // DO NOT touch window.saccoHistory[period] — it stays LIVE only
     localStorage.setItem(CACHE_KEY, JSON.stringify(window.saccoHistory));
     renderFullHistory();
-    updateSyncStatus(optimisticRecord,true);
+    updateSyncStatus(savedRecord, true);
 
     try {
         const res = await fetch(`${API_BASE}/history/save`,{
@@ -443,19 +438,18 @@ window.saccoHistory[period + '_db'] = {
             signal: AbortSignal.timeout(10000)
         });
         if(!res.ok) throw new Error(`HTTP ${res.status}`);
-        retryCount=0;
+        retryCount = 0;
         if(!isAutoSave) alert("SAVED! All phones in sync");
     } catch(err) {
-        console.warn('Save failed:',err.message);
+        console.warn('Save failed:', err.message);
         retryCount++;
-        if(retryCount<=MAX_RETRIES) {
-            const delay=Math.min(5000*retryCount,30000);
-            setTimeout(()=>saveCurrentMonth(true),delay);
-            document.getElementById('historyFooter').innerHTML=`<strong style="color:#F59E0B;">OFFLINE • Retrying in ${Math.round(delay/1000)}s</strong>`;
+        if(retryCount <= MAX_RETRIES) {
+            const delay = Math.min(5000 * retryCount, 30000);
+            setTimeout(() => saveCurrentMonth(true), delay);
+            document.getElementById('historyFooter').innerHTML = `<strong style="color:#F59E0B;">OFFLINE • Retrying in ${Math.round(delay/1000)}s</strong>`;
         } else {
-            document.getElementById('historyFooter').innerHTML=`<strong style="color:#EF4444;">OFFLINE • Data saved locally</strong>`;
+            document.getElementById('historyFooter').innerHTML = `<strong style="color:#EF4444;">OFFLINE • Data saved locally</strong>`;
         }
-        showLiveData();
     }
 };
 
