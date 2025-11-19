@@ -571,7 +571,20 @@ window.addEventListener('DOMContentLoaded',()=>{
     scheduleMonthlyEmail();
 });
 </script>
+<script>
+let lastSavedData = null;
 
+function shouldSave(data) {
+  return JSON.stringify(data) !== JSON.stringify(lastSavedData);
+}
+
+window.addEventListener('saccoDataUpdated', () => {
+  if (shouldSave(window.saccoData)) {
+    saveCurrentMonth(true); // Use your existing save function
+    lastSavedData = JSON.parse(JSON.stringify(window.saccoData));
+  }
+});
+</script>
 
 <script src="./scripts/chatbot.js"></script>
     <script src="scripts/main.js"></script>
