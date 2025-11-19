@@ -439,56 +439,71 @@ function updateSyncStatus(record,isSynced) {
 
 // ==================== LIVE DATA & AUTO-SAVE ====================
 function showLiveData() {
-    if(!window.saccoData?.today){ setTimeout(showLiveData,300); return; }
+    if (!window.saccoData?.today) { setTimeout(showLiveData, 300); return; }
     const t = window.saccoData.today;
     const ef = t.extraFields || {};
     const bb = ef.bankBreakdown || [];
     const period = getCurrentPeriod();
 
+    // ULTRA-RESILIENT MAPPING – accepts every name variation ever used
     const liveData = {
-        members: t.members||0,
-        contributions: t.contributions||0,
-        loansDisbursed: t.loansDisbursed||t.loans||0,
-        loansBalance: t.loansBalance||0,
-        totalBankBalance: t.totalBankBalance||t.bankBalance||0,
-        coopBank: bb.find(b=>b.name?.includes('Co-operative'))?.value||0,
-        chamasoft: bb.find(b=>b.name?.includes('Chamasoft'))?.value||0,
-        cytonn: bb.find(b=>b.name?.includes('Cytonn'))?.value||0,
-        totalAssets: ef.bookValue||0,
-        profit: t.profit||0,
-        roa: parseFloat(t.roa)||0
+        members:        t.members ?? t.totalMembers ?? 0,
+        contributions:  t.contributions ?? t.savings ?? t.totalSavings ?? t.totalContributions ?? 0,
+
+        loansDisbursed: t.loansDisbursed ?? t.loansIssued ?? t.totalLoansDisbursed ?? t.loans ?? t.totalLoans ?? 0,
+        loansBalance:   t.loansBalance ?? t.outstandingLoans ?? t.loanBalance ?? t.loansOutstanding ?? 0,
+
+        totalBankBalance: t.totalBankBalance ?? t.bankBalance ?? t.totalBank ?? t.bankTotal ?? 0,
+
+        coopBank:   (bb.find(b => /co-?op|cooperative/i.test(b.name || ''))?.value) ?? 
+                    (bb.find(b => b.id === 'coop' || b.id === 'cooperative')?.value) ?? 0,
+
+        chamasoft:  (bb.find(b => /chamasoft/i.test(b.name || ''))?.value) ?? 
+                    (bb.find(b => b.id === 'chamasoft')?.value) ?? 0,
+
+        cytonn:     (bb.find(b => /cytonn/i.test(b.name || ''))?.value) ?? 
+                    (bb.find(b => b.id === 'cytonn')?.value) ?? 0,
+
+        totalAssets: ef.bookValue ?? ef.totalAssets ?? ef.book_value ?? ef.assets ?? ef.netAssets ?? 0,
+        profit:      t.profit ?? t.monthlyProfit ?? t.netProfit ?? 0,
+        roa:         (t.roa !== undefined ? parseFloat(t.roa) : t.ROA ?? t.returnOnAssets ?? 0)
     };
 
+    // === Rest of the function is unchanged (just safer now) ===
     window.saccoHistory = window.saccoHistory || {};
     let currentRecord = window.saccoHistory[period];
     let isSynced = false;
-    let recordToUse = {...liveData, period, dateSaved:new Date().toISOString(), saveType:'live'};
+    let recordToUse = { ...liveData, period, dateSaved: new Date().toISOString(), saveType: 'live' };
 
-    if(currentRecord && currentRecord.saveType==='db'){
-        isSynced = !recordsDiffer(liveData,currentRecord);
-        if(isSynced) recordToUse=currentRecord;
+    if (currentRecord && currentRecord.saveType === 'db') {
+        isSynced = !recordsDiffer(liveData, currentRecord);
+        if (isSynced) recordToUse = currentRecord; // show synced version (correct numbers)
     }
 
-    const needsUpdate = !currentRecord || currentRecord.saveType!==recordToUse.saveType || JSON.stringify(currentRecord)!==JSON.stringify(recordToUse);
-    if(needsUpdate){
+    // Only overwrite if we actually have newer live data
+    const needsUpdate = !currentRecord || 
+                        currentRecord.saveType !== recordToUse.saveType || 
+                        JSON.stringify(currentRecord) !== JSON.stringify(recordToUse);
+
+    if (needsUpdate) {
         window.saccoHistory[period] = recordToUse;
         localStorage.setItem(CACHE_KEY, JSON.stringify(window.saccoHistory));
     }
 
-    const newHash = JSON.stringify({period, ...liveData});
-    if(newHash!==lastDataHash){
-        lastDataHash=newHash;
+    // Auto-save logic
+    const newHash = JSON.stringify({ period, ...liveData });
+    if (newHash !== lastDataHash) {
+        lastDataHash = newHash;
         forceAutoSave = true;
     }
-
-    if(autoSaveEnabled && (!isSynced || forceAutoSave)){
+    if (autoSaveEnabled && (!isSynced || forceAutoSave)) {
         forceAutoSave = false;
         clearTimeout(autoSyncTimeout);
-        autoSyncTimeout = setTimeout(()=>saveCurrentMonth(true),2000);
+        autoSyncTimeout = setTimeout(() => saveCurrentMonth(true), 2000);
     }
 
     renderFullHistory();
-    updateSyncStatus(recordToUse,isSynced);
+    updateSyncStatus(recordToUse, isSynced);
     autoCreateNewMonthIfNeeded();
 }
 
