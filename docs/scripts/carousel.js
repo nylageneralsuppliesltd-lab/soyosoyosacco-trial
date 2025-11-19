@@ -8,21 +8,21 @@ document.addEventListener('DOMContentLoaded', () => {
     loanTypesToday: [
       { name: 'Emergency', value: 1237900 },
       { name: 'Medicare', value: 15000 },
-      { name: 'Development', value: 663000 },
+      { name: 'Development', value: 713000 },
       { name: 'Education', value: 275000 }
     ],
-    loansBalanceToday: 880067.15,  // Aligned: Added for About.html
+    loansBalanceToday: 928677.15,  // Aligned: Added for About.html
     bankBreakdownToday: [
       { name: 'Co-operative Bank', value: 2120.65 },
-      { name: 'Chamasoft', value: 39444 },
-      { name: 'Cytonn', value: 126390 }
+      { name: 'Chamasoft', value: 6194 },
+      { name: 'Cytonn', value: 111320 }
     ],
     externalLoansToday: 66784,
     members: 145,
-    contributions: 923335,
-    numberOfLoansGiven: 110,
-    profit: 54948,
-    activeMembers: 71
+    contributions: 923765,
+    numberOfLoansGiven: 112,
+    profit: 54808,
+    activeMembers: 73
   });
 
   const recomputeData = () => {
