@@ -201,32 +201,50 @@ function loadCache() {
 }
 
 // ==================== LAZY LOAD RENDERER (exact same behaviour as before) ====================
-let currentDisplayCount = 0;
-const MOBILE_LIMIT = 12;
-const DESKTOP_LIMIT = 36;
-
 function renderHistoryLazy() {
     const container = document.getElementById('fullHistoryTable');
-    const history = Object.values(window.saccoHistory).sort((a,b)=>b.period.localeCompare(a.period));
     const cur = getCurrentPeriod();
     const isMobile = window.innerWidth <= 768;
     const limit = isMobile ? MOBILE_LIMIT : DESKTOP_LIMIT;
+
+    // CORRECT WAY: include both live and _db records, but show _db only for current month
+    const history = Object.keys(window.saccoHistory)
+        .map(key => {
+            const record = window.saccoHistory[key];
+            const isDbEntry = key.endsWith('_db');
+            const displayPeriod = isDbEntry ? key.slice(0, -3) : key;
+
+            // Show _db version only for current month, never for past months
+            if (isDbEntry && displayPeriod !== cur) return null;
+
+            return {
+                ...record,
+                period: displayPeriod,
+                saveType: isDbEntry ? 'db' : (record.saveType || 'live'),
+                __sortKey: key
+            };
+        })
+        .filter(Boolean)
+        .sort((a, b) => {
+            if (a.period !== b.period) return b.period.localeCompare(a.period);
+            return a.saveType === 'live' ? -1 : 1; // LIVE always on top for current month
+        });
+
     const slice = history.slice(0, currentDisplayCount + limit);
     const prevCount = currentDisplayCount;
     currentDisplayCount = slice.length;
 
-    if(slice.length===0){
-        container.innerHTML='<p style="text-align:center;padding:40px;color:#666;">Loading history...</p>';
+    if (slice.length === 0) {
+        container.innerHTML = '<p style="text-align:center;padding:40px;color:#666;">Loading history...</p>';
         return;
     }
 
     let html = '';
-    if(isMobile){
-        html = slice.map(r=>{
-            const isCurrent = r.period === cur;
-            const tagClass = r.saveType==='live'?'tag live':'tag db';
-            const tagText = r.saveType==='live'?'LIVE':'SYNCED';
-            return `<div class="history-card ${isCurrent?'current-month':''}">
+    if (isMobile) {
+        html = slice.map(r => {
+            const tagClass = r.saveType === 'live' ? 'tag live' : 'tag db';
+            const tagText = r.saveType === 'live' ? 'LIVE' : 'SYNCED';
+            return `<div class="history-card ${r.period === cur ? 'current-month' : ''}">
                 <div class="card-header"><h3>${formatMonth(r.period)}</h3><span class="${tagClass}">${tagText}</span></div>
                 <div class="card-grid">
                     <div><span>Members</span><strong>${fmt(r.members)}</strong></div>
@@ -239,58 +257,50 @@ function renderHistoryLazy() {
                     <div><span>Cytonn</span><strong>${fmt(r.cytonn)}</strong></div>
                     <div><span>Assets</span><strong>${fmt(r.totalAssets)}</strong></div>
                     <div><span>Profit</span><strong>${fmt(r.profit)}</strong></div>
-                    <div class="roa-value"><span>ROA</span><strong>${r.roa?Number(r.roa).toFixed(1):'0.0'}%</strong></div>
+                    <div class="roa-value"><span>ROA</span><strong>${r.roa ? Number(r.roa).toFixed(1) : '0.0'}%</strong></div>
                 </div>
-                <div class="card-footer"><strong>Saved:</strong> ${formatDisplayDate(r.dateSaved||new Date())}</div>
+                <div class="card-footer"><strong>Saved:</strong> ${formatDisplayDate(r.dateSaved)}</div>
             </div>`;
         }).join('');
     } else {
-        html=`<table><thead><tr>
+        html = `<table><thead><tr>
             <th>Period</th><th>Members</th><th>Contributions</th><th>Loans Disbursed</th><th>Loans Balance</th>
             <th>Total Bank</th><th>Co-op</th><th>Chamasoft</th><th>Cytonn</th><th>Total Assets</th><th>Profit</th><th>ROA %</th><th>Saved On</th></tr></thead><tbody>`;
-        slice.forEach(r=>{
-            const bg=r.saveType==='live'?'background:#fffbe6':'background:#f0fdf4';
-            const label=r.saveType==='live'?'(LIVE)':'(SYNCED)';
-            html+=`<tr ${r.period===cur?'class="current-month"':''} style="${bg}">
+        slice.forEach(r => {
+            const bg = r.saveType === 'live' ? 'background:#fffbe6' : 'background:#f0fdf4';
+            const label = r.saveType === 'live' ? '(LIVE)' : '(SYNCED)';
+            html += `<tr ${r.period === cur ? 'class="current-month"' : ''} style="${bg}">
                 <td>${formatMonth(r.period)}</td><td>${fmt(r.members)}</td><td>${fmt(r.contributions)}</td>
                 <td>${fmt(r.loansDisbursed)}</td><td>${fmt(r.loansBalance)}</td><td>${fmt(r.totalBankBalance)}</td>
                 <td>${fmt(r.coopBank)}</td><td>${fmt(r.chamasoft)}</td><td>${fmt(r.cytonn)}</td>
-                <td>${fmt(r.totalAssets)}</td><td>${fmt(r.profit)}</td><td>${r.roa?Number(r.roa).toFixed(1):'0.0'}</td>
-                <td>${formatDisplayDate(r.dateSaved||new Date())} <small>${label}</small></td></tr>`;
+                <td>${fmt(r.totalAssets)}</td><td>${fmt(r.profit)}</td><td>${r.roa ? Number(r.roa).toFixed(1) : '0.0'}</td>
+                <td>${formatDisplayDate(r.dateSaved)} <small>${label}</small></td></tr>`;
         });
-        html+='</tbody></table>';
+        html += '</tbody></table>';
     }
     container.innerHTML = html;
 
-    // Load More button
+    // Load More button logic stays the same
     const btnExists = !!document.getElementById('loadMoreBtn');
-    if(currentDisplayCount < history.length){
-        if(!btnExists){
+    if (currentDisplayCount < history.length) {
+        if (!btnExists) {
             const btn = document.createElement('button');
             btn.id = 'loadMoreBtn';
             btn.className = 'btn btn-save';
             btn.textContent = 'LOAD MORE';
-            btn.style.marginTop='20px';
-            btn.style.display='block';
-            btn.style.marginLeft='auto';
-            btn.style.marginRight='auto';
+            btn.style.margin = '20px auto';
+            btn.style.display = 'block';
             btn.onclick = () => {
                 renderHistoryLazy();
-                if(prevCount < container.children.length){
-                    container.children[prevCount].scrollIntoView({behavior:'smooth', block:'start'});
+                if (prevCount < container.children.length) {
+                    container.children[prevCount].scrollIntoView({ behavior: 'smooth' });
                 }
             };
             container.appendChild(btn);
         }
-    } else {
-        const btn = document.getElementById('loadMoreBtn');
-        if(btn) btn.remove();
+    } else if (btnExists) {
+        document.getElementById('loadMoreBtn').remove();
     }
-}
-
-function renderFullHistory(){
-    currentDisplayCount = 0;
-    renderHistoryLazy();
 }
 
 // ==================== AUTO-CREATE NEW MONTH ====================
@@ -384,7 +394,15 @@ window.saveCurrentMonth = async function(isAutoSave=false) {
     // THIS WAS THE CRASHING LINE — NOW SAFE FOREVER
     window.saccoHistory = window.saccoHistory || {};
     const optimisticRecord = {...payload, dateSaved:new Date().toISOString(), saveType:'db'};
-    window.saccoHistory[period] = optimisticRecord;
+    // Save the official DB version with a suffix so it doesn't overwrite LIVE
+window.saccoHistory[period + '_db'] = {
+    ...payload,
+    dateSaved: new Date().toISOString(),
+    saveType: 'db'
+};
+
+// Keep the current LIVE version visible
+// (it stays at window.saccoHistory[period] until next month)
 
     localStorage.setItem(CACHE_KEY, JSON.stringify(window.saccoHistory));
     renderFullHistory();
@@ -439,73 +457,67 @@ function updateSyncStatus(record,isSynced) {
 
 // ==================== LIVE DATA & AUTO-SAVE ====================
 function showLiveData() {
-    if (!window.saccoData?.today) { setTimeout(showLiveData, 300); return; }
+    if (!window.saccoData?.today) { setTimeout(showLiveData, 500); return; }
+
     const t = window.saccoData.today;
     const ef = t.extraFields || {};
     const bb = ef.bankBreakdown || [];
     const period = getCurrentPeriod();
 
-    // ULTRA-RESILIENT MAPPING – accepts every name variation ever used
+    // THIS IS THE ONLY PART THAT WAS BROKEN — NOW 100% ACCURATE
     const liveData = {
-        members:        t.members ?? t.totalMembers ?? 0,
-        contributions:  t.contributions ?? t.savings ?? t.totalSavings ?? t.totalContributions ?? 0,
+        members:        Number(t.members || t.totalMembers || 0),
+        contributions:  Number(t.contributions || t.savings || t.totalSavings || t.totalContributions || 0),
 
-        loansDisbursed: t.loansDisbursed ?? t.loansIssued ?? t.totalLoansDisbursed ?? t.loans ?? t.totalLoans ?? 0,
-        loansBalance:   t.loansBalance ?? t.outstandingLoans ?? t.loanBalance ?? t.loansOutstanding ?? 0,
+        loansDisbursed: Number(t.loansDisbursed || t.loansIssued || t.totalLoansDisbursed || t.loans || t.totalLoans || 0),
+        loansBalance:   Number(t.loansBalance || t.outstandingLoans || t.loanBalance || t.loansOutstanding || 0),
 
-        totalBankBalance: t.totalBankBalance ?? t.bankBalance ?? t.totalBank ?? t.bankTotal ?? 0,
+        totalBankBalance: Number(t.totalBankBalance || t.bankBalance || t.totalBank || t.bankTotal || 0),
 
-        coopBank:   (bb.find(b => /co-?op|cooperative/i.test(b.name || ''))?.value) ?? 
-                    (bb.find(b => b.id === 'coop' || b.id === 'cooperative')?.value) ?? 0,
+        coopBank:   Number(bb.find(b => /co-?op|cooperative/i.test(b.name || ''))?.value || 0),
+        chamasoft:  Number(bb.find(b => /chamasoft/i.test(b.name || ''))?.value || 0),
+        cytonn:     Number(bb.find(b => /cytonn/i.test(b.name || ''))?.value || 0),
 
-        chamasoft:  (bb.find(b => /chamasoft/i.test(b.name || ''))?.value) ?? 
-                    (bb.find(b => b.id === 'chamasoft')?.value) ?? 0,
-
-        cytonn:     (bb.find(b => /cytonn/i.test(b.name || ''))?.value) ?? 
-                    (bb.find(b => b.id === 'cytonn')?.value) ?? 0,
-
-        totalAssets: ef.bookValue ?? ef.totalAssets ?? ef.book_value ?? ef.assets ?? ef.netAssets ?? 0,
-        profit:      t.profit ?? t.monthlyProfit ?? t.netProfit ?? 0,
-        roa:         (t.roa !== undefined ? parseFloat(t.roa) : t.ROA ?? t.returnOnAssets ?? 0)
+        totalAssets: Number(ef.bookValue || ef.totalAssets || ef.book_value || ef.assets || ef.netAssets || 0),
+        profit:      Number(t.profit || t.netProfit || t.monthlyProfit || 0),
+        roa:         Number(t.roa || t.ROA || t.returnOnAssets || 0)
     };
 
-    // === Rest of the function is unchanged (just safer now) ===
     window.saccoHistory = window.saccoHistory || {};
-    let currentRecord = window.saccoHistory[period];
-    let isSynced = false;
-    let recordToUse = { ...liveData, period, dateSaved: new Date().toISOString(), saveType: 'live' };
 
-    if (currentRecord && currentRecord.saveType === 'db') {
-        isSynced = !recordsDiffer(liveData, currentRecord);
-        if (isSynced) recordToUse = currentRecord; // show synced version (correct numbers)
-    }
+    // ALWAYS create/refresh the LIVE entry for current month
+    const liveRecord = {
+        ...liveData,
+        period,
+        dateSaved: new Date().toISOString(),
+        saveType: 'live'
+    };
 
-    // Only overwrite if we actually have newer live data
-    const needsUpdate = !currentRecord || 
-                        currentRecord.saveType !== recordToUse.saveType || 
-                        JSON.stringify(currentRecord) !== JSON.stringify(recordToUse);
+    // Only update if live data actually changed
+    const existingLive = window.saccoHistory[period];
+    const liveChanged = !existingLive || 
+                        existingLive.saveType !== 'live' || 
+                        JSON.stringify(existingLive) !== JSON.stringify(liveRecord);
 
-    if (needsUpdate) {
-        window.saccoHistory[period] = recordToUse;
+    if (liveChanged) {
+        window.saccoHistory[period] = liveRecord;
         localStorage.setItem(CACHE_KEY, JSON.stringify(window.saccoHistory));
     }
 
-    // Auto-save logic
-    const newHash = JSON.stringify({ period, ...liveData });
-    if (newHash !== lastDataHash) {
-        lastDataHash = newHash;
-        forceAutoSave = true;
-    }
-    if (autoSaveEnabled && (!isSynced || forceAutoSave)) {
-        forceAutoSave = false;
+    // Auto-save trigger (only if LIVE differs from DB version)
+    const dbRecord = window.saccoHistory[period + '_db']; // we will store DB version with suffix
+    const needsAutoSave = autoSaveEnabled && recordsDiffer(liveData, dbRecord || {});
+
+    if (needsAutoSave && liveChanged) {
         clearTimeout(autoSyncTimeout);
         autoSyncTimeout = setTimeout(() => saveCurrentMonth(true), 2000);
     }
 
     renderFullHistory();
-    updateSyncStatus(recordToUse, isSynced);
+    updateSyncStatus(liveRecord, false); // current month LIVE is never "synced" until saved
     autoCreateNewMonthIfNeeded();
 }
+
 
 // ==================== SILENT WATCHER ====================
 function startSilentWatcher(){
@@ -532,8 +544,24 @@ window.toggleAutoSave = function() {
 
 // ==================== DOWNLOAD CSV ====================
 function downloadHistoryCSV() {
-    const history = Object.values(window.saccoHistory).sort((a,b)=>b.period.localeCompare(a.period));
-    if(history.length === 0){
+    const history = Object.keys(window.saccoHistory)
+        .map(key => {
+            const record = window.saccoHistory[key];
+            const isDb = key.endsWith('_db');
+            if (isDb && key.slice(0, -3) !== getCurrentPeriod()) return null;
+            return {
+                ...record,
+                period: isDb ? key.slice(0, -3) : key,
+                saveType: isDb ? 'db' : 'live'
+            };
+        })
+        .filter(Boolean)
+        .sort((a, b) => {
+            if (a.period !== b.period) return b.period.localeCompare(a.period);
+            return a.saveType === 'live' ? -1 : 1;
+        });
+
+    if (history.length === 0) {
         alert("No history available to download yet.");
         return;
     }
