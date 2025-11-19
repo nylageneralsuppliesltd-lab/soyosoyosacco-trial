@@ -8,20 +8,20 @@ document.addEventListener('DOMContentLoaded', () => {
     loanTypesToday: [
       { name: 'Emergency', value: 1237900 },
       { name: 'Medicare', value: 15000 },
-      { name: 'Development', value: 643000 },
+      { name: 'Development', value: 663000 },
       { name: 'Education', value: 275000 }
     ],
-    loansBalanceToday: 870983.81,  // Aligned: Added for About.html
+    loansBalanceToday: 880067.15,  // Aligned: Added for About.html
     bankBreakdownToday: [
       { name: 'Co-operative Bank', value: 2120.65 },
-      { name: 'Chamasoft', value: 15924 },
-      { name: 'Cytonn', value: 146465 }
+      { name: 'Chamasoft', value: 39444 },
+      { name: 'Cytonn', value: 126390 }
     ],
     externalLoansToday: 66784,
     members: 145,
-    contributions: 911965,
-    numberOfLoansGiven: 109,
-    profit: 53789,
+    contributions: 923335,
+    numberOfLoansGiven: 110,
+    profit: 54948,
     activeMembers: 71
   });
 
