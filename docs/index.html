@@ -46,7 +46,6 @@
   justify-content: center;
 }
 
-/* ALL CARDS — EXACT SAME WIDTH & HEIGHT */
 .chart-card {
   background: #fff;
   padding: 1.6rem 1.8rem 2rem;
@@ -54,7 +53,7 @@
   box-shadow: 0 16px 48px rgba(0,0,0,0.13);
   height: 570px !important;
   width: 100% !important;
-  max-width: 700px !important;         /* ← forces identical width */
+  max-width: 700px !important;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -63,7 +62,6 @@
   box-sizing: border-box;
 }
 
-/* Title — reduced */
 .chart-card > p {
   margin: 0 0 8px;
   font-weight: 900;
@@ -74,7 +72,6 @@
   line-height: 1.25;
 }
 
-/* Arrow + % — reduced */
 .growth-indicator {
   margin: 8px auto 14px !important;
   font-size: 1.62rem;
@@ -85,47 +82,52 @@
   width: fit-content;
 }
 
-/* Chart area */
 .chart-card > div[id^="plot"] {
   flex: 1;
   position: relative;
   margin-top: -16px !important;
-  padding-bottom: 100px !important;     /* room for small yield box */
+  padding-bottom: 120px !important;     /* ↑ increased space for yield box */
 }
 
 /* Remove middle annotation */
 .js-plotly-plot .plotly .annotation,
 .js-plotly-plot .plotly .annotation text { display: none !important; }
 
-/* PIE CHART ONLY — SMALL & CLEAN YIELD BOX */
+/* PIE CHART ONLY — PERFECT SPACING & NO OVERLAP */
+#plotLoanTypes {
+  padding-bottom: 130px !important;     /* ↑ gives breathing room */
+}
+
+/* YIELD BOX — PULLED UP, SMALLER, NEVER OVERLAPS TITLE */
 #projectedYield {
   position: absolute !important;
-  bottom: 18px !important;
+  bottom: 58px !important;              /* ↑ moved up closer to pie */
   left: 50% !important;
   transform: translateX(-50%) !important;
-  width: 58% !important;
-  max-width: 360px !important;
+  width: 56% !important;
+  max-width: 340px !important;
   padding: 9px 16px !important;
   background: linear-gradient(135deg,#10B981,#34D399);
   color: #fff;
   font-weight: 900;
-  font-size: 1.28rem !important;       /* ← much smaller */
+  font-size: 1.26rem !important;       /* ← slightly smaller */
   border-radius: 16px;
   box-shadow: 0 6px 20px rgba(16,185,129,0.45);
   z-index: 30;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
-/* Ensure pie chart title is never overlapped */
+/* PIE CHART TITLE — MOVED UP, ALWAYS FULLY VISIBLE */
 .chart-card:has(#plotLoanTypes) > p {
   position: relative;
   z-index: 40;
-  margin-top: 4px !important;
+  margin-top: -44px !important;         /* ↑ pulled up */
+  padding: 8px 12px;
+  background: rgba(255,255,255,0.97);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
-/* MOBILE — FULL BLEED, SAME WIDTH LOGIC */
+/* MOBILE — SAME PERFECT SPACING */
 @media (max-width: 992px) {
   .growth-charts-grid {
     grid-template-columns: 1fr;
@@ -143,13 +145,14 @@
   .chart-card {
     max-width: none !important;
     height: 550px !important;
-    border-radius: 26px;
   }
   #projectedYield {
+    bottom: 54px !important;
     font-size: 1.24rem !important;
-    padding: 8px 14px !important;
-    width: 64% !important;
-    bottom: 16px !important;
+    width: 62% !important;
+  }
+  .chart-card:has(#plotLoanTypes) > p {
+    margin-top: -40px !important;
   }
 }
     
