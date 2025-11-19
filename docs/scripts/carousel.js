@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.loanTypesToday = d.loanTypesToday;
     window.saccoData.today = todayData;
 
-    if (typeof showLiveData === "function") showLiveData(); // triggers auto-save and DB sync
+ 
 
     // RESTORE SOYOSOYO FOR PROJECTIONS (unchanged, uses recalced roa)
     window.SOYOSOYO = {
