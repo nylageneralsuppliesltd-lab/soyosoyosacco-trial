@@ -599,7 +599,7 @@ function renderPlotlyGrowthCharts() {
     const yMin = Math.min(...values) - padding;
     const yMax = Math.max(...values) + padding;
 
-    const trace = {
+        const trace = {
       x: ['Jan 2025', 'Today'],
       y: values,
       type: 'bar',
@@ -613,15 +613,15 @@ function renderPlotlyGrowthCharts() {
       textposition: 'outside',
       cliponaxis: false,
       textfont: {
-        color: [                      // THIS IS THE KEY — FORCED RED FOR NEGATIVE BARS
+        color: [
           janVal < 0 ? '#991b1b' : '#004d1a',
           todayVal < 0 ? '#991b1b' : '#004d1a'
         ],
         size: 16,
         family: 'Lato, sans-serif',
         weight: 'bold'
-      }    
-          // === ADD THESE 3 LINES BELOW ===
+      },
+      // CORRECTED & WORKING — hover shows ONLY ONE clean number
       hovertemplate: isMoney 
         ? '<b>KES %{y:,.0f}</b><extra></extra>' 
         : (isPct 
@@ -629,9 +629,8 @@ function renderPlotlyGrowthCharts() {
             : '<b>%{y:,.0f}</b><extra></extra>'),
       hoverlabel: { 
         bgcolor: '#004d1a', 
-        font: { size: 18, color: '#ffffff', family: 'Lato, sans-serif' } 
+        font: { size: 18, color: '#ffffff', family: 'Lato, sans-serif', weight: '900' } 
       }
-      // 
     };
 
     const layout = {
