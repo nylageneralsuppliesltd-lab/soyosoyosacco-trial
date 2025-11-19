@@ -585,6 +585,156 @@ window.addEventListener('saccoDataUpdated', () => {
   }
 });
 </script>
+    <script>
+// ==================== LAZY LOAD HISTORY WITH RESPONSIVE LOAD MORE ====================
+
+let currentDisplayCount = 0;
+const MOBILE_LIMIT = 12;  // cards per page
+const DESKTOP_LIMIT = 36; // table rows per page
+
+function isMobile() {
+    return window.innerWidth <= 768;
+}
+
+function getDisplayLimit() {
+    return isMobile() ? MOBILE_LIMIT : DESKTOP_LIMIT;
+}
+
+function renderHistoryLazy() {
+    const container = document.getElementById('fullHistoryTable');
+    const history = Object.values(window.saccoHistory)
+        .sort((a,b)=>b.period.localeCompare(a.period));
+
+    const limit = getDisplayLimit();
+    const slice = history.slice(0, currentDisplayCount + limit);
+    const prevCount = currentDisplayCount;
+    currentDisplayCount = slice.length;
+
+    const cur = getCurrentPeriod();
+    const isMobileView = isMobile();
+
+    let html = '';
+    if(slice.length === 0){
+        container.innerHTML = '<p style="text-align:center;padding:40px;color:#666;">Loading history...</p>';
+        return;
+    }
+
+    if(isMobileView){
+        html = slice.map(r=>{
+            const isCurrent = r.period === cur;
+            const tagClass = r.saveType==='live'?'tag live':'tag db';
+            const tagText = r.saveType==='live'?'LIVE':'SYNCED';
+            return `<div class="history-card ${isCurrent?'current-month':''}">
+                <div class="card-header"><h3>${formatMonth(r.period)}</h3><span class="${tagClass}">${tagText}</span></div>
+                <div class="card-grid">
+                    <div><span>Members</span><strong>${fmt(r.members)}</strong></div>
+                    <div><span>Savings</span><strong>${fmt(r.contributions)}</strong></div>
+                    <div><span>Loans Out</span><strong>${fmt(r.loansDisbursed)}</strong></div>
+                    <div><span>Loans Bal.</span><strong>${fmt(r.loansBalance)}</strong></div>
+                    <div><span>Bank Total</span><strong>${fmt(r.totalBankBalance)}</strong></div>
+                    <div><span>Co-op</span><strong>${fmt(r.coopBank)}</strong></div>
+                    <div><span>Chamasoft</span><strong>${fmt(r.chamasoft)}</strong></div>
+                    <div><span>Cytonn</span><strong>${fmt(r.cytonn)}</strong></div>
+                    <div><span>Assets</span><strong>${fmt(r.totalAssets)}</strong></div>
+                    <div><span>Profit</span><strong>${fmt(r.profit)}</strong></div>
+                    <div class="roa-value"><span>ROA</span><strong>${r.roa?Number(r.roa).toFixed(1):'0.0'}%</strong></div>
+                </div>
+                <div class="card-footer"><strong>Saved:</strong> ${formatDisplayDate(r.dateSaved||new Date())}</div>
+            </div>`;
+        }).join('');
+    } else {
+        html = `<table><thead><tr>
+            <th>Period</th><th>Members</th><th>Contributions</th><th>Loans Disbursed</th><th>Loans Balance</th>
+            <th>Total Bank</th><th>Co-op</th><th>Chamasoft</th><th>Cytonn</th><th>Total Assets</th>
+            <th>Profit</th><th>ROA %</th><th>Saved On</th></tr></thead><tbody>`;
+
+        slice.forEach(r=>{
+            const bg=r.saveType==='live'?'background:#fffbe6':'background:#f0fdf4';
+            const label=r.saveType==='live'?'(LIVE)':'(SYNCED)';
+            html+=`<tr ${r.period===cur?'class="current-month"':''} style="${bg}">
+                <td>${formatMonth(r.period)}</td><td>${fmt(r.members)}</td><td>${fmt(r.contributions)}</td>
+                <td>${fmt(r.loansDisbursed)}</td><td>${fmt(r.loansBalance)}</td><td>${fmt(r.totalBankBalance)}</td>
+                <td>${fmt(r.coopBank)}</td><td>${fmt(r.chamasoft)}</td><td>${fmt(r.cytonn)}</td>
+                <td>${fmt(r.totalAssets)}</td><td>${fmt(r.profit)}</td><td>${r.roa?Number(r.roa).toFixed(1):'0.0'}</td>
+                <td>${formatDisplayDate(r.dateSaved||new Date())} <small>${label}</small></td></tr>`;
+        });
+        html += '</tbody></table>';
+    }
+
+    container.innerHTML = html;
+
+    // Add or remove "Load More" button
+    const btnExists = !!document.getElementById('loadMoreBtn');
+    if(currentDisplayCount < history.length){
+        if(!btnExists){
+            const btn = document.createElement('button');
+            btn.id = 'loadMoreBtn';
+            btn.className = 'btn btn-save';
+            btn.textContent = 'LOAD MORE';
+            btn.style.marginTop='20px';
+            btn.style.display='block';
+            btn.style.marginLeft='auto';
+            btn.style.marginRight='auto';
+            btn.onclick = () => {
+                renderHistoryLazy();
+                scrollToNewContent(prevCount);
+            };
+            container.appendChild(btn);
+        }
+    } else {
+        const btn = document.getElementById('loadMoreBtn');
+        if(btn) btn.remove();
+    }
+}
+
+// Smooth scroll to newly loaded cards/rows
+function scrollToNewContent(prevCount){
+    const container = document.getElementById('fullHistoryTable');
+    const children = container.children;
+    if(children[prevCount]){
+        children[prevCount].scrollIntoView({behavior:'smooth', block:'start'});
+    }
+}
+
+// Override old render function
+function renderFullHistory(){
+    currentDisplayCount = 0;
+    renderHistoryLazy();
+}
+
+// Responsive adjustment on window resize
+window.addEventListener('resize', ()=>{
+    const limit = getDisplayLimit();
+    // Only reset display if current count < total history
+    const history = Object.values(window.saccoHistory).sort((a,b)=>b.period.localeCompare(a.period));
+    if(currentDisplayCount < history.length){
+        renderHistoryLazy();
+    }
+});
+
+// Ensure download always downloads full history
+function downloadHistoryCSV() {
+    const history = Object.values(window.saccoHistory)
+        .sort((a,b)=>b.period.localeCompare(a.period));
+
+    if(history.length === 0){
+        alert("No history available to download yet.");
+        return;
+    }
+
+    const csv = convertHistoryToCSV(history);
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `soyosoyo_sacco_history_${new Date().toISOString().slice(0,10)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+</script>
+
 
 <script src="./scripts/chatbot.js"></script>
     <script src="scripts/main.js"></script>
