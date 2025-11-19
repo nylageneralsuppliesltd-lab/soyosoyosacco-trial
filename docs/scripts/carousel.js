@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     contributions: 923765,
     numberOfLoansGiven: 112,
     profit: 54808,
-    activeMembers: 73
+    activeMembers: 72
   });
 
   const recomputeData = () => {
