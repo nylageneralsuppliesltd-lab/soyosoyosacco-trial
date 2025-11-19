@@ -62,81 +62,66 @@
   box-sizing:border-box;
 }
 
-.chart-card > p { margin:0 0 8px; font-weight:900; font-size:1.38rem; color:#004d1a; text-transform:uppercase; text-align:center; }
-.growth-indicator { margin:8px auto 14px !important; font-size:1.62rem; font-weight:900; padding:9px 26px; background:rgba(240,253,244,0.98); border-radius:20px; width:fit-content; }
+/* Desktop pie chart order & spacing (already perfect) */
+.chart-card:has(#plotLoanTypes) { gap:18px; }
+#projectedYield { order:2; width:66% !important; max-width:380px !important; margin:0 auto !important; padding:11px 18px !important; background:linear-gradient(135deg,#10B981,#34D399); color:#fff; font-weight:900; font-size:1.32rem !important; border-radius:18px; box-shadow:0 8px 24px rgba(16,185,129,0.5); text-align:center; flex-shrink:0; white-space:nowrap; }
+.chart-card:has(#plotLoanTypes) > p { order:3; margin:0 auto 8px !important; padding:10px 16px; background:rgba(255,255,255,0.97); border-radius:14px; box-shadow:0 3px 10px rgba(0,0,0,0.1); width:fit-content; }
 
-.chart-card > div[id^="plot"] { flex:1; position:relative; margin-top:-16px !important; }
-
-/* PIE CHART ONLY — CLEAN ORDER + SPACING */
-.chart-card:has(#plotLoanTypes) {
-  gap: 18px;                     /* ← increased gap so everything fits perfectly on desktop */
-}
-
-/* Pie itself */
-#plotLoanTypes {
-  padding-bottom: 0 !important;
-}
-
-/* Yield box — compact */
-#projectedYield {
-  order: 2;
-  width: 66% !important;
-  max-width: 380px !important;
-  margin: 0 auto !important;
-  padding: 11px 18px !important;
-  background: linear-gradient(135deg,#10B981,#34D399);
-  color:#fff;
-  font-weight:900;
-  font-size:1.32rem !important;
-  border-radius:18px;
-  box-shadow:0 8px 24px rgba(16,185,129,0.5);
-  text-align:center;
-  flex-shrink:0;
-}
-
-/* Title at bottom — now fully visible on desktop */
-.chart-card:has(#plotLoanTypes) > p {
-  order: 3;
-  margin: 0 auto 8px !important;
-  padding: 10px 16px;
-  background: rgba(255,255,255,0.97);
-  border-radius: 14px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-  width: fit-content;
-  flex-shrink: 0;
-}
-
-/* Remove middle annotation */
-.js-plotly-plot .plotly .annotation,
-.js-plotly-plot .plotly .annotation text { display:none !important; }
-
-/* MOBILE — TRUE FULL BLEED + SAME PERFECT SPACING */
+/* MOBILE ONLY — BIG PIE + ONE-LINE YIELD + TITLE VISIBLE */
 @media (max-width: 992px) {
   .growth-charts-grid {
     grid-template-columns: 1fr !important;
-    gap: 2.4rem;
+    gap: 2.6rem;
     padding: 0 !important;
     margin: 4rem 0 !important;
     width: 100vw !important;
-    max-width: none !important;
-    position: relative !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;   /* ← this forces real full-bleed */
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
   }
 
   .chart-card {
     max-width: none !important;
-    height: 560px !important;
-    border-radius: 26px;
+    height: 590px !important;          /* ← more height on mobile */
+    padding: 1.8rem 1.6rem 2.2rem;
+    border-radius: 28px;
   }
 
+  /* PIE CHART ON MOBILE — MUCH BIGGER + PERFECT ORDER */
   .chart-card:has(#plotLoanTypes) {
-    gap: 16px;           /* ← mobile gets perfect spacing too */
+    gap: 22px !important;              /* ← big breathing room */
+  }
+
+  #plotLoanTypes {
+    flex: 1 !important;                /* ← pie takes maximum space */
+    min-height: 320px !important;
+    margin-bottom: 10px !important;
   }
 
   #projectedYield {
-    font-size: 1.30rem !important;
-    padding: 10px 16px !important;
+    order: 2;
+    width: fit-content !important;
+    max-width: 90% !important;
+    padding: 12px 24px !important;
+    font-size: 1.38rem !important;     /* ← slightly bigger but guaranteed one line */
+    white-space: nowrap !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0 auto !important;
+  }
+
+  /* TITLE — FORCED TO BE VISIBLE AT BOTTOM */
+  .chart-card:has(#plotLoanTypes) > p {
+    order: 3;
+    margin: 8px auto 12px !important;
+    padding: 11px 20px !important;
+    font-size: 1.36rem !important;
+    background: rgba(255,255,255,0.98);
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    width: fit-content;
+    min-width: 80%;
+    text-align: center;
   }
 }
     
