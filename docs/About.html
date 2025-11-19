@@ -200,35 +200,35 @@ function loadCache() {
     }
 }
 
-// ==================== LAZY LOAD RENDERER (exact same behaviour as before) ====================
+// 1. renderHistoryLazy() — FULLY FIXED + keeps lazy loading
 function renderHistoryLazy() {
     const container = document.getElementById('fullHistoryTable');
     const cur = getCurrentPeriod();
     const isMobile = window.innerWidth <= 768;
     const limit = isMobile ? MOBILE_LIMIT : DESKTOP_LIMIT;
 
-    // CORRECT WAY: include both live and _db records, but show _db only for current month
-    const history = Object.keys(window.saccoHistory)
-        .map(key => {
-            const record = window.saccoHistory[key];
-            const isDbEntry = key.endsWith('_db');
-            const displayPeriod = isDbEntry ? key.slice(0, -3) : key;
+    // Build correct list: include _db entries only for current month
+    const history = [];
+    Object.keys(window.saccoHistory).forEach(key => {
+        const rec = window.saccoHistory[key];
+        const isDbEntry = key.endsWith('_db');
+        const displayPeriod = isDbEntry ? key.slice(0, -3) : key;
 
-            // Show _db version only for current month, never for past months
-            if (isDbEntry && displayPeriod !== cur) return null;
+        // Skip old _db entries from past months
+        if (isDbEntry && displayPeriod !== cur) return;
 
-            return {
-                ...record,
-                period: displayPeriod,
-                saveType: isDbEntry ? 'db' : (record.saveType || 'live'),
-                __sortKey: key
-            };
-        })
-        .filter(Boolean)
-        .sort((a, b) => {
-            if (a.period !== b.period) return b.period.localeCompare(a.period);
-            return a.saveType === 'live' ? -1 : 1; // LIVE always on top for current month
+        history.push({
+            ...rec,
+            period: displayPeriod,
+            saveType: isDbEntry ? 'db' : (rec.saveType || 'live')
         });
+    });
+
+    // Sort: newest first, LIVE on top for current month
+    history.sort((a, b) => {
+        if (a.period !== b.period) return b.period.localeCompare(a.period);
+        return a.saveType === 'live' ? -1 : 1;
+    });
 
     const slice = history.slice(0, currentDisplayCount + limit);
     const prevCount = currentDisplayCount;
@@ -280,7 +280,7 @@ function renderHistoryLazy() {
     }
     container.innerHTML = html;
 
-    // Load More button logic stays the same
+    // Load More button — exactly your original logic
     const btnExists = !!document.getElementById('loadMoreBtn');
     if (currentDisplayCount < history.length) {
         if (!btnExists) {
@@ -288,12 +288,14 @@ function renderHistoryLazy() {
             btn.id = 'loadMoreBtn';
             btn.className = 'btn btn-save';
             btn.textContent = 'LOAD MORE';
-            btn.style.margin = '20px auto';
+            btn.style.marginTop = '20px';
             btn.style.display = 'block';
+            btn.style.marginLeft = 'auto';
+            btn.style.marginRight = 'auto';
             btn.onclick = () => {
                 renderHistoryLazy();
                 if (prevCount < container.children.length) {
-                    container.children[prevCount].scrollIntoView({ behavior: 'smooth' });
+                    container.children[prevCount].scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
             };
             container.appendChild(btn);
@@ -302,7 +304,6 @@ function renderHistoryLazy() {
         document.getElementById('loadMoreBtn').remove();
     }
 }
-
 // ==================== AUTO-CREATE NEW MONTH ====================
 function autoCreateNewMonthIfNeeded() {
     const currentPeriod = getCurrentPeriod();
@@ -542,24 +543,24 @@ window.toggleAutoSave = function() {
     document.getElementById('autoSaveToggle').style.background = autoSaveEnabled ? '#10B981':'#f59e0b';
 };
 
-// ==================== DOWNLOAD CSV ====================
+// 2. downloadHistoryCSV() — now includes both current month rows
 function downloadHistoryCSV() {
-    const history = Object.keys(window.saccoHistory)
-        .map(key => {
-            const record = window.saccoHistory[key];
-            const isDb = key.endsWith('_db');
-            if (isDb && key.slice(0, -3) !== getCurrentPeriod()) return null;
-            return {
-                ...record,
-                period: isDb ? key.slice(0, -3) : key,
-                saveType: isDb ? 'db' : 'live'
-            };
-        })
-        .filter(Boolean)
-        .sort((a, b) => {
-            if (a.period !== b.period) return b.period.localeCompare(a.period);
-            return a.saveType === 'live' ? -1 : 1;
+    const history = [];
+    Object.keys(window.saccoHistory).forEach(key => {
+        const rec = window.saccoHistory[key];
+        const isDb = key.endsWith('_db');
+        if (isDb && key.slice(0, -3) !== getCurrentPeriod()) return; // skip old _db
+        history.push({
+            ...rec,
+            period: isDb ? key.slice(0, -3) : key,
+            saveType: isDb ? 'db' : 'live'
         });
+    });
+
+    history.sort((a, b) => {
+        if (a.period !== b.period) return b.period.localeCompare(a.period);
+        return a.saveType === 'live' ? -1 : 1;
+    });
 
     if (history.length === 0) {
         alert("No history available to download yet.");
@@ -576,7 +577,6 @@ function downloadHistoryCSV() {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 }
-
 // ==================== EMAIL AUTOMATION ====================
 window.sendMonthlyEmail = async function() {
     const record = window.saccoData?.today;
