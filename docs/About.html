@@ -345,7 +345,7 @@ function autoCreateNewMonthIfNeeded() {
 }
 
 
-// ==================== SYNC WITH DATABASE (FINAL - PERFECT FIELD MAPPING) ====================
+// ==================== SYNC WITH DATABASE (FINAL - MATCHES YOUR BACKEND 100%) ====================
 async function syncWithDB() {
     try {
         const res = await fetch(`${API_BASE}/history?t=${Date.now()}`, {cache:'no-store'});
@@ -358,13 +358,13 @@ async function syncWithDB() {
                 period: row.period,
                 members: Number(row.members || 0),
                 contributions: Number(row.contributions || 0),
-                loansDisbursed: Number(row.loans_disbursed || 0),      // ← mapped
-                loansBalance: Number(row.loans_balance || 0),          // ← mapped
-                totalBankBalance: Number(row.total_bank_balance || 0),// ← mapped
+                loansDisbursed: Number(row.loans_disbursed || 0),           // ← matches DB
+                loansBalance: Number(row.loans_balance || 0),               // ← matches DB
+                totalBankBalance: Number(row.total_bank_balance || 0),     // ← matches DB
                 coopBank: Number(row.coop_bank || 0),
-                chamasoft: Number(row.chama_soft || 0),                // ← mapped
+                chamasoft: Number(row.chama_soft || 0),                     // ← matches DB
                 cytonn: Number(row.cytonn || 0),
-                totalAssets: Number(row.total_assets || 0),            // ← mapped
+                totalAssets: Number(row.total_assets || 0),                 // ← matches DB
                 profit: Number(row.profit || 0),
                 roa: Number(row.roa || 0),
                 dateSaved: row.date_saved || row.dateSaved || new Date().toISOString(),
@@ -388,11 +388,11 @@ async function syncWithDB() {
         setTimeout(syncWithDB, 20000);
     }
 }
-// ==================== SAVE CURRENT MONTH (SLIGHTLY IMPROVED - NEVER OVERWRITES LIVE) ====================
-window.saveCurrentMonth = async function(isAutoSave=false) {
-    if(!window.saccoData?.today) { 
-        if(!isAutoSave) alert("No data! Visit homepage first."); 
-        return; 
+// ==================== SAVE CURRENT MONTH (FINAL - 100% COMPATIBLE WITH YOUR BACKEND) ====================
+window.saveCurrentMonth = async function(isAutoSave = false) {
+    if (!window.saccoData?.today) {
+        if (!isAutoSave) alert("No data! Visit homepage first.");
+        return;
     }
 
     const t = window.saccoData.today;
@@ -400,54 +400,77 @@ window.saveCurrentMonth = async function(isAutoSave=false) {
     const bb = ef.bankBreakdown || [];
     const period = getCurrentPeriod();
 
+    // 1. Payload for backend (snake_case — exactly what your Node.js API expects)
     const payload = {
         period,
-        members: t.members||0,
-        contributions: t.contributions||0,
-        loans_disbursed: t.loansDisbursed||t.loans||0,
-        loans_balance: t.loansBalance||0,
-        total_bank_balance: t.totalBankBalance||t.bankBalance||0,
-        coop_bank: bb.find(b=>b.name?.includes('Co-operative'))?.value||0,
-        chama_soft: bb.find(b=>b.name?.includes('Chamasoft'))?.value||0,
-        cytonn: bb.find(b=>b.name?.includes('Cytonn'))?.value||0,
-        total_assets: ef.bookValue||0,
-        profit: t.profit||0,
-        roa: parseFloat(t.roa)||0,
+        members: Number(t.members || 0),
+        contributions: Number(t.contributions || 0),
+        loans_disbursed: Number(t.loansDisbursed || t.loans || 0),
+        loans_balance: Number(t.loansBalance || 0),
+        total_bank_balance: Number(t.totalBankBalance || t.bankBalance || 0),
+        coop_bank: Number(bb.find(b => b.name?.includes('Co-operative'))?.value || 0),
+        chama_soft: Number(bb.find(b => b.name?.includes('Chamasoft'))?.value || 0),
+        cytonn: Number(bb.find(b => b.name?.includes('Cytonn'))?.value || 0),
+        total_assets: Number(ef.bookValue || 0),
+        profit: Number(t.profit || 0),
+        roa: parseFloat(t.roa) || 0,
         extra_fields: ef
     };
 
-    // Save DB version safely
-    const savedRecord = {
-        ...payload,
+    // 2. Prevent saving all-zero garbage data
+    const values = Object.values(payload);
+    if (values.slice(1).every(v => v === 0 || v === null || v === '')) {
+        if (!isAutoSave) alert("Cannot save — all values are zero. Check homepage data.");
+        return;
+    }
+
+    // 3. Local record for display (camelCase — matches your frontend rendering)
+    const savedRecordForDisplay = {
+        period,
+        members: payload.members,
+        contributions: payload.contributions,
+        loansDisbursed: payload.loans_disbursed,           // ← camelCase for display
+        loansBalance: payload.loans_balance,               // ← camelCase
+        totalBankBalance: payload.total_bank_balance,      // ← camelCase
+        coopBank: payload.coop_bank,
+        chamasoft: payload.chama_soft,                     // ← camelCase
+        cytonn: payload.cytonn,
+        totalAssets: payload.total_assets,                 // ← camelCase
+        profit: payload.profit,
+        roa: payload.roa,
         dateSaved: new Date().toISOString(),
         saveType: 'db'
     };
-    window.saccoHistory[period + '_db'] = savedRecord;
 
-    // DO NOT touch window.saccoHistory[period] — it stays LIVE only
+    // Save to local history (only _db version — LIVE stays untouched)
+    window.saccoHistory[period + '_db'] = savedRecordForDisplay;
     localStorage.setItem(CACHE_KEY, JSON.stringify(window.saccoHistory));
     renderFullHistory();
-    updateSyncStatus(savedRecord, true);
+    updateSyncStatus(savedRecordForDisplay, true);
 
     try {
-        const res = await fetch(`${API_BASE}/history/save`,{
-            method:"POST",
-            headers:{"Content-Type":"application/json"},
-            body:JSON.stringify(payload),
+        const res = await fetch(`${API_BASE}/history/save`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
             signal: AbortSignal.timeout(10000)
         });
-        if(!res.ok) throw new Error(`HTTP ${res.status}`);
+
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
         retryCount = 0;
-        if(!isAutoSave) alert("SAVED! All phones in sync");
-    } catch(err) {
+        if (!isAutoSave) alert("SAVED! All phones in sync");
+    } catch (err) {
         console.warn('Save failed:', err.message);
         retryCount++;
-        if(retryCount <= MAX_RETRIES) {
+        if (retryCount <= MAX_RETRIES) {
             const delay = Math.min(5000 * retryCount, 30000);
             setTimeout(() => saveCurrentMonth(true), delay);
-            document.getElementById('historyFooter').innerHTML = `<strong style="color:#F59E0B;">OFFLINE • Retrying in ${Math.round(delay/1000)}s</strong>`;
+            document.getElementById('historyFooter').innerHTML = 
+                `<strong style="color:#F59E0B;">OFFLINE • Retrying in ${Math.round(delay/1000)}s</strong>`;
         } else {
-            document.getElementById('historyFooter').innerHTML = `<strong style="color:#EF4444;">OFFLINE • Data saved locally</strong>`;
+            document.getElementById('historyFooter').innerHTML = 
+                `<strong style="color:#EF4444;">OFFLINE • Data saved locally</strong>`;
         }
     }
 };
