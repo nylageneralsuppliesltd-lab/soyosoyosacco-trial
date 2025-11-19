@@ -36,101 +36,115 @@
 <style id="final-working-styles">
   /* PERFECTLY CENTERED + REDUCED + CLEAN — NOV 19, 2025 FINAL */
 
-<style id="final-working-styles">
-/* FINAL — WORKS 100% WITH YOUR CURRENT HTML — 19 Nov 2025 */
 .growth-charts-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-  gap: 1.8rem;
-  margin: 3.5rem auto 3rem;
-  padding: 0 12px;
-  max-width: 1480px;
+  grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));   /* ← 2 cards per row on desktop */
+  gap: 2rem;
+  margin: 4rem auto;
+  padding: 0 16px;
+  max-width: 1560px;
   justify-content: center;
 }
 
+/* Wider, elegant cards — almost matches your projections section */
 .chart-card {
   background: #fff;
-  padding: 1.3rem 1rem 1.6rem;
-  border-radius: 24px;
-  box-shadow: 0 12px 36px rgba(0,0,0,0.10);
-  height: 520px !important;
+  padding: 1.5rem 1.3rem 1.8rem;
+  border-radius: 26px;
+  box-shadow: 0 14px 40px rgba(0,0,0,0.11);
+  height: 540px !important;
   width: 100%;
-  max-width: 400px !important;
+  max-width: 620px !important;           /* ← wider, beautiful, 2-per-row */
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  border: 1.5px solid #f0fdf4;
+  border: 1.6px solid #f0fdf4;
   overflow: hidden;
   box-sizing: border-box;
 }
 
-/* Title — minimal space below */
+/* Title */
 .chart-card > p {
-  margin: 0 0 4px 0;
+  margin: 0 0 6px;
   font-weight: 900;
-  font-size: 1.26rem;
+  font-size: 1.38rem;
   color: #004d1a;
   text-transform: uppercase;
   text-align: center;
-  line-height: 1.2;
+  line-height: 1.22;
 }
 
-/* Arrow + % — super tight */
+/* Arrow + % */
 .growth-indicator {
-  margin: 4px auto 8px !important;
-  font-size: 1.48rem;
+  margin: 8px auto 14px !important;
+  font-size: 1.62rem;
   font-weight: 900;
-  padding: 6px 18px;
+  padding: 9px 24px;
   background: rgba(240,253,244,0.98);
-  border-radius: 16px;
+  border-radius: 18px;
   width: fit-content;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.09);
 }
 
-/* MAIN FIX: Pull EVERYTHING up — no wasted space */
+/* Pull chart up to eliminate wasted space */
 .chart-card > div[id^="plot"] {
   flex: 1;
   position: relative;
-  margin-top: -28px !important;        /* pulls the entire chart up */
-  padding-bottom: 68px;                /* keeps room for yield box */
+  margin-top: -20px !important;
+  padding-bottom: 74px;
 }
 
-/* Remove the big middle number */
+/* Remove middle percentage */
 .js-plotly-plot .plotly .annotation,
 .js-plotly-plot .plotly .annotation text { display: none !important; }
 
-/* BAR CHARTS: squeeze space between x-axis labels (Jan/Today) and the bars */
-.js-plotly-plot .infolayer .g-gtitle { margin-top: -10px !important; }
-.js-plotly-plot .xaxislayer-above { transform: translateY(-12px) !important; }
-
-/* PIE CHART ONLY: GLUE the green yield box directly under the pie */
+/* PIE CHART: green yield box glued perfectly under pie — NO OVERLAP */
 #plotLoanTypes {
-  padding-bottom: 62px !important;
-  margin-top: -28px !important;
+  padding-bottom: 80px !important;
 }
 
 #projectedYield {
   position: absolute !important;
-  bottom: 6px !important;                 /* glued to the bottom */
+  bottom: 16px !important;                 /* perfect breathing room */
   left: 50% !important;
   transform: translateX(-50%) !important;
-  width: calc(100% - 40px) !important;
-  padding: 11px 16px !important;
+  width: calc(100% - 70px) !important;
+  padding: 14px 20px !important;
   background: linear-gradient(135deg,#10B981,#34D399);
   color: #fff;
   font-weight: 900;
-  font-size: 1.46rem !important;
-  border-radius: 14px;
-  box-shadow: 0 6px 22px rgba(16,185,129,0.5);
+  font-size: 1.66rem !important;
+  border-radius: 18px;
+  box-shadow: 0 8px 26px rgba(16,185,129,0.5);
   z-index: 30;
 }
 
-/* Mobile — still perfect */
+/* Hover tooltip — show only ONE number (no double Jan/Today) */
+.js-plotly-plot .hoverlayer .hovertext .name,
+.js-plotly-plot .hoverlayer .hovertext .value + .value {
+  display: none !important;
+}
+.js-plotly-plot .hoverlayer .hovertext {
+  font-size: 15px !important;
+  font-weight: 900 !important;
+}
+
+/* Mobile — still 1 per row, perfect */
 @media (max-width: 768px) {
-  .chart-card { height: 490px !important; }
-  .chart-card > div[id^="plot"] { margin-top: -22px !important; }
-  .growth-indicator { font-size: 1.42rem; padding: 5px 15px; margin: 3px auto 6px !important; }
-  #projectedYield { font-size: 1.38rem !important; bottom: 4px !important; }
+  .growth-charts-grid {
+    grid-template-columns: 1fr;
+    gap: 1.8rem;
+    padding: 0 12px;
+  }
+  .chart-card {
+    height: 520px !important;
+    max-width: 100% !important;
+  }
+  #projectedYield {
+    font-size: 1.56rem !important;
+    padding: 13px 18px !important;
+    bottom: 14px !important;
+  }
 }
     
   /* Keep all your projection & other styles untouched */
