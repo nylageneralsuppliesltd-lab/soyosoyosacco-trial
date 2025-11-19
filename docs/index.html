@@ -46,15 +46,14 @@
   justify-content: center;
 }
 
-/* All 7 cards — identical size, no exceptions */
 .chart-card {
   background: #fff;
   padding: 1.3rem 1rem 1.4rem;
   border-radius: 24px;
   box-shadow: 0 12px 36px rgba(0,0,0,0.10);
-  height: 490px !important;           /* identical height */
+  height: 490px !important;
   width: 100%;
-  max-width: 400px !important;         /* identical width */
+  max-width: 400px !important;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -63,7 +62,7 @@
   box-sizing: border-box;
 }
 
-/* Card title */
+/* Card title — visible */
 .chart-card > p {
   margin: 0 0 4px;
   font-weight: 900;
@@ -73,67 +72,72 @@
   letter-spacing: 0.6px;
 }
 
-/* Arrow + % below title – smaller & raised */
+/* Arrow + % below title — NOW VISIBLE & raised */
 .growth-indicator {
-  margin: 6px 0 10px 0 !important;
+  margin: 8px auto 4px !important;     /* moved up and centered */
   font-size: 1.48rem;
   font-weight: 900;
-  min-height: 36px;
+  min-height: 38px;
+  width: fit-content;
+  padding: 0 12px;
+  background: rgba(240,253,244,0.9);
+  border-radius: 12px;
+  line-height: 1.4;
 }
 
-/* Plot container */
+/* Plot area */
 .chart-card > div[id^="plot"] {
   flex: 1;
   position: relative;
   min-height: 0;
+  padding-bottom: 58px;                 /* ← reserves space for yield box */
 }
 
-/* COMPLETELY REMOVE the big percentage that sits in the middle of every chart */
+/* COMPLETELY REMOVE the big middle percentage */
 .js-plotly-plot .plotly .annotation,
-.js-plotly-plot .plotly .annotation text {
-  display: none !important;
-}
+.js-plotly-plot .plotly .annotation text { display: none !important; }
 
-/* Expected annual yield box – perfectly visible at bottom of pie card only */
+/* EXPECTED YIELD BOX — perfect position, never hides pie label */
 #projectedYield {
   position: absolute !important;
-  bottom: 16px !important;
+  bottom: 12px !important;
   left: 50% !important;
   transform: translateX(-50%) !important;
   width: calc(100% - 50px) !important;
-  padding: 12px 16px !important;
-  ;
+  padding: 11px 16px !important;
   background: linear-gradient(135deg,#10B981,#34D399);
   color: #fff;
   font-weight: 900;
-  font-size: 1.45rem !important;
+  font-size: 1.42rem !important;
   border-radius: 14px;
-  box-shadow: 0 6px 20px rgba(16,185,129,0.4);
+  box-shadow: 0 6px 20px rgba(16,185,129,0.45);
   z-index: 10;
+  white-space: nowrap;
 }
 
-/* Bar labels on top of bars – slightly smaller */
+/* Bar top labels */
 .js-plotly-plot .plotly .textpoint text {
   font-size: 16px !important;
   font-weight: 900 !important;
 }
 
-/* Mobile perfection */
+/* Mobile — everything visible */
 @media (max-width: 768px) {
   .chart-card {
     height: 460px !important;
     max-width: 380px !important;
-    padding: 1.2rem 0.9rem;
   }
-  .growth-indicator { font-size: 1.42rem; }
+  .growth-indicator {
+    font-size: 1.40rem;
+    margin: 6px auto 4px !important;
+  }
   #projectedYield {
-    font-size: 1.38rem !important;
-    padding: 11px 14px !important;
-    bottom: 14px !important;
+    font-size: 1.36rem !important;
+    padding: 10px 14px !important;
+    bottom: 10px !important;
   }
   .js-plotly-plot .plotly .textpoint text { font-size: 15px !important; }
 }
-
 
   /* Keep all your projection & other styles untouched */
   #financialCharts, .financial-chart-container { width: 100%; overflow-x: auto; overflow-y: visible; contain: layout style paint; padding: 0.75rem; }
