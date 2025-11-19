@@ -38,47 +38,50 @@
 
 .growth-charts-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
   gap: 2.4rem;
   margin: 4.5rem auto;
-  padding: 0 16px;
+  padding: 0 20px;
   max-width: 1480px;
   justify-content: center;
 }
 
-/* All cards — premium but respect container on desktop */
+/* ALL CARDS — EXACT SAME WIDTH & HEIGHT */
 .chart-card {
   background: #fff;
-  padding: 1.8rem 2rem 2.4rem;
-  border-radius: 32px;
-  box-shadow: 0 18px 50px rgba(0,0,0,0.14);
-  height: 580px !important;
-  max-width: 720px !important;
+  padding: 1.6rem 1.8rem 2rem;
+  border-radius: 28px;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.13);
+  height: 570px !important;
+  width: 100% !important;
+  max-width: 700px !important;         /* ← forces identical width */
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  border: 2px solid #e6f7ed;
+  border: 1.8px solid #e8f5e9;
   overflow: hidden;
   box-sizing: border-box;
 }
 
-/* Title & arrow % — same as before */
+/* Title — reduced */
 .chart-card > p {
-  margin: 0 0 10px;
+  margin: 0 0 8px;
   font-weight: 900;
-  font-size: 1.58rem;
+  font-size: 1.38rem;
   color: #004d1a;
   text-transform: uppercase;
   text-align: center;
+  line-height: 1.25;
 }
 
+/* Arrow + % — reduced */
 .growth-indicator {
-  margin: 12px auto 18px !important;
-  font-size: 1.88rem;
+  margin: 8px auto 14px !important;
+  font-size: 1.62rem;
   font-weight: 900;
-  padding: 12px 32px;
+  padding: 9px 26px;
   background: rgba(240,253,244,0.98);
-  border-radius: 24px;
+  border-radius: 20px;
   width: fit-content;
 }
 
@@ -86,39 +89,49 @@
 .chart-card > div[id^="plot"] {
   flex: 1;
   position: relative;
-  margin-top: -14px !important;
-  padding-bottom: 88px;
+  margin-top: -16px !important;
+  padding-bottom: 100px !important;     /* room for small yield box */
 }
 
 /* Remove middle annotation */
 .js-plotly-plot .plotly .annotation,
 .js-plotly-plot .plotly .annotation text { display: none !important; }
 
-/* PIE CHART — compact yield box */
+/* PIE CHART ONLY — SMALL & CLEAN YIELD BOX */
 #projectedYield {
   position: absolute !important;
-  bottom: 24px !important;
+  bottom: 18px !important;
   left: 50% !important;
   transform: translateX(-50%) !important;
-  width: 68% !important;
-  max-width: 420px !important;
-  padding: 11px 20px !important;
+  width: 58% !important;
+  max-width: 360px !important;
+  padding: 9px 16px !important;
   background: linear-gradient(135deg,#10B981,#34D399);
   color: #fff;
   font-weight: 900;
-  font-size: 1.42rem !important;
-  border-radius: 18px;
-  box-shadow: 0 8px 24px rgba(16,185,129,0.5);
+  font-size: 1.28rem !important;       /* ← much smaller */
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(16,185,129,0.45);
   z-index: 30;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* MOBILE ONLY: FULL BLEED, ULTRA-WIDE, EDGE-TO-EDGE */
+/* Ensure pie chart title is never overlapped */
+.chart-card:has(#plotLoanTypes) > p {
+  position: relative;
+  z-index: 40;
+  margin-top: 4px !important;
+}
+
+/* MOBILE — FULL BLEED, SAME WIDTH LOGIC */
 @media (max-width: 992px) {
   .growth-charts-grid {
     grid-template-columns: 1fr;
     gap: 2.2rem;
     padding: 0 !important;
-    margin: 3.8rem 0 !important;
+    margin: 4rem 0 !important;
     width: 100vw !important;
     max-width: none !important;
     position: relative;
@@ -127,31 +140,17 @@
     margin-left: -50vw !important;
     margin-right: -50vw !important;
   }
-
   .chart-card {
     max-width: none !important;
-    margin: 0 !important;
-    border-radius: 28px;
-    height: 560px !important;
+    height: 550px !important;
+    border-radius: 26px;
   }
-
   #projectedYield {
-    font-size: 1.48rem !important;
-    padding: 13px 22px !important;
-    width: 76% !important;
-    bottom: 20px !important;
+    font-size: 1.24rem !important;
+    padding: 8px 14px !important;
+    width: 64% !important;
+    bottom: 16px !important;
   }
-}
-
-/* Hover — still one clean number */
-.js-plotly-plot .hoverlayer .hovertext .name,
-.js-plotly-plot .hoverlayer .hovertext .value + .value {
-  display: none !important;
-}
-.js-plotly-plot .hoverlayer .hovertext {
-  font-size: 18px !important;
-  font-weight: 900 !important;
-  bgcolor: '#004d1a' !important;
 }
     
   /* Keep all your projection & other styles untouched */
