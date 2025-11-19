@@ -150,6 +150,7 @@ let retryCount = 0;
 let lastDataHash = '';
 let autoSyncTimeout = null;
 let silentWatcherActive = false;
+let forceAutoSave = false;   // ✅ ADDED
 
 // ==================== UTILS ====================
 function getCurrentPeriod() {
@@ -431,10 +432,14 @@ function showLiveData() {
     const newHash = JSON.stringify({period, ...liveData});
     if(newHash!==lastDataHash){
         lastDataHash=newHash;
-        if(autoSaveEnabled && !isSynced){
-            clearTimeout(autoSyncTimeout);
-            autoSyncTimeout = setTimeout(()=>saveCurrentMonth(true),2000);
-        }
+        forceAutoSave = true;   // ✅ ADDED
+    }
+
+    // ✅ UPDATED AUTO-SAVE LOGIC
+    if(autoSaveEnabled && (!isSynced || forceAutoSave)){
+        forceAutoSave = false;
+        clearTimeout(autoSyncTimeout);
+        autoSyncTimeout = setTimeout(()=>saveCurrentMonth(true),2000);
     }
 
     renderFullHistory();
@@ -464,9 +469,9 @@ window.toggleAutoSave = function() {
     text.textContent = autoSaveEnabled ? 'AUTO-SAVE ON':'AUTO-SAVE OFF';
     document.getElementById('autoSaveToggle').style.background = autoSaveEnabled ? '#10B981':'#f59e0b';
 };
-// ====================DOWNLOAD CSV ====================
-    
-    function downloadHistoryCSV() {
+
+// ==================== DOWNLOAD CSV ====================
+function downloadHistoryCSV() {
     const history = Object.values(window.saccoHistory).sort((a,b)=>b.period.localeCompare(a.period));
     if(history.length === 0){
         alert("No history available to download yet.");
@@ -486,7 +491,6 @@ window.toggleAutoSave = function() {
 
 // ==================== EMAIL AUTOMATION ====================
 window.sendMonthlyEmail = async function() {
-    // Ensure live SACCO data exists
     const record = window.saccoData?.today;
     if (!record) {
         console.warn("Live SACCO data not ready yet.");
@@ -494,14 +498,11 @@ window.sendMonthlyEmail = async function() {
         return;
     }
 
-    // Format current period for display
     const period = new Date().toLocaleString('en-KE', { month: 'long', year: 'numeric' });
 
-    // Get full history CSV
     const history = Object.values(window.saccoHistory).sort((a,b) => b.period.localeCompare(a.period));
     const csvAttachment = convertHistoryToCSV(history);
 
-    // Construct HTML body
     const bodyHTML = `
 <h2>Soyosoyo SACCO — Monthly Update (${period})</h2>
 <p>Dear Members,</p>
@@ -520,17 +521,15 @@ window.sendMonthlyEmail = async function() {
 <p><em>Soyosoyo SACCO Management</em></p>
 `;
 
-    // Construct the exact payload Zapier expects
     const payload = {
         timestamp: new Date().toISOString(),
         subject: `Soyosoyo SACCO Monthly Update — ${period}`,
-        body: bodyHTML,                // ✅ ensure field is exactly 'body'
-        attachment: csvAttachment,     // CSV string
-        recipients: ["members@soyosoyo.co.ke"] // array of emails or Gmail group
+        body: bodyHTML,
+        attachment: csvAttachment,
+        recipients: ["members@soyosoyo.co.ke"]
     };
 
     try {
-        // POST payload to backend Zapier endpoint
         const res = await fetch(`${API_BASE}/zapier`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -571,8 +570,8 @@ window.addEventListener('DOMContentLoaded',()=>{
     startSilentWatcher();
     scheduleMonthlyEmail();
 });
-
 </script>
+
 
 <script src="./scripts/chatbot.js"></script>
     <script src="scripts/main.js"></script>
