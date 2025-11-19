@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { number: d.contributions, description: "Member Savings" },
         { number: bankBalance, description: "Total Bank Balance" },
         { number: d.numberOfLoansGiven, description: "Number of Loans Given" },
-        { number: loansDisbursed, description: "Loans Disbursed This Month" },
+        { number: loansDisbursed, description: "Loans Disbursed" },
         { number: d.profit, description: "Profit" },
         { number: d.activeMembers, description: "Active Members" },
         { number: roa, description: "ROA (%)" }
