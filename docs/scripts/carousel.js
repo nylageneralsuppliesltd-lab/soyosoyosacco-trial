@@ -6,22 +6,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const loadDynamicData = () => ({
     loanTypesToday: [
-      { name: 'Emergency', value: 1237900 },
+      { name: 'Emergency', value: 1242900 },
       { name: 'Medicare', value: 15000 },
       { name: 'Development', value: 713000 },
       { name: 'Education', value: 275000 }
     ],
-    loansBalanceToday: 928677.15,  // Aligned: Added for About.html
+    loansBalanceToday: 933677.15,  // Aligned: Added for About.html
     bankBreakdownToday: [
       { name: 'Co-operative Bank', value: 2120.65 },
-      { name: 'Chamasoft', value: 6194 },
+      { name: 'Chamasoft', value: 2119 },
       { name: 'Cytonn', value: 111320 }
     ],
     externalLoansToday: 66784,
     members: 145,
-    contributions: 923765,
-    numberOfLoansGiven: 112,
-    profit: 54818,
+    contributions: 924765,
+    numberOfLoansGiven: 113,
+    profit: 54733,
     activeMembers: 71
   });
 
