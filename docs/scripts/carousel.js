@@ -14,12 +14,12 @@ document.addEventListener('DOMContentLoaded', () => {
     loansBalanceToday: 933677.15,  // Aligned: Added for About.html
     bankBreakdownToday: [
       { name: 'Co-operative Bank', value: 2120.65 },
-      { name: 'Chamasoft', value: 2119 },
+      { name: 'Chamasoft', value: 4119 },
       { name: 'Cytonn', value: 111320 }
     ],
     externalLoansToday: 66784,
     members: 145,
-    contributions: 924765,
+    contributions: 926765,
     numberOfLoansGiven: 113,
     profit: 54733,
     activeMembers: 71
